@@ -21,20 +21,21 @@ namespace Tide.Library.Classes.Eos
         #region Vendor
 
         public TideResponse InitializeAccount(string username) {
-            return ExecuteVendorAction(username, EosHelpers.InitializeAccount);
+            var data = new Dictionary<string, object> {
+                { "vendor", _settings.Instance.Account },
+                { "username", username.ConvertToUint64() },
+                { "time", EosHelpers.GetEpoch() }
+            };
+            return Push(_settings.Blockchain.AuthenticationContract, EosHelpers.InitializeAccount, _settings.Instance.Account, data);
         }
 
         public TideResponse ConfirmAccount(string username)
         {
-            return ExecuteVendorAction(username, EosHelpers.FinalizeAccount);
-        }
-
-        private TideResponse ExecuteVendorAction(string username, string action) {
             var data = new Dictionary<string, object> {
                 { "vendor", _settings.Instance.Account },
                 { "username", username.ConvertToUint64() }
             };
-            return Push(_settings.Blockchain.AuthenticationContract, action, _settings.Instance.Account, data);
+            return Push(_settings.Blockchain.AuthenticationContract, EosHelpers.ConfirmAccount, _settings.Instance.Account, data);
         }
 
         #endregion

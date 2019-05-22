@@ -27,13 +27,87 @@ public:
     authentication(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds){};
 
     [[eosio::action]] void
-    init(name vendor, uint64_t username) {
+    addork(name ork_node, uint64_t username, string public_key) {
+        require_auth(ork_node);
+
+        // Gather the ork list
+        ork_index orks(get_self(), get_self().value);
+
+        // Does the ork already exists?
+        auto itr = orks.find(username);
+
+        // It does not. Let's add it
+        if (itr == orks.end())
+        {
+            orks.emplace(ork_node, [&](auto &t) {
+                t.id = username;
+                t.account = ork_node;
+                t.public_key = public_key;
+            });
+        }
+        else
+        {
+            // Otherwise, update the entry
+            auto ork = *itr;
+            check(ork.account == ork_node, "You do not have permission to alter this ork node.");
+
+            orks.modify(itr, ork_node, [&](auto &t) {
+                t.account = ork_node;
+                t.public_key = public_key;
+            });
+        }
+    };
+
+    [[eosio::action]] void
+    inituser(name vendor, uint64_t username, uint64_t time) {
         require_auth(vendor);
 
+        // Ensure timeout does not equal 0. 0 == confirmed account
+        check(time != 0, "Timeout can not be 0");
+
+        // Get user table, scoped to the vendor.
         user_index users(get_self(), get_self().value);
 
-        check(itr == users.end(), "That username already exists.");
+        // Does the user already exists?
+        auto itr = users.find(username);
+
+        // It does not. Let's add it
+        if (itr == users.end())
+        {
+            users.emplace(vendor, [&](auto &t) {
+                t.id = username;
+                t.timeout = time;
+            });
+        }
+        else
+        {
+            // Otherwise, update the entry
+            users.modify(itr, vendor, [&](auto &t) {
+                t.timeout = time;
+            });
+        }
     };
+
+    [[eosio::action]] void
+    confirmuser(name vendor, uint64_t username) {
+        require_auth(vendor);
+
+        // Get user table, scoped to the vendor.
+        user_index users(get_self(), get_self().value);
+
+        // If the pending user does not exist, return.
+        auto itr = users.find(username);
+        check(itr != users.end(), "That username has not been initialized.");
+
+        auto user = *itr;
+        check(user.timeout != 0, "That user has already been confirmed.");
+
+        // Otherwise, update the entry
+        users.modify(itr, vendor, [&](auto &t) {
+            t.timeout = 0;
+        });
+    };
+
 
 private:
     struct node
@@ -43,16 +117,26 @@ private:
         string ork_public;
     };
 
+    struct [[eosio::table]] ork
+    {
+        uint64_t id; // username
+        name account;
+        string url;
+        string public_key;
+
+        uint64_t primary_key() const { return id; }
+    };
+    typedef eosio::multi_index<"orks"_n, ork> ork_index;
+
     struct [[eosio::table]] user
     {
-        uint64_t id;
-        name account;
-        bool confirmed;
+        uint64_t id;      // username
+        uint64_t timeout; // unix. 0 == confirmed
         std::vector<node> nodes;
 
         uint64_t primary_key() const { return id; }
     };
-    typedef eosio::multi_index<"tideusers"_n, user> user_index;
+    typedef eosio::multi_index<"users"_n, user> user_index;
 
     struct [[eosio::table]] fragment
     {
@@ -63,5 +147,5 @@ private:
 
         uint64_t primary_key() const { return id; }
     };
-    typedef eosio::multi_index<"tidefrags"_n, fragment> frag_index;
+    typedef eosio::multi_index<"frags"_n, fragment> frag_index;
 };

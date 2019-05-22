@@ -1,0 +1,179 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT ",
+    "version": "eosio::abi/1.1",
+    "types": [],
+    "structs": [
+        {
+            "name": "addork",
+            "base": "",
+            "fields": [
+                {
+                    "name": "ork_node",
+                    "type": "name"
+                },
+                {
+                    "name": "username",
+                    "type": "uint64"
+                },
+                {
+                    "name": "public_key",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "confirmuser",
+            "base": "",
+            "fields": [
+                {
+                    "name": "vendor",
+                    "type": "name"
+                },
+                {
+                    "name": "username",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "fragment",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "public_key",
+                    "type": "string"
+                },
+                {
+                    "name": "private_key_frag",
+                    "type": "string"
+                },
+                {
+                    "name": "pass_hash",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "inituser",
+            "base": "",
+            "fields": [
+                {
+                    "name": "vendor",
+                    "type": "name"
+                },
+                {
+                    "name": "username",
+                    "type": "uint64"
+                },
+                {
+                    "name": "time",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "node",
+            "base": "",
+            "fields": [
+                {
+                    "name": "ork_node",
+                    "type": "name"
+                },
+                {
+                    "name": "ork_url",
+                    "type": "string"
+                },
+                {
+                    "name": "ork_public",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "ork",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "url",
+                    "type": "string"
+                },
+                {
+                    "name": "public_key",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "user",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "timeout",
+                    "type": "uint64"
+                },
+                {
+                    "name": "nodes",
+                    "type": "node[]"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "name": "addork",
+            "type": "addork",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "confirmuser",
+            "type": "confirmuser",
+            "ricardian_contract": ""
+        },
+        {
+            "name": "inituser",
+            "type": "inituser",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [
+        {
+            "name": "frags",
+            "type": "fragment",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "orks",
+            "type": "ork",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "users",
+            "type": "user",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
+    "ricardian_clauses": [],
+    "variants": []
+}

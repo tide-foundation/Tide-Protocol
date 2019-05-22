@@ -8,9 +8,9 @@ namespace Tide.Library.Classes.Eos
 {
     public static class EosHelpers
     {
-        public const string InitializeAccount = "init";
-        public const string FinalizeAccount = "finalize";
-        public const string AddUser = "adduser";
+        public const string InitializeAccount = "inituser";
+        public const string ConfirmAccount = "confirmuser";
+        public const string AddUser = "add_frag";
         public static ulong ConvertToUint64(this string input, bool needToHash = true)
         {
             var hashed = needToHash ? Sha256(input) : input;
@@ -24,6 +24,11 @@ namespace Tide.Library.Classes.Eos
                     .ComputeHash(Encoding.UTF8.GetBytes(value))
                     .Select(item => item.ToString("x2")));
             }
+        }
+
+        public static int GetEpoch() {
+            var t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+            return (int)t.TotalSeconds;
         }
     }
 }
