@@ -27,7 +27,7 @@ public:
     authentication(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds){};
 
     [[eosio::action]] void
-    addork(name ork_node, uint64_t username, string public_key) {
+    addork(name ork_node, uint64_t username, string public_key, string url) {
         require_auth(ork_node);
 
         // Gather the ork list
@@ -43,6 +43,7 @@ public:
                 t.id = username;
                 t.account = ork_node;
                 t.public_key = public_key;
+                t.url = url;
             });
         }
         else
@@ -54,6 +55,7 @@ public:
             orks.modify(itr, ork_node, [&](auto &t) {
                 t.account = ork_node;
                 t.public_key = public_key;
+                t.url = url;
             });
         }
     };
@@ -108,15 +110,55 @@ public:
         });
     };
 
+    [[eosio::action]] void
+    postfragment(uint64_t ork_username, uint64_t username, uint64_t vendor, string private_key_frag, string public_key, string pass_hash) {
+        // Get the user
+        user_index users(get_self(), get_self().value);
+        auto itr = users.find(username);
+        check(itr != users.end(), "That user does not exists.");
 
-private:
-    struct node
-    {
-        name ork_node;
-        string ork_url;
-        string ork_public;
+        // Get the ork and authenticate
+        ork_index orks(get_self(), get_self().value);
+        auto orkItr = orks.find(username);
+        check(orkItr != orks.end(), "That ork does not exists.");
+
+        auto ork = *orkItr;
+        require_auth(ork.account);
+
+        // Open ork scoped fragments
+        frag_index frags(get_self(), ork.account.value);
+
+        // Does the fragment already exists?
+        auto fragItr = frags.find(username);
+
+        // It does not, add it
+        if (fragItr == frags.end())
+        {
+            frags.emplace(get_self(), [&](auto &t) {
+                t.id = username;
+                t.vendor = vendor;
+                t.private_key_frag = private_key_frag;
+                t.pass_hash = pass_hash;
+                t.public_key = public_key;
+            });
+
+            // Add ork to users list
+            users.modify(itr, get_self(), [&](auto &t) {
+                t.orks.push_back(username);
+            });
+        }
+        else
+        {
+            // Otherwise, update the entry
+            frags.modify(fragItr, get_self(), [&](auto &t) {
+                t.private_key_frag = private_key_frag;
+                t.pass_hash = pass_hash;
+                t.public_key = public_key;
+            });
+        }
     };
 
+private:
     struct [[eosio::table]] ork
     {
         uint64_t id; // username
@@ -130,9 +172,10 @@ private:
 
     struct [[eosio::table]] user
     {
-        uint64_t id;      // username
-        uint64_t timeout; // unix. 0 == confirmed
-        std::vector<node> nodes;
+        uint64_t id;         // username
+        uint64_t timeout;    // unix. 0 == confirmed
+        name onboard_vendor; // The vendor the user went through to register
+        std::vector<uint64_t> orks;
 
         uint64_t primary_key() const { return id; }
     };
@@ -140,12 +183,23 @@ private:
 
     struct [[eosio::table]] fragment
     {
-        uint64_t id;
+        uint64_t id; // Username, scoped to ork
+        uint64_t vendor;
         string public_key;
         string private_key_frag;
         string pass_hash;
 
         uint64_t primary_key() const { return id; }
     };
-    typedef eosio::multi_index<"frags"_n, fragment> frag_index;
+    typedef eosio::multi_index<"fragments"_n, fragment> frag_index;
+
+    struct [[eosio::table]] vendor
+    {
+        uint64_t id; // Username, scoped to ork
+        name account;
+        string public_key;
+        string desc;
+
+        uint64_t primary_key() const { return id; }
+    };
 };

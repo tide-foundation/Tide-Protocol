@@ -18,6 +18,10 @@
                 {
                     "name": "public_key",
                     "type": "string"
+                },
+                {
+                    "name": "url",
+                    "type": "string"
                 }
             ]
         },
@@ -76,24 +80,6 @@
             ]
         },
         {
-            "name": "node",
-            "base": "",
-            "fields": [
-                {
-                    "name": "ork_node",
-                    "type": "name"
-                },
-                {
-                    "name": "ork_url",
-                    "type": "string"
-                },
-                {
-                    "name": "ork_public",
-                    "type": "string"
-                }
-            ]
-        },
-        {
             "name": "ork",
             "base": "",
             "fields": [
@@ -116,6 +102,32 @@
             ]
         },
         {
+            "name": "postfragment",
+            "base": "",
+            "fields": [
+                {
+                    "name": "ork_username",
+                    "type": "uint64"
+                },
+                {
+                    "name": "username",
+                    "type": "uint64"
+                },
+                {
+                    "name": "private_key_frag",
+                    "type": "string"
+                },
+                {
+                    "name": "public_key",
+                    "type": "string"
+                },
+                {
+                    "name": "pass_hash",
+                    "type": "string"
+                }
+            ]
+        },
+        {
             "name": "user",
             "base": "",
             "fields": [
@@ -128,8 +140,12 @@
                     "type": "uint64"
                 },
                 {
-                    "name": "nodes",
-                    "type": "node[]"
+                    "name": "onboard_vendor",
+                    "type": "name"
+                },
+                {
+                    "name": "orks",
+                    "type": "uint64[]"
                 }
             ]
         }
@@ -149,11 +165,16 @@
             "name": "inituser",
             "type": "inituser",
             "ricardian_contract": ""
+        },
+        {
+            "name": "postfragment",
+            "type": "postfragment",
+            "ricardian_contract": ""
         }
     ],
     "tables": [
         {
-            "name": "frags",
+            "name": "fragments",
             "type": "fragment",
             "index_type": "i64",
             "key_names": [],
