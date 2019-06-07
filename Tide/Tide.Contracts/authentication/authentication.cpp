@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 #include <eosio/eosio.hpp>
+#include "../lib.hpp"
 #include <string>
 
 using namespace eosio;
@@ -26,6 +27,7 @@ public:
 
     authentication(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds){};
 
+    // Converts a Tide account into an ork account which can store key fragments and perform protocol actions.
     [[eosio::action]] void
     addork(name ork_node, uint64_t username, string public_key, string url) {
         require_auth(ork_node);
@@ -69,6 +71,7 @@ public:
         }
     };
 
+    // Initializes an account to be created. This is step one and can not be skipped.
     [[eosio::action]] void
     inituser(name vendor, uint64_t username, uint64_t time) {
         require_auth(vendor);
@@ -99,9 +102,13 @@ public:
         }
     };
 
+    // Finalizes the account once the client has confirmed all fragments have successfully been stored by the Orks.
+    // Alternatives if the user decided not to use Orks and has taken note of the keys.
     [[eosio::action]] void
-    confirmuser(name vendor, name account, uint64_t username) {
+    confirmuser(name vendor, name account, uint64_t vendor_username, uint64_t username) {
         require_auth(vendor);
+
+        // NEED TO ADD A VENDOR CHECK HERE
 
         // Get user table, scoped to the vendor.
         user_index users(get_self(), get_self().value);
@@ -116,11 +123,12 @@ public:
         // Otherwise, update the entry
         users.modify(itr, vendor, [&](auto &t) {
             t.timeout = 0;
-            t.vendor = vendor;
+            t.vendor = vendor_username;
             t.account = account;
         });
     };
 
+    // Store a fragment for the user in the selected ork container. Both master account and vendor account fragments are stored here.
     [[eosio::action]] void
     postfragment(uint64_t ork_username, uint64_t username, uint64_t vendor, string private_key_frag, string public_key, string pass_hash) {
         // Get the user
@@ -209,25 +217,6 @@ private:
 
         uint64_t primary_key() const { return id; }
     };
-    typedef eosio::multi_index<"orks"_n, ork> ork_index;
-
-    struct orklink
-    {
-        uint64_t vendor;
-        std::vector<uint64_t> ork_ids;
-    };
-
-    struct [[eosio::table]] user
-    {
-        uint64_t id;      // username
-        name account;     // blockchain account
-        uint64_t timeout; // unix. 0 == confirmed
-        name vendor;      // The vendor the user went through to register
-        std::vector<orklink> ork_links;
-
-        uint64_t primary_key() const { return id; }
-    };
-    typedef eosio::multi_index<"users"_n, user> user_index;
 
     struct fragment
     {
@@ -244,15 +233,8 @@ private:
 
         uint64_t primary_key() const { return id; }
     };
+
+    typedef eosio::multi_index<"users"_n, user> user_index;
+    typedef eosio::multi_index<"orks"_n, ork> ork_index;
     typedef eosio::multi_index<"containers"_n, container> container_index;
-
-    struct [[eosio::table]] vendor
-    {
-        uint64_t id; // Username, scoped to ork
-        name account;
-        string public_key;
-        string desc;
-
-        uint64_t primary_key() const { return id; }
-    };
 };

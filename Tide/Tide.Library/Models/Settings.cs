@@ -1,7 +1,10 @@
-﻿namespace Tide.Library.Models {
+﻿using System.Collections.Generic;
+
+namespace Tide.Library.Models {
     public class Settings {
         public Blockchain Blockchain { get; set; }
         public Instance Instance { get; set; }
+        public List<string> Keys { get; set; }
     }
 
     public class Blockchain {
@@ -20,5 +23,8 @@
         public string ChainPrivateKey { get; set; }
         public string AesPassword { get; set; }
         public string TokenKey { get; set; }
+        public string CreationKey { get; set; }
     }
+
+  
 }

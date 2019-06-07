@@ -120,20 +120,6 @@
             ]
         },
         {
-            "name": "orklink",
-            "base": "",
-            "fields": [
-                {
-                    "name": "vendor",
-                    "type": "uint64"
-                },
-                {
-                    "name": "ork_ids",
-                    "type": "uint64[]"
-                }
-            ]
-        },
-        {
             "name": "postfragment",
             "base": "",
             "fields": [
@@ -159,54 +145,6 @@
                 },
                 {
                     "name": "pass_hash",
-                    "type": "string"
-                }
-            ]
-        },
-        {
-            "name": "user",
-            "base": "",
-            "fields": [
-                {
-                    "name": "id",
-                    "type": "uint64"
-                },
-                {
-                    "name": "account",
-                    "type": "name"
-                },
-                {
-                    "name": "timeout",
-                    "type": "uint64"
-                },
-                {
-                    "name": "vendor",
-                    "type": "name"
-                },
-                {
-                    "name": "ork_links",
-                    "type": "orklink[]"
-                }
-            ]
-        },
-        {
-            "name": "vendor",
-            "base": "",
-            "fields": [
-                {
-                    "name": "id",
-                    "type": "uint64"
-                },
-                {
-                    "name": "account",
-                    "type": "name"
-                },
-                {
-                    "name": "public_key",
-                    "type": "string"
-                },
-                {
-                    "name": "desc",
                     "type": "string"
                 }
             ]
@@ -245,20 +183,6 @@
         {
             "name": "orks",
             "type": "ork",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "users",
-            "type": "user",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "vendor",
-            "type": "vendor",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

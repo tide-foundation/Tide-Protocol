@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 #include <eosio/eosio.hpp>
+#include "../lib.hpp"
 #include <string>
 
 using namespace eosio;
@@ -26,6 +27,8 @@ public:
 
     vendors(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds){};
 
+    // Converts a Tide account into an vendor account which can onboard users under it's context.
+    // The Tide account must have been made as a top-tier account using official means.
     [[eosio::action]] void
     addvendor(name payer, name account, uint64_t username, string public_key, string desc) {
         require_auth(payer);
@@ -69,28 +72,23 @@ public:
         // Remove funds from payer here
     };
 
+    // Converts a Tide account into an vendor account which can onboard users under it's context.
+    [[eosio::action]] void
+    adduser(uint64_t username, uint64_t vendor) {
+        vendor_index vendors(get_self(), get_self().value);
+
+        auto itr = vendors.find(vendor);
+        check(itr != vendors.end(), "That vendor does not exists.");
+
+        auto vendorObj = *itr;
+        require_auth(vendorObj.account);
+
+        vendors.modify(itr, vendorObj.account, [&](auto &t) {
+            t.users.push_back(username);
+        });
+    };
+
 private:
-    struct [[eosio::table]] vendor
-    {
-        uint64_t id; // Username, scoped to ork
-        name account;
-        string public_key;
-        string desc;
-
-        uint64_t primary_key() const { return id; }
-    };
     typedef eosio::multi_index<"vendors"_n, vendor> vendor_index;
-
-    // Move this to a shared library
-    struct [[eosio::table]] user
-    {
-        uint64_t id;      // username
-        name account;     // blockchain account
-        uint64_t timeout; // unix. 0 == confirmed
-        name vendor;      // The vendor the user went through to register
-        std::vector<uint64_t> orks;
-
-        uint64_t primary_key() const { return id; }
-    };
     typedef eosio::multi_index<"users"_n, user> user_index;
 };

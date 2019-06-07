@@ -4,6 +4,20 @@
     "types": [],
     "structs": [
         {
+            "name": "adduser",
+            "base": "",
+            "fields": [
+                {
+                    "name": "username",
+                    "type": "uint64"
+                },
+                {
+                    "name": "vendor",
+                    "type": "uint64"
+                }
+            ]
+        },
+        {
             "name": "addvendor",
             "base": "",
             "fields": [
@@ -28,75 +42,21 @@
                     "type": "string"
                 }
             ]
-        },
-        {
-            "name": "user",
-            "base": "",
-            "fields": [
-                {
-                    "name": "id",
-                    "type": "uint64"
-                },
-                {
-                    "name": "timeout",
-                    "type": "uint64"
-                },
-                {
-                    "name": "vendor",
-                    "type": "name"
-                },
-                {
-                    "name": "orks",
-                    "type": "uint64[]"
-                }
-            ]
-        },
-        {
-            "name": "vendor",
-            "base": "",
-            "fields": [
-                {
-                    "name": "id",
-                    "type": "uint64"
-                },
-                {
-                    "name": "account",
-                    "type": "name"
-                },
-                {
-                    "name": "public_key",
-                    "type": "string"
-                },
-                {
-                    "name": "desc",
-                    "type": "string"
-                }
-            ]
         }
     ],
     "actions": [
+        {
+            "name": "adduser",
+            "type": "adduser",
+            "ricardian_contract": ""
+        },
         {
             "name": "addvendor",
             "type": "addvendor",
             "ricardian_contract": ""
         }
     ],
-    "tables": [
-        {
-            "name": "users",
-            "type": "user",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        },
-        {
-            "name": "vendors",
-            "type": "vendor",
-            "index_type": "i64",
-            "key_names": [],
-            "key_types": []
-        }
-    ],
+    "tables": [],
     "ricardian_clauses": [],
     "variants": []
 }

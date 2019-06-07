@@ -1,0 +1,63 @@
+﻿@page "/"
+@using Tide.Library.Classes.Cryptide
+@using Tide.Library.Models.Interfaces
+@inject Cryptide Cryptide
+@inject IBlockchainHelper Helper
+
+<div id="content">
+    <img class="component" src="/img/logo.svg" alt="Tide logo"/>
+    <div class="component" id="divider"></div>
+    <div class="component">
+        <div>
+            <input class="input-style" type="text" name="username" placeholder="Username" bind="@_username"/>
+        </div>
+        <div>
+            <input class="input-style" type="password" name="password" placeholder="Password" bind="@_password"/>
+        </div>
+        <div>
+            <input class="input-style" type="text" name="public key" placeholder="Public Key" bind="@_publicKey"/>
+        </div>
+        <button class="input-style" onclick="@Connect">Connect</button>
+    </div>
+</div>
+
+<p id="status">@_status</p>
+
+@functions {
+    string _status = "";
+    string _username = "thrakmar@gmail.com";
+    string _password = "password";
+    string _publicKey = "EOS54P6fHzGyr1SSTYusmA6BhuEhJYuY5uZUHqQBzMeadk2jdbJey";
+
+    void Connect() {
+        var (salt, username) = Cryptide.HashUsername(_username);
+
+        // Check if account exists
+        var exists = Helper.AccountExists(username);
+
+        if (Helper.AccountExists(username)) {
+            Login(username);
+        }
+        else {
+            Register(username);
+        }
+    }
+
+    void Login(string username) {
+    }
+
+    void Register(string username) {
+        var blockchainAccountResponse = Helper.CreateBlockchainAccount(_publicKey);
+
+        _status = "Initializing your account...";
+        var initResponse = Helper.InitializeAccount(username);
+
+        if (!initResponse.Success) {
+            _status = $"Failed initializing your account. Error: {initResponse.Error}";
+        }
+
+        _status = "Confirming your account...";
+        var confirmResponse = Helper.ConfirmAccount(username);
+    }
+
+}
