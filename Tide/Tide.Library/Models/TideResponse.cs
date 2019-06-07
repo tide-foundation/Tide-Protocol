@@ -1,38 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tide.Library.Models
-{
-    public class TideResponse
-    {
+﻿namespace Tide.Library.Models {
+    public class TideResponse {
         public TideResponse() {
             Success = true;
         }
 
-        public TideResponse(string error)
-        {
+        public TideResponse(string error) {
             Success = false;
             Content = null;
             Error = error;
         }
 
-        public TideResponse(object obj)
-        {
+        public TideResponse(object obj) {
             Success = true;
             Content = obj;
             Error = null;
         }
 
-        public TideResponse(bool success, object content)
-        {
+        public TideResponse(bool success, object content) {
             Success = success;
             Content = content;
             Error = null;
         }
 
-        public TideResponse(bool success, object content, string error)
-        {
+        public TideResponse(bool success, object content, string error) {
             Success = success;
             Content = content;
             Error = error;

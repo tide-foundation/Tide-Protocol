@@ -15,93 +15,140 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 //
 
+
 using System;
 using System.Collections.Generic;
-using System.Text;
-using EOS.Client;
-using EOS.Client.Models;
+using System.Linq;
+using EosSharp.Core;
+using EosSharp.Core.Api.v1;
+using EosSharp.Core.Providers;
 using Tide.Library.Models;
 using Tide.Library.Models.Interfaces;
+using Action = EosSharp.Core.Api.v1.Action;
 
-namespace Tide.Library.Classes.Eos
-{
-    public class EosBlockchainHelper : IBlockchainHelper
-    {
-        private readonly EosClient _client;
+namespace Tide.Library.Classes.Eos {
+    public class EosBlockchainHelper : IBlockchainHelper {
+        private readonly EosSharp.Eos _client;
         private readonly Settings _settings;
 
         public EosBlockchainHelper(Settings settings) {
             _settings = settings;
-            _client = new EosClient(new Uri(settings.Blockchain.BlockchainEndpoint), new EosWallet(new List<string> { settings.Instance.ChainPrivateKey }));
+
+            _client = new EosSharp.Eos(new EosConfigurator
+            {
+                HttpEndpoint = settings.Blockchain.BlockchainEndpoint,
+                ChainId = settings.Blockchain.BlockchainChainId,
+                ExpireSeconds = 60,
+                SignProvider = new DefaultSignProvider(settings.Instance.ChainPrivateKey)
+            });
         }
 
         #region Vendor
-
+        /// <summary>
+        /// Initializes an account to be created. This is step one and can not be skipped.
+        /// </summary>
+        /// <param name="username">The username for the new Tide account</param>
+        /// <returns>Content: Blockchain transaction ID</returns>
         public TideResponse InitializeAccount(string username) {
-            var data = new Dictionary<string, object> {
-                { "vendor", _settings.Instance.Account },
-                { "username", username.ConvertToUint64() },
-                { "time", EosHelpers.GetEpoch() }
+            var data = new {
+                vendor = _settings.Instance.Account,
+                username = username.ConvertToUint64(),
+                time = EosHelpers.GetEpoch()
             };
+
             return Push(_settings.Blockchain.AuthenticationContract, EosHelpers.InitializeAccount, _settings.Instance.Account, data);
         }
 
-        public TideResponse ConfirmAccount(string username)
-        {
-            var data = new Dictionary<string, object> {
-                { "vendor", _settings.Instance.Account },
-                { "username", username.ConvertToUint64() }
+        /// <summary>
+        /// Finalizes the account once the client has confirmed all fragments have successfully been stored by the Orks.
+        /// Alternatives if the user decided not to use Orks and has taken note of the keys.
+        /// </summary>
+        /// <param name="username">The Tide username to confirm</param>
+        /// <returns>Content: Blockchain transaction ID</returns>
+        public TideResponse ConfirmAccount(string username) {
+            var data = new {
+                vendor = _settings.Instance.Account,
+                username = username.ConvertToUint64()
             };
+
             return Push(_settings.Blockchain.AuthenticationContract, EosHelpers.ConfirmAccount, _settings.Instance.Account, data);
+        }
+
+        /// <summary>
+        /// Creates a top-level vendor account in which a business can run and have user-accounts signed up below it.
+        /// </summary>
+        /// <param name="model">
+        /// Payer: The account paying for the account.
+        /// Account: Blockchain account for the new vendor
+        /// Username: Tide Username for the new vendor
+        /// PublicKey: Elgamal public key the vendor will use for encryption
+        /// Description: A small synopsys of the vendor</param>
+        /// <returns>Content: Blockchain transaction ID</returns>
+        public TideResponse CreateVendor(CreateVendorModel model) {
+            var data = new {
+                payer = _settings.Instance.Account,
+                account = model.Account,
+                username = model.Username.ConvertToUint64(),
+                public_key = model.PublicKey,
+                desc = model.Description
+            };
+
+            return Push(_settings.Blockchain.AuthenticationContract, EosHelpers.CreateVendor, _settings.Instance.Account, data);
         }
 
         #endregion
 
         #region Ork
 
-        public TideResponse GetNodes(string username)
-        {
+        /// <summary>
+        /// Gathers the ork nodes which the Tide user used to distribute their key
+        /// </summary>
+        /// <param name="username">Username of the Tide account</param>
+        /// <returns>Content: Array of ork nodes</returns>
+        public TideResponse GetNodes(string username) {
             throw new NotImplementedException();
         }
 
-        public TideResponse PostFragment(AuthenticationModel model)
-        {
+        public TideResponse PostFragment(AuthenticationModel model) {
             throw new NotImplementedException();
         }
 
-        public TideResponse GetFragment(AuthenticationModel model)
-        {
+        public TideResponse GetFragment(AuthenticationModel model) {
             throw new NotImplementedException();
         }
 
         #endregion
 
+        #region Helpers
 
-        private TideResponse Push(string contract, string action, string auth, IDictionary<string, object> data)
+        private TideResponse Push(string contract, string action, string auth, object data)
         {
-            try {
-                var content = _client.PushActionsAsync(new[]
+            return Push(contract, action, new List<string> { auth }, data);
+        }
+        private TideResponse Push(string contract, string action, IEnumerable<string> auth, object data)
+        {
+            try
+            {
+                var content = _client.CreateTransaction(new Transaction()
                 {
-                    new EOS.Client.Models.Action()
-                    {
-                        Account = contract,
-                        Name = action,
-                        Authorization = new []
-                        {
-                            new Authorization
-                            {
-                                Actor = auth,
-                                Permission = "active"
-                            }
-                        },
-                        Data = data
+                    actions = new List<Action> {
+                        new Action() {
+                            account = contract,
+                            name = action,
+                            authorization = auth.Select(a=>new PermissionLevel{actor = a,permission = "active"}).ToList(),
+                            data = data
+                        }
                     }
                 }).Result;
-                return new TideResponse(true,content);
+
+                return new TideResponse(true, content);
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 return new TideResponse(e.Message);
             }
         }
+
+        #endregion
     }
 }

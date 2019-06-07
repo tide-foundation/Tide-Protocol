@@ -15,16 +15,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 //
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace Tide.Library.Classes
-{
-    public static  class Helpers
-    {
-     
+namespace Tide.Library.Classes {
+    public static class Helpers {
     }
 }

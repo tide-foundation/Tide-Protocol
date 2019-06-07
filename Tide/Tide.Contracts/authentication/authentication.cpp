@@ -30,6 +30,15 @@ public:
     addork(name ork_node, uint64_t username, string public_key, string url) {
         require_auth(ork_node);
 
+        // Does the user exist?
+        user_index users(get_self(), get_self().value);
+        auto userItr = users.find(username);
+        check(userItr != users.end(), "That user does not exists.");
+
+        // Was the user made by Tide?
+        auto user = *userItr;
+        check(user.vendor == get_self(), "That user was not created under the Tide master account.");
+
         // Gather the ork list
         ork_index orks(get_self(), get_self().value);
 
@@ -67,7 +76,7 @@ public:
         // Ensure timeout does not equal 0. 0 == confirmed account
         check(time != 0, "Timeout can not be 0");
 
-        // Get user table, scoped to the vendor.
+        // Get user table
         user_index users(get_self(), get_self().value);
 
         // Does the user already exists?
@@ -91,7 +100,7 @@ public:
     };
 
     [[eosio::action]] void
-    confirmuser(name vendor, uint64_t username) {
+    confirmuser(name vendor, name account, uint64_t username) {
         require_auth(vendor);
 
         // Get user table, scoped to the vendor.
@@ -107,6 +116,8 @@ public:
         // Otherwise, update the entry
         users.modify(itr, vendor, [&](auto &t) {
             t.timeout = 0;
+            t.vendor = vendor;
+            t.account = account;
         });
     };
 
@@ -119,43 +130,73 @@ public:
 
         // Get the ork and authenticate
         ork_index orks(get_self(), get_self().value);
-        auto orkItr = orks.find(username);
+        auto orkItr = orks.find(ork_username);
         check(orkItr != orks.end(), "That ork does not exists.");
 
         auto ork = *orkItr;
         require_auth(ork.account);
 
-        // Open ork scoped fragments
-        frag_index frags(get_self(), ork.account.value);
+        // Open ork scoped containers
+        container_index containers(get_self(), ork.account.value);
 
-        // Does the fragment already exists?
-        auto fragItr = frags.find(username);
+        // Does the container already exists?
+        auto containerItr = containers.find(username);
 
         // It does not, add it
-        if (fragItr == frags.end())
+        if (containerItr == containers.end())
         {
-            frags.emplace(get_self(), [&](auto &t) {
-                t.id = username;
-                t.vendor = vendor;
-                t.private_key_frag = private_key_frag;
-                t.pass_hash = pass_hash;
-                t.public_key = public_key;
-            });
-
-            // Add ork to users list
-            users.modify(itr, get_self(), [&](auto &t) {
-                t.orks.push_back(username);
+            // Create the container
+            containers.emplace(get_self(), [&](auto &container) {
+                container.id = username;
+                container.pass_hash = pass_hash;
+                container.fragments.push_back({vendor,
+                                               public_key,
+                                               private_key_frag});
             });
         }
         else
         {
             // Otherwise, update the entry
-            frags.modify(fragItr, get_self(), [&](auto &t) {
-                t.private_key_frag = private_key_frag;
-                t.pass_hash = pass_hash;
-                t.public_key = public_key;
+            containers.modify(containerItr, get_self(), [&](auto &container) {
+                // Does this container have a fragment for this vendor already? Update it
+                auto found = false;
+                for_each(container.fragments.begin(), container.fragments.end(), [&](fragment fragment) {
+                    if (fragment.vendor == vendor)
+                    {
+                        found = true;
+                        fragment.public_key = public_key;
+                        fragment.private_key_frag = private_key_frag;
+                    }
+                });
+
+                // Otherwise add it
+                if (!found)
+                {
+                    container.fragments.push_back({vendor, public_key, private_key_frag});
+                }
             });
         }
+
+        // Add ork to users list
+        users.modify(itr, get_self(), [&](auto &user) {
+            // If the vendor already exists on this user, add the ork ID to the internal list
+            auto found = false;
+            for_each(user.ork_links.begin(), user.ork_links.end(), [&](orklink orklink) {
+                if (orklink.vendor == vendor)
+                {
+                    found = true;
+                    orklink.ork_ids.push_back(ork_username);
+                }
+            });
+
+            // Otherwise add the vendor
+            if (!found)
+            {
+                orklink new_group = {vendor};
+                new_group.ork_ids.push_back(ork_username);
+                user.ork_links.push_back(new_group);
+            }
+        });
     };
 
 private:
@@ -170,28 +211,40 @@ private:
     };
     typedef eosio::multi_index<"orks"_n, ork> ork_index;
 
+    struct orklink
+    {
+        uint64_t vendor;
+        std::vector<uint64_t> ork_ids;
+    };
+
     struct [[eosio::table]] user
     {
-        uint64_t id;         // username
-        uint64_t timeout;    // unix. 0 == confirmed
-        name onboard_vendor; // The vendor the user went through to register
-        std::vector<uint64_t> orks;
+        uint64_t id;      // username
+        name account;     // blockchain account
+        uint64_t timeout; // unix. 0 == confirmed
+        name vendor;      // The vendor the user went through to register
+        std::vector<orklink> ork_links;
 
         uint64_t primary_key() const { return id; }
     };
     typedef eosio::multi_index<"users"_n, user> user_index;
 
-    struct [[eosio::table]] fragment
+    struct fragment
     {
-        uint64_t id; // Username, scoped to ork
         uint64_t vendor;
         string public_key;
         string private_key_frag;
+    };
+
+    struct [[eosio::table]] container
+    {
+        uint64_t id; // Username, scoped to ork
         string pass_hash;
+        std::vector<fragment> fragments;
 
         uint64_t primary_key() const { return id; }
     };
-    typedef eosio::multi_index<"fragments"_n, fragment> frag_index;
+    typedef eosio::multi_index<"containers"_n, container> container_index;
 
     struct [[eosio::table]] vendor
     {

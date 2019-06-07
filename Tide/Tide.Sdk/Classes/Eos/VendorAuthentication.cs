@@ -15,29 +15,24 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 //
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Tide.Library.Classes.Eos;
 using Tide.Library.Models;
 using Tide.Library.Models.Interfaces;
 
-namespace Tide.Sdk.Classes.Eos
-{
-    public class VendorAuthentication : IVendorAuthentication
-    {
+namespace Tide.Sdk.Classes.Eos {
+    public class VendorAuthentication : IVendorAuthentication {
         private readonly IBlockchainHelper _helper;
 
-        public VendorAuthentication(IBlockchainHelper helper)
-        {
-            _helper = helper;
+        public VendorAuthentication(Settings settings) {
+            _helper = new EosBlockchainHelper(settings);
         }
 
-        public TideResponse InitializeAccount(AuthenticationModel model) {
-            return _helper.InitializeAccount(model.Username);
+        public TideResponse InitializeAccount(string username) {
+            return _helper.InitializeAccount(username);
         }
 
-        public TideResponse ConfirmAccount(AuthenticationModel model) {
-            return _helper.ConfirmAccount(model.Username);
+        public TideResponse ConfirmAccount(string username) {
+            return _helper.ConfirmAccount(username);
         }
     }
 }

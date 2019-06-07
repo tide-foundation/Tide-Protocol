@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="eosnet" Version="2.0.1" />
+    <PackageReference Include="eos-sharp" Version="2.0.8" />
   </ItemGroup>
 
   <ItemGroup>

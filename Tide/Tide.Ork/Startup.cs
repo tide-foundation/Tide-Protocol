@@ -8,20 +8,16 @@ using Tide.Library.Models;
 using Tide.Library.Models.Interfaces;
 using Tide.Ork.Classes;
 
-namespace Tide.Ork
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
+namespace Tide.Ork {
+    public class Startup {
+        public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
             services.AddControllers()
                 .AddNewtonsoftJson();
 
@@ -29,13 +25,11 @@ namespace Tide.Ork
             Configuration.Bind("Settings", settings);
 
             services.AddSingleton(settings);
-            services.AddSingleton<IBlockchainHelper, EosBlockchainHelper>();
             services.AddSingleton<IOrkAuthentication, OrkAuthentication>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             else app.UseHsts();
 

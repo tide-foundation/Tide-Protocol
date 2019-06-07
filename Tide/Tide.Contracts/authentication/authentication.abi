@@ -34,8 +34,30 @@
                     "type": "name"
                 },
                 {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
                     "name": "username",
                     "type": "uint64"
+                }
+            ]
+        },
+        {
+            "name": "container",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "pass_hash",
+                    "type": "string"
+                },
+                {
+                    "name": "fragments",
+                    "type": "fragment[]"
                 }
             ]
         },
@@ -44,7 +66,7 @@
             "base": "",
             "fields": [
                 {
-                    "name": "id",
+                    "name": "vendor",
                     "type": "uint64"
                 },
                 {
@@ -53,10 +75,6 @@
                 },
                 {
                     "name": "private_key_frag",
-                    "type": "string"
-                },
-                {
-                    "name": "pass_hash",
                     "type": "string"
                 }
             ]
@@ -102,6 +120,20 @@
             ]
         },
         {
+            "name": "orklink",
+            "base": "",
+            "fields": [
+                {
+                    "name": "vendor",
+                    "type": "uint64"
+                },
+                {
+                    "name": "ork_ids",
+                    "type": "uint64[]"
+                }
+            ]
+        },
+        {
             "name": "postfragment",
             "base": "",
             "fields": [
@@ -111,6 +143,10 @@
                 },
                 {
                     "name": "username",
+                    "type": "uint64"
+                },
+                {
+                    "name": "vendor",
                     "type": "uint64"
                 },
                 {
@@ -136,16 +172,42 @@
                     "type": "uint64"
                 },
                 {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
                     "name": "timeout",
                     "type": "uint64"
                 },
                 {
-                    "name": "onboard_vendor",
+                    "name": "vendor",
                     "type": "name"
                 },
                 {
-                    "name": "orks",
-                    "type": "uint64[]"
+                    "name": "ork_links",
+                    "type": "orklink[]"
+                }
+            ]
+        },
+        {
+            "name": "vendor",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "public_key",
+                    "type": "string"
+                },
+                {
+                    "name": "desc",
+                    "type": "string"
                 }
             ]
         }
@@ -174,8 +236,8 @@
     ],
     "tables": [
         {
-            "name": "fragments",
-            "type": "fragment",
+            "name": "containers",
+            "type": "container",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
@@ -190,6 +252,13 @@
         {
             "name": "users",
             "type": "user",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "vendor",
+            "type": "vendor",
             "index_type": "i64",
             "key_names": [],
             "key_types": []

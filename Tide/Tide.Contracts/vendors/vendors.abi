@@ -8,6 +8,10 @@
             "base": "",
             "fields": [
                 {
+                    "name": "payer",
+                    "type": "name"
+                },
+                {
                     "name": "account",
                     "type": "name"
                 },
@@ -22,6 +26,28 @@
                 {
                     "name": "desc",
                     "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "user",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "timeout",
+                    "type": "uint64"
+                },
+                {
+                    "name": "vendor",
+                    "type": "name"
+                },
+                {
+                    "name": "orks",
+                    "type": "uint64[]"
                 }
             ]
         },
@@ -56,6 +82,13 @@
         }
     ],
     "tables": [
+        {
+            "name": "users",
+            "type": "user",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
         {
             "name": "vendors",
             "type": "vendor",

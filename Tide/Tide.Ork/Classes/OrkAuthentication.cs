@@ -15,38 +15,26 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 //
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EOS.Client;
-using EOS.Client.Models;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Tide.Library.Classes;
+using Tide.Library.Classes.Eos;
 using Tide.Library.Models;
 using Tide.Library.Models.Interfaces;
 
-namespace Tide.Ork.Classes
-{
-    public class OrkAuthentication : IOrkAuthentication
-    {
-        private readonly ILogger _logger;
-        private readonly Settings _settings;
+namespace Tide.Ork.Classes {
+    public class OrkAuthentication : IOrkAuthentication {
         private readonly IBlockchainHelper _helper;
+        private readonly ILogger _logger;
 
-        public OrkAuthentication(Settings settings, ILoggerFactory logger, IBlockchainHelper helper) {
-            _settings = settings;
+        public OrkAuthentication(Settings settings, ILoggerFactory logger) {
             _logger = logger.CreateLogger($"Instance-{settings.Instance.Account}");
-            _helper = helper;
+            _helper = new EosBlockchainHelper(settings);
         }
 
         public TideResponse GetNodes(AuthenticationModel model) {
             return _helper.GetNodes(model.Username);
         }
 
-        public TideResponse PostFragment(AuthenticationModel model)
-        {
+        public TideResponse PostFragment(AuthenticationModel model) {
             return _helper.PostFragment(model);
         }
 
@@ -55,4 +43,3 @@ namespace Tide.Ork.Classes
         }
     }
 }
-    

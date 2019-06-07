@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Ork", "Tide.Ork\Tide.Ork.csproj", "{25323717-F2E6-4263-81C4-4046703E07F6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Sdk", "Tide.Sdk\Tide.Sdk.csproj", "{2CBFE6B9-5FB3-4D7B-9B25-4C200B364FAE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tide.Contracts", "Tide.Contracts", "{84201A0E-9462-4968-9398-1E025007A57F}"
 EndProject
@@ -19,7 +17,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Developer", "Developer", "{
 		Developer\Notes.md = Developer\Notes.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Library", "Tide.Library\Tide.Library.csproj", "{03DD9D98-250A-4BE4-9723-F95AEE1DEAB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Library", "Tide.Library\Tide.Library.csproj", "{E07BF522-62EB-49BC-8395-187F68F73675}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Sdk", "Tide.Sdk\Tide.Sdk.csproj", "{FDBB3D84-2A7F-408F-8713-446DC360DFCD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vendor", "vendor", "{8DA54851-7E69-4882-8471-7D0D3ED58562}"
+	ProjectSection(SolutionItems) = preProject
+		Tide.Contracts\vendors\vendors.cpp = Tide.Contracts\vendors\vendors.cpp
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Creator", "Tide.Creator\Tide.Creator.csproj", "{CA6CC7C1-E147-4EAD-A837-AF7E11552C27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,20 +38,25 @@ Global
 		{25323717-F2E6-4263-81C4-4046703E07F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25323717-F2E6-4263-81C4-4046703E07F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25323717-F2E6-4263-81C4-4046703E07F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2CBFE6B9-5FB3-4D7B-9B25-4C200B364FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2CBFE6B9-5FB3-4D7B-9B25-4C200B364FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2CBFE6B9-5FB3-4D7B-9B25-4C200B364FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2CBFE6B9-5FB3-4D7B-9B25-4C200B364FAE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{03DD9D98-250A-4BE4-9723-F95AEE1DEAB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03DD9D98-250A-4BE4-9723-F95AEE1DEAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03DD9D98-250A-4BE4-9723-F95AEE1DEAB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03DD9D98-250A-4BE4-9723-F95AEE1DEAB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E07BF522-62EB-49BC-8395-187F68F73675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E07BF522-62EB-49BC-8395-187F68F73675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E07BF522-62EB-49BC-8395-187F68F73675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E07BF522-62EB-49BC-8395-187F68F73675}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDBB3D84-2A7F-408F-8713-446DC360DFCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDBB3D84-2A7F-408F-8713-446DC360DFCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDBB3D84-2A7F-408F-8713-446DC360DFCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDBB3D84-2A7F-408F-8713-446DC360DFCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA6CC7C1-E147-4EAD-A837-AF7E11552C27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA6CC7C1-E147-4EAD-A837-AF7E11552C27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA6CC7C1-E147-4EAD-A837-AF7E11552C27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA6CC7C1-E147-4EAD-A837-AF7E11552C27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C499C7CF-00EC-488F-85F5-B90F2F7674CA} = {84201A0E-9462-4968-9398-1E025007A57F}
+		{8DA54851-7E69-4882-8471-7D0D3ED58562} = {84201A0E-9462-4968-9398-1E025007A57F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5C144838-5A05-4F58-9056-2E3971FFC977}

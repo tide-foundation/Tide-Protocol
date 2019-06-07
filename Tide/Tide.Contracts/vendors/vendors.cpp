@@ -27,13 +27,18 @@ public:
     vendors(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds){};
 
     [[eosio::action]] void
-    addvendor(name account, uint64_t username, string public_key, string desc) {
+    addvendor(name payer, name account, uint64_t username, string public_key, string desc) {
+        require_auth(payer);
         require_auth(account);
 
-        user_index users(N(xauthholderx), N(xauthholderx).value);
+        user_index users("xauthholderx"_n, "xauthholderx"_n.value);
 
         auto userItr = users.find(username);
         check(userItr != users.end(), "That user does not exists.");
+
+        // Was the user made by Tide?
+        auto user = *userItr;
+        check(user.vendor == "xauthholderx"_n, "That user was not created under the Tide master account.");
 
         // Gather the vendor list
         vendor_index vendors(get_self(), get_self().value);
@@ -60,6 +65,8 @@ public:
                 t.desc = desc;
             });
         }
+
+        // Remove funds from payer here
     };
 
 private:
@@ -74,11 +81,13 @@ private:
     };
     typedef eosio::multi_index<"vendors"_n, vendor> vendor_index;
 
+    // Move this to a shared library
     struct [[eosio::table]] user
     {
-        uint64_t id;         // username
-        uint64_t timeout;    // unix. 0 == confirmed
-        name onboard_vendor; // The vendor the user went through to register
+        uint64_t id;      // username
+        name account;     // blockchain account
+        uint64_t timeout; // unix. 0 == confirmed
+        name vendor;      // The vendor the user went through to register
         std::vector<uint64_t> orks;
 
         uint64_t primary_key() const { return id; }

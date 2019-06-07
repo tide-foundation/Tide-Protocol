@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Tide.Library.Models.Interfaces
-{
+﻿namespace Tide.Library.Models.Interfaces {
     public interface IBlockchainHelper {
-        // Vendor functions
         TideResponse InitializeAccount(string username);
         TideResponse ConfirmAccount(string username);
+        TideResponse CreateVendor(CreateVendorModel model);
 
         // Ork functions
         TideResponse GetNodes(string username);
