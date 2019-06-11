@@ -42,6 +42,72 @@
                     "type": "string"
                 }
             ]
+        },
+        {
+            "name": "orklink",
+            "base": "",
+            "fields": [
+                {
+                    "name": "vendor",
+                    "type": "uint64"
+                },
+                {
+                    "name": "ork_ids",
+                    "type": "uint64[]"
+                }
+            ]
+        },
+        {
+            "name": "user",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "timeout",
+                    "type": "uint64"
+                },
+                {
+                    "name": "vendor",
+                    "type": "uint64"
+                },
+                {
+                    "name": "ork_links",
+                    "type": "orklink[]"
+                }
+            ]
+        },
+        {
+            "name": "vendor",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "public_key",
+                    "type": "string"
+                },
+                {
+                    "name": "desc",
+                    "type": "string"
+                },
+                {
+                    "name": "users",
+                    "type": "uint64[]"
+                }
+            ]
         }
     ],
     "actions": [
@@ -56,7 +122,22 @@
             "ricardian_contract": ""
         }
     ],
-    "tables": [],
+    "tables": [
+        {
+            "name": "tideusers",
+            "type": "user",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "vendors",
+            "type": "vendor",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        }
+    ],
     "ricardian_clauses": [],
     "variants": []
 }

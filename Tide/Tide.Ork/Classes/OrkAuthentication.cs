@@ -22,12 +22,12 @@ using Tide.Library.Models.Interfaces;
 
 namespace Tide.Ork.Classes {
     public class OrkAuthentication : IOrkAuthentication {
-        private readonly IBlockchainHelper _helper;
+        private readonly ITideProtocol _helper;
         private readonly ILogger _logger;
 
         public OrkAuthentication(Settings settings, ILoggerFactory logger) {
             _logger = logger.CreateLogger($"Instance-{settings.Instance.Account}");
-            _helper = new EosBlockchainHelper(settings);
+            _helper = new Library.Classes.Eos.TideProtocol(settings);
         }
 
         public TideResponse GetNodes(AuthenticationModel model) {

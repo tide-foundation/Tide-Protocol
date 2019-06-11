@@ -17,6 +17,7 @@ using System;
 
 namespace Tide.Library.Classes.Cryptide {
     public class Cryptide {
+        public static Cryptide Instance = new Cryptide();
         public (string Private, string Public) GetKey() {
             var (sec, pub) = CryptideKey.Generate();
             return (sec.ToString(), pub.ToString());
@@ -47,7 +48,9 @@ namespace Tide.Library.Classes.Cryptide {
 
         public (string salt, string username) HashUsername(string data)
         {
-            return Hasher.DoubleHash(data);
+            var hash1 = Hasher.Hash(data);
+            var hash2 = Hasher.Hash(hash1);
+            return (hash1, hash2);
         }
 
         [Obsolete("This method is not yet implemented.", true)]

@@ -14,7 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 #include <eosio/eosio.hpp>
-#include "../lib.hpp"
+//#include "../lib.hpp"
 #include <string>
 
 using namespace eosio;
@@ -32,16 +32,11 @@ public:
     [[eosio::action]] void
     addvendor(name payer, name account, uint64_t username, string public_key, string desc) {
         require_auth(payer);
-        require_auth(account);
 
-        user_index users("xauthholderx"_n, "xauthholderx"_n.value);
+        user_index users("xtidemasterx"_n, "xtidemasterx"_n.value);
 
         auto userItr = users.find(username);
         check(userItr != users.end(), "That user does not exists.");
-
-        // Was the user made by Tide?
-        auto user = *userItr;
-        check(user.vendor == "xauthholderx"_n, "That user was not created under the Tide master account.");
 
         // Gather the vendor list
         vendor_index vendors(get_self(), get_self().value);
@@ -52,7 +47,7 @@ public:
         // It does not. Let's add it
         if (itr == vendors.end())
         {
-            vendors.emplace(account, [&](auto &t) {
+            vendors.emplace(payer, [&](auto &t) {
                 t.id = username;
                 t.account = account;
                 t.public_key = public_key;
@@ -62,8 +57,7 @@ public:
         else
         {
             // Otherwise, update the entry
-            vendors.modify(itr, account, [&](auto &t) {
-                t.account = account;
+            vendors.modify(itr, payer, [&](auto &t) {
                 t.public_key = public_key;
                 t.desc = desc;
             });
@@ -89,6 +83,34 @@ public:
     };
 
 private:
+    struct orklink
+    {
+        uint64_t vendor;
+        std::vector<uint64_t> ork_ids;
+    };
+
+    struct [[eosio::table]] user
+    {
+        uint64_t id;      // username
+        name account;     // blockchain account
+        uint64_t timeout; // unix. 0 == confirmed
+        uint64_t vendor;  // The vendor the user went through to register
+        std::vector<orklink> ork_links;
+
+        uint64_t primary_key() const { return id; }
+    };
+
+    struct [[eosio::table]] vendor
+    {
+        uint64_t id; // Username, scoped to ork
+        name account;
+        string public_key;
+        string desc;
+        std::vector<uint64_t> users;
+
+        uint64_t primary_key() const { return id; }
+    };
+
     typedef eosio::multi_index<"vendors"_n, vendor> vendor_index;
-    typedef eosio::multi_index<"users"_n, user> user_index;
+    typedef eosio::multi_index<"tideusers"_n, user> user_index;
 };

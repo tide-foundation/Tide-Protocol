@@ -1,5 +1,4 @@
-
-body {
+﻿body {
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -24,9 +23,9 @@ img {
 }
 
 #content {
-    width: 100%;
+    
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     flex-direction: row;
 }
@@ -55,13 +54,19 @@ button {
 
     button:hover {
         background: #4bbf81;
+        border: 1px solid #4bbf81;
     }
 
 input { background: transparent; }
 
 #status {
     position: absolute;
-    right: 10px;
+    left: 10px;
     top: 5px;
-    text-align: right;
+    text-align: left;
+    font-size:10px;
+}
+
+.disabled{
+    opacity: 0.3;pointer-events:none;
 }

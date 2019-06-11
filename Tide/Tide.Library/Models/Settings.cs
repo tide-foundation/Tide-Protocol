@@ -17,6 +17,7 @@ namespace Tide.Library.Models {
     }
 
     public class Instance {
+        public string Username { get; set; }
         public string Account { get; set; }
         public string EncryptionPublicKey { get; set; }
         public string EncryptionPrivateKey { get; set; }

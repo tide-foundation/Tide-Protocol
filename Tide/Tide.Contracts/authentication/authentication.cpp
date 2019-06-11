@@ -27,19 +27,34 @@ public:
 
     authentication(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds){};
 
-    // Converts a Tide account into an ork account which can store key fragments and perform protocol actions.
+    // Seed initial account
     [[eosio::action]] void
-    addork(name ork_node, uint64_t username, string public_key, string url) {
+    setup(name account) {
+        require_auth(get_self());
+
+        uint64_t tide = 7365744080294536752;
+
+        user_index users(get_self(), get_self().value);
+        auto itr = users.find(tide); // tide master account
+        if (itr == users.end())
+        {
+            users.emplace(get_self(), [&](auto &t) {
+                t.id = tide;
+                t.account = get_self();
+            });
+        }
+    }
+
+        // Converts a Tide account into an ork account which can store key fragments and perform protocol actions.
+        [[eosio::action]] void
+        addork(name ork_node, uint64_t username, string public_key, string url)
+    {
         require_auth(ork_node);
 
         // Does the user exist?
         user_index users(get_self(), get_self().value);
         auto userItr = users.find(username);
         check(userItr != users.end(), "That user does not exists.");
-
-        // Was the user made by Tide?
-        auto user = *userItr;
-        check(user.vendor == get_self(), "That user was not created under the Tide master account.");
 
         // Gather the ork list
         ork_index orks(get_self(), get_self().value);
@@ -73,30 +88,36 @@ public:
 
     // Initializes an account to be created. This is step one and can not be skipped.
     [[eosio::action]] void
-    inituser(name vendor, uint64_t username, uint64_t time) {
-        require_auth(vendor);
+    inituser(uint64_t vendor_username, name account, uint64_t account_username, uint64_t time) {
+        // Get user table
+        user_index users(get_self(), get_self().value);
+
+        // Vendor check
+        auto vendor = getAuthorizedUser(vendor_username);
 
         // Ensure timeout does not equal 0. 0 == confirmed account
         check(time != 0, "Timeout can not be 0");
 
-        // Get user table
-        user_index users(get_self(), get_self().value);
-
         // Does the user already exists?
-        auto itr = users.find(username);
+        auto itr = users.find(account_username);
 
         // It does not. Let's add it
         if (itr == users.end())
         {
-            users.emplace(vendor, [&](auto &t) {
-                t.id = username;
+            users.emplace(vendor.account, [&](auto &t) {
+                t.id = account_username;
+                t.account = account;
+                t.vendor = vendor_username;
                 t.timeout = time;
             });
         }
         else
         {
+            auto user = *itr;
+
+            check(vendor_username == user.vendor, "That vendor is not authorized.");
             // Otherwise, update the entry
-            users.modify(itr, vendor, [&](auto &t) {
+            users.modify(itr, vendor.account, [&](auto &t) {
                 t.timeout = time;
             });
         }
@@ -105,26 +126,24 @@ public:
     // Finalizes the account once the client has confirmed all fragments have successfully been stored by the Orks.
     // Alternatives if the user decided not to use Orks and has taken note of the keys.
     [[eosio::action]] void
-    confirmuser(name vendor, name account, uint64_t vendor_username, uint64_t username) {
-        require_auth(vendor);
-
-        // NEED TO ADD A VENDOR CHECK HERE
-
+    confirmuser(uint64_t vendor_username, uint64_t account_username) {
         // Get user table, scoped to the vendor.
         user_index users(get_self(), get_self().value);
 
+        // Vendor check
+        auto vendor = getAuthorizedUser(vendor_username);
+
         // If the pending user does not exist, return.
-        auto itr = users.find(username);
+        auto itr = users.find(account_username);
         check(itr != users.end(), "That username has not been initialized.");
 
         auto user = *itr;
         check(user.timeout != 0, "That user has already been confirmed.");
+        check(vendor_username == user.vendor, "That vendor is not authorized.");
 
         // Otherwise, update the entry
-        users.modify(itr, vendor, [&](auto &t) {
+        users.modify(itr, vendor.account, [&](auto &t) {
             t.timeout = 0;
-            t.vendor = vendor_username;
-            t.account = account;
         });
     };
 
@@ -234,7 +253,38 @@ private:
         uint64_t primary_key() const { return id; }
     };
 
-    typedef eosio::multi_index<"users"_n, user> user_index;
+    struct orklink
+    {
+        uint64_t vendor;
+        std::vector<uint64_t> ork_ids;
+    };
+
+    struct [[eosio::table]] user
+    {
+        uint64_t id;      // username
+        name account;     // blockchain account
+        uint64_t timeout; // unix. 0 == confirmed
+        uint64_t vendor;  // The vendor the user went through to register
+        std::vector<orklink> ork_links;
+
+        uint64_t primary_key() const { return id; }
+    };
+
+    typedef eosio::multi_index<"tideusers"_n, user> user_index;
     typedef eosio::multi_index<"orks"_n, ork> ork_index;
     typedef eosio::multi_index<"containers"_n, container> container_index;
+
+    // Finds the Tide user and challenges the accounts authorization
+    user getAuthorizedUser(uint64_t username)
+    {
+        user_index users(get_self(), get_self().value);
+
+        auto itr = users.find(username);
+        check(itr != users.end(), "That vendor does not exist.");
+
+        auto user = *itr;
+        require_auth(user.account);
+
+        return user;
+    };
 };

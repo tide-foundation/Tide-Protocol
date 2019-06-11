@@ -19,14 +19,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Developer", "Developer", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Library", "Tide.Library\Tide.Library.csproj", "{E07BF522-62EB-49BC-8395-187F68F73675}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Sdk", "Tide.Sdk\Tide.Sdk.csproj", "{FDBB3D84-2A7F-408F-8713-446DC360DFCD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vendor", "vendor", "{8DA54851-7E69-4882-8471-7D0D3ED58562}"
 	ProjectSection(SolutionItems) = preProject
 		Tide.Contracts\vendors\vendors.cpp = Tide.Contracts\vendors\vendors.cpp
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Master", "Tide.Master\Tide.Master.csproj", "{9C94A8E0-77A1-4839-8601-FF2FABA83ADD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Master", "Tide.Master\Tide.Master.csproj", "{0C0A222A-F5BA-424D-B9CF-7EC6FC42603D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Vendor", "Tide.Vendor\Tide.Vendor.csproj", "{3D94D4A8-9CC8-431A-AB53-95D9B819D6D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,14 +42,14 @@ Global
 		{E07BF522-62EB-49BC-8395-187F68F73675}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E07BF522-62EB-49BC-8395-187F68F73675}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E07BF522-62EB-49BC-8395-187F68F73675}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FDBB3D84-2A7F-408F-8713-446DC360DFCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDBB3D84-2A7F-408F-8713-446DC360DFCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDBB3D84-2A7F-408F-8713-446DC360DFCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FDBB3D84-2A7F-408F-8713-446DC360DFCD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C94A8E0-77A1-4839-8601-FF2FABA83ADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C94A8E0-77A1-4839-8601-FF2FABA83ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C94A8E0-77A1-4839-8601-FF2FABA83ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C94A8E0-77A1-4839-8601-FF2FABA83ADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C0A222A-F5BA-424D-B9CF-7EC6FC42603D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C0A222A-F5BA-424D-B9CF-7EC6FC42603D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C0A222A-F5BA-424D-B9CF-7EC6FC42603D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C0A222A-F5BA-424D-B9CF-7EC6FC42603D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D94D4A8-9CC8-431A-AB53-95D9B819D6D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D94D4A8-9CC8-431A-AB53-95D9B819D6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D94D4A8-9CC8-431A-AB53-95D9B819D6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D94D4A8-9CC8-431A-AB53-95D9B819D6D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

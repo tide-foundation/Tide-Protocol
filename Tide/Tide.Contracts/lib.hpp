@@ -25,17 +25,6 @@ struct orklink
     std::vector<uint64_t> ork_ids;
 };
 
-struct [[eosio::table]] user
-{
-    uint64_t id;      // username
-    name account;     // blockchain account
-    uint64_t timeout; // unix. 0 == confirmed
-    uint64_t vendor;  // The vendor the user went through to register
-    std::vector<orklink> ork_links;
-
-    uint64_t primary_key() const { return id; }
-};
-
 struct [[eosio::table]] vendor
 {
     uint64_t id; // Username, scoped to ork

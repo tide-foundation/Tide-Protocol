@@ -1,5 +1,5 @@
 ﻿namespace Tide.Library.Models {
-    public struct AuthenticationModel {
+    public class AuthenticationModel {
         public string Username { get; set; }
         public string PasswordHash { get; set; }
         public string PublicKey { get; set; }

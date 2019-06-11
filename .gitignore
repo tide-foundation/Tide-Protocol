@@ -13,6 +13,7 @@
 
 # Development
 appsettings.Development.json
+Tide.Vendor
 playground
 Developer
 nuget.exe

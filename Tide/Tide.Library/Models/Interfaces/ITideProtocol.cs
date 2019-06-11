@@ -1,5 +1,5 @@
 ﻿namespace Tide.Library.Models.Interfaces {
-    public interface IBlockchainHelper {
+    public interface ITideProtocol {
 
         // Misc
         bool AccountExists(string username);
@@ -9,8 +9,8 @@
         TideResponse CreateVendor(CreateVendorModel model);
 
         // Vendor
-        TideResponse InitializeAccount(string username);
-        TideResponse ConfirmAccount(string username);
+        TideResponse InitializeAccount(string userAccount, string username);
+        TideResponse ConfirmAccount(string vendorUsername, string username);
 
         // Ork functions
         TideResponse GetNodes(string username);

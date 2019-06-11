@@ -30,15 +30,11 @@
             "base": "",
             "fields": [
                 {
-                    "name": "vendor",
-                    "type": "name"
+                    "name": "vendor_username",
+                    "type": "uint64"
                 },
                 {
-                    "name": "account",
-                    "type": "name"
-                },
-                {
-                    "name": "username",
+                    "name": "account_username",
                     "type": "uint64"
                 }
             ]
@@ -84,11 +80,15 @@
             "base": "",
             "fields": [
                 {
-                    "name": "vendor",
+                    "name": "vendor_username",
+                    "type": "uint64"
+                },
+                {
+                    "name": "account",
                     "type": "name"
                 },
                 {
-                    "name": "username",
+                    "name": "account_username",
                     "type": "uint64"
                 },
                 {
@@ -116,6 +116,20 @@
                 {
                     "name": "public_key",
                     "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "orklink",
+            "base": "",
+            "fields": [
+                {
+                    "name": "vendor",
+                    "type": "uint64"
+                },
+                {
+                    "name": "ork_ids",
+                    "type": "uint64[]"
                 }
             ]
         },
@@ -148,6 +162,42 @@
                     "type": "string"
                 }
             ]
+        },
+        {
+            "name": "setup",
+            "base": "",
+            "fields": [
+                {
+                    "name": "account",
+                    "type": "name"
+                }
+            ]
+        },
+        {
+            "name": "user",
+            "base": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "uint64"
+                },
+                {
+                    "name": "account",
+                    "type": "name"
+                },
+                {
+                    "name": "timeout",
+                    "type": "uint64"
+                },
+                {
+                    "name": "vendor",
+                    "type": "uint64"
+                },
+                {
+                    "name": "ork_links",
+                    "type": "orklink[]"
+                }
+            ]
         }
     ],
     "actions": [
@@ -170,6 +220,11 @@
             "name": "postfragment",
             "type": "postfragment",
             "ricardian_contract": ""
+        },
+        {
+            "name": "setup",
+            "type": "setup",
+            "ricardian_contract": ""
         }
     ],
     "tables": [
@@ -183,6 +238,13 @@
         {
             "name": "orks",
             "type": "ork",
+            "index_type": "i64",
+            "key_names": [],
+            "key_types": []
+        },
+        {
+            "name": "tideusers",
+            "type": "user",
             "index_type": "i64",
             "key_names": [],
             "key_types": []
