@@ -20,7 +20,7 @@ using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Tide.Library.Classes.Cryptide {
+namespace Tide.Library.Classes.Encryption {
     public class Utils {
         public static List<BigInteger> Decode(string text, int bits, bool isBase64 = false) {
             var data = isBase64 ? Convert.FromBase64String(text) : Encoding.UTF8.GetBytes(text);

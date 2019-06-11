@@ -27,7 +27,7 @@ namespace Tide.Ork.Classes {
 
         public OrkAuthentication(Settings settings, ILoggerFactory logger) {
             _logger = logger.CreateLogger($"Instance-{settings.Instance.Account}");
-            _helper = new Library.Classes.Eos.TideProtocol(settings);
+            _helper = new TideProtocol(settings);
         }
 
         public TideResponse GetNodes(AuthenticationModel model) {

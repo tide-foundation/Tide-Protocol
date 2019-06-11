@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Tide.Library.Classes.Cryptide;
 using Tide.Library.Classes.Eos;
 using Tide.Library.Models;
 using Tide.Library.Models.Interfaces;
@@ -29,10 +28,8 @@ namespace Tide.Master
         {
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
-            settings.Keys = new List<string> { settings.Instance.ChainPrivateKey, settings.Instance.CreationKey };
 
-            services.AddSingleton(settings);
-            services.AddSingleton<ITideProtocol, TideProtocol>();
+            services.AddSingleton<ITideProtocol>(new TideProtocol(settings));
 
             services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddRazorPages();

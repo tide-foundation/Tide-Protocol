@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tide.Library.Classes.Cryptide;
+using Tide.Library.Classes.Encryption;
 using Tide.Library.Models;
 using Tide.Library.Models.Interfaces;
 
 namespace Tide.Master.Controllers {
     public class HomeController : Controller {
-        private readonly ITideProtocol _helper;
+        private readonly ITideProtocol _tideProtocol;
 
-        public HomeController(ITideProtocol helper) {
-            _helper = helper;
+        public HomeController(ITideProtocol tideProtocol) {
+            _tideProtocol = tideProtocol;
         }
 
 
@@ -18,27 +18,22 @@ namespace Tide.Master.Controllers {
 
         [HttpPost("/CheckAccount")]
         public bool CheckAccount([FromBody] AuthenticationModel model) {
-            return _helper.AccountExists(model.Username);
+            return _tideProtocol.AccountExists(model.Username);
         }
 
-        [HttpPost("/InitializeUser")]
-        public TideResponse InitializeUser([FromBody] AuthenticationModel model) {
-            var accountResult = _helper.CreateBlockchainAccount(model.PublicKey);
-            if (!accountResult.Success) return accountResult;
-
-            var initResult = _helper.InitializeAccount(accountResult.Content.ToString(), model.Username);
-            if (initResult.Success) initResult.Content = accountResult.Content;
-            return initResult;
+        [HttpPost("/InitializeAccount")]
+        public TideResponse InitializeAccount([FromBody] AuthenticationModel model) {
+            return _tideProtocol.InitializeAccount(model.PublicKey, model.Username);
         }
 
-        [HttpPost("/ConfirmUser")]
-        public TideResponse ConfirmUser([FromBody] AuthenticationModel model) {
-            return _helper.ConfirmAccount(Cryptide.Instance.HashUsername("tide").username, model.Username);
+        [HttpPost("/ConfirmAccount")]
+        public TideResponse ConfirmAccount([FromBody] AuthenticationModel model) {
+            return _tideProtocol.ConfirmAccount(model.Username);
         }
 
         [HttpPost("/CreateVendor")]
         public TideResponse CreateVendor([FromBody] CreateVendorModel model) {
-            return _helper.CreateVendor(model);
+            return _tideProtocol.CreateVendor(model.Account,model.Username,model.PublicKey,model.Description);
         }
     }
 }

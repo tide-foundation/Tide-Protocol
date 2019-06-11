@@ -19,7 +19,7 @@ using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
 
-namespace Tide.Library.Classes.Cryptide {
+namespace Tide.Library.Classes.Encryption {
     public class RandomField : IDisposable {
         private readonly RNGCryptoServiceProvider _rdm;
 

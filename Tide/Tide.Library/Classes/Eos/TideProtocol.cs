@@ -22,6 +22,7 @@ using System.Linq;
 using EosSharp.Core;
 using EosSharp.Core.Api.v1;
 using EosSharp.Core.Providers;
+using Tide.Library.Classes.Encryption;
 using Tide.Library.Models;
 using Tide.Library.Models.Interfaces;
 using Action = EosSharp.Core.Api.v1.Action;
@@ -43,7 +44,7 @@ namespace Tide.Library.Classes.Eos {
                 HttpEndpoint = settings.Blockchain.BlockchainEndpoint,
                 ChainId = settings.Blockchain.BlockchainChainId,
                 ExpireSeconds = 60,
-                SignProvider = new DefaultSignProvider(settings.Keys)
+                SignProvider = new DefaultSignProvider(settings.Blockchain.Keys)
             });
         }
 
@@ -60,66 +61,21 @@ namespace Tide.Library.Classes.Eos {
             }).Result.rows.Any();
         }
 
+        public ulong HashUsername(string data) {
+            return Cryptide.Instance.HashUsername(data).username.ConvertToUint64();
+        }
+
         #endregion
 
         #region Master
 
-        /// <summary>
-        ///     Creates a blockchain account on the implemented blockchain
-        /// </summary>
-        /// <param name="publicKey">Public key to be used for the blockchain account</param>
-        /// <returns>Content: Blockchain transaction ID</returns>
-        public TideResponse CreateBlockchainAccount(string publicKey) {
-            var account = new string(Enumerable.Repeat(AccountCharacters, 12).Select(s => s[_random.Next(s.Length)]).ToArray());
-            var data = new {
-                creator = "xtidemasterx",
-                name = account,
-                owner = new Authority {
-                    threshold = 1,
-                    keys = new List<AuthorityKey> {
-                        new AuthorityKey {
-                            key = publicKey,
-                            weight = 1
-                        }
-                    },
-                    accounts = new List<AuthorityAccount>(),
-                    waits = new List<AuthorityWait>()
-                },
-                active = new Authority {
-                    threshold = 1,
-                    keys = new List<AuthorityKey> {
-                        new AuthorityKey {
-                            key = publicKey,
-                            weight = 1
-                        }
-                    },
-                    accounts = new List<AuthorityAccount>(),
-                    waits = new List<AuthorityWait>()
-                }
-            };
-
-            var result = Push("eosio", "newaccount", "xtidemasterx", data);
-            return new TideResponse(result.Success, result.Success ? account : null);
-        }
-
-        /// <summary>
-        ///     Creates a top-level vendor account in which a business can run and have user-accounts signed up below it.
-        /// </summary>
-        /// <param name="model">
-        ///     Payer: The account paying for the account.
-        ///     Account: Blockchain account for the new vendor
-        ///     Username: Tide Username for the new vendor
-        ///     PublicKey: Elgamal public key the vendor will use for encryption
-        ///     Description: A small synopsys of the vendor
-        /// </param>
-        /// <returns>Content: Blockchain transaction ID</returns>
-        public TideResponse CreateVendor(CreateVendorModel model) {
+        public TideResponse CreateVendor(string blockchainAccount, string username, string publicKey, string description) {
             var data = new {
                 payer = _settings.Instance.Account,
-                account = model.Account,
-                username = model.Username.ConvertToUint64(),
-                public_key = model.PublicKey,
-                desc = model.Description
+                account = blockchainAccount,
+                username = username.ConvertToUint64(),
+                public_key = publicKey,
+                desc = description
             };
 
             return Push(_settings.Blockchain.VendorContract, EosHelpers.CreateVendor, _settings.Instance.Account, data);
@@ -129,33 +85,26 @@ namespace Tide.Library.Classes.Eos {
 
         #region Vendor
 
-        /// <summary>
-        ///     Initializes an account to be created. This is step one and can not be skipped.
-        /// </summary>
-        /// <param name="userAccount">The blockchain account for the new Tide account</param>
-        /// <param name="username">The username for the new Tide account</param>
-        /// <returns>Content: Blockchain transaction ID</returns>
-        public TideResponse InitializeAccount(string userAccount, string username) {
+   
+        public TideResponse InitializeAccount(string publicKey, string username) {
+            var accountResult = CreateBlockchainAccount(publicKey);
+            if (!accountResult.Success) return accountResult;
+            
             var data = new {
-                vendor_username = _settings.Instance.Username.ConvertToUint64(),
-                account = userAccount,
+                vendor_username = HashUsername(_settings.Instance.Username),
+                account = accountResult.Content.ToString(),
                 account_username = username.ConvertToUint64(),
                 time = EosHelpers.GetEpoch()
             };
 
-            return Push(_settings.Blockchain.AuthenticationContract, EosHelpers.InitializeAccount, _settings.Instance.Account, data);
+            var result = Push(_settings.Blockchain.AuthenticationContract, EosHelpers.InitializeAccount, _settings.Instance.Account, data);
+            return new TideResponse(result.Success, result.Success ? accountResult.Content.ToString() : null, result.Success ? null : result.Error);
         }
 
-        /// <summary>
-        ///     Finalizes the account once the client has confirmed all fragments have successfully been stored by the Orks.
-        ///     Alternatives if the user decided not to use Orks and has taken note of the keys.
-        /// </summary>
-        /// <param name="vendorUsername">The Tide user who is onboarding the new account</param>
-        /// <param name="username">The Tide username to confirm</param>
-        /// <returns>Content: Blockchain transaction ID</returns>
-        public TideResponse ConfirmAccount(string vendorUsername, string username) {
+    
+        public TideResponse ConfirmAccount(string username) {
             var data = new {
-                vendor_username = vendorUsername.ConvertToUint64(),
+                vendor_username = HashUsername(_settings.Instance.Username),
                 account_username = username.ConvertToUint64()
             };
 
@@ -166,11 +115,7 @@ namespace Tide.Library.Classes.Eos {
 
         #region Ork
 
-        /// <summary>
-        ///     Gathers the ork nodes which the Tide user used to distribute their key
-        /// </summary>
-        /// <param name="username">Username of the Tide account</param>
-        /// <returns>Content: Array of ork nodes</returns>
+     
         public TideResponse GetNodes(string username) {
             throw new NotImplementedException();
         }
@@ -211,6 +156,38 @@ namespace Tide.Library.Classes.Eos {
             }
         }
 
+        private TideResponse CreateBlockchainAccount(string publicKey) {
+            var account = $"tide{new string(Enumerable.Repeat(AccountCharacters, 8).Select(s => s[_random.Next(s.Length)]).ToArray())}" ;
+            var data = new {
+                creator = "xtidemasterx",
+                name = account,
+                owner = new Authority {
+                    threshold = 1,
+                    keys = new List<AuthorityKey> {
+                        new AuthorityKey {
+                            key = publicKey,
+                            weight = 1
+                        }
+                    },
+                    accounts = new List<AuthorityAccount>(),
+                    waits = new List<AuthorityWait>()
+                },
+                active = new Authority {
+                    threshold = 1,
+                    keys = new List<AuthorityKey> {
+                        new AuthorityKey {
+                            key = publicKey,
+                            weight = 1
+                        }
+                    },
+                    accounts = new List<AuthorityAccount>(),
+                    waits = new List<AuthorityWait>()
+                }
+            };
+
+            var result = Push("eosio", "newaccount", "xtidemasterx", data);
+            return new TideResponse(result.Success, result.Success ? account : null);
+        }
 
         #endregion
     }

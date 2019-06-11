@@ -4,7 +4,7 @@ namespace Tide.Library.Models {
     public class Settings {
         public Blockchain Blockchain { get; set; }
         public Instance Instance { get; set; }
-        public List<string> Keys { get; set; }
+
     }
 
     public class Blockchain {
@@ -14,6 +14,7 @@ namespace Tide.Library.Models {
         public string VendorContract { get; set; }
         public string UsersTable { get; set; }
         public string FragmentsTable { get; set; }
+        public List<string> Keys { get; set; }
     }
 
     public class Instance {

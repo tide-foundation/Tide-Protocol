@@ -19,7 +19,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 
-namespace Tide.Library.Classes.Cryptide {
+namespace Tide.Library.Classes.Encryption {
     public class CryptideKey {
         public CryptideKey(bool secret, BigInteger p, BigInteger g, BigInteger key, BigInteger? id = null) {
             Secret = secret;

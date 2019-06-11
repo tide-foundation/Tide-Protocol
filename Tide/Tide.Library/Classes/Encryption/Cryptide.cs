@@ -15,9 +15,9 @@
 
 using System;
 
-namespace Tide.Library.Classes.Cryptide {
+namespace Tide.Library.Classes.Encryption {
     public class Cryptide {
-        public static Cryptide Instance = new Cryptide();
+        public static readonly Cryptide Instance = new Cryptide();
         public (string Private, string Public) GetKey() {
             var (sec, pub) = CryptideKey.Generate();
             return (sec.ToString(), pub.ToString());

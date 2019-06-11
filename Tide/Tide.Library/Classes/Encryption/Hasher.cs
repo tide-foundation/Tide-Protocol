@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Tide.Library.Classes.Cryptide
+namespace Tide.Library.Classes.Encryption
 {
     public static class Hasher
     {

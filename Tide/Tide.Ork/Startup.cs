@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Tide.Library.Classes.Eos;
 using Tide.Library.Models;
 using Tide.Library.Models.Interfaces;
 using Tide.Ork.Classes;
