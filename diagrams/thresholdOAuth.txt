@@ -1,0 +1,43 @@
+title Threshold OAuth
+note over User, Ork1, Ork2, Ork3, Vendor
+User knows: password [private] and username
+Orks know: ki [private]
+Vendor knows: g * x
+end note
+
+note over User, Ork1, Ork2, Ork3
+    ga = hash(password) [private]
+    r = radom [private]
+    userId=hash(username)
+end note
+
+User->Ork1: GetShare(userId, ga * r)
+User->Ork2: GetShare(userId, ga * r)
+User->Ork3: GetShare(userId, ga * r)
+Ork1-->User: ga * r * k1
+Ork2-->User: ga * r * k2
+Ork3-->User: ga * r * k3
+
+note over User, Ork1, Ork2, Ork3
+    ga * k = sum(ga * r * ki) * r ^ -1
+    x = hash(ga * k)
+end note
+note over User
+    g = generator
+    u = random
+end note
+
+User->Vendor: GetToken(userId, u)
+note over Vendor
+    v = random [private]
+    y = hash(g * x * v | u)
+    cypher = encrypt(token, y)
+end note
+Vendor-->User: { g * v, cypher }
+note over User
+    y = hash(g * v * x | u)
+    token = decrypt(cypher, y)
+end note
+
+User->Vendor: access(token)
+Vendor-->User: granted

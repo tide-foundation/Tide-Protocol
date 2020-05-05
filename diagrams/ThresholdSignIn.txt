@@ -1,0 +1,18 @@
+title Threshold Sign In
+note over User, Vendor, Ork1, Ork2, Ork3: User knows: password [private] and username
+
+note over User 
+    ga = hash(password) [private]
+    k = random [private]
+    x = hash(ga * k) [private]
+    g = generator
+    userId = hash(username)
+end note
+
+User->Vendor: SignIn(userId, g * x)
+
+note over User:  ki = secretShare(k, orki)
+
+User->Ork1: SignIn(userId, k1)
+User->Ork2: SignIn(userId, k2)
+User->Ork3: SignIn(userId, k3)
