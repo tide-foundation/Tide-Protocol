@@ -8,7 +8,7 @@ namespace Tide.BlockchainSimulator.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SmartContractEndpoints : ControllerBase
+    public class SimulatorController : ControllerBase
     {
         // GET api/values
         [HttpGet]

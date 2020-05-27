@@ -17,17 +17,17 @@ namespace Tide.Master.Controllers {
         }
 
         [HttpPost("/CheckAccount")]
-        public bool CheckAccount([FromBody] AuthenticationModel model) {
+        public bool CheckAccount([FromBody] JsonData model) {
             return _tideProtocol.AccountExists(model.Username);
         }
 
         [HttpPost("/InitializeAccount")]
-        public TideResponse InitializeAccount([FromBody] AuthenticationModel model) {
+        public TideResponse InitializeAccount([FromBody] JsonData model) {
             return _tideProtocol.InitializeAccount(model.PublicKey, model.Username);
         }
 
         [HttpPost("/ConfirmAccount")]
-        public TideResponse ConfirmAccount([FromBody] AuthenticationModel model) {
+        public TideResponse ConfirmAccount([FromBody] JsonData model) {
             return _tideProtocol.ConfirmAccount(model.Username);
         }
 

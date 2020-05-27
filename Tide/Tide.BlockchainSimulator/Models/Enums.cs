@@ -5,8 +5,15 @@ using System.Threading.Tasks;
 
 namespace Tide.BlockchainSimulator.Models
 {
-    public class Settings
-    {
-        public string Connection { get; set; }
+    public enum Contract {
+        Unset = 0,
+        Authentication = 1
     }
+
+    public enum Table
+    {
+        Unset = 0,
+       Users = 1
+    }
+
 }

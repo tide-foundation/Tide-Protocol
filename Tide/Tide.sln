@@ -28,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Master", "Tide.Master\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Vendor", "Tide.Vendor\Tide.Vendor.csproj", "{3D94D4A8-9CC8-431A-AB53-95D9B819D6D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.BlockchainSimulator", "Tide.BlockchainSimulator\Tide.BlockchainSimulator.csproj", "{9656E975-D468-4981-9A49-E61640E2FB77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.BlockchainSimulator", "Tide.BlockchainSimulator\Tide.BlockchainSimulator.csproj", "{6AB6733E-B6B5-4B29-A9AF-3D535CD1C4C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +52,10 @@ Global
 		{3D94D4A8-9CC8-431A-AB53-95D9B819D6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D94D4A8-9CC8-431A-AB53-95D9B819D6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D94D4A8-9CC8-431A-AB53-95D9B819D6D3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9656E975-D468-4981-9A49-E61640E2FB77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9656E975-D468-4981-9A49-E61640E2FB77}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9656E975-D468-4981-9A49-E61640E2FB77}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9656E975-D468-4981-9A49-E61640E2FB77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AB6733E-B6B5-4B29-A9AF-3D535CD1C4C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AB6733E-B6B5-4B29-A9AF-3D535CD1C4C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AB6733E-B6B5-4B29-A9AF-3D535CD1C4C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AB6733E-B6B5-4B29-A9AF-3D535CD1C4C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

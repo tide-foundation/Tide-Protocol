@@ -13,15 +13,15 @@ namespace Tide.Ork.Controllers {
             _orkAuthentication = orkAuthentication;
         }
 
-        public IActionResult GetNodes(AuthenticationModel model) {
+        public IActionResult GetNodes(JsonData model) {
             return new JsonResult(_orkAuthentication.GetNodes(model));
         }
 
-        public IActionResult PostFragment(AuthenticationModel model) {
+        public IActionResult PostFragment(JsonData model) {
             return new JsonResult(_orkAuthentication.PostFragment(model));
         }
 
-        public IActionResult GetFragment(AuthenticationModel model) {
+        public IActionResult GetFragment(JsonData model) {
             return new JsonResult(_orkAuthentication.GetFragment(model));
         }
     }

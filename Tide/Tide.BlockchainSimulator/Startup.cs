@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,8 +30,10 @@ namespace Tide.BlockchainSimulator
         {
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
-
             services.AddSingleton(settings);
+
+            services.AddDbContext<BlockchainContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
+
             services.AddSingleton<IBlockLayer, BlockLayer>();
             services.AddSingleton<IContractLayer, ContractLayer>();
 
