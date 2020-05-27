@@ -8,11 +8,4 @@
   <ItemGroup>
     <PackageReference Include="eos-sharp" Version="2.0.8" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\..\.nuget\packages\newtonsoft.json\12.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
