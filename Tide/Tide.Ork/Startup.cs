@@ -24,6 +24,7 @@ namespace Tide.Ork {
 
             services.AddSingleton(settings);
             services.AddSingleton<IOrkAuthentication, OrkAuthentication>();
+            services.AddSingleton<IKeyManager, MemoryKeyManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
