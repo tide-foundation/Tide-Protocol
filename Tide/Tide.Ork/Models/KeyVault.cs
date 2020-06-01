@@ -2,6 +2,7 @@
 using System.Numerics;
 using Tide.Encryption.AesMAC;
 
+//TODO: This sould be in library
 namespace Tide.Ork.Models {
     public class KeyVault {
         public Guid User { get; set; }
