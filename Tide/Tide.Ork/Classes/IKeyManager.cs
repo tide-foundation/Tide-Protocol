@@ -15,6 +15,7 @@
 
 using System;
 using System.Numerics;
+using Library;
 using Tide.Encryption.AesMAC;
 using Tide.Ork.Models;
 

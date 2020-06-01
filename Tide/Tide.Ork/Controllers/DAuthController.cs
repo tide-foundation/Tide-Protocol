@@ -23,7 +23,7 @@ using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 
-namespace Raziel.Ork.Controllers {
+namespace Tide.Ork.Controllers {
     [ApiController]
     [Route("api/dauth")]
     public class DAuthController : ControllerBase {
