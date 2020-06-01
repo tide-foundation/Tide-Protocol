@@ -4,6 +4,7 @@ namespace Tide.Ork.Models {
     public class Settings {
         public Blockchain Blockchain { get; set; }
         public Instance Instance { get; set; }
+        public Endpoints Endpoints { get; set; }
     }
 
     public class Blockchain {
@@ -25,5 +26,9 @@ namespace Tide.Ork.Models {
         public string AesPassword { get; set; }
         public string TokenKey { get; set; }
         public string CreationKey { get; set; }
+    }
+
+    public class Endpoints {
+        public string Simulator { get; set; }
     }
 }

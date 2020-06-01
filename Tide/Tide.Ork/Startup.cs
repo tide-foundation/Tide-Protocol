@@ -28,7 +28,8 @@ namespace Tide.Ork
             Configuration.Bind("Settings", settings);
 
             services.AddSingleton(settings);
-            services.AddSingleton<IKeyManager, MemoryKeyManager>();
+            services.AddSingleton<SimulatorClient>();
+            services.AddSingleton<IKeyManager, SimulatorKeyManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
