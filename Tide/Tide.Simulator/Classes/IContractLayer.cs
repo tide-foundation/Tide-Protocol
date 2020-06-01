@@ -1,4 +1,6 @@
-﻿namespace Tide.Simulator.Classes {
+﻿using Tide.Simulator.Models;
+
+namespace Tide.Simulator.Classes {
     public interface IContractLayer {
         /// <summary>
         ///     Fetch a user from the 'Blockchain'
@@ -13,7 +15,7 @@
         /// <param name="username">The username of the user. This will be used as the primary index.</param>
         /// <param name="password">TEMP: This will need to be replaced with some pub/priv protection</param>
         /// <returns>The user account. Otherwise null.</returns>
-        SimulatorUser CreateUser(string username, string password);
+        SimulatorUser CreateUser(string username);
 
         /// <summary>
         /// Adds a fragment for the user into the 'Blockchain'.

@@ -9,7 +9,7 @@ namespace Tide.Simulator.Classes {
             _blockLayer = blockLayer;
         }
 
-        public SimulatorUser CreateUser(string username, string password) {
+        public SimulatorUser CreateUser(string username) {
             var user = GetUser(username);
             if (user != null) {
                 return null;
