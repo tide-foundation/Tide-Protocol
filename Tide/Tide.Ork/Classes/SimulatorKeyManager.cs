@@ -1,35 +1,58 @@
 ﻿using System;
 using System.Numerics;
+using System.Threading.Tasks;
 using Library;
 using Tide.Encryption.AesMAC;
-using Tide.Ork.Models;
 
-namespace Tide.Ork.Classes {
-    public class SimulatorKeyManager : IKeyManager {
-        private SimulatorClient _client;
+namespace Tide.Ork.Classes
+{
+    public class SimulatorKeyManager : IKeyManager
+    {
+        private readonly Guid _orkId;
+        private readonly SimulatorClient _client;
+        private readonly AesKey _key;
 
-        public SimulatorKeyManager(SimulatorClient client) {
+        public SimulatorKeyManager(Guid orkId, SimulatorClient client, AesKey key)
+        {
+            _orkId = orkId;
             _client = client;
+            _key = key;
         }
 
-        public bool Exist(Guid user) {
-            throw new NotImplementedException();
+        public async Task<bool> Exist(Guid user)
+        {
+            return (await GetByUser(user)) == null;
         }
 
-        public BigInteger GetAuthShare(Guid user) {
-            throw new NotImplementedException();
+        public async Task<BigInteger> GetAuthShare(Guid user)
+        {
+            return (await GetByUser(user)).AuthShare;
         }
 
-        public AesKey GetSecret(Guid user) {
-            throw new NotImplementedException();
+        public async Task<AesKey> GetSecret(Guid user)
+        {
+            return (await GetByUser(user)).Secret;
         }
 
-        public KeyVault GetByUser(Guid user) {
-            throw new NotImplementedException();
+        public async Task<KeyVault> GetByUser(Guid user)
+        {
+            var cipher = await _client.GetVault(_orkId.ToString(), user.ToString());
+            if (string.IsNullOrEmpty(cipher))
+                return null;
+
+            return KeyVault.Parse(_key.Decrypt(cipher));
         }
 
-        public void SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret) {
-            throw new NotImplementedException();
+        public async Task SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret)
+        {
+            var vault = new KeyVault
+            {
+                User = user,
+                AuthShare = authShare,
+                KeyShare = keyShare,
+                Secret = secret,
+            };
+            await _client.PostVault(_orkId.ToString(), user.ToString(), _key.EncryptStr(vault));
         }
     }
 }

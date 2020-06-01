@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using Library;
 using Tide.Encryption.AesMAC;
-using Tide.Ork.Models;
 
 namespace Tide.Ork.Classes {
     public class MemoryKeyManager : IKeyManager {
@@ -14,24 +14,25 @@ namespace Tide.Ork.Classes {
             _items = new Dictionary<Guid, KeyVault>();
         }
 
-        public bool Exist(Guid user) {
-            return _items.ContainsKey(user);
+        public Task<bool> Exist(Guid user) {
+            return Task.FromResult(_items.ContainsKey(user));
         }
 
-        public BigInteger GetAuthShare(Guid user) {
-            return Exist(user) ? _items[user].AuthShare : BigInteger.Zero;
+        public Task<BigInteger> GetAuthShare(Guid user) {
+            return Task.FromResult(_items.ContainsKey(user) ? _items[user].AuthShare : BigInteger.Zero);
         }
 
-        public AesKey GetSecret(Guid user) {
-            return Exist(user) ? _items[user].Secret : null;
+        public Task<AesKey> GetSecret(Guid user) {
+            return Task.FromResult(_items.ContainsKey(user) ? _items[user].Secret : null);
         }
 
-        public KeyVault GetByUser(Guid user) {
-            return Exist(user) ? _items[user] : null;
+        public Task<KeyVault> GetByUser(Guid user) {
+            return Task.FromResult(_items.ContainsKey(user) ? _items[user] : null);
         }
 
-        public void SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret) {
+        public Task SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret) {
             _items[user] = new KeyVault { User = user, AuthShare = authShare, KeyShare = keyShare, Secret = secret};
+            return Task.CompletedTask;
         }
     }
 }

@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tide.Encryption.AesMAC;
@@ -31,19 +32,19 @@ namespace Tide.Ork.Controllers {
         private readonly ILogger _logger;
         private readonly IKeyManager _manager;
 
-        public DAuthController(IKeyManager manager, ILogger<DAuthController> logger) {
-            _manager = manager;
+        public DAuthController(IKeyManagerFactory factory, ILogger<DAuthController> logger) {
+            _manager = factory.BuildManager();
             _logger = logger;
         }
 
         [HttpGet("{user}/share/{pass}")]
-        public ActionResult GetShare([FromRoute] string user, [FromRoute] string pass) {
+        public async Task<ActionResult> GetShare([FromRoute] string user, [FromRoute] string pass) {
             var g = C25519Point.From(Convert.FromBase64String(pass.DecodeBase64Url()));
             if (!g.IsValid) {
                 return BadRequest();
             }
 
-            var s = _manager.GetAuthShare(GetUserId(user));
+            var s = await _manager.GetAuthShare(GetUserId(user));
             var gs = g * s;
 
             _logger.LogInformation($"Login attempt for {user}", user, pass);
@@ -51,9 +52,9 @@ namespace Tide.Ork.Controllers {
         }
 
         [HttpGet("{user}/signin/{ticks}/{sign}")]
-        public ActionResult SignIn([FromRoute] string user, [FromRoute] string ticks, [FromRoute] string sign) {
+        public async Task<ActionResult> SignIn([FromRoute] string user, [FromRoute] string ticks, [FromRoute] string sign) {
             var body = FromBase64(user).Concat(FromBase64(ticks)).ToArray();
-            var secret = _manager.GetByUser(GetUserId(user));
+            var secret = await _manager.GetByUser(GetUserId(user));
 
             var check = secret.Secret.Hash(body);
             if (!Utils.Equals(check, FromBase64(sign))) {
@@ -73,9 +74,9 @@ namespace Tide.Ork.Controllers {
         }
 
         [HttpPost("{user}/signup/{authShare}/{keyShare}/{secret}")]
-        public void SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret) {
+        public Task SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret) {
             _logger.LogInformation($"New registration for {user}", user);
-            _manager.SetOrUpdateKey(GetUserId(user), GetBigInteger(authShare), GetBigInteger(keyShare), AesKey.Parse(FromBase64(secret)));
+            return _manager.SetOrUpdateKey(GetUserId(user), GetBigInteger(authShare), GetBigInteger(keyShare), AesKey.Parse(FromBase64(secret)));
         }
 
         private byte[] FromBase64(string input) {

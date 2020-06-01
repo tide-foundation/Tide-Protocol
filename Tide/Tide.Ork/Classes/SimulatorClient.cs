@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Tide.Ork.Models;
 
 namespace Tide.Ork.Classes
 {
@@ -12,34 +9,20 @@ namespace Tide.Ork.Classes
     {
         private readonly HttpClient _client;
 
-        public SimulatorClient(Settings settings) {
-            _client = new HttpClient {BaseAddress = new Uri(settings.Endpoints.Simulator)};
+        public SimulatorClient(string endpoints) {
+            _client = new HttpClient { BaseAddress = new Uri(endpoints) };
         }
 
-        public async Task<(bool successful, string error)> PostVault(string ork, string username, string payload) {
-            try {
-                var stringContent = new StringContent($"\"{payload}\"",Encoding.UTF8, "application/json");
-                var response = await _client.PostAsync($"Vault/{ork}/{username}", stringContent);
-                response.EnsureSuccessStatusCode();
-                return (true,null);
-            }
-            catch (Exception e) {
-                return (false,e.Message);
-            }
+        public async Task PostVault(string ork, string username, string payload) {
+            var stringContent = new StringContent($"\"{payload}\"",Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync($"Vault/{ork}/{username}", stringContent);
+            response.EnsureSuccessStatusCode();
         }
 
-        public async Task<(bool successful, string error)> GetVault(string ork, string username)
+        public async Task<string> GetVault(string ork, string username)
         {
-            try
-            {
-                var response = await _client.GetAsync($"Vault/{ork}/{username}");
-                var data = await response.Content.ReadAsStringAsync();
-               return (true, data);
-            }
-            catch (Exception e)
-            {
-                return (false, e.Message);
-            }
+            var response = await _client.GetAsync($"Vault/{ork}/{username}");
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }

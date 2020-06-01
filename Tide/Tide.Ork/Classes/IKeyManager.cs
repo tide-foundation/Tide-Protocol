@@ -15,16 +15,16 @@
 
 using System;
 using System.Numerics;
+using System.Threading.Tasks;
 using Library;
 using Tide.Encryption.AesMAC;
-using Tide.Ork.Models;
 
 namespace Tide.Ork.Classes {
     public interface IKeyManager {
-        bool Exist(Guid user);
-        BigInteger GetAuthShare(Guid user);
-        AesKey GetSecret(Guid user);
-        KeyVault GetByUser(Guid user);
-        void SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret);
+        Task<bool> Exist(Guid user);
+        Task<BigInteger> GetAuthShare(Guid user);
+        Task<AesKey> GetSecret(Guid user);
+        Task<KeyVault> GetByUser(Guid user);
+        Task SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret);
     }
 }
