@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace Tide.Library.Models {
+namespace Tide.Ork.Models {
     public class Settings {
         public Blockchain Blockchain { get; set; }
         public Instance Instance { get; set; }
-
     }
 
     public class Blockchain {
@@ -27,6 +26,4 @@ namespace Tide.Library.Models {
         public string TokenKey { get; set; }
         public string CreationKey { get; set; }
     }
-
-  
 }

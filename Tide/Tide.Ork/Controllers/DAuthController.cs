@@ -23,28 +23,25 @@ using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 
-namespace Raziel.Ork.Controllers
-{
+namespace Raziel.Ork.Controllers {
     [ApiController]
     [Route("api/dauth")]
-    public class DAuthController : ControllerBase
-    {
-        private readonly IKeyManager _manager;
-        private readonly ILogger _logger;
+    public class DAuthController : ControllerBase {
         private const long _window = TimeSpan.TicksPerSecond * 15;
+        private readonly ILogger _logger;
+        private readonly IKeyManager _manager;
 
-        public DAuthController(IKeyManager manager, ILogger<DAuthController> logger)
-        {
+        public DAuthController(IKeyManager manager, ILogger<DAuthController> logger) {
             _manager = manager;
             _logger = logger;
         }
 
         [HttpGet("{user}/share/{pass}")]
-        public ActionResult GetShare([FromRoute] string user, [FromRoute] string pass)
-        {
+        public ActionResult GetShare([FromRoute] string user, [FromRoute] string pass) {
             var g = C25519Point.From(Convert.FromBase64String(pass.DecodeBase64Url()));
-            if (!g.IsValid)
+            if (!g.IsValid) {
                 return BadRequest();
+            }
 
             var s = _manager.GetAuthShare(GetUserId(user));
             var gs = g * s;
@@ -54,22 +51,19 @@ namespace Raziel.Ork.Controllers
         }
 
         [HttpGet("{user}/signin/{ticks}/{sign}")]
-        public ActionResult SignIn([FromRoute] string user, [FromRoute] string ticks, [FromRoute] string sign)
-        {
+        public ActionResult SignIn([FromRoute] string user, [FromRoute] string ticks, [FromRoute] string sign) {
             var body = FromBase64(user).Concat(FromBase64(ticks)).ToArray();
             var secret = _manager.GetByUser(GetUserId(user));
 
             var check = secret.Secret.Hash(body);
-            if (!Utils.Equals(check, FromBase64(sign)))
-            {
+            if (!Utils.Equals(check, FromBase64(sign))) {
                 _logger.LogInformation($"Unsuccessful login for {user}", user, ticks, sign);
                 return BadRequest();
             }
 
-            var signedTime = DateTime.FromBinary((long)GetBigInteger(ticks));
+            var signedTime = DateTime.FromBinary((long) GetBigInteger(ticks));
             if (signedTime < DateTime.UtcNow.AddTicks(-_window)
-                || signedTime > DateTime.UtcNow.AddTicks(_window)) 
-            {
+                || signedTime > DateTime.UtcNow.AddTicks(_window)) {
                 _logger.LogInformation($"Unsuccessful login for {user} due to invalid ticks", user, ticks, sign);
                 return BadRequest();
             }
@@ -79,24 +73,20 @@ namespace Raziel.Ork.Controllers
         }
 
         [HttpPost("{user}/signup/{authShare}/{keyShare}/{secret}")]
-        public void SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret)
-        {
+        public void SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret) {
             _logger.LogInformation($"New registration for {user}", user);
             _manager.SetOrUpdateKey(GetUserId(user), GetBigInteger(authShare), GetBigInteger(keyShare), AesKey.Parse(FromBase64(secret)));
         }
 
-        private byte[] FromBase64(string input)
-        {
+        private byte[] FromBase64(string input) {
             return Convert.FromBase64String(input.DecodeBase64Url());
         }
 
-        private Guid GetUserId(string user)
-        {
+        private Guid GetUserId(string user) {
             return new Guid(FromBase64(user));
         }
 
-        private BigInteger GetBigInteger(string number)
-        {
+        private BigInteger GetBigInteger(string number) {
             return new BigInteger(FromBase64(number), true, true);
         }
     }

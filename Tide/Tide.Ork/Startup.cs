@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Tide.Library.Models;
-using Tide.Library.Models.Interfaces;
 using Tide.Ork.Classes;
+using Tide.Ork.Models;
 
 namespace Tide.Ork {
     public class Startup {
@@ -23,14 +22,17 @@ namespace Tide.Ork {
             Configuration.Bind("Settings", settings);
 
             services.AddSingleton(settings);
-            services.AddSingleton<IOrkAuthentication, OrkAuthentication>();
             services.AddSingleton<IKeyManager, MemoryKeyManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
-            else app.UseHsts();
+            if (env.IsDevelopment()) {
+                app.UseDeveloperExceptionPage();
+            }
+            else {
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
 

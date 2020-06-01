@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tide.Library\Tide.Library.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Cryptide.Core" Version="0.0.9" />
   </ItemGroup>
 </Project>

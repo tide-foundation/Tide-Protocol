@@ -1,4 +1,3 @@
-﻿// 
 // Tide Protocol - Infrastructure for the Personal Data economy
 // Copyright (C) 2019 Tide Foundation Ltd
 // 
@@ -13,9 +12,18 @@
 // You should have received a copy of the Tide Community Open 
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
-//
 
-namespace Tide.Library.Classes {
-    public static class Helpers {
+using System;
+using System.Numerics;
+using Tide.Encryption.AesMAC;
+using Tide.Ork.Models;
+
+namespace Tide.Ork.Classes {
+    public interface IKeyManager {
+        bool Exist(Guid user);
+        BigInteger GetAuthShare(Guid user);
+        AesKey GetSecret(Guid user);
+        KeyVault GetByUser(Guid user);
+        void SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret);
     }
 }
