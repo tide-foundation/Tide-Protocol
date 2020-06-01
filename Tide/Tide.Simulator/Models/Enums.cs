@@ -6,7 +6,6 @@
 
     public enum Table {
         Unset = 0,
-        Users = 1,
-        Fragments = 2
+        Vault = 1
     }
 }

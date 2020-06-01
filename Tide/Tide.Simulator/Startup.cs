@@ -34,7 +34,6 @@ namespace Tide.Simulator
             services.AddDbContext<BlockchainContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
 
             services.AddScoped<IBlockLayer, BlockLayer>();
-            services.AddScoped<IContractLayer, ContractLayer>();
 
             services.AddControllers();
         }

@@ -15,7 +15,7 @@ namespace Tide.Simulator.Classes {
         /// <param name="index">The primary index for the data under the selected scope.</param>
         /// <param name="data">The payload you wish to save to the blockchain.</param>
         /// <returns>True if the write was successful</returns>
-        bool Write(Contract contract, Table table, string scope, string index, object data);
+        bool Write(Contract contract, Table table, string scope, string index, string data);
 
         /// <summary>
         ///     Read the newest version of this data block from the 'Blockchain'.
@@ -28,8 +28,7 @@ namespace Tide.Simulator.Classes {
         ///     their own scopes.
         /// </param>
         /// <param name="index">The primary index for the data under the selected scope.</param>
-        /// <param name="data">The payload retrieved from the query.</param>
         /// <returns>True is the read was successful</returns>
-        bool Read<T>(Contract contract, Table table, string scope, string index, out T data);
+        string Read(Contract contract, Table table, string scope, string index);
     }
 }
