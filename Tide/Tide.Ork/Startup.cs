@@ -21,16 +21,10 @@ namespace Tide.Ork {
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
 
-
             services.AddSingleton(settings);
             services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
             //services.AddTransient<IKeyManagerFactory, MemoryFactory>();
             services.AddHttpContextAccessor();
-
-
-            var client = new SimulatorClient("https://localhost:5001/", "Test", "Pass");
-
-            client.PostVault("Test", "TestUser", "My Test Payload");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
