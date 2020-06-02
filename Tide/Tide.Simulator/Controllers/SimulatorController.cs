@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Tide.Simulator.Classes;
 using Tide.Simulator.Models;
 
@@ -17,6 +18,7 @@ namespace Tide.Simulator.Controllers {
             return _blockchain.Read(Contract.Authentication, Table.Vault, ork, username);
         }
 
+        [Authorize]
         [HttpPost("Vault/{ork}/{username}")]
         public ActionResult<bool> PostVault([FromRoute] string ork, string username, [FromBody] string payload) {
             return _blockchain.Write(Contract.Authentication, Table.Vault, ork, username, payload);

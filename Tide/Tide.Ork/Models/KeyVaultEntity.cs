@@ -1,4 +1,5 @@
 ﻿//TODO: This sould be in library
+
 namespace Tide.Ork.Models {
     public class KeyVaultEntity {
         public string User { get; set; }

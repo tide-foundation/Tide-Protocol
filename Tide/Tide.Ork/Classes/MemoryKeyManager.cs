@@ -10,7 +10,6 @@ namespace Tide.Ork.Classes {
         private readonly Dictionary<Guid, KeyVault> _items;
 
         public MemoryKeyManager() {
-          
             _items = new Dictionary<Guid, KeyVault>();
         }
 
@@ -31,7 +30,7 @@ namespace Tide.Ork.Classes {
         }
 
         public Task SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret) {
-            _items[user] = new KeyVault { User = user, AuthShare = authShare, KeyShare = keyShare, Secret = secret};
+            _items[user] = new KeyVault {User = user, AuthShare = authShare, KeyShare = keyShare, Secret = secret};
             return Task.CompletedTask;
         }
     }

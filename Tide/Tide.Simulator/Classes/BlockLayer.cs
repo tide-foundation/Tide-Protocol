@@ -33,7 +33,7 @@ namespace Tide.Simulator.Classes {
                         DateCreated = DateTimeOffset.Now,
                         Stale = false,
                         Data = data
-                };
+                    };
                     _context.Add(newData);
 
                     _context.SaveChanges();

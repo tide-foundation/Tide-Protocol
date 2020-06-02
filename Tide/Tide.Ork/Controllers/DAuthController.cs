@@ -40,9 +40,7 @@ namespace Tide.Ork.Controllers {
         [HttpGet("{user}/share/{pass}")]
         public async Task<ActionResult> GetShare([FromRoute] string user, [FromRoute] string pass) {
             var g = C25519Point.From(Convert.FromBase64String(pass.DecodeBase64Url()));
-            if (!g.IsValid) {
-                return BadRequest();
-            }
+            if (!g.IsValid) return BadRequest();
 
             var s = await _manager.GetAuthShare(GetUserId(user));
             var gs = g * s;

@@ -1,5 +1,4 @@
-﻿
-namespace Tide.Ork.Models {
+﻿namespace Tide.Ork.Models {
     public class Settings {
         public Instance Instance { get; set; }
         public Endpoints Endpoints { get; set; }
@@ -10,6 +9,11 @@ namespace Tide.Ork.Models {
     }
 
     public class Endpoints {
-        public string Simulator { get; set; }
+        public Endpoint Simulator { get; set; }
+    }
+
+    public class Endpoint {
+        public string Api { get; set; }
+        public string Password { get; set; }
     }
 }

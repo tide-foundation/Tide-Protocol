@@ -1,7 +1,5 @@
-namespace Tide.Ork.Classes
-{
-    public interface IKeyManagerFactory
-    {
+namespace Tide.Ork.Classes {
+    public interface IKeyManagerFactory {
         IKeyManager BuildManager();
     }
 }

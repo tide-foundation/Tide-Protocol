@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Tide.Simulator.Models
-{
-    public class BlockData
-    {
+namespace Tide.Simulator.Models {
+    public class BlockData {
         // Misc
         public int Id { get; set; }
         public DateTimeOffset DateCreated { get; set; }
