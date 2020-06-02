@@ -25,6 +25,10 @@ namespace Tide.Ork {
             services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
             //services.AddTransient<IKeyManagerFactory, MemoryFactory>();
             services.AddHttpContextAccessor();
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
