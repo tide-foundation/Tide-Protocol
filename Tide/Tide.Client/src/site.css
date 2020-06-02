@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
+
+body,
+html {
+  padding: 0px;
+  margin: 0px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.layout {
+  width: 100%;
+  height: 100vh;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+a.button {
+  background-color: #e1e1e1;
+  border: 1px solid #adadad;
+  text-align: center;
+  padding: 4px;
+
+  text-decoration: none;
+  color: initial;
+  min-width: 200px;
+}
+
+button,
+input {
+  min-width: 200px;
+  min-height: 25px;
+  margin: 0px;
+}
+
+.button:hover {
+  background-color: #eeeeee;
+}
+
+.col {
+  flex-direction: column;
+}
+
+.mb-2 {
+  margin-bottom: 20px;
+}
+
+.ml-1 {
+  margin-left: 10px;
+}
+.mr-1 {
+  margin-right: 10px;
+}

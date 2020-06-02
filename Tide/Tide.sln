@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Ork", "Tide.Ork\Tide.Ork.csproj", "{25323717-F2E6-4263-81C4-4046703E07F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Simulator", "Tide.Simulator\Tide.Simulator.csproj", "{8FC24724-B788-44CE-AA1E-EC6D67D8B50C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Simulator", "Tide.Simulator\Tide.Simulator.csproj", "{8FC24724-B788-44CE-AA1E-EC6D67D8B50C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library.csproj", "{CF12D3A3-76D4-459B-8290-37DAC84943F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library", "Library\Library.csproj", "{CF12D3A3-76D4-459B-8290-37DAC84943F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
