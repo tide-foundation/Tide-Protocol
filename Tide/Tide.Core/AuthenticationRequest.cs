@@ -1,4 +1,4 @@
-﻿namespace Library
+﻿namespace Tide.Core
 {
     public class AuthenticationRequest
     {

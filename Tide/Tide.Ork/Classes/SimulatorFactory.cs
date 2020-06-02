@@ -9,25 +9,30 @@ using Tide.Ork.Models;
 namespace Tide.Ork.Classes {
     public class SimulatorFactory : IKeyManagerFactory {
         private readonly IHttpContextAccessor _accessor;
-        private readonly Settings _settings;
-
-        public SimulatorFactory(Settings settings, IHttpContextAccessor accessor) {
-            _settings = settings;
-            _accessor = accessor;
-        }
+        private readonly AesKey _key;
+        private readonly Models.Endpoint _config;
 
         private HttpRequest Request => _accessor.HttpContext.Request;
 
-        public IKeyManager BuildManager() {
-            var orkId = new Guid(Utils.Hash(Encoding.UTF8.GetBytes(Request.Host.ToString())).Take(16).ToArray());
-            var key = AesKey.Parse(_settings.Instance.SecretKey);
-            var client = BuildClient(orkId.ToString());
-
-            return new SimulatorKeyManager(orkId, client, key);
+        public SimulatorFactory(Settings settings, IHttpContextAccessor accessor) {
+            _accessor = accessor;
+            _key = AesKey.Parse(settings.Instance.SecretKey);
+            _config = settings.Endpoints.Simulator;
         }
 
-        public SimulatorClient BuildClient(string orkId) {
-            return new SimulatorClient(_settings.Endpoints.Simulator.Api, orkId, _settings.Endpoints.Simulator.Password);
+        public IKeyManager BuildManager()
+        {
+            return new SimulatorKeyManager(GetOrkId(), BuildClient(), _key);
+        }
+
+        public SimulatorClient BuildClient() {
+            return new SimulatorClient(_config.Api, GetOrkId().ToString(), _config.Password);
+        }
+
+        private Guid GetOrkId()
+        {
+            var urlEncoded = Encoding.UTF8.GetBytes(Request.Host.ToString());
+            return new Guid(Utils.Hash(urlEncoded).Take(16).ToArray());
         }
     }
 }

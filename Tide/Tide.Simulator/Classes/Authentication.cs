@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Library;
+using Tide.Core;
 using Microsoft.IdentityModel.Tokens;
 using Tide.Simulator.Models;
 

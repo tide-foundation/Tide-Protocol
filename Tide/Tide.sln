@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Ork", "Tide.Ork\Tide.O
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Simulator", "Tide.Simulator\Tide.Simulator.csproj", "{8FC24724-B788-44CE-AA1E-EC6D67D8B50C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library", "Library\Library.csproj", "{CF12D3A3-76D4-459B-8290-37DAC84943F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Core", "Tide.Core\Tide.Core.csproj", "{6317E2AE-BA30-4518-B98B-69F5DD969E39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{8FC24724-B788-44CE-AA1E-EC6D67D8B50C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FC24724-B788-44CE-AA1E-EC6D67D8B50C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FC24724-B788-44CE-AA1E-EC6D67D8B50C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF12D3A3-76D4-459B-8290-37DAC84943F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF12D3A3-76D4-459B-8290-37DAC84943F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF12D3A3-76D4-459B-8290-37DAC84943F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF12D3A3-76D4-459B-8290-37DAC84943F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6317E2AE-BA30-4518-B98B-69F5DD969E39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6317E2AE-BA30-4518-B98B-69F5DD969E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6317E2AE-BA30-4518-B98B-69F5DD969E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6317E2AE-BA30-4518-B98B-69F5DD969E39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

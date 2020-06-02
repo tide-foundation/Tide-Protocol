@@ -1,4 +1,4 @@
-﻿using Library;
+﻿using Tide.Core;
 
 namespace Tide.Simulator.Classes {
     public interface IAuthentication {

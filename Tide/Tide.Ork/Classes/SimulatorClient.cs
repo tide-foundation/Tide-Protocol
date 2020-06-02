@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Library;
+using Tide.Core;
 using Newtonsoft.Json;
 
 namespace Tide.Ork.Classes {

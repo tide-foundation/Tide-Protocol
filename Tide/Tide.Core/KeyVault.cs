@@ -4,7 +4,7 @@ using System.Numerics;
 using Tide.Encryption;
 using Tide.Encryption.AesMAC;
 
-namespace Library
+namespace Tide.Core
 {
     public class KeyVault : SerializableByteBase
     {

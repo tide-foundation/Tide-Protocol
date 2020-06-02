@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Library\Library.csproj" />
+    <ProjectReference Include="..\Tide.Core\Tide.Core.csproj" />
   </ItemGroup>
 
 </Project>
