@@ -12,10 +12,10 @@
         <div class="center col">
           Register
           <div class="mb-2">
-            <input id="login-username" type="text" placeholder="Username" />
+            <input id="register-username" type="text" value="admin" placeholder="Username" />
           </div>
           <div class="mb-2">
-            <input id="login-password" type="password" placeholder="Password" />
+            <input id="register-password" type="password" value="123456" placeholder="Password" />
           </div>
           <button id="register" type="button">Register</button>
           <div>
@@ -26,10 +26,10 @@
         <div class="center col">
           Login
           <div class="mb-2">
-            <input id="login-username" type="text" placeholder="Username" />
+            <input id="login-username" type="text" value="admin" placeholder="Username" />
           </div>
           <div class="mb-2">
-            <input id="login-password" type="password" placeholder="Password" />
+            <input id="login-password" type="password" value="123456" placeholder="Password" />
           </div>
           <button id="login" type="button">Login</button>
           <div>
@@ -38,6 +38,8 @@
         </div>
       </div>
     </div>
+    <script src="./node_modules/cryptide/dist/cryptide.js"></script>
     <script src="./src/main.js"></script>
+    <script src="./src/dauth.js"></script>
   </body>
 </html>

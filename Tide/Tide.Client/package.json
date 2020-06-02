@@ -1,0 +1,14 @@
+{
+  "name": "tide.client",
+  "version": "0.0.1",
+  "description": "Decentralized authentication system for Tide",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tide foundation",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "cryptide": "^1.5.2"
+  }
+}
