@@ -25,7 +25,7 @@ namespace Tide.Simulator.Controllers {
         [Authorize]
         [HttpPost("Vault/{ork}/{username}")]
         public ActionResult<bool> PostVault([FromRoute] string ork, string username, [FromBody] string payload) {
-            if (HttpContext.User.Identity.Name != ork) return false;
+            if (HttpContext.User.Identity.Name != ork) return Unauthorized("You do not have write privileges to that scope.");
 
             return _blockchain.Write(Contract.Authentication, Table.Vault, ork, username, payload);
         }
