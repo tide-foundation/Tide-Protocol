@@ -1,10 +1,14 @@
+using System;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Tide.Simulator.Classes;
 using Tide.Simulator.Models;
@@ -18,6 +22,8 @@ namespace Tide.Simulator {
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
+            
+
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
             services.AddSingleton(settings);
@@ -35,14 +41,22 @@ namespace Tide.Simulator {
             services.AddScoped<IAuthentication, Authentication>();
             services.AddScoped<IBlockLayer, BlockLayer>();
 
+  
+            services.AddSignalR();
+
             services.AddControllers();
+            services.AddCors();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime) {
+
+            app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().WithOrigins(new []{"http://localhost:8080", "https://tideexplorer.azurewebsites.net" }).AllowCredentials());
+
             //if (env.IsDevelopment())
             //{
             //    app.UseDeveloperExceptionPage();
             //}
+
             app.UseDeveloperExceptionPage();
 
 
@@ -54,7 +68,10 @@ namespace Tide.Simulator {
             app.UseAuthorization();
 
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+                endpoints.MapHub<SimulatorHub>("/hub");
+            });
         }
     }
 }

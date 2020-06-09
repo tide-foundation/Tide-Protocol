@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.SignalR;
 using Tide.Core;
 using Tide.Simulator.Models;
 
 namespace Tide.Simulator.Classes {
     public class BlockLayer : IBlockLayer {
         private readonly BlockchainContext _context;
+        private readonly IHubContext<SimulatorHub> _hub;
 
-        public BlockLayer(BlockchainContext context) {
+        public BlockLayer(BlockchainContext context,IHubContext<SimulatorHub> hub) {
             _context = context;
+            _hub = hub;
         }
 
         public bool Write(Contract contract, Table table, string scope, string index, string data) {
@@ -40,6 +43,8 @@ namespace Tide.Simulator.Classes {
 
                     _context.SaveChanges();
                     transaction.Commit();
+
+                    _hub.Clients.All.SendAsync("NewBlock", newData);
 
                     return true;
                 }
