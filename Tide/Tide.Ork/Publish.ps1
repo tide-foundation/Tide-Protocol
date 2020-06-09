@@ -5,14 +5,14 @@ $location = $location.Path
 
 $restartApp = {
     param ($number)
-    Restart-AzureRmWebApp -ResourceGroupName Raziel -Name raziel-ork-$number
+    Restart-AzureRmWebApp -ResourceGroupName Tide -Name ork-$number
 }
 
-For ($i = 1; $i -le 13; $i++) {
-    $pwd = az webapp deployment list-publishing-profiles --name raziel-ork-$i --resource-group Raziel --query '[].userPWD' -o tsv
+For ($i = 0; $i -le 10; $i++) {
+    $pwd = az webapp deployment list-publishing-profiles --name ork-$i --resource-group Tide --query '[].userPWD' -o tsv
     $pwd = $pwd[0];
-    $project = -join ($location, '\Raziel.Ork.csproj');
-    $profile = -join ("raziel-ork-", $i, " - Web Deploy.pubxml");
+    $project = -join ($location, '\Tide.Ork.csproj');
+    $profile = -join ("ork-", $i, " - Web Deploy.pubxml");
     
     dotnet publish $project /p:PublishProfile=$profile /p:Password=$pwd -v q
     

@@ -1,8 +1,9 @@
 const dauthUrl = "http://127.0.0.1:500";
-const nodes = 3;
+const nodes = 10;
+const dev = false;
 
 function dauthFlow(user, nodes) {
-  var urls = [...Array(nodes)].map((_, i) => dauthUrl + (i + 1));
+  var urls = dev ? [...Array(nodes)].map((_, i) => dauthUrl + (i + 1)) : [...Array(nodes)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
   return new cryptide.DAuthFlow(urls, user);
 }
 
