@@ -1,4 +1,4 @@
-﻿namespace Tide.Simulator.Models {
+﻿namespace Tide.Core {
     public enum Contract {
         Unset = 0,
         Authentication = 1

@@ -34,6 +34,8 @@ namespace Tide.Ork {
             else
                 app.UseHsts();
 
+            app.UseDeveloperExceptionPage(); // TODO: Remove for production
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

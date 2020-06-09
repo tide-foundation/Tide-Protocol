@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tide.Simulator.Models {
+namespace Tide.Core {
     public class BlockData {
         // Misc
         public int Id { get; set; }

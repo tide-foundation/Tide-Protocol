@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Tide.Core;
 using Tide.Simulator.Models;
 
 namespace Tide.Simulator.Classes {
@@ -56,6 +58,14 @@ namespace Tide.Simulator.Classes {
                 !d.Stale);
 
             return currentData?.Data;
+        }
+
+        public List<BlockData> ReadHistoric(Contract contract, Table table, string scope, string index) {
+            return _context.Data.Where(d =>
+                d.Index == index &&
+                d.Contract == contract &&
+                d.Table == table &&
+                d.Scope == scope).ToList();
         }
     }
 }

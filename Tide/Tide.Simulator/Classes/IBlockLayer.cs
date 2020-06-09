@@ -1,4 +1,6 @@
-﻿using Tide.Simulator.Models;
+﻿using System.Collections.Generic;
+using Tide.Core;
+using Tide.Simulator.Models;
 
 namespace Tide.Simulator.Classes {
     public interface IBlockLayer {
@@ -30,5 +32,10 @@ namespace Tide.Simulator.Classes {
         /// <param name="index">The primary index for the data under the selected scope.</param>
         /// <returns>True is the read was successful</returns>
         string Read(Contract contract, Table table, string scope, string index);
+
+        /// <summary>
+        ///     The same as 'Read', but will pull the full historical data of the item.
+        /// </summary>
+        List<BlockData> ReadHistoric(Contract contract, Table table, string scope, string index);
     }
 }
