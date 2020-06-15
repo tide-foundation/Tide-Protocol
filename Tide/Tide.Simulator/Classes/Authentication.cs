@@ -54,8 +54,6 @@ namespace Tide.Simulator.Classes {
                     return new AuthenticationResponse {Error = "Invalid Username", Success = false};
                 }
 
-                ;
-
                 var hashedPassword = ComputeHash(request.Password, Convert.FromBase64String(user.Salt));
                 if (user.Hash != Convert.ToBase64String(hashedPassword)) {
                     return new AuthenticationResponse {Error = "Incorrect Password", Success = false};

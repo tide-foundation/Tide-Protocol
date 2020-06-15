@@ -18,17 +18,23 @@ namespace Tide.Simulator.Controllers {
             _blockchain = blockchain;
         }
 
+        #region Onboarding
+
         [HttpGet("Vault/{ork}/{username}")]
-        public ActionResult<string> GetVault([FromRoute] string ork, string username) {
+        public ActionResult<string> GetVault([FromRoute] string ork, string username)
+        {
             return _blockchain.Read(Contract.Authentication, Table.Vault, ork, username);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("Vault/{ork}/{username}")]
-        public ActionResult<bool> PostVault([FromRoute] string ork, string username, [FromBody] string payload) {
-            if (HttpContext.User.Identity.Name != ork) return Unauthorized("You do not have write privileges to that scope.");
-
+        public ActionResult<bool> PostVault([FromRoute] string ork, string username, [FromBody] string payload)
+        {
+            //if (HttpContext.User.Identity.Name != ork) return Unauthorized("You do not have write privileges to that scope.");
             return _blockchain.Write(Contract.Authentication, Table.Vault, ork, username, payload);
         }
+
+        #endregion
+
     }
 }

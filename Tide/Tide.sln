@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Simulator", "Tide.Simu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Core", "Tide.Core\Tide.Core.csproj", "{6317E2AE-BA30-4518-B98B-69F5DD969E39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Utilities", "Tide.Utilities\Tide.Utilities.csproj", "{45A3E8B1-2AC5-4A7D-8E6E-D3D0B46D02B4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Usecase", "Tide.Usecase\Tide.Usecase.csproj", "{8CA02B13-769D-42AB-9F1B-371D3E569AB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{6317E2AE-BA30-4518-B98B-69F5DD969E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6317E2AE-BA30-4518-B98B-69F5DD969E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6317E2AE-BA30-4518-B98B-69F5DD969E39}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45A3E8B1-2AC5-4A7D-8E6E-D3D0B46D02B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45A3E8B1-2AC5-4A7D-8E6E-D3D0B46D02B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45A3E8B1-2AC5-4A7D-8E6E-D3D0B46D02B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45A3E8B1-2AC5-4A7D-8E6E-D3D0B46D02B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CA02B13-769D-42AB-9F1B-371D3E569AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CA02B13-769D-42AB-9F1B-371D3E569AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CA02B13-769D-42AB-9F1B-371D3E569AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CA02B13-769D-42AB-9F1B-371D3E569AB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
