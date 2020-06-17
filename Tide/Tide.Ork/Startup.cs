@@ -23,7 +23,9 @@ namespace Tide.Ork {
 
             services.AddSingleton(settings);
             services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
+            services.AddTransient<IEmailClient, MailKitClient>();
             //services.AddTransient<IKeyManagerFactory, MemoryFactory>();
+
             services.AddHttpContextAccessor();
         }
 

@@ -19,6 +19,7 @@ playground
 Developer
 nuget.exe
 *.nupkg
+appsettings.Development.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -7,13 +7,12 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
+import Tide from "../src/Tide";
 import chai from "chai";
 var expect = chai.expect;
 var chaiAsPromised = require("chai-as-promised");
 
 chai.use(chaiAsPromised);
-
-import Tide from "../src/Tide";
 
 const nodeCount = 3;
 const nodes = [...Array(nodeCount)].map(
