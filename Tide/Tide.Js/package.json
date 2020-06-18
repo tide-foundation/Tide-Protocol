@@ -28,7 +28,9 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "cryptide": "^1.5.3"
+    "cryptide": "1.0.0-alpha.1",
+    "big-integer": "1.6.36",
+    "superagent": "^5.2.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
