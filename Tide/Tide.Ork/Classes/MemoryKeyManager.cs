@@ -29,8 +29,9 @@ namespace Tide.Ork.Classes {
             return Task.FromResult(_items.ContainsKey(user) ? _items[user] : null);
         }
 
-        public Task SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret) {
-            _items[user] = new KeyVault {User = user, AuthShare = authShare, KeyShare = keyShare, Secret = secret};
+        public Task SetOrUpdate(KeyVault account)
+        {
+            _items[account.User] = account;
             return Task.CompletedTask;
         }
     }

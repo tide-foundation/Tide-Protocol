@@ -29,9 +29,10 @@ export default class DAuthFlow {
 
     /**
      * @param {string} password
+     * @param {string} email
      * @param {number} threshold
      */
-    async signUp(password, threshold) {
+    async signUp(password, email, threshold) {
         try {
             var key = random();
             var auth = random();
@@ -43,7 +44,7 @@ export default class DAuthFlow {
             var [, kis] = SecretShare.shareFromIds(key, ids, threshold, C25519Point.n);
             var [, ais] = SecretShare.shareFromIds(auth, ids, threshold, C25519Point.n);
 
-            await Promise.all(this.clients.map((cli, i) => cli.signUp(ais[i], kis[i], sAuths[i])));
+            await Promise.all(this.clients.map((cli, i) => cli.signUp(ais[i], kis[i], sAuths[i], email)));
             return AESKey.seed(Buffer.from(key.toArray(256).value));
         } catch (err) {
             return Promise.reject(err);
@@ -80,6 +81,27 @@ export default class DAuthFlow {
             return Promise.reject(err);
         }
     }
+
+    /**
+     * @param {string} password
+     * @param {number} threshold
+     */
+    async changePass(password, threshold) {
+        try {
+            var auth = random();
+            var g = C25519Point.fromString(password);
+            var mAuth = AESKey.seed(g.times(auth).toArray());
+
+            var ids = this.clients.map(c => c.clientId);
+            var sAuths = this.clients.map(c => mAuth.derive(c.clientBuffer));
+            var [, ais] = SecretShare.shareFromIds(auth, ids, threshold, C25519Point.n);
+
+            await Promise.all(this.clients.map((cli, i) => cli.changePass(ais[i], sAuths[i])));
+        } catch (err) {
+            return Promise.reject(err);
+        }
+    }
+
 }
 
 function random() {

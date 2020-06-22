@@ -60,14 +60,28 @@ export default class DAuthClient {
      * @param {bigInt.BigInteger} authShare
      * @param {bigInt.BigInteger} keyShare
      * @param {AESKey} secret
+     * @param {string} email
      */
-    async signUp(authShare, keyShare, secret) {
+    async signUp(authShare, keyShare, secret, email) {
         var user = encodeBase64Url(this.userBuffer);
         var auth = encodeFromBig(authShare);
         var key = encodeFromBig(keyShare);
         var sec = encodeBase64Url(secret.toString());
+        var mail = encodeURIComponent(email);
 
-        await superagent.post(`${this.url}/dauth/${user}/signup/${auth}/${key}/${sec}`);
+        await superagent.post(`${this.url}/dauth/${user}/signup/${auth}/${key}/${sec}/${mail}`);
+    }
+
+    /**
+     * @param {bigInt.BigInteger} authShare
+     * @param {AESKey} secret
+     */
+    async changePass(authShare, secret) {
+        var user = encodeBase64Url(this.userBuffer);
+        var auth = encodeFromBig(authShare);
+        var sec = encodeBase64Url(secret.toString());
+
+        await superagent.post(`${this.url}/dauth/${user}/pass/${auth}/${sec}`);
     }
 }
 

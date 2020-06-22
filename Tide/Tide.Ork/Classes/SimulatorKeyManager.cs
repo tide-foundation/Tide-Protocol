@@ -35,14 +35,9 @@ namespace Tide.Ork.Classes {
             return KeyVault.Parse(_key.Decrypt(cipher));
         }
 
-        public async Task SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret) {
-            var vault = new KeyVault {
-                User = user,
-                AuthShare = authShare,
-                KeyShare = keyShare,
-                Secret = secret
-            };
-            await _client.PostVault(_orkId.ToString(), user.ToString(), _key.EncryptStr(vault));
+        public async Task SetOrUpdate(KeyVault account)
+        {
+            await _client.PostVault(_orkId.ToString(), account.User.ToString(), _key.EncryptStr(account));
         }
     }
 }

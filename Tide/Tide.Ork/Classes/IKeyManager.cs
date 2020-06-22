@@ -25,6 +25,6 @@ namespace Tide.Ork.Classes {
         Task<BigInteger> GetAuthShare(Guid user);
         Task<AesKey> GetSecret(Guid user);
         Task<KeyVault> GetByUser(Guid user);
-        Task SetOrUpdateKey(Guid user, BigInteger authShare, BigInteger keyShare, AesKey secret);
+        Task SetOrUpdate(KeyVault account);
     }
 }

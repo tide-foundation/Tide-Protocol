@@ -17,8 +17,10 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Tide.Core;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
@@ -71,10 +73,35 @@ namespace Tide.Ork.Controllers {
             return Ok(secret.Secret.EncryptStr(secret.KeyShare.ToByteArray(true, true)));
         }
 
-        [HttpPost("{user}/signup/{authShare}/{keyShare}/{secret}")]
-        public Task SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret) {
+        //TODO: there is not verification if the account already exists
+        [HttpPost("{user}/signup/{authShare}/{keyShare}/{secret}/{email}")]
+        public Task SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret, [FromRoute] string email)
+        {
             _logger.LogInformation($"New registration for {user}", user);
-            return _manager.SetOrUpdateKey(GetUserId(user), GetBigInteger(authShare), GetBigInteger(keyShare), AesKey.Parse(FromBase64(secret)));
+            var account = new KeyVault
+            {
+                User = GetUserId(user),
+                AuthShare = GetBigInteger(authShare),
+                KeyShare = GetBigInteger(keyShare),
+                Secret = AesKey.Parse(FromBase64(secret)),
+                Email = HttpUtility.UrlDecode(email)
+            };
+
+            return _manager.SetOrUpdate(account);
+        }
+
+        //TODO: This is not secure, anyone can change someone else's password
+        [HttpPost("{user}/pass/{authShare}/{secret}")]
+        public async Task ChangePass([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string secret)
+        {
+            _logger.LogInformation($"Change password for {user}", user);
+
+            var account = await _manager.GetByUser(GetUserId(user));
+
+            account.AuthShare = GetBigInteger(authShare);
+            account.Secret = AesKey.Parse(FromBase64(secret));
+
+            await _manager.SetOrUpdate(account);
         }
 
         private byte[] FromBase64(string input) {

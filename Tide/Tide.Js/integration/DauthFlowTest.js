@@ -16,10 +16,12 @@
 import assert from 'assert';
 import DAuthFlow from '../src/dauth/dauthFlow';
 
-var threshold = 2;
+var threshold = 3;
 var user = 'admin';
 var pass = "123456";
 var urls = [...Array(threshold)].map((_, i) => 'http://127.0.0.1:500' + (i + 1));
+var mail = "tmp@tide.org";
+
 //var urls = [...Array(threshold)].map((_, i) => `https://raziel-ork-${i + 1}.azurewebsites.net`);
 var flow = new DAuthFlow(urls, user);
 (async () => {
@@ -28,13 +30,15 @@ var flow = new DAuthFlow(urls, user);
 
 async function main() {
     try {
-        var key = await flow.signUp(pass, threshold);
-        var keyTag = await flow.logIn(pass);
+        var key = await flow.signUp(pass, mail, threshold);
+        var keyTag1 = await flow.logIn(pass);
+        assert.equal(key.toString(), keyTag1.toString());
 
-        assert.equal(keyTag.toString(), key.toString());
-        console.log("wuju!!!!")
+        pass = "1234567";
+        await flow.changePass(pass, threshold);
+        var keyTag2 = await flow.logIn(pass);
+        assert.equal(key.toString(), keyTag2.toString());
     } catch (error) {
         console.log(error);
     }
 }
- 
