@@ -54,29 +54,41 @@ export default class DAuthFlow {
     /** @param {string} password */
     async logIn(password) {
         try {
-            var r = random();
-            var n = C25519Point.n;
-            var g = C25519Point.fromString(password);
-            var gR = g.multiply(r);
-
-            var gRKis = await Promise.all(this.clients.map(cli => cli.GetShare(gR)));
-            var ids = this.clients.map(c => c.clientId);
-            var lis = ids.map(id => SecretShare.getLi(id, ids, n));
-
-            var gRK = gRKis.map((ki, i) => ki.times(lis[i])).reduce((rki, sum) => rki.add(sum));
-            var gK = gRK.times(r.modInv(n));
-
-            var mAuth = AESKey.seed(gK.toArray());
+            var mAuth = await this.getAuthKey(password);
             var sAuths = this.clients.map(c => mAuth.derive(c.clientBuffer));
+
             var ticks = getTicks();
             var signs = this.clients.map((c, i) => sAuths[i].hash(Buffer.concat([c.userBuffer, ticks])))
-
+            
             var ciphers = await Promise.all(this.clients.map((cli, i) => cli.signIn(ticks, signs[i])));
             var shares = sAuths.map((auth, i) => auth.decrypt(ciphers[i]))
                 .map(shr => BigInt.fromArray(Array.from(shr), 256, false));
-
+            
+            var ids = this.clients.map(c => c.clientId);
             var key = SecretShare.interpolate(ids, shares, C25519Point.n);
+
             return AESKey.seed(Buffer.from(key.toArray(256).value));
+        } catch (err) {
+            return Promise.reject(err);
+        }
+    }
+
+    /** @param {string} pass */
+    async getAuthKey(pass) {
+        try {
+            var r = random();
+            var n = C25519Point.n;
+            var g = C25519Point.fromString(pass);
+            var gR = g.multiply(r);
+
+            var ids = this.clients.map(c => c.clientId);
+            var lis = ids.map(id => SecretShare.getLi(id, ids, n));
+
+            var gRKis = await Promise.all(this.clients.map(cli => cli.GetShare(gR)));
+            var gRK = gRKis.map((ki, i) => ki.times(lis[i])).reduce((rki, sum) => rki.add(sum));
+            var gK = gRK.times(r.modInv(n));
+
+            return AESKey.seed(gK.toArray());
         } catch (err) {
             return Promise.reject(err);
         }
@@ -89,35 +101,36 @@ export default class DAuthFlow {
      */
     async changePass(pass, newPass, threshold) {
         try {
-            var r = random();
-            var n = C25519Point.n;
-            var auth = random();
-            var g = C25519Point.fromString(pass);
-            var gNew = C25519Point.fromString(newPass);
-            var mAuthNew = AESKey.seed(gNew.times(auth).toArray());
-            var gR = g.multiply(r);
-
-            var ids = this.clients.map(c => c.clientId);
-            var lis = ids.map(id => SecretShare.getLi(id, ids, n));
-            
-            var gRKis = await Promise.all(this.clients.map(cli => cli.GetShare(gR)));
-            var gRK = gRKis.map((ki, i) => ki.times(lis[i])).reduce((rki, sum) => rki.add(sum));
-            var gK = gRK.times(r.modInv(n));
-
-            var ticks = getTicks();
-            var mAuth = AESKey.seed(gK.toArray());
-            var sAuths = this.clients.map(c => mAuth.derive(c.clientBuffer));
-            
-            var sAuthNews = this.clients.map(c => mAuthNew.derive(c.clientBuffer));
-            var [, ais] = SecretShare.shareFromIds(auth, ids, threshold, C25519Point.n);
-            var signs = this.clients.map((c, i) => sAuths[i].hash(Buffer.concat([c.userBuffer, Buffer.from(ais[i].toArray(256).value), sAuthNews[i].toArray(), ticks])))
-            
-            await Promise.all(this.clients.map((cli, i) => cli.changePass(ais[i], sAuthNews[i], ticks, signs[i])));
+            var mAuth = await this.getAuthKey(pass);
+            await this.changePassWithKey(mAuth, newPass, threshold);
         } catch (err) {
             return Promise.reject(err);
         }
     }
 
+    /**
+     * @param {AESKey} key
+     * @param {string} pass
+     * @param {number} threshold
+     */
+    async changePassWithKey(key, pass, threshold) {
+        try {
+            var auth = random();
+            var g = C25519Point.fromString(pass);
+            var mAuth = AESKey.seed(g.times(auth).toArray());
+            var sAuths = this.clients.map(c => mAuth.derive(c.clientBuffer));
+            var derivedKeys = this.clients.map(c => key.derive(c.clientBuffer));
+
+            var ticks = getTicks();
+            var ids = this.clients.map(c => c.clientId);
+            var [, ais] = SecretShare.shareFromIds(auth, ids, threshold, C25519Point.n);
+            var signs = this.clients.map((c, i) => derivedKeys[i].hash(Buffer.concat([c.userBuffer, Buffer.from(ais[i].toArray(256).value), sAuths[i].toArray(), ticks])))
+
+            await Promise.all(this.clients.map((cli, i) => cli.changePass(ais[i], sAuths[i], ticks, signs[i])));
+        } catch (err) {
+            return Promise.reject(err);
+        }
+    }
 }
 
 function random() {
