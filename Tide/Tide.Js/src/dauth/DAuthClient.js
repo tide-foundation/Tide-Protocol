@@ -13,9 +13,9 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import BigInt from 'big-integer';
 import superagent from 'superagent';
-import { Hash, C25519Point, AESKey } from 'cryptide';
+import { C25519Point, AESKey } from 'cryptide';
+import IdGenerator from '../IdGenerator';
 
 export default class DAuthClient {
     /**
@@ -25,15 +25,17 @@ export default class DAuthClient {
     constructor(url, user) {
         this.url = url + '/api';
         this.user = user;
+        this._clientId = new IdGenerator((new URL(url)).host);
+        this._userId = new IdGenerator(user);
     }
     
-    get clientId() { return getId(this.clientBuffer); }
+    get clientId() { return this._clientId.id; }
 
-    get clientBuffer() { return getBufferId((new URL(this.url)).host); }
+    get clientBuffer() { return this._clientId.buffer; }
 
-    get userId() { return getId(this.userBuffer); }
+    get userId() { return this._userId.id; }
 
-    get userBuffer() { return getBufferId(this.user); }
+    get userBuffer() { return this._userId.buffer; }
 
     /** @param {C25519Point} pass */
     async GetShare(pass) {
@@ -80,10 +82,3 @@ function encodeFromBig(number) {
     return encodeBase64Url(Buffer.from(number.toArray(256).value));
 }
 
-function getId(data) {
-    return BigInt.fromArray(Array.from(data), 256, false);
-}
-
-function getBufferId(data) {
-    return Hash.shaBuffer(data).slice(0, 16);
-}
