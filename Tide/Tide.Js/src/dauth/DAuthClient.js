@@ -93,13 +93,17 @@ export default class DAuthClient {
   /**
    * @param {bigInt.BigInteger} authShare
    * @param {AESKey} secret
+   * @param {Uint8Array} ticks
+   * @param {Uint8Array} sign
    */
-  async changePass(authShare, secret) {
+  async changePass(authShare, secret, ticks, sign) {
     var user = encodeBase64Url(this.userBuffer);
     var auth = encodeFromBig(authShare);
     var sec = encodeBase64Url(secret.toString());
+    var tck = encodeBase64Url(ticks);
+    var sgn = encodeBase64Url(sign);
 
-    await superagent.post(`${this.url}/dauth/${user}/pass/${auth}/${sec}`);
+    await superagent.post(`${this.url}/dauth/${user}/pass/${auth}/${sec}/${tck}/${sgn}`);
   }
 }
 

@@ -30,7 +30,6 @@ namespace Tide.Ork.Controllers {
     [ApiController]
     [Route("api/dauth")]
     public class DAuthController : ControllerBase {
-        private const long _window = TimeSpan.TicksPerSecond * 15;
         private readonly ILogger _logger;
         private readonly IKeyManager _manager;
 
@@ -53,24 +52,14 @@ namespace Tide.Ork.Controllers {
 
         [HttpGet("{user}/signin/{ticks}/{sign}")]
         public async Task<ActionResult> SignIn([FromRoute] string user, [FromRoute] string ticks, [FromRoute] string sign) {
-            var body = FromBase64(user).Concat(FromBase64(ticks)).ToArray();
-            var secret = await _manager.GetByUser(GetUserId(user));
-
-            var check = secret.Secret.Hash(body);
-            if (!Utils.Equals(check, FromBase64(sign))) {
+            var account = await _manager.GetByUser(GetUserId(user));
+            if (!VerifyChallenge.Check(account.Secret, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(ticks))) {
                 _logger.LogInformation($"Unsuccessful login for {user}", user, ticks, sign);
                 return BadRequest();
             }
 
-            var signedTime = DateTime.FromBinary((long) GetBigInteger(ticks));
-            if (signedTime < DateTime.UtcNow.AddTicks(-_window)
-                || signedTime > DateTime.UtcNow.AddTicks(_window)) {
-                _logger.LogInformation($"Unsuccessful login for {user} due to invalid ticks", user, ticks, sign);
-                return BadRequest();
-            }
-
             _logger.LogInformation($"Successful login for {user}", user, ticks, sign);
-            return Ok(secret.Secret.EncryptStr(secret.KeyShare.ToByteArray(true, true)));
+            return Ok(account.Secret.EncryptStr(account.KeyShare.ToByteArray(true, true)));
         }
 
         //TODO: there is not verification if the account already exists
@@ -90,18 +79,23 @@ namespace Tide.Ork.Controllers {
             return await _manager.SetOrUpdate(account);
         }
 
-        //TODO: This is not secure, anyone can change someone else's password
-        [HttpPost("{user}/pass/{authShare}/{secret}")]
-        public async Task ChangePass([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string secret)
+        [HttpPost("{user}/pass/{authShare}/{secret}/{ticks}/{sign}")]
+        public async Task<ActionResult> ChangePass([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string secret, [FromRoute] string ticks, [FromRoute] string sign)
         {
-            _logger.LogInformation($"Change password for {user}", user);
-
             var account = await _manager.GetByUser(GetUserId(user));
+            if (!VerifyChallenge.Check(account.Secret, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(authShare), FromBase64(secret), FromBase64(ticks)))
+            {
+                _logger.LogInformation($"Unsuccessful change password for {user}", user, authShare, secret, ticks, sign);
+                return BadRequest();
+            }
+            
+            _logger.LogInformation($"Change password for {user}", user);
 
             account.AuthShare = GetBigInteger(authShare);
             account.Secret = AesKey.Parse(FromBase64(secret));
 
             await _manager.SetOrUpdate(account);
+            return Ok();
         }
 
         private byte[] FromBase64(string input) {

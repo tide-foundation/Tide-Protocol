@@ -19,6 +19,7 @@ import DAuthFlow from "../src/dauth/dauthFlow";
 var threshold = 3;
 var user = "admin";
 var pass = "123456";
+var newPass = "1234567";
 var urls = [...Array(threshold)].map(
   (_, i) => "http://localhost:500" + (i + 1)
 );
@@ -33,15 +34,15 @@ var flow = new DAuthFlow(urls, user);
 async function main() {
   try {
     var key = await flow.signUp(pass, mail, threshold);
-    console.log(key);
     var keyTag1 = await flow.logIn(pass);
     assert.equal(key.toString(), keyTag1.toString());
 
-    pass = "1234567";
-    await flow.changePass(pass, threshold);
-    var keyTag2 = await flow.logIn(pass);
+    await flow.changePass(pass, newPass, threshold);
+    var keyTag2 = await flow.logIn(newPass);
     assert.equal(key.toString(), keyTag2.toString());
   } catch (error) {
     console.log(error);
   }
 }
+
+

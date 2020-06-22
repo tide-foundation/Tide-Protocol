@@ -83,20 +83,36 @@ export default class DAuthFlow {
     }
 
     /**
-     * @param {string} password
+     * @param {string} pass
+     * @param {string} newPass
      * @param {number} threshold
      */
-    async changePass(password, threshold) {
+    async changePass(pass, newPass, threshold) {
         try {
+            var r = random();
+            var n = C25519Point.n;
             var auth = random();
-            var g = C25519Point.fromString(password);
-            var mAuth = AESKey.seed(g.times(auth).toArray());
+            var g = C25519Point.fromString(pass);
+            var gNew = C25519Point.fromString(newPass);
+            var mAuthNew = AESKey.seed(gNew.times(auth).toArray());
+            var gR = g.multiply(r);
 
             var ids = this.clients.map(c => c.clientId);
-            var sAuths = this.clients.map(c => mAuth.derive(c.clientBuffer));
-            var [, ais] = SecretShare.shareFromIds(auth, ids, threshold, C25519Point.n);
+            var lis = ids.map(id => SecretShare.getLi(id, ids, n));
+            
+            var gRKis = await Promise.all(this.clients.map(cli => cli.GetShare(gR)));
+            var gRK = gRKis.map((ki, i) => ki.times(lis[i])).reduce((rki, sum) => rki.add(sum));
+            var gK = gRK.times(r.modInv(n));
 
-            await Promise.all(this.clients.map((cli, i) => cli.changePass(ais[i], sAuths[i])));
+            var ticks = getTicks();
+            var mAuth = AESKey.seed(gK.toArray());
+            var sAuths = this.clients.map(c => mAuth.derive(c.clientBuffer));
+            
+            var sAuthNews = this.clients.map(c => mAuthNew.derive(c.clientBuffer));
+            var [, ais] = SecretShare.shareFromIds(auth, ids, threshold, C25519Point.n);
+            var signs = this.clients.map((c, i) => sAuths[i].hash(Buffer.concat([c.userBuffer, Buffer.from(ais[i].toArray(256).value), sAuthNews[i].toArray(), ticks])))
+            
+            await Promise.all(this.clients.map((cli, i) => cli.changePass(ais[i], sAuthNews[i], ticks, signs[i])));
         } catch (err) {
             return Promise.reject(err);
         }
