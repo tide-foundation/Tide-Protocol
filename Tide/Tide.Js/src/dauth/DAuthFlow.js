@@ -37,15 +37,18 @@ export default class DAuthFlow {
             var key = random();
             var auth = random();
             var g = C25519Point.fromString(password);
+            
             var mAuth = AESKey.seed(g.times(auth).toArray());
+            var cmkAuth = AESKey.seed(Buffer.from(key.toArray(256).value));
 
             var ids = this.clients.map(c => c.clientId);
             var sAuths = this.clients.map(c => mAuth.derive(c.clientBuffer));
+            var cmkAuths = this.clients.map(c => cmkAuth.derive(c.clientBuffer));
             var [, kis] = SecretShare.shareFromIds(key, ids, threshold, C25519Point.n);
             var [, ais] = SecretShare.shareFromIds(auth, ids, threshold, C25519Point.n);
 
-            await Promise.all(this.clients.map((cli, i) => cli.signUp(ais[i], kis[i], sAuths[i], email)));
-            return AESKey.seed(Buffer.from(key.toArray(256).value));
+            await Promise.all(this.clients.map((cli, i) => cli.signUp(ais[i], kis[i], sAuths[i], cmkAuths[i], email)));
+            return cmkAuth;
         } catch (err) {
             return Promise.reject(err);
         }
@@ -102,7 +105,7 @@ export default class DAuthFlow {
     async changePass(pass, newPass, threshold) {
         try {
             var mAuth = await this.getAuthKey(pass);
-            await this.changePassWithKey(mAuth, newPass, threshold);
+            await this._changePass(mAuth, newPass, threshold);
         } catch (err) {
             return Promise.reject(err);
         }
@@ -113,7 +116,16 @@ export default class DAuthFlow {
      * @param {string} pass
      * @param {number} threshold
      */
-    async changePassWithKey(key, pass, threshold) {
+    changePassWithKey(key, pass, threshold) {
+        return this._changePass(key, pass, threshold, true);
+    }
+
+    /**
+     * @param {AESKey} key
+     * @param {string} pass
+     * @param {number} threshold
+     */
+    async _changePass(key, pass, threshold, withCmk = false) {
         try {
             var auth = random();
             var g = C25519Point.fromString(pass);
@@ -126,7 +138,7 @@ export default class DAuthFlow {
             var [, ais] = SecretShare.shareFromIds(auth, ids, threshold, C25519Point.n);
             var signs = this.clients.map((c, i) => derivedKeys[i].hash(Buffer.concat([c.userBuffer, Buffer.from(ais[i].toArray(256).value), sAuths[i].toArray(), ticks])))
 
-            await Promise.all(this.clients.map((cli, i) => cli.changePass(ais[i], sAuths[i], ticks, signs[i])));
+            await Promise.all(this.clients.map((cli, i) => cli.changePass(ais[i], sAuths[i], ticks, signs[i], withCmk)));
         } catch (err) {
             return Promise.reject(err);
         }

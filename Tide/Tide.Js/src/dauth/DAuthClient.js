@@ -74,18 +74,20 @@ export default class DAuthClient {
    * @param {bigInt.BigInteger} authShare
    * @param {bigInt.BigInteger} keyShare
    * @param {AESKey} secret
+   * @param {AESKey} cmkAuth
    * @param {string} email
    */
-  async signUp(authShare, keyShare, secret, email) {
+  async signUp(authShare, keyShare, secret, cmkAuth, email) {
     var user = encodeBase64Url(this.userBuffer);
     var auth = encodeFromBig(authShare);
     var key = encodeFromBig(keyShare);
     var sec = encodeBase64Url(secret.toString());
+    var cmk = encodeBase64Url(cmkAuth.toString());
     var mail = encodeURIComponent(email);
 
     return (
       await superagent.post(
-        `${this.url}/dauth/${user}/signup/${auth}/${key}/${sec}/${mail}`
+        `${this.url}/dauth/${user}/signup/${auth}/${key}/${sec}/${cmk}/${mail}`
       )
     ).body;
   }
@@ -96,14 +98,14 @@ export default class DAuthClient {
    * @param {Uint8Array} ticks
    * @param {Uint8Array} sign
    */
-  async changePass(authShare, secret, ticks, sign) {
+  async changePass(authShare, secret, ticks, sign, withCmk = false) {
     var user = encodeBase64Url(this.userBuffer);
     var auth = encodeFromBig(authShare);
     var sec = encodeBase64Url(secret.toString());
     var tck = encodeBase64Url(ticks);
     var sgn = encodeBase64Url(sign);
 
-    await superagent.post(`${this.url}/dauth/${user}/pass/${auth}/${sec}/${tck}/${sgn}`);
+    await superagent.post(`${this.url}/dauth/${user}/pass/${auth}/${sec}/${tck}/${sgn}?withCmk=${withCmk}`);
   }
 }
 

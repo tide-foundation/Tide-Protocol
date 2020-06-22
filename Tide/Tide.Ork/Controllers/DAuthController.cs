@@ -63,8 +63,8 @@ namespace Tide.Ork.Controllers {
         }
 
         //TODO: there is not verification if the account already exists
-        [HttpPost("{user}/signup/{authShare}/{keyShare}/{secret}/{email}")]
-        public async Task<TideResponse> SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret, [FromRoute] string email)
+        [HttpPost("{user}/signup/{authShare}/{keyShare}/{secret}/{cmkAuth}/{email}")]
+        public async Task<TideResponse> SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret, [FromRoute] string cmkAuth, [FromRoute] string email)
         {
             _logger.LogInformation($"New registration for {user}", user);
             var account = new KeyVault
@@ -73,6 +73,7 @@ namespace Tide.Ork.Controllers {
                 AuthShare = GetBigInteger(authShare),
                 KeyShare = GetBigInteger(keyShare),
                 Secret = AesKey.Parse(FromBase64(secret)),
+                CmkAuth = AesKey.Parse(FromBase64(cmkAuth)),
                 Email = HttpUtility.UrlDecode(email)
             };
 
@@ -80,10 +81,11 @@ namespace Tide.Ork.Controllers {
         }
 
         [HttpPost("{user}/pass/{authShare}/{secret}/{ticks}/{sign}")]
-        public async Task<ActionResult> ChangePass([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string secret, [FromRoute] string ticks, [FromRoute] string sign)
+        public async Task<ActionResult> ChangePass([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string secret, [FromRoute] string ticks, [FromRoute] string sign, [FromQuery] bool withCmk = false)
         {
             var account = await _manager.GetByUser(GetUserId(user));
-            if (!VerifyChallenge.Check(account.Secret, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(authShare), FromBase64(secret), FromBase64(ticks)))
+            var authKey = withCmk ? account.CmkAuth : account.Secret;
+            if (!VerifyChallenge.Check(authKey, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(authShare), FromBase64(secret), FromBase64(ticks)))
             {
                 _logger.LogInformation($"Unsuccessful change password for {user}", user, authShare, secret, ticks, sign);
                 return BadRequest();
