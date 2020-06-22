@@ -20,20 +20,6 @@ const nodes = [...Array(nodeCount)].map(
 );
 
 describe("Tide", () => {
-  describe("tide.countNodes()", () => {
-    it("should return the node count for default constructor (0)", () => {
-      const tide = new Tide();
-      const count = tide.countNodes();
-      expect(count).to.be.equal(0);
-    });
-
-    it(`should return the node count for array of ${nodeCount}`, () => {
-      const tide = new Tide(nodes);
-      const count = tide.countNodes();
-      expect(count).to.be.equal(nodeCount);
-    });
-  });
-
   describe("tide.register()", () => {
     it("should return false when given invalid username", function () {
       const tide = new Tide(nodes);
@@ -44,7 +30,7 @@ describe("Tide", () => {
       const tide = new Tide(nodes);
       return expect(
         tide.register(guid(), "123456789")
-      ).to.eventually.have.property("pub");
+      ).to.eventually.have.property("key");
     });
   });
 });

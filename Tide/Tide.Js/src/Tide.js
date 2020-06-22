@@ -1,34 +1,53 @@
-import "../node_modules/cryptide/dist/cryptide";
+import DAuthFlow from "./dauth/DAuthFlow";
+import IdGenerator from "./IdGenerator";
+import request from "superagent";
+import { encodeBase64Url } from "./Helpers";
 
 class Tide {
-  constructor(orkNodes) {
+  constructor(vendorId, serverUrl, orkNodes) {
+    this.vendorId = vendorId;
+    this.serverUrl = serverUrl;
     this.orkNodes = orkNodes || [];
   }
 
-  countNodes() {
-    return this.orkNodes.length;
-  }
+  register(username, password, email) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Some local validation, which is all we can really do.
+        if (username.length < 3 || password.length < 6)
+          return reject("Invalid credentials");
 
-  register(username, password) {
-    return new Promise(async function (resolve, reject) {
-      // Some local validation, which is all we can really do.
-      if (username.length < 3 || password.length < 6)
-        return reject("Invalid credentials");
+        var flow = new DAuthFlow(this.orkNodes, username);
 
-      // Attempt to fetch an MSA using the given username
-      // If a user exists, check to see if we can login. If not, reject
-      // If a user does not exist, create a new msa using the given credentials
+        var userId = encodeBase64Url(new IdGenerator(username).buffer);
 
-      // Now that we have an msa, create a new cvk for this user/vendor
-      // Return the keys
+        // Ask the vendor to create the user as a liability.
+        await request
+          .post(`${this.serverUrl}/CreateUser/${userId}`)
+          .send(["ork-0", "ork-1", "ork-2"]);
 
-      resolve({ pub: "This is a public key", priv: "This is a private key" });
+        // Send all shards to selected orks
+        var key = await flow.signUp(password, email, 2);
+
+        // Finally, ask the vendor to confirm the user
+        await request.get(`${this.serverUrl}/ConfirmUser/${userId}/`);
+
+        resolve({ key: key.toString() });
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
   login(username, password) {
-    return new Promise(async function (resolve, reject) {
-      resolve(true);
+    return new Promise(async (resolve, reject) => {
+      try {
+        var flow = new DAuthFlow(this.orkNodes, username);
+        var keyTag = await flow.logIn(password);
+        return resolve({ key: keyTag.toString() });
+      } catch (error) {
+        return reject(error);
+      }
     });
   }
 

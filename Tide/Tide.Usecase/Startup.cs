@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Tide.Usecase.Models;
 using VueCliMiddleware;
 using Westwind.AspNetCore.LiveReload;
 
@@ -25,6 +26,11 @@ namespace Tide.Usecase
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
+
+            var settings = new Settings();
+            Configuration.Bind("Settings", settings);
+            services.AddSingleton(settings);
+
             services.AddLiveReload();
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>

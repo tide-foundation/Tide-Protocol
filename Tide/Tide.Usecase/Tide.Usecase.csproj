@@ -6,8 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Cryptide.Core" Version="0.0.9" />
     <PackageReference Include="VueCliMiddleware" Version="3.0.0" />
     <PackageReference Include="Westwind.AspnetCore.LiveReload" Version="0.2.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tide.Core\Tide.Core.csproj" />
   </ItemGroup>
 
 

@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <div class="layout center">
+      Hey
+    <!--<div class="layout center">
       <div class="center">
         <div class="center col">
           Register
@@ -13,43 +14,57 @@
           <button @click="register" type="button">Register</button>
           <button @click="login" type="button">Login</button>
           <div>
-            <p id="register-status"></p>
+            <p v-if="status != ''">{{status}}</p>
           </div>
         </div>
       </div>
-    </div>
+    </div>-->
   </div>
 </template>
 
-<script>
+
+<!--<script>
+import Tide from "../../../Tide.Js/src/Tide" // TODO: Change to npm package for production. Does not seem to be a conditional import
 export default {
   props: {},
-  data: function() {
+  data: function () {
     return {
+      tide: null,
       nodeCount: 3,
       user: {
-        username: "admin",
-        password: "pass",
+        username: Math.floor(Math.random() * 1000000000),
+        // username: 11111333,
+        password: "password",
       },
+      status: "",
       dAuthFlow: null,
     };
   },
-  created() {},
+  async created() {
+    var urls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
+    this.tide = new Tide("VendorId", "http://localhost:50598/vendor", urls);
+    this.register();
+  },
   methods: {
-    createAuthFlow() {
-      var urls = [...Array(this.nodeCount)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
-      return new cryptide.DAuthFlow(urls, this.user.username);
-    },
     async register() {
-      var flow = this.createAuthFlow();
-      var key = await flow.signUp(this.user.password, this.nodeCount);
-
-      console.log(key);
-      console.log(`new authentication key for user ${this.user.username}:`, key.toString());
+      try {
+        var response = await this.tide.register(this.user.username, this.user.password);
+        console.log(response)
+      } catch (error) {
+        console.log('External error: ', error)
+        this.status = error
+      }
     },
-    login() {},
+    login() { },
+    guid() {
+      return "xxxxxxxx".replace(/[xy]/g, function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    }
   },
 };
-</script>
+</script>-->
 
 <style lang="scss"></style>

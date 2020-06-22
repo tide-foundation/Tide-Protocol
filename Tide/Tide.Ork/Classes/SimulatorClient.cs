@@ -16,12 +16,12 @@ namespace Tide.Ork.Classes {
             _client = new HttpClient {BaseAddress = new Uri(url)};
         }
 
-        public async Task PostVault(string ork, string username, string payload) {
-            if (!await IsAuthenticated()) return;
+        public async Task<TideResponse> PostVault(string ork, string username, string payload) {
+           // if (!await IsAuthenticated()) return;
 
             var stringContent = new StringContent($"\"{payload}\"", Encoding.UTF8, "application/json");
             var response = await _client.PostAsync($"Simulator/Vault/{ork}/{username}", stringContent);
-            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<TideResponse>(await response.Content.ReadAsStringAsync());
         }
 
         public async Task<string> GetVault(string ork, string username) {

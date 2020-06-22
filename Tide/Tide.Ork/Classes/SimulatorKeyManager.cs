@@ -8,9 +8,9 @@ namespace Tide.Ork.Classes {
     public class SimulatorKeyManager : IKeyManager {
         private readonly SimulatorClient _client;
         private readonly AesKey _key;
-        private readonly Guid _orkId;
+        private readonly string _orkId;
 
-        public SimulatorKeyManager(Guid orkId, SimulatorClient client, AesKey key) {
+        public SimulatorKeyManager(string orkId, SimulatorClient client, AesKey key) {
             _orkId = orkId;
             _client = client;
             _key = key;
@@ -29,15 +29,15 @@ namespace Tide.Ork.Classes {
         }
 
         public async Task<KeyVault> GetByUser(Guid user) {
-            var cipher = await _client.GetVault(_orkId.ToString(), user.ToString());
+            var cipher = await _client.GetVault(_orkId, user.ToString());
             if (string.IsNullOrEmpty(cipher)) return null;
 
             return KeyVault.Parse(_key.Decrypt(cipher));
         }
 
-        public async Task SetOrUpdate(KeyVault account)
+        public async Task<TideResponse> SetOrUpdate(KeyVault account)
         {
-            await _client.PostVault(_orkId.ToString(), account.User.ToString(), _key.EncryptStr(account));
+            return await _client.PostVault(_orkId, account.User.ToString(), _key.EncryptStr(account));
         }
     }
 }

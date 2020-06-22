@@ -19,12 +19,14 @@ using System.Threading.Tasks;
 using Tide.Core;
 using Tide.Encryption.AesMAC;
 
-namespace Tide.Ork.Classes {
-    public interface IKeyManager {
+namespace Tide.Ork.Classes
+{
+    public interface IKeyManager
+    {
         Task<bool> Exist(Guid user);
         Task<BigInteger> GetAuthShare(Guid user);
         Task<AesKey> GetSecret(Guid user);
         Task<KeyVault> GetByUser(Guid user);
-        Task SetOrUpdate(KeyVault account);
+        Task<TideResponse> SetOrUpdate(KeyVault account);
     }
 }

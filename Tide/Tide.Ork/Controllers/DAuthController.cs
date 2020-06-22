@@ -75,7 +75,7 @@ namespace Tide.Ork.Controllers {
 
         //TODO: there is not verification if the account already exists
         [HttpPost("{user}/signup/{authShare}/{keyShare}/{secret}/{email}")]
-        public Task SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret, [FromRoute] string email)
+        public async Task<TideResponse> SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret, [FromRoute] string email)
         {
             _logger.LogInformation($"New registration for {user}", user);
             var account = new KeyVault
@@ -87,7 +87,7 @@ namespace Tide.Ork.Controllers {
                 Email = HttpUtility.UrlDecode(email)
             };
 
-            return _manager.SetOrUpdate(account);
+            return await _manager.SetOrUpdate(account);
         }
 
         //TODO: This is not secure, anyone can change someone else's password
