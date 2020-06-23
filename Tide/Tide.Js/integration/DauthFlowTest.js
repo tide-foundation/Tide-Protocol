@@ -52,6 +52,7 @@ async function main() {
     await flow.changePass(pass, newPass, threshold);
     var keyTag2 = await flow.logIn(newPass);
     assert.equal(key.toString(), keyTag2.toString());
+    await flow.RecoverCmk();
   } catch (error) {
     console.log(error);
   }

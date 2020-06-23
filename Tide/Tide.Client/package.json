@@ -9,6 +9,6 @@
   "author": "tide foundation",
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "cryptide": "^1.5.3"
+    "cryptide": "2.0.0-alpha.2"
   }
 }

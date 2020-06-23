@@ -163,7 +163,7 @@ export default class DAuthFlow {
             var ticks = getTicks();
             var ids = this.clients.map(c => c.clientId);
             var [, ais] = SecretShare.shareFromIds(auth, ids, threshold, C25519Point.n);
-            var signs = this.clients.map((c, i) => derivedKeys[i].hash(Buffer.concat([c.userBuffer, Buffer.from(ais[i].toArray(256).value), sAuths[i].toArray(), ticks])))
+            var signs = this.clients.map((c, i) => derivedKeys[i].hash(Buffer.concat([c.userBuffer, Buffer.from(ais[i].toArray(256).value), Buffer.from(sAuths[i].toArray()), ticks])))
 
             await Promise.all(this.clients.map((cli, i) => cli.changePass(ais[i], sAuths[i], ticks, signs[i], withCmk)));
         } catch (err) {
