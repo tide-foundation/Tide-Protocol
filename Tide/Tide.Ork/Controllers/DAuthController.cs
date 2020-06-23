@@ -14,7 +14,6 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
-using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Web;
@@ -30,12 +29,16 @@ namespace Tide.Ork.Controllers {
     [ApiController]
     [Route("api/dauth")]
     public class DAuthController : ControllerBase {
+        private readonly IEmailClient _mail;
         private readonly ILogger _logger;
+        private readonly IdGenerator _generator;
         private readonly IKeyManager _manager;
 
-        public DAuthController(IKeyManagerFactory factory, ILogger<DAuthController> logger) {
+        public DAuthController(IKeyManagerFactory factory, IEmailClient mail, ILogger<DAuthController> logger, IdGenerator gen) {
             _manager = factory.BuildManager();
+            _mail = mail;
             _logger = logger;
+            _generator = gen;
         }
 
         [HttpGet("{user}/share/{pass}")]
@@ -90,13 +93,28 @@ namespace Tide.Ork.Controllers {
                 _logger.LogInformation($"Unsuccessful change password for {user}", user, authShare, secret, ticks, sign);
                 return BadRequest();
             }
-            
+
             _logger.LogInformation($"Change password for {user}", user);
 
             account.AuthShare = GetBigInteger(authShare);
             account.Secret = AesKey.Parse(FromBase64(secret));
 
             await _manager.SetOrUpdate(account);
+            return Ok();
+        }
+
+        //TODO: Make it last temporarily
+        //TODO: Encrypt data with a random key
+        [HttpGet("{user}/cmk")]
+        public async Task<ActionResult> RecoverCmk([FromRoute] string user)
+        {
+            var account = await _manager.GetByUser(GetUserId(user));
+            var share = new OrkShare(_generator.Id, account.KeyShare).ToString();
+            var msg = $"You have requested to recover the CMK. Introduce the code [{share}] into tide wallet.";
+            
+            _mail.SendEmail(user, account.Email, "Key Recovery", msg);
+            _logger.LogInformation($"Send cmk share to {user}", user);
+
             return Ok();
         }
 

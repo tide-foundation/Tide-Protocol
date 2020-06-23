@@ -15,6 +15,7 @@
 
 import BigInt from 'big-integer';
 import DAuthClient from './DAuthClient';
+import DAuthShare from './DAuthShare';
 import { SecretShare, Utils, C25519Point, AESKey } from 'cryptide';
 
 export default class DAuthFlow {
@@ -95,6 +96,32 @@ export default class DAuthFlow {
         } catch (err) {
             return Promise.reject(err);
         }
+    }
+
+    RecoverCmk() {
+        return Promise.all(this.clients.map(cli => cli.RecoverCmk()));
+    }
+
+    /**
+     * @param {string} textShares
+     * @param {string} newPass
+     * @param {number} threshold
+     */
+    async ReconstructCmk(textShares, newPass = null, threshold = null) {
+        var shares = textShares.replace(/( +?)|\[|\]/g, '')
+            .split(/\r?\n/).map(key => DAuthShare.from(key));
+       
+        var ids = shares.map(c => c.id);
+        var values = shares.map(c => c.share);
+
+        var secretValue = SecretShare.interpolate(ids, values, C25519Point.n);
+        var key = AESKey.seed(Buffer.from(secretValue.toArray(256).value));
+
+        if (newPass !== null && threshold !== null) {
+            await this.changePassWithKey(key, newPass, threshold);
+        }
+
+        return key;
     }
 
     /**
