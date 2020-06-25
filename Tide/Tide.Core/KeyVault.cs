@@ -19,6 +19,7 @@ namespace Tide.Core
         public KeyVault() : base(1)
         {
             Secret = new AesKey();
+            CmkAuth = new AesKey();
         }
 
         protected override IEnumerable<byte[]> GetItems()
