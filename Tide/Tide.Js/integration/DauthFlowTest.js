@@ -37,7 +37,7 @@ async function Reconstruct() {
     EKLoBKh2t3SBQaKg7nheeA18TeB/8j5KZYiEvgrbDmQsQ/UrhW2OPGwmVekcKAUs";
 
   var latestPass = '654321';
-  var key = await flow.ReconstructCmk(msg, latestPass, threshold);
+  var key = await flow.Reconstruct(msg, latestPass, threshold);
   
   var keyTag = await flow.logIn(latestPass);
   assert.equal(key.toString(), keyTag.toString());
@@ -52,7 +52,7 @@ async function main() {
     await flow.changePass(pass, newPass, threshold);
     var keyTag2 = await flow.logIn(newPass);
     assert.equal(key.toString(), keyTag2.toString());
-    await flow.RecoverCmk();
+    await flow.Recover();
   } catch (error) {
     console.log(error);
   }

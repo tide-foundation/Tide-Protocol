@@ -2,13 +2,17 @@
   "name": "tide.client",
   "version": "0.0.1",
   "description": "Decentralized authentication system for Tide",
-  "main": "index.js",
   "scripts": {
+    "start": "parcel DAuth.html",    
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "tide foundation",
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "cryptide": "2.0.0-alpha.2"
+    "cryptide": "2.0.0-alpha.2",
+    "tide": "file:../Tide.Js"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4"
   }
 }

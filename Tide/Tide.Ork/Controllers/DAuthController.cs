@@ -106,7 +106,7 @@ namespace Tide.Ork.Controllers {
         //TODO: Make it last temporarily
         //TODO: Encrypt data with a random key
         [HttpGet("{user}/cmk")]
-        public async Task<ActionResult> RecoverCmk([FromRoute] string user)
+        public async Task<ActionResult> Recover([FromRoute] string user)
         {
             var account = await _manager.GetByUser(GetUserId(user));
             var share = new OrkShare(_generator.Id, account.KeyShare).ToString();

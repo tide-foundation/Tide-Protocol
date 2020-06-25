@@ -7,6 +7,5 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import Tide from "./Tide";
-
-export default Tide;
+export { default as DAuthFlow } from "./dauth/DAuthFlow";
+export { default } from "./Tide";

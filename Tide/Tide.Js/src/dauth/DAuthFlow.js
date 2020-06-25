@@ -98,8 +98,8 @@ export default class DAuthFlow {
         }
     }
 
-    RecoverCmk() {
-        return Promise.all(this.clients.map(cli => cli.RecoverCmk()));
+    Recover() {
+        return Promise.all(this.clients.map(cli => cli.Recover()));
     }
 
     /**
@@ -107,7 +107,7 @@ export default class DAuthFlow {
      * @param {string} newPass
      * @param {number} threshold
      */
-    async ReconstructCmk(textShares, newPass = null, threshold = null) {
+    async Reconstruct(textShares, newPass = null, threshold = null) {
         var shares = textShares.replace(/( +?)|\[|\]/g, '')
             .split(/\r?\n/).map(key => DAuthShare.from(key));
        

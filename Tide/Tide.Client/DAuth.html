@@ -12,7 +12,7 @@
         <div class="center col">
           Register
           <div class="mb-2">
-            <input id="register-username" type="text" value="admin" placeholder="Username" />
+            <input id="register-username" type="text" value="me@tide.org" placeholder="Username" />
           </div>
           <div class="mb-2">
             <input id="register-password" type="password" value="123456" placeholder="Password" />
@@ -26,7 +26,7 @@
         <div class="center col">
           Login
           <div class="mb-2">
-            <input id="login-username" type="text" value="admin" placeholder="Username" />
+            <input id="login-username" type="text" value="me@tide.org" placeholder="Username" />
           </div>
           <div class="mb-2">
             <input id="login-password" type="password" value="123456" placeholder="Password" />
@@ -38,8 +38,22 @@
         </div>
       </div>
     </div>
-    <script src="./node_modules/cryptide/dist/cryptide.js"></script>
-    <script src="./src/main.js"></script>
+    <div class="layout center">
+      <div class="center col">
+        <div class="mb-1">
+          <input id="forget-username" type="text" value="me@tide.org" placeholder="Username" />
+          <button id="recover" type="button">Recover</button>
+          </br>
+          <fieldset>
+            <legend>shares</legend>
+            <textarea id="shares" style="width: 402px; height: 207px;"></textarea>
+            </br>
+            <input id="new-password" type="password" placeholder="new password" />
+            <button id="reconstruct" type="button">Reconstruct</button>
+          </fieldset>
+        </div>
+      </div>
+    </div>
     <script src="./src/dauth.js"></script>
   </body>
 </html>

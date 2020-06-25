@@ -20,6 +20,7 @@ namespace Tide.Core
         {
             Secret = new AesKey();
             CmkAuth = new AesKey();
+            Email = string.Empty;
         }
 
         protected override IEnumerable<byte[]> GetItems()

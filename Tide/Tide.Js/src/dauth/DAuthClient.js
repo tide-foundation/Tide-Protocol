@@ -108,7 +108,7 @@ export default class DAuthClient {
     await superagent.post(`${this.url}/dauth/${user}/pass/${auth}/${sec}/${tck}/${sgn}?withCmk=${withCmk}`);
   }
 
-  async RecoverCmk() {
+  async Recover() {
     var user = encodeBase64Url(this.userBuffer);
     await superagent.get(`${this.url}/dauth/${user}/cmk/`);
   }
