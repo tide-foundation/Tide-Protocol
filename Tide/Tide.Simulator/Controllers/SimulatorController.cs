@@ -76,11 +76,11 @@ namespace Tide.Simulator.Controllers {
         }
 
         [HttpGet("Vault/{ork}/{username}")]
-        public ActionResult GetVault([FromRoute] string ork, string username)
+        public TideResponse GetVault([FromRoute] string ork, string username)
         {
             var result = _blockchain.Read(Contract.Authentication, Table.Vault, ork, username);
-            if (string.IsNullOrEmpty(result)) return BadRequest();
-            return Ok(result);
+            if (string.IsNullOrEmpty(result)) return new TideResponse("Invalid username");
+            return new TideResponse(true,result,null);
         }
 
         //[Authorize]
@@ -101,6 +101,11 @@ namespace Tide.Simulator.Controllers {
                     new BlockData(Contract.Authentication, Table.Vault, ork, username, payload),
                     new BlockData(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
                 };
+
+                //var transactions = new List<BlockData> {
+                //    new BlockData(Contract.Authentication, Table.Vault, ork, username, payload),
+                //   // new BlockData(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
+                //};
 
                 //if (HttpContext.User.Identity.Name != ork) return Unauthorized("You do not have write privileges to that scope.");
                 return _blockchain.Write(transactions) ? new TideResponse() : new TideResponse("Internal Server Error");

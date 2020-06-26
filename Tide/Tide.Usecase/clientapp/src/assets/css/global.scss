@@ -1,0 +1,125 @@
+html {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+button {
+
+    border-radius: 2px;
+}
+
+.tide-logo {
+    width: 120px;
+    display: block;
+    margin-bottom: 50px;
+}
+
+h1,
+p,
+td,
+th,
+h4,
+h2 {
+    user-select: none;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.section-title {
+    color: #0dbae8;
+    margin-left: 15px;
+}
+
+.info-section {
+    margin-bottom: 30px;
+}
+
+.section-subtitle {
+    margin-left: 15px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+
+body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar {
+    width: 4px;
+    background-color: #F5F5F5;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #F07800;
+}
+
+.nice-scroll::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+}
+
+.nice-scroll::-webkit-scrollbar {
+    width: 4px;
+    background-color: #F5F5F5;
+}
+
+.nice-scroll::-webkit-scrollbar-thumb {
+    background-color: #F07800;
+}
+
+#page-info {
+    text-align: center;
+}
+
+.classification {
+    color: orange;
+    margin-left: 10px;
+}
+
+
+.test-section {
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+    transition: all 0.5s;
+}
+
+.slide-enter {
+    transform: translateX(-150%);
+    opacity: 0;
+}
+
+.slide-enter-to {
+    transform: translateX(0);
+}
+
+.slide-leave {
+    transform: translateX(0);
+}
+
+.slide-leave-to {
+    transform: translateX(150%);
+    opacity: 0;
+}
+
+.box {
+    margin: 5px;
+    background-color: #f8fafc;
+    border: #d3dce2 1px solid;
+}

@@ -20,23 +20,27 @@ namespace Tide.Ork.Classes {
             return await GetByUser(user) == null;
         }
 
-        public async Task<BigInteger> GetAuthShare(Guid user) {
-            return (await GetByUser(user)).AuthShare;
+        public async Task<BigInteger> GetAuthShare(Guid userId) {
+            var user = await GetByUser(userId);
+            if (user == null) return BigInteger.Zero;
+            return user.AuthShare;
         }
 
-        public async Task<AesKey> GetSecret(Guid user) {
-            return (await GetByUser(user)).Secret;
+        public async Task<AesKey> GetSecret(Guid userId) {
+            var user = await GetByUser(userId);
+            return user?.Secret;
         }
 
-        public async Task<KeyVault> GetByUser(Guid user) {
-            var cipher = await _client.GetVault(_orkId, user.ToString());
-            if (string.IsNullOrEmpty(cipher)) return null;
+        public async Task<KeyVault> GetByUser(Guid userId) {
+            var response = await _client.GetVault(_orkId, userId.ToString());
+            if (!response.Success) return null;
 
-            return KeyVault.Parse(_key.Decrypt(cipher));
+            return KeyVault.Parse(_key.Decrypt((string)response.Content));
         }
 
         public async Task<TideResponse> SetOrUpdate(KeyVault account)
         {
+            
             return await _client.PostVault(_orkId, account.User.ToString(), _key.EncryptStr(account));
         }
     }

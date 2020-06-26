@@ -46,7 +46,9 @@ async function Reconstruct() {
 async function main() {
   try {
     var key = await flow.signUp(pass, mail, threshold);
+
     var keyTag1 = await flow.logIn(pass);
+    
     assert.equal(key.toString(), keyTag1.toString());
 
     await flow.changePass(pass, newPass, threshold);

@@ -19,6 +19,8 @@ const nodes = [...Array(nodeCount)].map(
   (_, i) => `https://ork-${i}.azurewebsites.net`
 );
 
+var uniqueUsername = guid();
+console.log('ran')
 describe("Tide", () => {
   describe("tide.register()", () => {
     it("should return false when given invalid username", function () {
@@ -29,7 +31,21 @@ describe("Tide", () => {
     it("should return keys when given unique credentials", function () {
       const tide = new Tide(nodes);
       return expect(
-        tide.register(guid(), "123456789")
+        tide.register(uniqueUsername, "123456789")
+      ).to.eventually.have.property("key");
+    });
+  });
+
+  describe("tide.login()", () => {
+    it("should return false when given invalid username", function () {
+      const tide = new Tide(nodes);
+      return expect(tide.register(guid(), "123456789")).to.be.rejected;
+    });
+
+    it("should return keys when given correct credentials", function () {
+      const tide = new Tide(nodes);
+      return expect(
+        tide.register(uniqueUsername, "123456789")
       ).to.eventually.have.property("key");
     });
   });

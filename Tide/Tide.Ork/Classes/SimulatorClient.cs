@@ -24,9 +24,9 @@ namespace Tide.Ork.Classes {
             return JsonConvert.DeserializeObject<TideResponse>(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task<string> GetVault(string ork, string username) {
+        public async Task<TideResponse> GetVault(string ork, string username) {
             var response = await _client.GetAsync($"Simulator/Vault/{ork}/{username}");
-            return await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<TideResponse>(await response.Content.ReadAsStringAsync());
         }
 
         private async Task<bool> IsAuthenticated() {

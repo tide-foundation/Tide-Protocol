@@ -47,6 +47,7 @@ namespace Tide.Ork.Controllers {
             if (!g.IsValid) return BadRequest();
 
             var s = await _manager.GetAuthShare(GetUserId(user));
+            if (s == BigInteger.Zero) return BadRequest("Invalid username.");
             var gs = g * s;
 
             _logger.LogInformation($"Login attempt for {user}", user, pass);
@@ -56,6 +57,7 @@ namespace Tide.Ork.Controllers {
         [HttpGet("{user}/signin/{ticks}/{sign}")]
         public async Task<ActionResult> SignIn([FromRoute] string user, [FromRoute] string ticks, [FromRoute] string sign) {
             var account = await _manager.GetByUser(GetUserId(user));
+            if (account == null) return BadRequest("That user does not exist.");
             if (!VerifyChallenge.Check(account.Secret, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(ticks))) {
                 _logger.LogInformation($"Unsuccessful login for {user}", user, ticks, sign);
                 return BadRequest();

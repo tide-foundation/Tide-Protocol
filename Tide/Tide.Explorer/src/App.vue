@@ -3,18 +3,21 @@
     <button :disabled="selectedBlock == null" @click="back">Back</button>
     <table v-if="selectedBlock == null">
       <tr v-show="selectedBlock == null">
+          <th>Date</th>
         <th>Contract</th>
         <th>Table</th>
         <th>Scope</th>
         <th>Index</th>
       </tr>
 
-      <tr
+      <tr 
         v-show="selectedBlock == null"
         v-for="block in activeBlockList"
         :key="block.id"
         @click="clickedRow(block.id)"
+     
       >
+           <td>{{ block.dateCreated | date }}</td>
         <td>{{ block.contract | contractName }}</td>
         <td>{{ block.table | tableName }}</td>
         <td>{{ block.scope }}</td>
@@ -36,8 +39,9 @@
 
 <script>
 import { HubConnectionBuilder, LogLevel } from "@aspnet/signalr";
+import moment from 'moment'
 const contractNames = ["Unset", "Authentication"];
-const tableNames = ["Unset", "Vault"];
+const tableNames = ["Unset", "Vault","Users"];
 
 export default {
   name: "App",
@@ -51,7 +55,7 @@ export default {
   },
   computed: {
     activeBlockList: function () {
-      return this.blocks.filter((b) => !b.stale);
+      return [].concat(this.blocks.filter((b) => !b.stale)).reverse();
     },
     blockHistory: function () {
       if (this.selectedBlock == null) return null;
@@ -59,8 +63,9 @@ export default {
     }
   },
   filters: {
-    contractName: (v) => contractNames[0],
-    tableName: (v) => tableNames[0],
+    contractName: (v) => contractNames[v],
+    tableName: (v) => tableNames[v],
+    date: (v) => moment(String(v)).format('DD/MM/YYYY hh:mm'),
   },
   created() {
     const base = this;
@@ -70,7 +75,9 @@ export default {
       .build();
 
     this.connection.on("NewBlock", function (block) {
+      block.new = true;
       base.blocks.push(block)
+
     });
 
     this.connection.on("Populate", function (blocks) {
@@ -98,8 +105,10 @@ export default {
 </script>
 
 <style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
 #app {
   width: 1000px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 table {
@@ -126,5 +135,10 @@ tr {
   &:hover {
     background-color: #fcf6c0;
   }
+
+  .new{
+    background-color: yellow !important;
+  }
 }
+
 </style>
