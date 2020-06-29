@@ -14,6 +14,7 @@ namespace Tide.Ork.Classes {
         public SimulatorClient(string url, string orkId, string password) {
             _authRequest = new AuthenticationRequest(orkId, password);
             _client = new HttpClient {BaseAddress = new Uri(url)};
+            _client.DefaultRequestHeaders.Add("OrkId", orkId);
         }
 
         public async Task<TideResponse> PostVault(string ork, string username, string payload) {

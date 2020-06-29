@@ -9,38 +9,27 @@ using Newtonsoft.Json;
 using Tide.Core;
 using Tide.Encryption.Tools;
 using Tide.Usecase.Models;
+using Tide.VendorSdk;
 
 namespace Tide.Usecase.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class VendorController : ControllerBase {
+        private readonly TideVendor _tideVendor;
 
-        private const string VENDOR_ID = "VendorId"; // This is temporary auth
-
-        private readonly HttpClient _client;
-
-        public VendorController(Settings settings) {
-            _client = new HttpClient { BaseAddress = new Uri(settings.Endpoints.Simulator.Api) };
+        public VendorController(TideVendor tideVendor) {
+            _tideVendor = tideVendor;
         }
 
         [HttpPost("CreateUser/{username}")]
-        public ActionResult CreateUser([FromRoute] string username,[FromBody] List<string> desiredOrks) {
-            var stringContent = new StringContent(JsonConvert.SerializeObject(desiredOrks), Encoding.UTF8, "application/json");
-            var response =  _client.PostAsync($"Simulator/CreateUser/{Helpers.GetTideId(username)}/{VENDOR_ID}", stringContent).Result;
-
-            if (response.IsSuccessStatusCode) return Ok();
-
-            return StatusCode((int) response.StatusCode, response.Content.ReadAsStringAsync().Result);
+        public TideResponse CreateUser([FromRoute] string username,[FromBody] List<string> desiredOrks) {
+            return _tideVendor.CreateUser(username, desiredOrks);
         }
 
         [HttpGet("ConfirmUser/{username}")]
-        public ActionResult ConfirmUser([FromRoute] string username)
+        public TideResponse ConfirmUser([FromRoute] string username)
         {
-            var response = _client.GetAsync($"Simulator/ConfirmUser/{Helpers.GetTideId(username)}/{VENDOR_ID}").Result;
-
-            if (response.IsSuccessStatusCode) return Ok();
-            return StatusCode((int)response.StatusCode, response.Content.ReadAsStringAsync().Result);
+            return _tideVendor.ConfirmUser(username);
         }
-
     }
 }

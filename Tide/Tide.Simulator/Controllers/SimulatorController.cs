@@ -30,14 +30,15 @@ namespace Tide.Simulator.Controllers {
         #region Onboarding
 
         // VENDOR CALL
-        [HttpPost("CreateUser/{username}/{vendorId}")]
-        public ActionResult CreateUser([FromRoute] string username, string vendorId, [FromBody] List<string> desiredOrks)
+        [HttpPost("CreateUser/{username}")]
+        public ActionResult CreateUser([FromRoute] string username,  [FromBody] List<string> desiredOrks)
         {
+            if (!Request.Headers.ContainsKey("VendorId")) return BadRequest("Missing 'VendorId' header");
             if (GetUser(username, out var user)) return Conflict("That username already exists");
 
             var newUser = new User
             {
-                Vendor = vendorId
+                Vendor = Request.Headers["VendorId"]
             };
 
             foreach (var desiredOrk in desiredOrks)
@@ -49,12 +50,13 @@ namespace Tide.Simulator.Controllers {
         }
 
         // VENDOR CALL
-        [HttpGet("ConfirmUser/{username}/{vendorId}")]
-        public ActionResult ConfirmUser([FromRoute] string username, string vendorId)
+        [HttpGet("ConfirmUser/{username}")]
+        public ActionResult ConfirmUser([FromRoute] string username)
         {
+            if (!Request.Headers.ContainsKey("VendorId")) return BadRequest("Missing 'VendorId' header");
             if (!GetUser(username, out var user)) return BadRequest("That username does not exist");
 
-            if (user.Vendor != vendorId) return BadRequest("You are not the authorized vendor");
+            if (user.Vendor != Request.Headers["VendorId"]) return BadRequest("You are not the authorized vendor");
             if (user.Status != UserStatus.Pending) return BadRequest("That user is not in the pending state");
 
             if (!user.Nodes.All(n => n.Confirmed)) return BadRequest("All ork nodes have not been confirmed");

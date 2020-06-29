@@ -11,10 +11,17 @@
     <PackageReference Include="Cryptide.Core" Version="0.0.9" />
     <PackageReference Include="VueCliMiddleware" Version="3.0.0" />
     <PackageReference Include="Westwind.AspnetCore.LiveReload" Version="0.2.4.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Tide.Core\Tide.Core.csproj" />
+    <ProjectReference Include="..\Tide.VendorSdk\Tide.VendorSdk.csproj" />
   </ItemGroup>
 
 

@@ -8,6 +8,7 @@ namespace Tide.Usecase.Models
     public class Settings
     {
         public Endpoints Endpoints { get; set; }
+        public string Connection { get; set; }
     }
 
     public class Endpoints
