@@ -43,6 +43,16 @@ namespace Tide.VendorSdk
             return (false, response.Content.ReadAsStringAsync().Result);
         }
 
+        public (bool success, string error) RollbackUser(string username)
+        {
+            // if (!IsAuthenticated().Result) return (false, "Authentication failed");
+
+            var response = _client.GetAsync($"Simulator/RollbackUser/{Helpers.GetTideId(username)}").Result;
+
+            if (response.IsSuccessStatusCode) return (true, null);
+            return (false, response.Content.ReadAsStringAsync().Result);
+        }
+
 
         private async Task<bool> IsAuthenticated()
         {

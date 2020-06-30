@@ -31,5 +31,11 @@ namespace Tide.Usecase.Controllers {
         {
             return _tideVendor.ConfirmUser(username);
         }
+
+        [HttpGet("RollbackUser/{username}")]
+        public TideResponse RollbackUser([FromRoute] string username)
+        {
+            return _tideVendor.ConfirmUser(username);
+        }
     }
 }

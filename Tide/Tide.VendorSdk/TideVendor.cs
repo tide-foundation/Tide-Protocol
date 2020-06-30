@@ -30,6 +30,12 @@ namespace Tide.VendorSdk
             return new TideResponse(success, null, error);
         }
 
+        public TideResponse RollbackUser(string username)
+        {
+            var (success, error) = _client.RollbackUser(username);
+            return new TideResponse(success, null, error);
+        }
+
         #endregion
     }
 }

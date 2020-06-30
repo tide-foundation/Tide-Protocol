@@ -33,6 +33,7 @@ class Tide {
         this.key = key;
         resolve({ key: key });
       } catch (error) {
+        await get(`${this.serverUrl}/RollbackUser/${userId}/`);
         reject(error);
       }
     });
