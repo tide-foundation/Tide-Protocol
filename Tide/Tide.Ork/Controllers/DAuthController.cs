@@ -33,9 +33,11 @@ namespace Tide.Ork.Controllers {
         private readonly ILogger _logger;
         private readonly IdGenerator _generator;
         private readonly IKeyManager _manager;
+        private readonly ICvkManager _managerCvk;
 
         public DAuthController(IKeyManagerFactory factory, IEmailClient mail, ILogger<DAuthController> logger, IdGenerator gen) {
             _manager = factory.BuildManager();
+            _managerCvk = factory.BuildManagerCvk();
             _mail = mail;
             _logger = logger;
             _generator = gen;
@@ -67,6 +69,7 @@ namespace Tide.Ork.Controllers {
             return Ok(account.Secret.EncryptStr(account.KeyShare.ToByteArray(true, true)));
         }
 
+        //TODO: Move secrets out of the url
         //TODO: there is not verification if the account already exists
         [HttpPost("{user}/signup/{authShare}/{keyShare}/{secret}/{cmkAuth}/{email}")]
         public async Task<TideResponse> SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret, [FromRoute] string cmkAuth, [FromRoute] string email)
@@ -118,6 +121,56 @@ namespace Tide.Ork.Controllers {
             _logger.LogInformation($"Send cmk share to {user}", user);
 
             return Ok();
+        }
+
+        //TODO: there is not verification if the account already exists
+        [HttpPost("{user}/cvk")]
+        public async Task<TideResponse> RegisterCvk([FromRoute] string user, [FromBody] string[] data)
+        {
+            var account = new CvkVault
+            {
+                User = GetUserId(user),
+                VendorPub = C25519Key.Parse(FromBase64(data[0])),
+                CVKi = GetBigInteger(data[1]),
+                CvkAuth = AesKey.Parse(FromBase64(data[2])),
+            };
+
+            _logger.LogInformation($"New cvk for {user}", user, data[0]);
+
+            return await _managerCvk.SetOrUpdate(account);
+        }
+
+        [HttpGet("{user}/challenge")]
+        public async Task<ActionResult> ChallengeVendor([FromRoute] string user)
+        {
+            var account = await _managerCvk.GetByUser(GetUserId(user));
+            var token = TranToken.Generate(account.CvkAuth);
+
+            var cipher = account.VendorPub.Encrypt(token.GenKey(account.CvkAuth));
+            _logger.LogInformation($"challenge from {user}", user, cipher.ToString());
+
+            return Ok(new { Token = token.ToString(), Challenge = cipher.ToString() });
+        }
+
+        [HttpGet("{user}/decrypt/{data}/{token}/{sign}")]
+        public async Task<ActionResult> Decrypt([FromRoute] string user, string data, string token, string sign)
+        {
+            var account = await _managerCvk.GetByUser(GetUserId(user));
+            
+            var tran = TranToken.Parse(Convert.FromBase64String(token.DecodeBase64Url()));
+            if (!tran.Check(account.CvkAuth)) return BadRequest();
+
+            var toCheck = Convert.FromBase64String(sign.DecodeBase64Url()); 
+            var toSign = Convert.FromBase64String(data.DecodeBase64Url());
+            var key = tran.GenKey(account.CvkAuth);
+            if (!Utils.Equals(key.Hash(toSign), toCheck)) return BadRequest();
+
+            var c1 = C25519Point.From(toSign);
+            if (!c1.IsValid) return BadRequest();
+
+            _logger.LogInformation($"Decrypt data of {user}", user, data, token);
+            var cipher = key.Encrypt((c1 * account.CVKi).ToByteArray());
+            return Ok(Convert.ToBase64String(cipher));
         }
 
         private byte[] FromBase64(string input) {

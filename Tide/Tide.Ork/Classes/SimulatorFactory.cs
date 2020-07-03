@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-using Microsoft.AspNetCore.Http;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Tide.Encryption.AesMAC;
-using Tide.Encryption.Tools;
 using Tide.Ork.Models;
 
 namespace Tide.Ork.Classes {
@@ -19,13 +14,10 @@ namespace Tide.Ork.Classes {
             _orkId = settings.Instance.Username;
         }
 
-        public IKeyManager BuildManager()
-        {
-            return new SimulatorKeyManager(_orkId, BuildClient(), _key);
-        }
+        public IKeyManager BuildManager() => new SimulatorKeyManager(_orkId, BuildClient(), _key);
 
-        public SimulatorClient BuildClient() {
-            return new SimulatorClient(_config.Api, _orkId, _config.Password);
-        }
+        public ICvkManager BuildManagerCvk() => new SimulatorCvkManager(_orkId, BuildClient(), _key);
+
+        public SimulatorClient BuildClient() => new SimulatorClient(_config.Api, _orkId, _config.Password);
     }
 }
