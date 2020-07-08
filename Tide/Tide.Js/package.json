@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "cryptide": "2.0.0-alpha.4",
+    "cryptide": "2.0.0-alpha.5",
     "big-integer": "1.6.36",
     "superagent": "^5.2.2"
   },
@@ -51,6 +51,7 @@
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
+    "parcel": "^1.12.4",
     "rollup": "^0.67.3",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.2.0",
@@ -66,6 +67,7 @@
     "build": "node tools/build",
     "prepublish": "npm run build",
     "publish:docs": "easystatic deploy docs --repo kriasoft/babel-starter-kit",
-    "start": "easystatic start docs"
+    "start": "easystatic start docs",
+    "integration": "parcel ./integration/index.html"
   }
 }

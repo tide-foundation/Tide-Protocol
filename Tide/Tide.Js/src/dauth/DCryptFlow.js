@@ -17,6 +17,8 @@ import DCryptClient from "./DCryptClient";
 import { C25519Point, AESKey, C25519Key, C25519Cipher } from "cryptide";
 
 export default class DCryptFlow {
+  //TODO: cvkAuth should not be included here to generate user id
+  //      due to vendor workflow that does not have access to it.
   /**
    * @param {string[]} urls
    * @param {string} user

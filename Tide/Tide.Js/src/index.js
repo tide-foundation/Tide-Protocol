@@ -8,4 +8,5 @@
  */
 
 export { default as DAuthFlow } from "./dauth/DAuthFlow";
+export { default as DCryptFlow } from "./dauth/DCryptFlow";
 export { default } from "./Tide";
