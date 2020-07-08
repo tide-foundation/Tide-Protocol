@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dCrypt</title>
+    <link rel="stylesheet" type="text/css" href="./src/site.css" />
+  </head>
+  <body>
+    <div class="layout center">
+      <div class="center">
+        <div class="center col">
+          Register
+          <div class="mb-2">
+            <input id="register-username" type="text" value="me@tide.org" placeholder="Username" />
+          </div>
+          <div class="mb-2">
+            <input id="register-cvkAuth" type="text" placeholder="cvkAuth" />
+          </div>
+          <div class="mb-2">
+            <input id="register-vendorPub" type="text" placeholder="vendor public" />
+          </div>
+          <button id="register-genauth" type="button">Gen Auth</button>
+          <button id="register" type="button">Register</button>
+          <div>
+            <p id="register-status"></p>
+          </div>
+        </div>
+        <span>🔑</span>
+        <div class="center col">
+          Post Registered
+          <div class="mb-2">
+            <input id="registred-cvk" type="text" placeholder="cvk" />
+          </div>
+          <div class="mb-2">
+            <input id="registred-input" type="text" placeholder="to encrypt" />
+          </div>
+          <div class="mb-2">
+            <textarea id="registred-encrypted" style="width: 201px; height: 62px;">[waiting to encrypt]</textarea>
+          </div>
+          <button id="registred-gentoencrypt" type="button">Gen key to encrypt</button>
+          <button id="registred-encrypt" type="button">Encrypt</button>
+        </div>
+      </div>
+    </div>
+    <div class="layout center">
+      <div class="center">
+        <div class="center col">
+          Vendor
+          <div class="mb-2">
+            <input id="vendor-key" type="text" placeholder="vendor key" /><br />
+          </div>
+          <div class="mb-2">
+            <input id="vendor-pub" type="text" placeholder="vendor pub" /><br />
+          </div>
+          <div class="mb-2">
+            <input id="vendor-username" type="text" placeholder="vendor user" />
+          </div>
+          <button id="vendor-genvendorkey" type="button">Gen Vendor Key</button>
+        </div>
+        <span>🔑</span>
+        <div class="center col">
+          Data
+          <div class="mb-2">
+            <textarea id="vendor-encrypted" placeholder="data encrypted" style="width: 201px; height: 62px;"></textarea>
+          </div>
+          <div class="mb-2">
+            <input id="vendor-todecrypt" readonly type="text" placeholder="decrypted data" />
+          </div>
+          <button id="vendor-decrypt" type="button">Decrypt</button>
+        </div>
+      </div>
+    </div>
+    <script src="./src/dcrypt.js"></script>
+  </body>
+</html>

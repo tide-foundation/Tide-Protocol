@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "description": "Decentralized authentication system for Tide",
   "scripts": {
-    "start": "parcel DAuth.html",    
+    "dauth": "parcel DAuth.html",
+    "dcrypt": "parcel DCrypt.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "tide foundation",
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
-    "cryptide": "2.0.0-alpha.2",
+    "cryptide": "file:../Tide.Js/node_modules/cryptide",
     "tide": "file:../Tide.Js"
   },
   "devDependencies": {
