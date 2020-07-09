@@ -10,49 +10,67 @@
     <div class="layout center">
       <div class="center">
         <div class="center col">
-          Register
+          <div class="mb-2">
+            <span>Register</span> 
+          </div>
+
+          <label for="register-username">username</label>
           <div class="mb-2">
             <input id="register-username" type="text" value="me@tide.org" placeholder="Username" />
           </div>
+
+          <label for="register-cvkAuth">cvkAuth</label>
           <div class="mb-2">
             <input id="register-cvkAuth" type="text" placeholder="cvkAuth" />
           </div>
+
+          <label for="register-vendorPub">vendor public</label>
           <div class="mb-2">
             <input id="register-vendorPub" type="text" placeholder="vendor public" />
           </div>
           <button id="register-genauth" type="button">Gen Auth</button>
           <button id="register" type="button">Register</button>
-          <div>
-            <p id="register-status"></p>
-          </div>
         </div>
         <span>🔑</span>
         <div class="center col">
-          Post Registered
+          <div class="mb-2">
+            <span>Post Registered</span>
+          </div>
+
+          <label for="registred-cvk">cvk</label>
           <div class="mb-2">
             <input id="registred-cvk" type="text" placeholder="cvk" />
           </div>
+
+          <label for="registred-input">input (key)</label>
           <div class="mb-2">
             <input id="registred-input" type="text" placeholder="to encrypt" />
           </div>
+
+          <label for="registred-encrypted">cipher</label>
           <div class="mb-2">
-            <textarea id="registred-encrypted" style="width: 201px; height: 62px;">[waiting to encrypt]</textarea>
+            <textarea id="registred-encrypted" style="width: 201px; height: 62px;"></textarea>
           </div>
           <button id="registred-gentoencrypt" type="button">Gen key to encrypt</button>
           <button id="registred-encrypt" type="button">Encrypt</button>
         </div>
-      </div>
-    </div>
-    <div class="layout center">
-      <div class="center">
+        <span>✉️</span>
         <div class="center col">
-          Vendor
           <div class="mb-2">
-            <input id="vendor-key" type="text" placeholder="vendor key" /><br />
+            <span>Vendor</span>
           </div>
+
+          <label for="vendor-key">secret</label>
           <div class="mb-2">
-            <input id="vendor-pub" type="text" placeholder="vendor pub" /><br />
+            <input id="vendor-key" type="text" placeholder="secret key" /><br />
           </div>
+
+          <label for="vendor-pub">public</label>
+          <div class="mb-2">
+            <input id="vendor-pub" type="text" placeholder="public key" /><br />
+          </div>
+
+          <label for="vendor-username">username</label>
           <div class="mb-2">
             <input id="vendor-username" type="text" placeholder="vendor user" />
           </div>
@@ -60,12 +78,18 @@
         </div>
         <span>🔑</span>
         <div class="center col">
-          Data
           <div class="mb-2">
-            <textarea id="vendor-encrypted" placeholder="data encrypted" style="width: 201px; height: 62px;"></textarea>
+            <span>Data</span>
           </div>
+
+          <label for="vendor-encrypted">cipher</label>
           <div class="mb-2">
-            <input id="vendor-todecrypt" readonly type="text" placeholder="decrypted data" />
+            <textarea id="vendor-encrypted" placeholder="" style="width: 201px; height: 62px;"></textarea>
+          </div>
+
+          <label for="vendor-todecrypt">output (key)</label>
+          <div class="mb-2">
+            <input id="vendor-todecrypt" readonly type="text" placeholder="to decrypt" />
           </div>
           <button id="vendor-decrypt" type="button">Decrypt</button>
         </div>
