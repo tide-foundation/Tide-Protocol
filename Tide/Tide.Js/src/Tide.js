@@ -4,27 +4,23 @@ import request from "superagent";
 import { encodeBase64Url } from "./Helpers";
 
 class Tide {
-  constructor(vendorId, serverUrl, orkNodes) {
+  constructor(vendorId, serverUrl) {
     this.vendorId = vendorId;
     this.serverUrl = serverUrl;
-    this.orkNodes = orkNodes || [];
   }
-  register(username, password, email) {
+
+  register(username, password, email, orkIds) {
     return new Promise(async (resolve, reject) => {
       try {
         // Some local validation, which is all we can really do.
         if (username.length < 3 || password.length < 6)
           return reject("Invalid credentials");
 
-        var flow = new DAuthFlow(this.orkNodes, username);
+        var flow = new DAuthFlow(generateOrkUrls(orkIds), username);
         var userId = encodeBase64Url(new IdGenerator(username).buffer);
         // Ask the vendor to create the user as a liability.
-      
-        await post(`${this.serverUrl}/CreateUser/${userId}`, [
-          "ork-0",
-          "ork-1",
-          "ork-2",
-        ]);
+
+        await post(`${this.serverUrl}/CreateUser/${userId}`, orkIds);
         // Send all shards to selected orks
         var key = await flow.signUp(password, email, 2);
         // Finally, ask the vendor to confirm the user
@@ -33,15 +29,23 @@ class Tide {
         this.key = key;
         resolve({ key: key });
       } catch (error) {
-        await get(`${this.serverUrl}/RollbackUser/${userId}/`);
         reject(error);
+        // await get(`${this.serverUrl}/RollbackUser/${userId}/`);
       }
     });
   }
   login(username, password) {
     return new Promise(async (resolve, reject) => {
       try {
-        var flow = new DAuthFlow(this.orkNodes, username);
+        var userId = encodeBase64Url(new IdGenerator(username).buffer);
+        var userNodes = JSON.parse(
+          await get(`${this.serverUrl}/GetUserNodes/${userId}`)
+        );
+
+        var flow = new DAuthFlow(
+          generateOrkUrls(userNodes.map((un) => un.ork)),
+          username
+        );
         var keyTag = await flow.logIn(password);
         return resolve({ key: keyTag });
       } catch (error) {
@@ -64,11 +68,35 @@ class Tide {
     return this.key.decryptStr(cipher);
   }
 
-  forgotPassword(username) {
-    // Trigger selected orks to send email fragments
+  async recover(username) {
+    var userId = encodeBase64Url(new IdGenerator(username).buffer);
+    var userNodes = JSON.parse(
+      await get(`${this.serverUrl}/GetUserNodes/${userId}`)
+    );
+
+    var flow = new DAuthFlow(
+      generateOrkUrls(userNodes.map((un) => un.ork)),
+      username
+    );
+    flow.Recover(username);
   }
-  combineForgetPasswordFragments(fragments) {}
-  resetPassword(username, password) {}
+
+  reconstruct(username, shares, newPass) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        var userId = encodeBase64Url(new IdGenerator(username).buffer);
+        var userNodes = JSON.parse(
+          await get(`${this.serverUrl}/GetUserNodes/${userId}`)
+        );
+        var urls = generateOrkUrls(userNodes.map((un) => un.ork));
+        var flow = new DAuthFlow(urls, username);
+
+        return resolve(await flow.Reconstruct(shares, newPass, urls.length));
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
 }
 
 function post(url, data) {
@@ -84,6 +112,10 @@ function get(url) {
     var r = (await request.get(url)).body;
     return r.success ? resolve(r.content) : reject(r.error);
   });
+}
+
+function generateOrkUrls(ids) {
+  return ids.map((id) => `https://${id}.azurewebsites.net`);
 }
 
 export default Tide;

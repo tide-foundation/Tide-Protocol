@@ -29,6 +29,14 @@ namespace Tide.Simulator.Controllers {
 
         #region Onboarding
 
+        // CLIENT CALL
+        [HttpGet("GetUserNodes/{username}")]
+        public ActionResult GetUserNodes([FromRoute] string username)
+        {
+            if (!GetUser(username, out var user)) return Conflict("That username does not exists");
+            return Ok(user.Nodes);
+        }
+
         // VENDOR CALL
         [HttpPost("CreateUser/{username}")]
         public ActionResult CreateUser([FromRoute] string username,  [FromBody] List<string> desiredOrks)

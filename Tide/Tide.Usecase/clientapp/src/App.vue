@@ -10,7 +10,7 @@
     </transitionBox>
 
     <transitionBox>
-      <loginModal />
+      <Auth2 />
     </transitionBox>
 
     <transitionBox>
@@ -24,26 +24,32 @@
     <transitionBox>
       <tint />
     </transitionBox>
-    <transitionBox>
-      <tideBox />
-    </transitionBox>
   </section>
 </template>
 
 <script>
-import transitionBox from './components/TransitionBox.vue'
-import navbar from './components/Nav.vue'
-import loginModal from './components/LoginModal.vue'
-import message from './components/Message.vue'
-import loading from './components/Loading.vue'
-import error from './components/Error.vue'
-import tint from './components/Tint.vue'
-import tideBox from './components/TideBox.vue'
-import axios from 'axios'
+import transitionBox from "./components/TransitionBox.vue";
+import navbar from "./components/Nav.vue";
+import Auth2 from "./components/Auth2.vue";
+import message from "./components/Message.vue";
+import loading from "./components/Loading.vue";
+import error from "./components/Error.vue";
+import tint from "./components/Tint.vue";
+import tideBox from "./components/TideBox.vue";
+import axios from "axios";
 
 export default {
-  components: { transitionBox, navbar, loginModal, message, loading, error, tint, tideBox },
-}
+  components: {
+    transitionBox,
+    navbar,
+    Auth2,
+    message,
+    loading,
+    error,
+    tint,
+    tideBox
+  }
+};
 </script>
 
 <style lang="scss">

@@ -1,17 +1,16 @@
 html {
-    overflow-y: scroll;
-    overflow-x: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 button {
-
-    border-radius: 2px;
+  border-radius: 2px;
 }
 
 .tide-logo {
-    width: 120px;
-    display: block;
-    margin-bottom: 50px;
+  width: 120px;
+  display: block;
+  margin-bottom: 50px;
 }
 
 h1,
@@ -20,106 +19,126 @@ td,
 th,
 h4,
 h2 {
-    user-select: none;
+  user-select: none;
 }
 
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .section-title {
-    color: #0dbae8;
-    margin-left: 15px;
+  color: #0dbae8;
+  margin-left: 15px;
 }
 
 .info-section {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .section-subtitle {
-    margin-left: 15px;
+  margin-left: 15px;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.5s;
+  transition: opacity 0.5s;
 }
 
 .fade-enter,
 .fade-leave-to {
-    opacity: 0;
+  opacity: 0;
 }
 
 body::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
-    background-color: #F5F5F5;
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
 }
 
 body::-webkit-scrollbar {
-    width: 4px;
-    background-color: #F5F5F5;
+  width: 4px;
+  background-color: #f5f5f5;
 }
 
 body::-webkit-scrollbar-thumb {
-    background-color: #F07800;
+  background-color: #f07800;
 }
 
 .nice-scroll::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
-    background-color: #F5F5F5;
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
 }
 
 .nice-scroll::-webkit-scrollbar {
-    width: 4px;
-    background-color: #F5F5F5;
+  width: 4px;
+  background-color: #f5f5f5;
 }
 
 .nice-scroll::-webkit-scrollbar-thumb {
-    background-color: #F07800;
+  background-color: #f07800;
 }
 
 #page-info {
-    text-align: center;
+  text-align: center;
 }
 
 .classification {
-    color: orange;
-    margin-left: 10px;
+  color: orange;
+  margin-left: 10px;
 }
 
-
 .test-section {
-    height: 500px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .slide-enter-active,
 .slide-leave-active {
-    transition: all 0.5s;
+  transition: all 0.5s;
 }
 
 .slide-enter {
-    transform: translateX(-150%);
-    opacity: 0;
+  transform: translateX(-150%);
+  opacity: 0;
 }
 
 .slide-enter-to {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .slide-leave {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .slide-leave-to {
-    transform: translateX(150%);
-    opacity: 0;
+  transform: translateX(150%);
+  opacity: 0;
 }
 
 .box {
-    margin: 5px;
-    background-color: #f8fafc;
-    border: #d3dce2 1px solid;
+  margin: 5px;
+  background-color: #f8fafc;
+  border: #d3dce2 1px solid;
+}
+
+.Password {
+  margin: 0 !important;
+}
+
+.Password__group {
+  width: 100% !important;
+}
+
+.Password__field {
+  width: 100%;
+  border: 0px !important;
+  border-bottom: 2px solid #e4e4e4 !important;
+  padding-left: 5px !important;
+  height: inherit !important;
+  background-color: transparent !important;
+}
+
+.red {
+  color: red;
 }

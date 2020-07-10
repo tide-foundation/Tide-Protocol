@@ -2,22 +2,14 @@
   <section class="tide-input">
     <p :class="{ 'white-text': !lockedText }">
       {{ label }}
-      <span class="classification" v-if="classification != null"
-        >({{ classification }})</span
-      >
+      <span class="classification" v-if="classification != null">({{ classification }})</span>
     </p>
     <div class="input-content">
       <input
         :markup="markup"
         :name="guid"
-        :class="{
-          'tide-engaged': engaged,
-          'no-events': !engaged,
-          tidify: tidify
-        }"
         :value="value"
         :type="type"
-        :disabled="disabled"
         :list="list"
         autocomplete="new-password"
         class="effect tide-input-main"
@@ -26,30 +18,25 @@
       <span class="focus-border">
         <i></i>
       </span>
-
-      <transitionBox>
-        <img
-          v-if="locked && tidify"
-          src="../assets/img/tide-lock.svg"
-          alt=""
-          class="lock-icon"
-        />
-        <img
-          v-if="!locked && tidify"
-          src="../assets/img/tide-unlock.svg"
-          alt=""
-          class="lock-icon"
-        />
-      </transitionBox>
     </div>
   </section>
 </template>
 
 <script>
-import transitionBox from '../components/TransitionBox.vue'
+import transitionBox from "../components/TransitionBox.vue";
 export default {
   components: { transitionBox },
-  props: ['value', 'label', 'type', 'required', 'disabled', 'markup', 'list', 'classification', 'tidify'],
+  props: [
+    "value",
+    "label",
+    "type",
+    "required",
+    "disabled",
+    "markup",
+    "list",
+    "classification",
+    "tidify"
+  ],
   data() {
     return {
       content: this.value,
@@ -57,51 +44,36 @@ export default {
       locked: true,
       lockedText: true,
       engaged: false
-
-    }
+    };
   },
   created() {
-    this.$bus.$on('update-lock-start', (l) => {
+    this.$bus.$on("update-lock-start", l => {
       if (l.key == this.guid) this.lockedText = l.val;
-    })
+    });
 
-    this.$bus.$on('update-lock-end', (l) => {
+    this.$bus.$on("update-lock-end", l => {
       if (l.key == this.guid) {
         this.locked = l.val;
-        this.src = l.val ? '../assets/img/tide-lock.svg' : '../assets/img/tide-unlock.svg'
+        this.src = l.val
+          ? "../assets/img/tide-lock.svg"
+          : "../assets/img/tide-unlock.svg";
       }
-    })
+    });
 
-    this.$bus.$on('engage-input', (l) => {
+    this.$bus.$on("engage-input", l => {
       if (l.key == this.guid) this.engaged = l.val;
-    })
+    });
   },
-  methods: {
-
-  }
-}
+  methods: {}
+};
 </script>
 
 <style lang="scss" scoped>
 $primary-color: orange;
-.lock-icon {
-  position: absolute !important;
-  width: 25px;
-  transition: all 0.3s ease;
-  color: $primary-color;
-  font-size: 30px !important;
-  position: absolute !important;
-  right: 5px;
-  top: 10px;
-}
 
 .white-text {
   transition: all 0.3s ease;
   color: white;
-}
-
-.greyed {
-  color: grey;
 }
 
 .tide-input {
@@ -129,7 +101,7 @@ input {
   letter-spacing: 1px;
   height: 45px;
   transition: 1s ease-in-out;
-  background-color: #ededed !important;
+  background-color: #fcfcfc !important;
 }
 
 input:disabled {

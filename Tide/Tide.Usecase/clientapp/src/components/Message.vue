@@ -1,9 +1,6 @@
 <template>
-  <div
-    id="message-container"
-    v-if="message != ''"
-  >
-    {{message}}
+  <div id="message-container" v-if="message != ''">
+    {{ message }}
   </div>
 </template>
 
@@ -11,18 +8,18 @@
 export default {
   data() {
     return {
-      message: ''
-    }
+      message: "",
+    };
   },
   created() {
-    this.$bus.$on('show-message', (m) => {
+    this.$bus.$on("show-message", (m) => {
       this.message = m;
       setTimeout(async () => {
-        this.message = '';
+        this.message = "";
       }, 5000);
-    })
-  }
-}
+    });
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -32,7 +29,7 @@ export default {
   left: 15px;
   display: flex;
   align-items: center;
-  z-index: 890;
+  z-index: 99999999999999999999999;
   color: white;
   background-color: rgba(0, 0, 0, 0.8);
   padding: 5px 10px;

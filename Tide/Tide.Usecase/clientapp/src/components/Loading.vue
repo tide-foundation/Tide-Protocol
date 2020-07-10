@@ -1,15 +1,12 @@
 <template>
-  <div
-    class="loading"
-    v-if="$store.getters.loading.active"
-  >
+  <div class="loading" v-if="$store.getters.loading.active">
     <img src="../assets/img/loading.svg" />
     <h4>{{$store.getters.loading.text}}</h4>
   </div>
 </template>
 
 <script>
-export default {}
+export default {};
 </script>
 
 <style scoped>
@@ -26,7 +23,7 @@ h4 {
 
 .loading {
   text-align: center;
-  z-index: 1000;
+  z-index: 1000000000000;
   display: flex;
   justify-content: center;
   align-items: center;

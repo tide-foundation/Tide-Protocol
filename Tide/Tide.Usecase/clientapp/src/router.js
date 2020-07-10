@@ -17,59 +17,60 @@ var router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [{
-      path: '/',
-      name: 'home',
-      component: Home,
-      meta: []
-    },
-    {
-      path: '/auth',
-      name: 'auth',
-      component: Auth,
-      meta: []
-    },
-    {
-      path: '/property',
-      name: 'property',
-      component: Property,
-      meta: []
-    },
-    {
-      path: '/apply',
-      name: 'apply',
-      component: Apply,
-      meta: []
-    },
-    {
-      path: '/thanks',
-      name: 'thanks',
-      component: Thanks,
-      meta: []
-    },
-    {
-      path: '/profile',
-      name: 'profile',
-      component: Profile,
-      meta: ['auth']
-    },
-    {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: Dashboard,
-      meta: ['auth']
-    },
-    {
-      path: '/not-real',
-      name: 'notreal',
-      component: NotReal,
-      meta: []
-    },
-    {
-      path: '/revert',
-      name: 'revert',
-      component: Revert,
-      meta: []
-    }
+    path: '/',
+    name: 'home',
+    component: Home,
+    meta: []
+  },
+  {
+    path: '/auth',
+    name: 'auth',
+    component: Auth,
+    meta: []
+  },
+
+  {
+    path: '/property',
+    name: 'property',
+    component: Property,
+    meta: []
+  },
+  {
+    path: '/apply',
+    name: 'apply',
+    component: Apply,
+    meta: []
+  },
+  {
+    path: '/thanks',
+    name: 'thanks',
+    component: Thanks,
+    meta: []
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile,
+    meta: ['auth']
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
+    meta: ['auth']
+  },
+  {
+    path: '/not-real',
+    name: 'notreal',
+    component: NotReal,
+    meta: []
+  },
+  {
+    path: '/revert',
+    name: 'revert',
+    component: Revert,
+    meta: []
+  }
   ]
 })
 

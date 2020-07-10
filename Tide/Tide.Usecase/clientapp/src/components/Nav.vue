@@ -11,8 +11,7 @@
           <span
             :class="{ 'nav-current-menu-item': menu == 'home' }"
             @click="$bus.$emit('update-menu', { name: 'Home', route: '/' })"
-            >Home</span
-          >
+          >Home</span>
           <span
             :class="{ 'nav-current-menu-item': menu == 'property' }"
             @click="
@@ -21,15 +20,13 @@
                 route: '/property'
               })
             "
-            >Property</span
-          >
+          >Property</span>
           <span
             :class="{ 'nav-current-menu-item': menu == 'apply' }"
             @click="
               $bus.$emit('update-menu', { name: 'Apply', route: '/apply' })
             "
-            >Apply</span
-          >
+          >Apply</span>
           <span
             :class="{ 'nav-current-menu-item': menu == 'dashboard' }"
             @click="
@@ -38,37 +35,48 @@
                 route: '/dashboard'
               })
             "
-            >Dashboard</span
-          >
+          >Dashboard</span>
         </section>
       </div>
       <div class="mobile-header-nav">
         <ul class="user-nav">
           <li>
-            <a class="login-register-link pointer"
-              ><i class="fa fa-sign-in"></i
-              >{{ $store.getters.user == null ? "Login" : "Logout" }}</a
-            >
+            <a class="login-register-link pointer">
+              <i class="fa fa-sign-in"></i>
+              {{ $store.getters.user == null ? "Login" : "Logout" }}
+            </a>
           </li>
           <li>
-            <a><i class="fa fa-user pointer"></i>Profile</a>
+            <a>
+              <i class="fa fa-user pointer"></i>Profile
+            </a>
           </li>
           <li>
-            <a><i class="fa fa-th-list pointer"></i>My Properties</a>
+            <a>
+              <i class="fa fa-th-list pointer"></i>My Properties
+            </a>
           </li>
           <li>
-            <a><i class="fa fa-star pointer"></i>Favorites</a>
+            <a>
+              <i class="fa fa-star pointer"></i>Favorites
+            </a>
           </li>
           <li>
-            <a class="submit-property-link pointer"
-              ><i class="fa fa-plus-circle"></i>Submit Property</a
-            >
+            <a class="submit-property-link pointer">
+              <i class="fa fa-plus-circle"></i>Submit Property
+            </a>
           </li>
         </ul>
         <div class="social-networks header-social-nav">
-          <a class="twitter pointer"><i class="fa fa-twitter"></i></a
-          ><a class="facebook pointer"><i class="fa fa-facebook"></i></a
-          ><a class="gplus pointer"><i class="fa fa-google-plus"></i></a>
+          <a class="twitter pointer">
+            <i class="fa fa-twitter"></i>
+          </a>
+          <a class="facebook pointer">
+            <i class="fa fa-facebook"></i>
+          </a>
+          <a class="gplus pointer">
+            <i class="fa fa-google-plus"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -82,14 +90,14 @@
                   @click="
                     $bus.$emit('update-menu', { name: 'Home', route: '/' })
                   "
-                  ><img
+                >
+                  <img
                     style="width:151px;height:60px"
                     src="../assets/img/FuturePlacesLogo.png"
                     alt="Logo"
-                /></a>
-                <small class="tag-line hidden-xs hidden-sm"
-                  >Live your dream today</small
-                >
+                  />
+                </a>
+                <small class="tag-line hidden-xs hidden-sm">Live your dream today</small>
               </div>
             </div>
           </div>
@@ -102,9 +110,15 @@
                     $store.getters.tideEngaged || $store.getters.tideProcessing
                 }"
               >
-                <a class="twitter pointer"><i class="fa fa-twitter"></i></a
-                ><a class="facebook pointer"><i class="fa fa-facebook"></i></a
-                ><a class="gplus pointer"><i class="fa fa-google-plus"></i></a>
+                <a class="twitter pointer">
+                  <i class="fa fa-twitter"></i>
+                </a>
+                <a class="facebook pointer">
+                  <i class="fa fa-facebook"></i>
+                </a>
+                <a class="gplus pointer">
+                  <i class="fa fa-google-plus"></i>
+                </a>
               </div>
               <ul class="user-nav">
                 <li v-if="$store.getters.user != null">
@@ -121,7 +135,8 @@
                         route: '/profile'
                       })
                     "
-                    ><i class="fa fa-user"></i>Profile
+                  >
+                    <i class="fa fa-user"></i>Profile
                   </a>
                 </li>
                 <li v-if="$store.getters.user != null">
@@ -138,15 +153,16 @@
                         route: '/dashboard'
                       })
                     "
-                    ><i class="fa fa-user"></i>Dashboard
+                  >
+                    <i class="fa fa-user"></i>Dashboard
                   </a>
                 </li>
 
                 <li>
-                  <a class="submit-property-link pointer" @click="clickedLogin"
-                    ><i class="fa fa-sign-in"></i
-                    >{{ $store.getters.user == null ? "Login" : "Logout" }}</a
-                  >
+                  <a class="submit-property-link pointer" @click="clickedLogin">
+                    <i class="fa fa-sign-in"></i>
+                    {{ $store.getters.user == null ? "Login" : "Logout" }}
+                  </a>
                 </li>
               </ul>
               <div class="contact-number">
@@ -169,8 +185,7 @@
                 <a
                   class="mobile-version visible-xs-inline-block pointer"
                   title="Make a Call"
-                  >1-800-555-1234</a
-                >
+                >1-800-555-1234</a>
               </div>
             </div>
             <div class="header-bottom clearfix">
@@ -182,8 +197,7 @@
                       @click="
                         $bus.$emit('update-menu', { name: 'Home', route: '/' })
                       "
-                      >Home</a
-                    >
+                    >Home</a>
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'property' }">
                     <a
@@ -194,8 +208,7 @@
                           route: '/property'
                         })
                       "
-                      >Property</a
-                    >
+                    >Property</a>
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'apply' }">
                     <a
@@ -206,8 +219,7 @@
                           route: '/apply'
                         })
                       "
-                      >Apply</a
-                    >
+                    >Apply</a>
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'news' }">
                     <a
@@ -218,8 +230,7 @@
                           route: '/not-real'
                         })
                       "
-                      >News</a
-                    >
+                    >News</a>
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'pages' }">
                     <a
@@ -230,8 +241,7 @@
                           route: '/not-real'
                         })
                       "
-                      >Pages</a
-                    >
+                    >Pages</a>
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'galleries' }">
                     <a
@@ -242,8 +252,7 @@
                           route: '/not-real'
                         })
                       "
-                      >Galleries</a
-                    >
+                    >Galleries</a>
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'contact' }">
                     <a
@@ -254,8 +263,7 @@
                           route: '/not-real'
                         })
                       "
-                      >Contact</a
-                    >
+                    >Contact</a>
                   </li>
                 </ul>
               </nav>
@@ -271,18 +279,21 @@
 export default {
   data() {
     return {
-      menu: 'home'
-    }
+      menu: "home"
+    };
   },
   mounted() {
-    this.$bus.$on('update-menu', (data) => {
+    this.$bus.$on("update-menu", data => {
       this.updateMenu(data);
-    })
+    });
   },
   created() {
     this.$nextTick(() => {
-      this.updateMenu({ name: this.$router.currentRoute.name, route: this.$router.currentRoute.path });
-    })
+      this.updateMenu({
+        name: this.$router.currentRoute.name,
+        route: this.$router.currentRoute.path
+      });
+    });
   },
   methods: {
     updateMenu(data) {
@@ -292,29 +303,24 @@ export default {
     },
     profileClicked() {
       if (this.$store.getters.user == null) {
-        this.$bus.$emit('showLoginModal', true)
+        this.$bus.$emit("showLoginModal", true);
       } else {
-        this.$bus.$emit('update-menu', { name: 'Profile', route: '/profile' })
+        this.$bus.$emit("update-menu", { name: "Profile", route: "/profile" });
       }
     },
     clickedLogin() {
       if (this.$store.getters.user != null) {
-        this.$store.commit('logout');
-        this.$bus.$emit('update-menu', {
-          name: 'Home',
-          route: '/'
-        })
+        this.$store.commit("logout");
+        this.$bus.$emit("update-menu", {
+          name: "Home",
+          route: "/"
+        });
       } else {
-        this.$bus.$emit('update-menu', {
-          name: 'Apply',
-          route: '/apply'
-        })
+        this.$bus.$emit("show-auth", true);
       }
-
     }
   }
-
-}
+};
 </script>
 
 <style lang="scss" scoped>

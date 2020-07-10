@@ -1,8 +1,6 @@
 <template>
   <section>
-    <pageHead>
-      Apply for Villa in Coral Gables
-    </pageHead>
+    <pageHead>Apply for Villa in Coral Gables</pageHead>
     <div id="content-wrapper" class="site-content-wrapper site-pages">
       <div id="content" class="site-content layout-boxed">
         <div class="container">
@@ -10,11 +8,7 @@
             <div class="col-xs-12 site-main-content">
               <main id="main" class="site-main">
                 <div class="white-box user-profile-wrapper">
-                  <form
-                    autocomplete="off"
-                    class="submit-form"
-                    @submit.prevent="submit"
-                  >
+                  <form autocomplete="off" class="submit-form" @submit.prevent="submit">
                     <div class="row">
                       <div class="col-md-12" id="page-info">
                         <h2>Rental Application</h2>
@@ -230,10 +224,10 @@
                       />
                       <label for="disclaimer-checkbox">
                         I hereby accept
-                        <span class="disclaimer-link"
-                          >Future Places Terms and Conditions</span
-                        ></label
-                      >
+                        <span
+                          class="disclaimer-link"
+                        >Future Places Terms and Conditions</span>
+                      </label>
                     </div>
 
                     <button
@@ -241,9 +235,7 @@
                       v-if="!submitting"
                       id="submit-btn"
                       type="submit"
-                    >
-                      Submit application
-                    </button>
+                    >Submit application</button>
                   </form>
                 </div>
               </main>
@@ -255,8 +247,8 @@
   </section>
 </template>
 <script>
-import pageHead from '../components/PageHead.vue'
-import TideInput from '../components/TideInput.vue'
+import pageHead from "../components/PageHead.vue";
+import TideInput from "../components/TideInput.vue";
 
 export default {
   components: {
@@ -267,41 +259,49 @@ export default {
     return {
       accepted: false,
       inputs: this.$helper.getTideInputs(),
-      event: new Event('input'),
+      event: new Event("input"),
       details: this.$config.scaffoldDetails,
       submitting: false,
       classification: {},
       glow: false
-    }
+    };
   },
   mounted() {
-    this.$bus.$on('init', () => this.init());
-    this.$bus.$on('submit', () => this.submit());
-    this.$bus.$on('submit-details', () => this.submit());
-    this.$bus.$on('toggle-tide-start', (on) => {
-      if (!on) this.classification = this.$helper.classifyData(this.details);
-    })
+    // this.$bus.$on('init', () => this.init());
+    // this.$bus.$on('submit', () => this.submit());
+    // this.$bus.$on('submit-details', () => this.submit());
+    // this.$bus.$on('toggle-tide-start', (on) => {
+    //   if (!on) this.classification = this.$helper.classifyData(this.details);
+    // })
   },
   watch: {
-    'details.personal.first': function (newVal, oldVal) {
+    "details.personal.first": function(newVal, oldVal) {
       if (this.$store.getters.tideProcessing) return;
       var mockData;
       switch (newVal) {
-        case 'Eli':
+        case "Eli":
           mockData = this.$config.mockData[0];
           break;
-        case 'Timmothy':
+        case "Timmothy":
           mockData = this.$config.mockData[1];
           break;
       }
 
       if (mockData != null) {
         for (let input of this.inputs) {
-          const markup = input.getAttribute('markup');
-          if (markup != 'personal.first') {
+          const markup = input.getAttribute("markup");
+          if (markup != "personal.first") {
             var splitMarkup = markup.split(".");
-            if (splitMarkup.length == 2) this.populateField(input, mockData[splitMarkup[0]][splitMarkup[1]]);
-            else this.populateField(input, mockData[splitMarkup[0]][splitMarkup[1]][splitMarkup[2]]);
+            if (splitMarkup.length == 2)
+              this.populateField(
+                input,
+                mockData[splitMarkup[0]][splitMarkup[1]]
+              );
+            else
+              this.populateField(
+                input,
+                mockData[splitMarkup[0]][splitMarkup[1]][splitMarkup[2]]
+              );
           }
         }
       }
@@ -309,25 +309,22 @@ export default {
   },
   methods: {
     async init() {
-      this.$bus.$emit('tint', true);
-      this.$store.commit('updateTideEngaged', true);
+      this.$bus.$emit("tint", true);
+      this.$store.commit("updateTideEngaged", true);
 
       for (let input of this.inputs) {
-
-        this.$bus.$emit('update-lock-start', {
+        this.$bus.$emit("update-lock-start", {
           key: input.name,
           val: !this.$store.getters.tideEngaged
-        })
-        this.$bus.$emit('engage-input', { key: input.name, val: true })
-        this.$bus.$emit('update-lock-end', {
+        });
+        this.$bus.$emit("engage-input", { key: input.name, val: true });
+        this.$bus.$emit("update-lock-end", {
           key: input.name,
           val: !this.$store.getters.tideEngaged
-        })
-
+        });
       }
     },
     async populateField(input, endResult) {
-
       const currentLength = input.value.length;
 
       // Remove current field
@@ -346,40 +343,41 @@ export default {
     },
     async submit() {
       try {
-        this.submitting = true;
         if (this.$store.getters.user == null) {
-          this.$bus.$emit('showLoginModal', true)
-          this.$bus.$emit('show-message', 'Please login or register to continue')
-          this.$store.commit('updateRoute', { action: 'event', value: 'submit' });
+          this.$bus.$emit("show-auth", true);
           return;
         }
-
+        this.submitting = true;
         if (this.$store.getters.tideEngaged) {
           await this.$helper.toggleTide(this.$store.getters.user.keys.vendor);
         }
 
-        this.$loading(true, 'Encrypting your data and storing it with Future Places.')
+        this.$loading(
+          true,
+          "Encrypting your data and storing it with Future Places."
+        );
 
         setTimeout(async () => {
-
-          this.$store.commit('storeDetails', {
+          this.$store.commit("storeDetails", {
             details: JSON.stringify(this.details),
             classified: this.classification
           });
 
           this.submitting = false;
-          this.$bus.$emit('show-message', 'Your application has been submitted successfully')
-          this.$bus.$emit('update-menu', { name: 'Thanks', route: '/thanks' });
-
-        }, 2000)
+          this.$bus.$emit(
+            "show-message",
+            "Your application has been submitted successfully"
+          );
+          this.$bus.$emit("update-menu", { name: "Thanks", route: "/thanks" });
+        }, 2000);
       } catch (thrownError) {
         this.submitting = false;
-        this.$bus.$emit('show-error', thrownError)
-        this.$loading(false, '')
+        this.$bus.$emit("show-error", thrownError);
+        this.$loading(false, "");
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

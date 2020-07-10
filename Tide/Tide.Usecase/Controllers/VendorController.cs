@@ -21,6 +21,12 @@ namespace Tide.Usecase.Controllers {
             _tideVendor = tideVendor;
         }
 
+        [HttpGet("GetUserNodes/{username}")]
+        public TideResponse GetUserNodes([FromRoute] string username)
+        {
+            return _tideVendor.GetUserNodes(username);
+        }
+
         [HttpPost("CreateUser/{username}")]
         public TideResponse CreateUser([FromRoute] string username,[FromBody] List<string> desiredOrks) {
             return _tideVendor.CreateUser(username, desiredOrks);

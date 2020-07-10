@@ -21,6 +21,14 @@ namespace Tide.VendorSdk
             _client.DefaultRequestHeaders.Add("VendorId", vendorId);
         }
 
+        public (bool success,string content) GetUserNodes(string username)
+        {
+            // if (!IsAuthenticated().Result) return (false, "Authentication failed");
+
+            var response = _client.GetAsync($"Simulator/GetUserNodes/{Helpers.GetTideId(username)}").Result;
+            return (response.IsSuccessStatusCode, response.Content.ReadAsStringAsync().Result);
+        }
+
         public (bool success,string error) CreateUser(string username, List<string> desiredOrks)
         {
            // if (!IsAuthenticated().Result) return (false, "Authentication failed");

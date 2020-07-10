@@ -1,8 +1,5 @@
 <template>
-  <section
-    id="tide-box"
-    v-if="show"
-  >
+  <section id="tide-box" v-if="show">
     <div
       @click="toggle"
       :class="{'selected shadow' : $store.getters.tideEngaged,'processing':$store.getters.tideProcessing,'button-glow':!$store.getters.tideEngaged && !$store.getters.clickedTide}"
@@ -12,7 +9,7 @@
         :class="{'shake':!$store.getters.tideEngaged && !$store.getters.clickedTide}"
         src="../assets/img/logo.svg"
         alt="side button"
-      >
+      />
     </div>
   </section>
 </template>
@@ -22,34 +19,35 @@ export default {
   data() {
     return {
       show: false
-    }
+    };
   },
   created() {
     this.checkShow(this.$router.currentRoute.name);
-    this.$bus.$on('route-change', (r) => {
+    this.$bus.$on("route-change", r => {
       this.checkShow(r);
-    })
+    });
   },
   methods: {
     toggle() {
       if (this.$store.getters.user == null) {
-        this.$bus.$emit('showLoginModal', true)
-        this.$bus.$emit('show-message', 'Please login or register to continue')
-        this.$store.commit('updateRoute', { action: 'event', value: 'init' });
+        this.$bus.$emit("showLoginModal", true);
+        this.$bus.$emit("show-message", "Please login or register to continue");
+        this.$store.commit("updateRoute", { action: "event", value: "init" });
         return;
       }
-      this.$store.commit('updateClickedTide', true);
-      this.$bus.$emit('toggle-tide');
+      this.$store.commit("updateClickedTide", true);
+      this.$bus.$emit("toggle-tide");
     },
     checkShow(r) {
-      if (r == 'apply' || r == 'profile') {
+      return (this.show = false); // No more tide box
+      if (r == "apply" || r == "profile") {
         this.show = true;
       } else {
         this.show = false;
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

@@ -17,7 +17,13 @@ namespace Tide.VendorSdk
         }
 
         #region Onboarding  
-      
+
+        public TideResponse GetUserNodes(string username)
+        {
+            var (success, content) = _client.GetUserNodes(username);
+            return new TideResponse(success, success ? content : null, !success ? content : null);
+        }
+
         public TideResponse CreateUser(string username, List<string> desiredOrks)
         {
             var (success, error) = _client.CreateUser(username, desiredOrks);

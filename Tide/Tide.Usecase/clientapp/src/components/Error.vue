@@ -1,29 +1,24 @@
 <template>
-  <div
-    id="error-container"
-    v-if="error != ''"
-  >
-    {{error}}
-  </div>
+  <div id="error-container" v-if="error != ''">{{error}}</div>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      error: ''
-    }
+      error: ""
+    };
   },
   created() {
-    this.$bus.$on('show-error', (e) => {
-      console.log(e)
+    this.$bus.$on("show-error", e => {
+      console.log(e);
       this.error = e;
       setTimeout(async () => {
-        this.error = '';
+        this.error = "";
       }, 7000);
-    })
+    });
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -34,7 +29,7 @@ export default {
   display: flex;
   align-items: center;
   color: white;
-  z-index: 890;
+  z-index: 89000000000000000;
   background-color: rgba(0, 0, 0, 0.8);
   padding: 5px 10px;
   pointer-events: none;
