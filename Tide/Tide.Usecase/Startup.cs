@@ -53,7 +53,7 @@ namespace Tide.Usecase
         {
  
             // app.Map("/test", HandleTest);
-            app.UseTide();
+            //app.UseTide();
 
             if (env.IsDevelopment())
             {
