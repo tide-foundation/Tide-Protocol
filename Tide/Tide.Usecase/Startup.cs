@@ -1,15 +1,14 @@
+
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Tide.Usecase.Models;
 using Tide.VendorSdk;
 using VueCliMiddleware;
@@ -33,10 +32,13 @@ namespace Tide.Usecase
             Configuration.Bind("Settings", settings);
             services.AddSingleton(settings);
 
+
             services.AddDbContext<VendorContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
 
             services.AddScoped<TideVendor>();
             TideVendor.Init("VendorId");
+
+            
 
             services.AddLiveReload();
             services.AddControllers();
@@ -49,7 +51,9 @@ namespace Tide.Usecase
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-          
+ 
+            // app.Map("/test", HandleTest);
+            app.UseTide();
 
             if (env.IsDevelopment())
             {
@@ -61,6 +65,7 @@ namespace Tide.Usecase
             app.UseSpaStaticFiles();
             app.UseAuthorization();
 
+          
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -80,5 +85,24 @@ namespace Tide.Usecase
 
             });
         }
+
     }
+
+    //public class TideMiddlewareExtensions
+    //{
+    //    public IRouter BuildRouter(IApplicationBuilder applicationBuilder)
+    //    {
+    //        var builder = new RouteBuilder(applicationBuilder);
+
+    //        builder.MapMiddlewareGet("/tide/v1/test", appBuilder => {
+    //            appBuilder.Use(Middleware);
+    //        });
+
+    //        return builder.Build();
+    //    }
+
+    //    private RequestDelegate Middleware(RequestDelegate arg) {
+    //        throw new System.NotImplementedException();
+    //    }
+    //}
 }

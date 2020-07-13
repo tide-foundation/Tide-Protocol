@@ -5,6 +5,7 @@
     </div>
     <img id="deco-1" src="../assets/img/auth/deco-1.png" alt="decoration" />
     <img id="deco-2" src="../assets/img/auth/deco-2.png" alt="decoration" />
+    <button id="auto-fill" @click="autoFill">Auto Fill</button>
     <div id="auth-box">
       <div id="title">
         <h1>{{ loginMode }}</h1>
@@ -39,11 +40,21 @@
       </section>
       <section v-if="loginMode == 'Register'" key="2">
         <section v-if="step == 0" key="reg0">
-          <form @submit.prevent="step = 1">
+          <form @submit.prevent="registerButtonClicked">
             <input v-model="user.email" placeholder="Email" type="email" />
             <password @score="showScore" v-model="user.password" :toggle="true" placeholder="Password" />
             <input v-model="user.confirm" placeholder="Confirm Password" type="password" />
-            <button :class="{ disabled: !passwordsValid }" class="gradiant-button" @click="step = 1">CONTINUE &nbsp;&nbsp; <i class="fa fa-arrow-right"></i></button>
+            <div id="advanced-checkbox" @click="advancedSecurity = !advancedSecurity" :class="{ checked: advancedSecurity }">
+              <div id="holder">
+                <div class="slideOne" :class="{ checked: advancedSecurity }">
+                  <input type="checkbox" value="None" id="sec" :checked="advancedSecurity" />
+                  <label for="sec"></label>
+                </div>
+              </div>
+              Advanced Security
+            </div>
+
+            <button :class="{ disabled: !passwordsValid }" class="gradiant-button">{{ advancedSecurity ? "CONTINUE" : "SIGN UP" }} &nbsp;&nbsp; <i :class="{ 'fa-arrow-right': advancedSecurity, 'fa-sign-in': !advancedSecurity }" class="fa "></i></button>
           </form>
         </section>
         <section v-if="step == 1" key="reg1">
@@ -135,6 +146,7 @@ export default {
       step: 0,
       passwordScore: 0,
       newPasswordScore: 0,
+      advancedSecurity: false,
       user: {
         email: "",
         password: "",
@@ -208,6 +220,13 @@ export default {
     },
   },
   methods: {
+    autoFill() {
+      this.user = {
+        email: `${Math.floor(Math.random() * 1000000)}@gmail.com`,
+        password: "Ff09&QcBWEXk",
+        confirm: "Ff09&QcBWEXk",
+      };
+    },
     showScore(score) {
       this.passwordScore = score;
       if (this.passwordScore < 4) this.error = "Please choose a stronger password.";
@@ -233,6 +252,12 @@ export default {
         return a.id - b.id;
       });
       return orks;
+    },
+    registerButtonClicked() {
+      if (this.advancedSecurity) {
+        this.step = 1;
+        console.log("hey");
+      } else this.register();
     },
     register() {
       if (this.user.password.length < 4) return (this.error = "Password requires at least 4 characters.");
@@ -684,5 +709,29 @@ input[type="checkbox"] {
 .slideOne input[type="checkbox"]:checked + label {
   pointer-events: none;
   left: 17px;
+}
+
+#advanced-checkbox {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0.6;
+  &.checked {
+    opacity: 1;
+  }
+
+  #holder {
+    width: 50px;
+  }
+}
+
+#auto-fill {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  border: 1px solid gray;
 }
 </style>

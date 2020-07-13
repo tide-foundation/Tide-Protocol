@@ -11,6 +11,7 @@ namespace Tide.VendorSdk
     {
         private static SimulatorClient _client;
       
+        private const string VendorId = "VendorId";
         public static void Init(string vendorId)
         {
             _client = new SimulatorClient(vendorId);
