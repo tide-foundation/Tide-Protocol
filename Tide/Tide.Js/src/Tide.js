@@ -2,13 +2,27 @@ import DAuthFlow from "./dauth/DAuthFlow";
 import IdGenerator from "./IdGenerator";
 import request from "superagent";
 import { encodeBase64Url } from "./Helpers";
+import { AESKey } from "cryptide";
 
+/**
+ * A client-side library to interface with the Tide scosystem.
+ * @class
+ * @classdesc The main Tide class to initialize.
+ */
 class Tide {
   constructor(vendorId, serverUrl) {
     this.vendorId = vendorId;
     this.serverUrl = serverUrl;
   }
 
+  /**
+   * @param {String} username - Plain text username of the new user
+   * @param {String} password - Plain text password of the new user
+   * @param {String} email - The recovery email to be used by the user.
+   * @param {Array} orkIds - The desired ork nodes to be used for registration. An account can only be activated when all ork nodes have confirmed they have stored the shard.
+   * @fires progress - An update of the registration progress. Triggered on the document element.
+   * @returns {AESKey}
+   */
   register(username, password, email, orkIds) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -21,10 +35,15 @@ class Tide {
         // Ask the vendor to create the user as a liability.
 
         await post(`${this.serverUrl}/CreateUser/${userId}`, orkIds);
+        event("progress", { progress: 20, action: "Initialized user" });
+
         // Send all shards to selected orks
         var key = await flow.signUp(password, email, 2);
+        event("progress", { progress: 80, action: "Fragments stored" });
+
         // Finally, ask the vendor to confirm the user
         await get(`${this.serverUrl}/ConfirmUser/${userId}/`);
+        event("progress", { progress: 100, action: "Finalized creation" });
 
         this.key = key;
         resolve({ key: key });
@@ -116,6 +135,11 @@ function get(url) {
 
 function generateOrkUrls(ids) {
   return ids.map((id) => `https://${id}.azurewebsites.net`);
+}
+
+function event(name, payload) {
+  const event = new CustomEvent(name, payload);
+  document.dispatchEvent(event);
 }
 
 export default Tide;

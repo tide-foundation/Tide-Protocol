@@ -1,0 +1,59 @@
+### YamlMime:UniversalReference
+items:
+  - uid: tide-js.Tide
+    id: tide-js.Tide
+    name: Tide
+    summary: The main Tide class to initialize.
+    fullName: tide-js.Tide
+    type: Class
+    children:
+      - tide-js.Tide.#ctor
+      - tide-js.Tide#register
+    langs:
+      - js
+  - id: tide-js.Tide.#ctor
+    uid: tide-js.Tide.#ctor
+    parent: tide-js.Tide
+    name: Tide()
+    fullName: tide-js.Tide.Tide()
+    summary: ''
+    type: Constructor
+    syntax:
+      content: new Tide()
+    langs:
+      - js
+  - uid: tide-js.Tide#register
+    id: tide-js.Tide#register
+    parent: tide-js.Tide
+    name: 'register(username, password, email, orkIds)'
+    summary: ''
+    fullName: 'tide-js.Tide.register(username, password, email, orkIds)'
+    type: Function
+    syntax:
+      parameters:
+        - id: username
+          type:
+            - String
+          description: Plain text username of the new user
+        - id: password
+          type:
+            - String
+          description: Plain text password of the new user
+        - id: email
+          type:
+            - String
+          description: The recovery email to be used by the user.
+        - id: orkIds
+          type:
+            - Array
+          description: >-
+            The desired ork nodes to be used for registration. An account can
+            only be activated when all ork nodes have confirmed they have stored
+            the shard.
+      return:
+        type:
+          - tide-js.AESKey
+        description: ''
+      content: 'function register(username, password, email, orkIds)'
+    langs:
+      - js

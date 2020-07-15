@@ -1,0 +1,7 @@
+{
+  "source": {
+    "include": ["./src/Tide.js"]
+  },
+  "package": "package.json",
+  "destination": "docs"
+}

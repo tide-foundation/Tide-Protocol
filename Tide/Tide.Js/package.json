@@ -50,6 +50,7 @@
     "eslint-plugin-import": "^2.2.0",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^5.2.0",
+    "node2docfx": "^1.0.45",
     "nyc": "^13.1.0",
     "parcel": "^1.12.4",
     "rollup": "^0.67.3",
