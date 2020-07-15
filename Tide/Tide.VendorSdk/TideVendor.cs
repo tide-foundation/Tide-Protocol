@@ -21,6 +21,11 @@ namespace Tide.VendorSdk
 
         #region Onboarding  
 
+        /// <summary>
+        /// Gathers user nodes
+        /// </summary>
+        /// <param name="username">The username to gather nodes</param>
+        /// <returns></returns>
         public TideResponse GetUserNodes(string username)
         {
             var (success, content) = _client.GetUserNodes(username);

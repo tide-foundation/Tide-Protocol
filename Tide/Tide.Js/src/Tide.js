@@ -16,12 +16,18 @@ class Tide {
   }
 
   /**
+   * Create a new Tide account.
+   *
+   * This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).
+   *
    * @param {String} username - Plain text username of the new user
    * @param {String} password - Plain text password of the new user
    * @param {String} email - The recovery email to be used by the user.
    * @param {Array} orkIds - The desired ork nodes to be used for registration. An account can only be activated when all ork nodes have confirmed they have stored the shard.
-   * @fires progress - An update of the registration progress. Triggered on the document element.
-   * @returns {AESKey}
+   *
+   * @fires progress
+   *
+   * @returns {AESKey} - The users keys to be used on the data
    */
   register(username, password, email, orkIds) {
     return new Promise(async (resolve, reject) => {
@@ -53,6 +59,13 @@ class Tide {
       }
     });
   }
+
+  /**
+   * @param {String} username - Plain text username of the user
+   * @param {String} password - Plain text password of the user
+   *
+   * @returns {AESKey} - The users keys to be used on the data
+   */
   login(username, password) {
     return new Promise(async (resolve, reject) => {
       try {
