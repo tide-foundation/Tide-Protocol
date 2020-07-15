@@ -4,17 +4,19 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using Tide.Core;
+using Tide.VendorSdk.Classes;
+using Tide.VendorSdk.Configuration;
 
 namespace Tide.VendorSdk
 {
     public class TideVendor
     {
         private static SimulatorClient _client;
-      
-        private const string VendorId = "VendorId";
-        public static void Init(string vendorId)
-        {
-            _client = new SimulatorClient(vendorId);
+        private readonly TideConfiguration _config;
+
+        public TideVendor(TideConfiguration config) {
+            _config = config;
+            _client = new SimulatorClient(_config.VendorId);
         }
 
         #region Onboarding  

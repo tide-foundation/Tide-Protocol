@@ -1,6 +1,9 @@
 
 
 using System;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Tide.Usecase.Models;
 using Tide.VendorSdk;
+using Tide.VendorSdk.Classes.Middleware;
+using Tide.VendorSdk.Configuration;
 using VueCliMiddleware;
 using Westwind.AspNetCore.LiveReload;
 
@@ -32,13 +37,10 @@ namespace Tide.Usecase
             Configuration.Bind("Settings", settings);
             services.AddSingleton(settings);
 
-
             services.AddDbContext<VendorContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
 
-            services.AddScoped<TideVendor>();
-            TideVendor.Init("VendorId");
-
-            
+            services.AddTide("VendorId", configuration => configuration
+                .UseSqlServerStorage(settings.Connection));
 
             services.AddLiveReload();
             services.AddControllers();
@@ -51,9 +53,7 @@ namespace Tide.Usecase
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
- 
-            // app.Map("/test", HandleTest);
-            //app.UseTide();
+            app.UseTide();
 
             if (env.IsDevelopment())
             {
@@ -65,44 +65,22 @@ namespace Tide.Usecase
             app.UseSpaStaticFiles();
             app.UseAuthorization();
 
-          
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            //app.UseSpa(spa =>
+            //{
+            //    if (env.IsDevelopment())
+            //        spa.Options.SourcePath = "ClientApp";
+            //    else
+            //        spa.Options.SourcePath = "dist";
 
-            app.UseSpa(spa =>
-            {
-                if (env.IsDevelopment())
-                    spa.Options.SourcePath = "ClientApp";
-                else
-                    spa.Options.SourcePath = "dist";
+            //    if (env.IsDevelopment())
+            //    {
+            //        spa.UseVueCli(npmScript: "serve");
+            //    }
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseVueCli(npmScript: "serve");
-                }
-
-            });
+            //});
         }
 
     }
 
-    //public class TideMiddlewareExtensions
-    //{
-    //    public IRouter BuildRouter(IApplicationBuilder applicationBuilder)
-    //    {
-    //        var builder = new RouteBuilder(applicationBuilder);
-
-    //        builder.MapMiddlewareGet("/tide/v1/test", appBuilder => {
-    //            appBuilder.Use(Middleware);
-    //        });
-
-    //        return builder.Build();
-    //    }
-
-    //    private RequestDelegate Middleware(RequestDelegate arg) {
-    //        throw new System.NotImplementedException();
-    //    }
-    //}
+    
 }
