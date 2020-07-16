@@ -3,8 +3,9 @@
     {
       "src": [
         {
+          "src": "../Tide.VendorSdk/",
           "files": ["**.csproj"],
-          "src": "../Tide.VendorSdk/"
+          "exclude": ["**.cs"]
         }
       ],
       "dest": "api",

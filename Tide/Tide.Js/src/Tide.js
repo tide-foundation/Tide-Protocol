@@ -10,6 +10,13 @@ import { AESKey } from "cryptide";
  * @classdesc The main Tide class to initialize.
  */
 class Tide {
+  /**
+   * Initialize Tide.
+   *
+   * @param {String} vendorId - Your designated VendorId in which you will operate
+   * @param {String} serverUrl - The endpoint of your backend Tide server
+   *
+   */
   constructor(vendorId, serverUrl) {
     this.vendorId = vendorId;
     this.serverUrl = serverUrl;
@@ -61,6 +68,10 @@ class Tide {
   }
 
   /**
+   * Login to a previously created Tide account. The account must be fully enabled by the vendor before use.
+   *
+   * This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).
+   *
    * @param {String} username - Plain text username of the user
    * @param {String} password - Plain text password of the user
    *
@@ -86,20 +97,46 @@ class Tide {
     });
   }
 
+  /**
+   * Strips all local user data from the browser.
+   */
   logout() {
     this.key = null;
   }
 
+  /**
+   * Encrypt a string with the logged in user keys.
+   *
+   * This action requires a logged in user.
+   *
+   * @param {String} msg - The string you wish to encrypt using the user keys
+   *
+   * @returns {String} - The encrypted payload
+   */
   encrypt(msg) {
     if (this.key == null) throw "You must be logged in to encrypt";
     return this.key.encryptStr(msg);
   }
 
+  /**
+   * Decrypt an encrypted string with the logged in user keys.
+   *
+   * This action requires a logged in user.
+   *
+   * @param {String} cipher - The encrypted string you wish to decrypt using the user keys
+   *
+   * @returns {String} - The plain text message
+   */
   decrypt(cipher) {
     if (this.key == null) throw "You must be logged in to decrypt";
     return this.key.decryptStr(cipher);
   }
 
+  /**
+   * Send a request to the ORK nodes used by the user to email them recovery shards. This is step 1 in a 2 step process to recover the user keys.
+   *
+   * @param {String} username - The username of the user who wishes to recover
+   */
   async recover(username) {
     var userId = encodeBase64Url(new IdGenerator(username).buffer);
     var userNodes = JSON.parse(
@@ -113,6 +150,15 @@ class Tide {
     flow.Recover(username);
   }
 
+  /**
+   * Login to a previously created Tide account. The account must be fully enabled by the vendor before use.
+   *
+   * This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).
+   *
+   * @param {String} username - Plain text username of the user
+   * @param {Array} shares - An array of shares sent to the users email(s)
+   * @param {String} newPass - The new password of the user
+   */
   reconstruct(username, shares, newPass) {
     return new Promise(async (resolve, reject) => {
       try {

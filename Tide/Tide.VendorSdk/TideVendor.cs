@@ -22,10 +22,10 @@ namespace Tide.VendorSdk
         #region Onboarding  
 
         /// <summary>
-        /// Gathers user nodes
+        /// Fetches a list of ORK nodes which were used in the creation of this account. Generally used before login.
         /// </summary>
         /// <param name="username">The username to gather nodes</param>
-        /// <returns></returns>
+        /// <returns>TideResponse - Payload being an array of ORK nodes</returns>
         public TideResponse GetUserNodes(string username)
         {
             var (success, content) = _client.GetUserNodes(username);
