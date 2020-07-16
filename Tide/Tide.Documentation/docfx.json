@@ -15,13 +15,13 @@
   "build": {
     "content": [
       {
-        "files": [ "article/**.yml", "article/index.md" ]
+        "files": [ "articles/**.yml", "articles/index.md" ]
       },
       {
-        "files": [ "article/**.md", "article/**/toc.yml", "toc.yml", "*.md" ]
+        "files": [ "articles/**.md", "articles/**/toc.yml", "toc.yml", "*.md" ]
       },
       {
-        "files": [ "article/**.md", "article/**/tide.yml", "tide.yml", "*.md" ]
+        "files": [ "articles/**.md", "articles/**/tide.yml", "tide.yml", "*.md" ]
       }
       
     ],
