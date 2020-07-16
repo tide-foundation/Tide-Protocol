@@ -1,0 +1,18 @@
+{
+  "build": {
+    "template": ["default", "./docs/Templates/tide"],
+    "content": [
+      {
+        "files": ["**.yml"],
+        "src": "./docs/",
+        "dest": "./docs/"
+      }
+    ],
+    "dest": "./docs/_site",
+    "resource": [
+      {
+        "files": ["./docs/images/**"]
+      }
+    ]
+  }
+}

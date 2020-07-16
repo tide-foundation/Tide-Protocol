@@ -3,6 +3,7 @@
     {
       "src": [
         {
+          "src": "../Tide.VendorSdk/",
           "files": ["**.csproj"],
           "src": "../Tide.Js/src/"
         }
