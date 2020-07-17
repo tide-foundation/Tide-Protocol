@@ -7,7 +7,7 @@ using Tide.Encryption.AesMAC;
 
 namespace Tide.Core
 {
-    public class KeyVault : SerializableByteBase
+    public class KeyVault : SerializableByteBase<KeyVault>
     {
         public Guid User { get; set; }
         public BigInteger AuthShare { get; set; }
@@ -42,9 +42,5 @@ namespace Tide.Core
             CmkAuth = AesKey.Parse(data[4]);
             Email =  Encoding.UTF8.GetString(data[5]);
         }
-
-        public static KeyVault Parse(string data) => Serializer.Parse<KeyVault>(data);
-
-        public static KeyVault Parse(byte[] data) => Serializer.Parse<KeyVault>(data);
     }
 }

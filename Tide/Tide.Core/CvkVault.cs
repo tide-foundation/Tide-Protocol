@@ -7,7 +7,7 @@ using Tide.Encryption.Ecc;
 
 namespace Tide.Core
 {
-    public class CvkVault : SerializableByteBase
+    public class CvkVault : SerializableByteBase<CvkVault>
     {
         public Guid User { get; set; }
         public C25519Key VendorPub { get; set; }
@@ -34,9 +34,5 @@ namespace Tide.Core
             CVKi = new BigInteger(data[2], true, true);
             CvkAuth = AesKey.Parse(data[3]);
         }
-
-        public static CvkVault Parse(string data) => Serializer.Parse<CvkVault>(data);
-
-        public static CvkVault Parse(byte[] data) => Serializer.Parse<CvkVault>(data);
     }
 }
