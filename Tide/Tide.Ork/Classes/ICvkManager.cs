@@ -14,18 +14,14 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
-using System.Numerics;
 using System.Threading.Tasks;
 using Tide.Core;
-using Tide.Encryption.AesMAC;
 
 namespace Tide.Ork.Classes
 {
     public interface ICvkManager
     {
         Task<bool> Exist(Guid user);
-        Task<BigInteger> GetShare(Guid user);
-        Task<AesKey> GetAuth(Guid user);
         Task<CvkVault> GetByUser(Guid user);
         Task<TideResponse> SetOrUpdate(CvkVault account);
     }

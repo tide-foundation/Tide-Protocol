@@ -7,8 +7,9 @@ using Tide.Encryption.AesMAC;
 
 namespace Tide.Core
 {
-    public class KeyVault : SerializableByteBase<KeyVault>
+    public class KeyVault : SerializableByteBase<KeyVault>, IGuid
     {
+        public Guid Id => User;
         public Guid User { get; set; }
         public BigInteger AuthShare { get; set; }
         public BigInteger KeyShare { get; set; }

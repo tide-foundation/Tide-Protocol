@@ -7,8 +7,9 @@ using Tide.Encryption.Ecc;
 
 namespace Tide.Core
 {
-    public class CvkVault : SerializableByteBase<CvkVault>
+    public class CvkVault : SerializableByteBase<CvkVault>, IGuid
     {
+        public Guid Id => User;
         public Guid User { get; set; }
         public C25519Key VendorPub { get; set; }
         public BigInteger CVKi { get; set; }
@@ -22,7 +23,7 @@ namespace Tide.Core
         protected override IEnumerable<byte[]> GetItems()
         {
             yield return User.ToByteArray();
-            yield return VendorPub != null ? VendorPub.ToByteArray() : new byte[]{};
+            yield return VendorPub != null ? VendorPub.ToByteArray() : new byte[] { };
             yield return CVKi.ToByteArray(true, true);
             yield return CvkAuth.ToByteArray();
         }
