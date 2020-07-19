@@ -28,8 +28,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.0.0",
-    "cryptide": "2.0.0-alpha.5",
     "big-integer": "1.6.36",
+    "cryptide": "^2.0.0-alpha.6",
     "superagent": "^5.2.2"
   },
   "devDependencies": {
@@ -48,6 +48,7 @@
     "eslint": "^5.9.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.2.0",
+    "esm": "^3.2.25",
     "istanbul": "^1.1.0-alpha.1",
     "mocha": "^5.2.0",
     "node2docfx": "^1.0.45",
@@ -60,8 +61,11 @@
     "sinon": "^7.1.1"
   },
   "scripts": {
+    "conf:dev": "npm rm -S cryptide && npm i file:../../../cryptide-js -S",
+    "conf:prd": "npm rm -S cryptide && npm i cryptide -S",
+    "clean": "rm -rf dist && rm -rf .cache",
     "lint": "eslint src test tools",
-    "test": "mocha --require @babel/register",
+    "test": "mocha -r esm",
     "test:watch": "mocha --require @babel/register --reporter min --watch",
     "test:cover": "nyc npm test",
     "coveralls": "cat ./coverage/lcov.info | coveralls",

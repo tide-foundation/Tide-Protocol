@@ -17,7 +17,6 @@ using System;
 using System.Numerics;
 using System.Threading.Tasks;
 using Tide.Core;
-using Tide.Encryption.AesMAC;
 
 namespace Tide.Ork.Classes
 {
@@ -25,7 +24,6 @@ namespace Tide.Ork.Classes
     {
         Task<bool> Exist(Guid user);
         Task<BigInteger> GetAuthShare(Guid user);
-        Task<AesKey> GetSecret(Guid user);
         Task<KeyVault> GetByUser(Guid user);
         Task<TideResponse> SetOrUpdate(KeyVault account);
     }

@@ -135,7 +135,7 @@ namespace Tide.Ork.Controllers {
                 CvkAuth = AesKey.Parse(FromBase64(data[2])),
             };
 
-            _logger.LogInformation($"New cvk for {user}", user, data[0]);
+            _logger.LogInformation($"New cvk for {user} with share {data[1]}", user, data[0]);
 
             return await _managerCvk.SetOrUpdate(account);
         }
@@ -147,7 +147,7 @@ namespace Tide.Ork.Controllers {
             var token = TranToken.Generate(account.CvkAuth);
 
             var cipher = account.VendorPub.Encrypt(token.GenKey(account.CvkAuth));
-            _logger.LogInformation($"challenge from {user}", user, cipher.ToString());
+            _logger.LogInformation($"Challenge from {user}", user, cipher.ToString());
 
             return Ok(new { Token = token.ToString(), Challenge = cipher.ToString() });
         }
@@ -155,20 +155,23 @@ namespace Tide.Ork.Controllers {
         [HttpGet("{user}/decrypt/{data}/{token}/{sign}")]
         public async Task<ActionResult> Decrypt([FromRoute] string user, string data, string token, string sign)
         {
+            var msgErr = $"Denied data decryption belonging to {user}";
+
             var account = await _managerCvk.GetByUser(GetUserId(user));
             
             var tran = TranToken.Parse(Convert.FromBase64String(token.DecodeBase64Url()));
-            if (!tran.Check(account.CvkAuth)) return BadRequest();
+            if (!tran.Check(account.CvkAuth)) return Deny(msgErr);
 
             var toCheck = Convert.FromBase64String(sign.DecodeBase64Url()); 
             var toSign = Convert.FromBase64String(data.DecodeBase64Url());
             var key = tran.GenKey(account.CvkAuth);
-            if (!Utils.Equals(key.Hash(toSign), toCheck)) return BadRequest();
+            if (!Utils.Equals(key.Hash(toSign), toCheck)) return Deny(msgErr);
 
             var c1 = C25519Point.From(toSign);
-            if (!c1.IsValid) return BadRequest();
+            if (!c1.IsValid) return Deny(msgErr);
 
-            _logger.LogInformation($"Decrypt data of {user}", user, data, token);
+
+            _logger.LogInformation($"Decrypt data belonging to {user}", user, data, token);
             var cipher = key.Encrypt((c1 * account.CVKi).ToByteArray());
             return Ok(Convert.ToBase64String(cipher));
         }
@@ -179,6 +182,11 @@ namespace Tide.Ork.Controllers {
 
         private Guid GetUserId(string user) {
             return new Guid(FromBase64(user));
+        }
+
+        private ActionResult Deny(string message, params object[] args) {
+            _logger.LogInformation(message, args);
+            return BadRequest();
         }
 
         private BigInteger GetBigInteger(string number) {

@@ -1,0 +1,73 @@
+title tag partial decryption external
+
+User->Orks: RegisterCVK(vuid, vPub, cvki, cvkAuth)
+
+Orks->Block: CVK(vuid, vPub, cvki, cvkAuth)
+
+note over User
+    cipherData = encrypt(data, tag, cvkPub)
+end note
+
+User->Vendor: cipherData
+
+User->External: getPub()
+External-->User: externalPub
+
+User->Orks: AccessCVK(vuid, tag, externalPub)
+note over Orks
+    uid = hash(externalPub)
+end note
+Orks->Block: Access(vuid, uid, tag, externalPub)
+
+
+
+External->Vendor: GetCipher()
+Vendor-->External: cipherData
+
+note over External
+    uid = hash(externalPub)
+end note
+
+External->Orks: Challenge(vuid, uid)
+alt uid != hash(vPub)
+    Orks->Block: GetAccess(vuid, uid)
+    Block-->Orks: tag, externalPub
+
+    note over Orks
+        pub = externalPub
+    end note
+end
+
+note over Orks
+    guid = radom
+    ticks = now
+    sign = hmac(guid||ticks, cvkAuth)
+    
+    token = guid||ticks||sign
+    sessionKey = hmac(token, cvkAuth)
+    cipherKey = encrypt(sessionKey, pub)
+end note
+
+Orks-->External: token, cipherKey
+
+note over External
+    sessionKey = decrypt(cipherKey, externalPrv)
+    signData = hmac(cipherData, sessionKey)
+end note
+
+External->Orks: Decrypt(vuid, token, cipherData, signData)
+
+opt check(token) && check(signData) && tag(cipherData) == tag
+    note over Orks
+        partial = partialDecrypt(cipherData, cvki)
+        cipherPartial = encrypt(partial, sessionKey)
+    end note
+
+    Orks-->External: cipherPartial
+end
+
+note over External
+    partial = decrypt(cipherPartial, sessionKey)
+    data = interpolate(partial)
+end note
+

@@ -1,0 +1,50 @@
+title default partial decryption
+
+User->Orks: RegisterCVK(vuid, vPub, cvki, cvkAuth)
+
+User->Vendor: Encrypt(data, cvkPub)
+
+note over Vendor
+    uid = hash(vPub)
+end note
+
+Vendor->Orks: Challenge(vuid, uid)
+
+alt uid == hash(vPub)
+    note over Orks
+        pub = vPub
+    end note
+end
+
+note over Orks
+    guid = radom
+    ticks = now
+    sign = hmac(guid||ticks, cvkAuth)
+    
+    token = guid||ticks||sign
+    sessionKey = hmac(token, cvkAuth)
+    cipherKey = encrypt(sessionKey, pub)
+end note
+
+Orks-->Vendor: token, cipherKey
+
+note over Vendor
+    sessionKey = decrypt(cipherKey, vPrivate)
+    signData = hmac(cipherData, sessionKey)
+end note
+
+Vendor->Orks: Decrypt(vuid, token, cipherData, signData)
+
+opt check(token) && check(signData) && notTag(cipherData)
+    note over Orks
+        partial = partialDecrypt(cipherData, cvki)
+        cipherPartial = encrypt(partial, sessionKey)
+    end note
+
+    Orks-->Vendor: cipherPartial
+end
+
+note over Vendor
+    partial = decrypt(cipherPartial, sessionKey)
+    data = interpolate(partial)
+end note
