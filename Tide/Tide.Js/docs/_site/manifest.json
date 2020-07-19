@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "docs/Tide.html",
-          "hash": "X+P6UqxPqXej72Fj/gslNA=="
+          "hash": "oG3schUYe49xH3R6QWtzzQ=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,7 @@
       "output": {
         ".html": {
           "relative_path": "docs/index.html",
-          "hash": "McIcd0fW7yDKUgD6RFT3dA=="
+          "hash": "69OLmwZe+5kwVfpxWBWiyg=="
         }
       },
       "is_incremental": false,
@@ -43,12 +43,10 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": false,
-        "details": "Cannot build incrementally because last build info is missing.",
+        "can_incremental": true,
         "incrementalPhase": "build",
         "total_file_count": 0,
-        "skipped_file_count": 0,
-        "full_build_reason_code": "NoAvailableBuildCache"
+        "skipped_file_count": 0
       },
       "processors": {
         "TocDocumentProcessor": {
@@ -69,8 +67,8 @@
     },
     {
       "status": {
-        "can_incremental": false,
-        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0

@@ -7,7 +7,7 @@ import { AESKey } from "cryptide";
 /**
  * A client-side library to interface with the Tide scosystem.
  * @class
- * @classdesc The main Tide class to initialize.
+ * @classdesc The client side library to interface with the Tide ecosystem.
  */
 class Tide {
   /**
