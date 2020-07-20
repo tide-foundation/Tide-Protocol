@@ -17,8 +17,12 @@ namespace Tide.Ork.Classes {
 
         public IKeyManager BuildManager() => new SimulatorKeyManager(_orkId, BuildClient(), _key);
 
-        public IManager<CvkVault> BuildManagerCvk() => new SimulatorCvkManager(_orkId, BuildClient(), _key);
+        public IManager<CvkVault> BuildManagerCvk() => new SimulatorManagerBase<CvkVault>(_orkId, BuildClient(), _key);
 
         public SimulatorClient BuildClient() => new SimulatorClient(_config.Api, _orkId, _config.Password);
+
+        public IManager<KeyIdVault> BuildKeyIdManager() => new SimulatorManagerBase<KeyIdVault>(_orkId, BuildClient(), _key);
+
+        public IManager<RuleVault> BuildRuleManager() => new SimulatorManagerBase<RuleVault>(_orkId, BuildClient(), _key);
     }
 }

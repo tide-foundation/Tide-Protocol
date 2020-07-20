@@ -4,5 +4,7 @@ namespace Tide.Ork.Classes {
     public interface IKeyManagerFactory {
         IKeyManager BuildManager();
         IManager<CvkVault> BuildManagerCvk();
+        IManager<KeyIdVault> BuildKeyIdManager();
+        IManager<RuleVault> BuildRuleManager();
     }
 }
