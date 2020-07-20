@@ -33,7 +33,7 @@ namespace Tide.Ork.Controllers {
         private readonly ILogger _logger;
         private readonly IdGenerator _generator;
         private readonly IKeyManager _manager;
-        private readonly ICvkManager _managerCvk;
+        private readonly IManager<CvkVault> _managerCvk;
 
         public DAuthController(IKeyManagerFactory factory, IEmailClient mail, ILogger<DAuthController> logger, IdGenerator gen) {
             _manager = factory.BuildManager();

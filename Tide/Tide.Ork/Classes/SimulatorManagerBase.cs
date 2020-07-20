@@ -5,7 +5,7 @@ using Tide.Encryption;
 using Tide.Encryption.AesMAC;
 
 namespace Tide.Ork.Classes {
-    public class SimulatorManagerBase<T> where T : SerializableByteBase<T>, IGuid, new()
+    public class SimulatorManagerBase<T> : IManager<T> where T : SerializableByteBase<T>, IGuid, new()
     {
         protected readonly SimulatorClient _client;
         protected readonly AesKey _key;

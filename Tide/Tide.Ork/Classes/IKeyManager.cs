@@ -20,11 +20,8 @@ using Tide.Core;
 
 namespace Tide.Ork.Classes
 {
-    public interface IKeyManager
+    public interface IKeyManager : IManager<KeyVault>
     {
-        Task<bool> Exist(Guid user);
         Task<BigInteger> GetAuthShare(Guid user);
-        Task<KeyVault> GetByUser(Guid user);
-        Task<TideResponse> SetOrUpdate(KeyVault account);
     }
 }

@@ -19,10 +19,10 @@ using Tide.Core;
 
 namespace Tide.Ork.Classes
 {
-    public interface ICvkManager
+    public interface IManager<T> where T : IGuid
     {
         Task<bool> Exist(Guid user);
-        Task<CvkVault> GetByUser(Guid user);
-        Task<TideResponse> SetOrUpdate(CvkVault account);
+        Task<T> GetByUser(Guid user);
+        Task<TideResponse> SetOrUpdate(T account);
     }
 }

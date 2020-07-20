@@ -1,4 +1,5 @@
 ﻿using System;
+using Tide.Core;
 using Tide.Encryption.AesMAC;
 using Tide.Ork.Models;
 
@@ -16,7 +17,7 @@ namespace Tide.Ork.Classes {
 
         public IKeyManager BuildManager() => new SimulatorKeyManager(_orkId, BuildClient(), _key);
 
-        public ICvkManager BuildManagerCvk() => new SimulatorCvkManager(_orkId, BuildClient(), _key);
+        public IManager<CvkVault> BuildManagerCvk() => new SimulatorCvkManager(_orkId, BuildClient(), _key);
 
         public SimulatorClient BuildClient() => new SimulatorClient(_config.Api, _orkId, _config.Password);
     }
