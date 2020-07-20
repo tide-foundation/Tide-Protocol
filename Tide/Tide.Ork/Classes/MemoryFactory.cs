@@ -5,7 +5,7 @@ namespace Tide.Ork.Classes {
         private static readonly MemoryKeyManager _manager = new MemoryKeyManager();
         private static readonly IManager<CvkVault> _managerCvk = new MemoryManagerBase<CvkVault>();
         private static readonly IManager<KeyIdVault> _keyIdManager = new MemoryManagerBase<KeyIdVault>();
-        private static readonly IManager<RuleVault> _memoryRuleManager = new MemoryManagerBase<RuleVault>();
+        private static readonly IRuleManager _memoryRuleManager = new MemoryRuleManager();
         
         public IKeyManager BuildManager() {
             return _manager;
@@ -21,7 +21,7 @@ namespace Tide.Ork.Classes {
             return _keyIdManager;
         }
 
-        public IManager<RuleVault> BuildRuleManager()
+        public IRuleManager BuildRuleManager()
         {
             return _memoryRuleManager;
         }

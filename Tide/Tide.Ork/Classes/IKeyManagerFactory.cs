@@ -5,6 +5,6 @@ namespace Tide.Ork.Classes {
         IKeyManager BuildManager();
         IManager<CvkVault> BuildManagerCvk();
         IManager<KeyIdVault> BuildKeyIdManager();
-        IManager<RuleVault> BuildRuleManager();
+        IRuleManager BuildRuleManager();
     }
 }

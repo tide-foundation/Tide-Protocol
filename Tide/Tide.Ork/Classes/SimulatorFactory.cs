@@ -23,6 +23,6 @@ namespace Tide.Ork.Classes {
 
         public IManager<KeyIdVault> BuildKeyIdManager() => new SimulatorManagerBase<KeyIdVault>(_orkId, BuildClient(), _key);
 
-        public IManager<RuleVault> BuildRuleManager() => new SimulatorManagerBase<RuleVault>(_orkId, BuildClient(), _key);
+        public IRuleManager BuildRuleManager() => new SimulatorRuleManager(_orkId, BuildClient(), _key);
     }
 }

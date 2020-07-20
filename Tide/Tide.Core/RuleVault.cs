@@ -11,6 +11,7 @@ namespace Tide.Core
     {
         public Guid Id => RuleId;
         public Guid RuleId { get; set; }
+        public Guid OwnerId { get; set; }
         public ulong Tag { get; set; }
         public Guid KeyId { get; set; }
         public string Condition { get; set; }
@@ -25,6 +26,7 @@ namespace Tide.Core
             yield return KeyId.ToByteArray();
             yield return Encoding.UTF8.GetBytes(Condition);
             yield return BitConverter.GetBytes((int)Action);
+            yield return OwnerId.ToByteArray();
         }
 
         protected override void SetItems(IReadOnlyList<byte[]> data)
@@ -34,6 +36,7 @@ namespace Tide.Core
             KeyId = new Guid(data[2]);
             Condition = Encoding.UTF8.GetString(data[3]);
             Action = (RuleAction) BitConverter.ToInt32(data[4], 0);
+            OwnerId = new Guid(data[5]);
         }
     }
 }

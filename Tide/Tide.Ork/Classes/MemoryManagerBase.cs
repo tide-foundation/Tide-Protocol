@@ -33,5 +33,13 @@ namespace Tide.Ork.Classes
             _items[account.Id] = account.ToString();
             return Task.FromResult(new TideResponse());
         }
+
+        protected IEnumerable<T> GetEnumerable()
+        {
+            foreach (KeyValuePair<Guid, string> entry in _items)
+            {
+                yield return SerializableByteBase<T>.Parse(entry.Value);
+            }
+        }
     }
 }
