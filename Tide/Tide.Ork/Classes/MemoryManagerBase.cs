@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Tide.Core;
 using Tide.Encryption;
@@ -15,12 +16,25 @@ namespace Tide.Ork.Classes
             _items = new Dictionary<Guid, string>();
         }
 
+        public Task Delete(Guid id)
+        {
+            if (_items.ContainsKey(id))
+                _items.Remove(id);
+
+            return Task.CompletedTask;
+        }
+
         public Task<bool> Exist(Guid id)
         {
             return Task.FromResult(_items.ContainsKey(id));
         }
 
-        public Task<T> GetByUser(Guid id)
+        public Task<List<T>> GetAll()
+        {
+            return Task.FromResult(GetEnumerable().ToList());
+        }
+
+        public Task<T> GetById(Guid id)
         {
             if (!_items.ContainsKey(id))
                 return Task.FromResult<T>(null);
@@ -28,9 +42,9 @@ namespace Tide.Ork.Classes
             return Task.FromResult(SerializableByteBase<T>.Parse(_items[id]));
         }
 
-        public Task<TideResponse> SetOrUpdate(T account)
+        public Task<TideResponse> SetOrUpdate(T entity)
         {
-            _items[account.Id] = account.ToString();
+            _items[entity.Id] = entity.ToString();
             return Task.FromResult(new TideResponse());
         }
 

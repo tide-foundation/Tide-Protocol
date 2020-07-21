@@ -12,7 +12,7 @@ namespace Tide.Ork.Classes {
         }
 
         public async Task<BigInteger> GetAuthShare(Guid userId) {
-            var user = await GetByUser(userId);
+            var user = await GetById(userId);
             return user != null ? user.AuthShare : BigInteger.Zero;
         }
     }

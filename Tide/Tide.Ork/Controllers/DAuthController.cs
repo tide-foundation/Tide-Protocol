@@ -58,7 +58,7 @@ namespace Tide.Ork.Controllers {
 
         [HttpGet("{user}/signin/{ticks}/{sign}")]
         public async Task<ActionResult> SignIn([FromRoute] string user, [FromRoute] string ticks, [FromRoute] string sign) {
-            var account = await _manager.GetByUser(GetUserId(user));
+            var account = await _manager.GetById(GetUserId(user));
             if (account == null) return BadRequest("That user does not exist.");
             if (!VerifyChallenge.Check(account.Secret, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(ticks))) {
                 _logger.LogInformation($"Unsuccessful login for {user}", user, ticks, sign);
@@ -91,7 +91,7 @@ namespace Tide.Ork.Controllers {
         [HttpPost("{user}/pass/{authShare}/{secret}/{ticks}/{sign}")]
         public async Task<ActionResult> ChangePass([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string secret, [FromRoute] string ticks, [FromRoute] string sign, [FromQuery] bool withCmk = false)
         {
-            var account = await _manager.GetByUser(GetUserId(user));
+            var account = await _manager.GetById(GetUserId(user));
             var authKey = withCmk ? account.CmkAuth : account.Secret;
             if (!VerifyChallenge.Check(authKey, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(authShare), FromBase64(secret), FromBase64(ticks)))
             {
@@ -113,7 +113,7 @@ namespace Tide.Ork.Controllers {
         [HttpGet("{user}/cmk")]
         public async Task<ActionResult> Recover([FromRoute] string user)
         {
-            var account = await _manager.GetByUser(GetUserId(user));
+            var account = await _manager.GetById(GetUserId(user));
             var share = new OrkShare(_generator.Id, account.KeyShare).ToString();
             var msg = $"You have requested to recover the CMK. Introduce the code [{share}] into tide wallet.";
             
@@ -143,7 +143,7 @@ namespace Tide.Ork.Controllers {
         [HttpGet("{user}/challenge")]
         public async Task<ActionResult> ChallengeVendor([FromRoute] string user)
         {
-            var account = await _managerCvk.GetByUser(GetUserId(user));
+            var account = await _managerCvk.GetById(GetUserId(user));
             var token = TranToken.Generate(account.CvkAuth);
 
             var cipher = account.VendorPub.Encrypt(token.GenKey(account.CvkAuth));
@@ -157,7 +157,7 @@ namespace Tide.Ork.Controllers {
         {
             var msgErr = $"Denied data decryption belonging to {user}";
 
-            var account = await _managerCvk.GetByUser(GetUserId(user));
+            var account = await _managerCvk.GetById(GetUserId(user));
             
             var tran = TranToken.Parse(Convert.FromBase64String(token.DecodeBase64Url()));
             if (!tran.Check(account.CvkAuth)) return Deny(msgErr);

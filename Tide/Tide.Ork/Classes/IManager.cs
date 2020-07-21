@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tide.Core;
 
@@ -21,8 +22,10 @@ namespace Tide.Ork.Classes
 {
     public interface IManager<T> where T : IGuid
     {
-        Task<bool> Exist(Guid user);
-        Task<T> GetByUser(Guid user);
-        Task<TideResponse> SetOrUpdate(T account);
+        Task<bool> Exist(Guid id);
+        Task<T> GetById(Guid id);
+        Task<List<T>> GetAll();
+        Task<TideResponse> SetOrUpdate(T entity);
+        Task Delete(Guid id);
     }
 }

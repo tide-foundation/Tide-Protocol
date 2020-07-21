@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tide.Core;
 using Tide.Encryption;
@@ -17,20 +18,32 @@ namespace Tide.Ork.Classes {
             _key = key;
         }
 
-        public async Task<bool> Exist(Guid user) {
-            return await GetByUser(user) == null;
+        public async Task<bool> Exist(Guid id) {
+            return await GetById(id) == null;
         }
 
-        public async Task<T> GetByUser(Guid id) {
+        //TODO: Ask Matt for help
+        public Task<List<T>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        //TODO: Ask Matt for help
+        public Task Delete(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<T> GetById(Guid id) {
             var response = await _client.GetVault(_orkId, id.ToString());
             if (!response.Success) return null;
 
             return SerializableByteBase<T>.Parse(_key.Decrypt((string)response.Content));
         }
 
-        public async Task<TideResponse> SetOrUpdate(T account)
+        public async Task<TideResponse> SetOrUpdate(T entity)
         {
-            return await _client.PostVault(_orkId, account.Id.ToString(), _key.EncryptStr(account));
+            return await _client.PostVault(_orkId, entity.Id.ToString(), _key.EncryptStr(entity));
         }
     }
 }
