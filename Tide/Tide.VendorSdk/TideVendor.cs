@@ -12,11 +12,11 @@ namespace Tide.VendorSdk
     public class TideVendor
     {
         private static SimulatorClient _client;
-        private readonly TideConfiguration _config;
+        public readonly TideConfiguration Config;
 
         public TideVendor(TideConfiguration config) {
-            _config = config;
-            _client = new SimulatorClient(_config.VendorId);
+            Config = config;
+            _client = new SimulatorClient(Config.VendorId);
         }
 
         #region Onboarding  

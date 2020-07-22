@@ -40,7 +40,8 @@ namespace Tide.Usecase
             services.AddDbContext<VendorContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
 
             services.AddTide("VendorId", configuration => configuration
-                .UseSqlServerStorage(settings.Connection));
+                .UseSqlServerStorage(settings.Connection)
+                .SetEndpoint("/override"));
 
             services.AddLiveReload();
             services.AddControllers();

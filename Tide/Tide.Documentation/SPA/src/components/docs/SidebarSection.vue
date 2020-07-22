@@ -1,16 +1,14 @@
 <template>
   <div class="section">
     <h4>{{ section.n }}</h4>
-    <div class="category" :class="{ expanded: category.e }" v-for="(category, categoryIndex) in section.categories" :key="categoryIndex">
-      <div class="c-title" @click="category.e = !category.e">
-        <div class="c-name">
-          {{ category.n }}
-        </div>
-        <div class="c-chevron"><i v-if="category.items != null" class="fas fa-chevron-down"></i></div>
+    <div class="category" :class="{ expanded: category.e && category.items != null }" v-for="(category, categoryIndex) in section.categories" :key="categoryIndex">
+      <div class="c-title" @click="clicked(category, null, true)">
+        <div class="c-name" :class="{ selected: $store.getters.selected == category.id }">{{ category.n }}</div>
+        <div class="c-chevron"><i v-if="category.items != null" class="fas" :class="[category.e ? 'fa-chevron-up' : 'fa-chevron-down']"></i></div>
       </div>
 
-      <div class="c-content" v-if="category.items != null">
-        <div class="c-item" @click="selected(item.id)" :class="{ enabled: item.e }" v-for="(item, itemIndex) in category.items" :key="itemIndex">
+      <div class="c-content">
+        <div class="c-item" @click="clicked(category, item, false)" :class="{ enabled: $store.getters.selected == item.id }" v-for="(item, itemIndex) in category.items" :key="itemIndex">
           <div class="i-bar"><div class="b-overlay"></div></div>
           <div class="i name">{{ item.n }}</div>
         </div>
@@ -25,8 +23,18 @@ export default {
   name: "SidebarSection",
   props: ["section", "last"],
   methods: {
-    selected(id) {
-      this.$bus.$emit("item-clicked", id);
+    clicked(category, item, isCat) {
+      if (isCat) {
+        // If the category has items it can never be selected, so just toggle expand
+        if (category.items != null) return (category.e = !category.e);
+        // Else this is a lone category, so route
+        return this.select(category.id, category.u);
+      }
+      // Route straight to item
+      return this.select(item.id, item.u);
+    },
+    select(id, u) {
+      this.$bus.$emit("doc-route", { id, u });
     },
   },
 };
@@ -61,6 +69,12 @@ export default {
       &:hover {
         .c-name {
           color: #4bb5db;
+        }
+      }
+      .c-name {
+        &.selected {
+          color: #4bb5db;
+          font-weight: 500;
         }
       }
     }

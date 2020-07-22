@@ -11,5 +11,6 @@ namespace Tide.VendorSdk.Configuration
         public static TideConfiguration Configuration = new TideConfiguration();
         public IDatabase Database { get; set; }
         public string VendorId { get; set; }
+        public string Endpoint { get; set; }
     }
 }

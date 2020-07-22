@@ -5,7 +5,6 @@
     </div>
 
     <Section v-for="(section, sectionIndex) in sections" :section="section" :last="section.l" :key="sectionIndex" />
-    >
   </div>
 </template>
 
@@ -16,47 +15,117 @@ export default {
   components: {
     Section,
   },
-  props: {
-    sections: Array,
-  },
   data: function() {
-    return {};
+    return {
+      sections: [
+        {
+          n: "GENERAL",
+          l: false,
+          categories: [
+            {
+              n: "About Tide",
+              e: true,
+              u: "about",
+            },
+          ],
+        },
+        {
+          n: "INTEGRATION",
+          l: true,
+          categories: [
+            {
+              n: "Before You Start",
+              e: false,
+              items: [
+                { n: "Tech Summary", u: "tech-summary", e: false },
+                { n: "High-Level Overview", u: "high-level", e: false },
+                { n: "How It Works", u: "how-it-works", e: false },
+              ],
+            },
+            {
+              n: "Tide Client",
+              e: false,
+              items: [
+                { n: "Installation", u: "not-created", e: false },
+                { n: "Getting Started", u: "not-created", e: false },
+                { n: "Accounts", u: "not-created", e: false },
+                { n: "Encryption", u: "not-created", e: false },
+                { n: "User Settings", u: "not-created", e: false },
+              ],
+            },
+            {
+              n: "Tide Server",
+              e: false,
+              items: [
+                { n: "Installation", u: "not-created", e: false },
+                { n: "Getting Started", u: "not-created", e: false },
+                { n: "Vendor Settings", u: "not-created", e: false },
+                { n: "Data & Serialization", u: "not-created", e: false },
+              ],
+            },
+          ],
+        },
+        {
+          n: "API",
+          l: false,
+          categories: [
+            {
+              n: "Tide JS",
+              e: false,
+              u: "tide-js",
+            },
+            {
+              n: "Tide C#",
+              e: false,
+              u: "tide-csharp",
+            },
+          ],
+        },
+      ],
+      firstNode: null,
+    };
   },
   created() {
-    this.$bus.$on("item-clicked", (id) => {
-      this.selected(id);
-    });
-
-    // Assign unique ids
+    // Assign ids
     var id = 0;
     this.sections.forEach((section) => {
       section.categories.forEach((category) => {
+        category.id = id++;
         if (category.items != null) {
           category.items.forEach((item) => {
             item.id = id++;
-            if (item.e) this.selected(item.id);
+            if (this.firstNode == null) this.firstNode = item;
           });
+        } else {
+          if (this.firstNode == null) this.firstNode = category;
         }
       });
     });
+
+    this.$bus.$on("doc-route", (data) => {
+      this.$store.commit("updateSelected", data.id);
+
+      localStorage.selected = JSON.stringify({ id: data.id, u: data.u });
+
+      return this.$router.push(`/docs/${data.u}`).catch(() => {});
+    });
+
+    this.firstRoute();
   },
   methods: {
-    selected(id) {
-      this.sections.forEach((section) => {
-        section.categories.forEach((category) => {
-          if (category.items != null) {
-            category.items.forEach((item) => {
-              if (item.id == id) {
-                item.e = true;
+    firstRoute() {
+      var data;
+      try {
+        if (localStorage.selected) {
+          var json = JSON.parse(localStorage.selected);
+          if (json.id == null || json.u == null) throw new Error();
+          data = json;
+        }
+      } catch (error) {
+        data = this.firstNode;
+      }
 
-                this.$router.push(`/docs/${item.u}`);
-              } else {
-                item.e = false;
-              }
-            });
-          }
-        });
-      });
+      this.$bus.$emit("doc-route", data);
     },
   },
 };

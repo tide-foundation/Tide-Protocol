@@ -3,7 +3,7 @@ items:
   - uid: tide-js.Tide
     id: tide-js.Tide
     name: Tide
-    summary: The main Tide class to initialize.
+    summary: The client side library to interface with the Tide ecosystem.
     fullName: tide-js.Tide
     type: Class
     children:

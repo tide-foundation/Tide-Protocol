@@ -11,16 +11,32 @@ const routes = [
     component: Docs,
     children: [
       {
-        path: "/docs/summary",
-        component: () => import(/* webpackChunkName: "about" */ "../views/docs/pages/Summary.vue"),
+        path: "/docs/about",
+        component: () => import(/* webpackChunkName: "about" */ "../views/docs/pages/About.vue"),
+      },
+      {
+        path: "/docs/tech-summary",
+        component: () => import(/* webpackChunkName: "techsummary" */ "../views/docs/pages/TechSummary.vue"),
       },
       {
         path: "/docs/high-level",
-        component: () => import(/* webpackChunkName: "about" */ "../views/docs/pages/HighLevel.vue"),
+        component: () => import(/* webpackChunkName: "highlevel" */ "../views/docs/pages/HighLevel.vue"),
       },
       {
         path: "/docs/how-it-works",
-        component: () => import(/* webpackChunkName: "about" */ "../views/docs/pages/HowItWorks.vue"),
+        component: () => import(/* webpackChunkName: "howitworks" */ "../views/docs/pages/HowItWorks.vue"),
+      },
+      {
+        path: "/docs/not-created",
+        component: () => import(/* webpackChunkName: "null" */ "../views/docs/pages/Null.vue"),
+      },
+      {
+        path: "/docs/tide-js",
+        component: () => import(/* webpackChunkName: "null" */ "../views/docs/api/TideJS.vue"),
+      },
+      {
+        path: "/docs/tide-csharp",
+        component: () => import(/* webpackChunkName: "null" */ "../views/docs/api/TideCSharp.vue"),
       },
     ],
   },

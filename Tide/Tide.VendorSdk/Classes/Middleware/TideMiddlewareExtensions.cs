@@ -23,7 +23,7 @@ namespace Tide.VendorSdk.Classes.Middleware {
             var services = app.ApplicationServices;
             var tideVendor = services.GetRequiredService<TideVendor>();
 
-            app.Map(new PathString(V1PathMatch), x => x.UseMiddleware<TideMiddleware>(tideVendor));
+            app.Map(new PathString(tideVendor.Config.Endpoint ?? V1PathMatch), x => x.UseMiddleware<TideMiddleware>(tideVendor));
 
             // app.Map(new PathString(V2PathMatch), x => x.UseMiddleware<TideMiddleware>(tideVendor, routes));
 

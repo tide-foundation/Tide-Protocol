@@ -17,5 +17,14 @@ namespace Tide.VendorSdk.Configuration
             TideConfiguration.Configuration.Database = new SqlDatabase(connectionString);
             return configuration;
         }
+
+        public static ITideConfiguration SetEndpoint(this ITideConfiguration configuration, string endpoint)
+        {
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
+
+            TideConfiguration.Configuration.Endpoint = endpoint;
+            return configuration;
+        }
     }
 }
