@@ -10,8 +10,8 @@ namespace Tide.Core
     public class KeyIdVault : SerializableByteBase<KeyIdVault>, IGuid
     {
         public Guid Id => KeyId;
-        public Guid KeyId { get; private set; }
-        public C25519Key Key { get; private set; }
+        public Guid KeyId { get; set; }
+        public C25519Key Key { get; set; }
 
         public KeyIdVault() : base(1) { }
 

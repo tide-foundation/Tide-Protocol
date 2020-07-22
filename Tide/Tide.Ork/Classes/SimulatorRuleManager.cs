@@ -11,7 +11,14 @@ namespace Tide.Ork.Classes {
         {
         }
 
-        public Task<List<RuleVault>> GetSetByOwner(Guid id)
+        //TODO: Ask Matt for help
+        public Task<List<RuleVault>> GetSetBy(Guid ownerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        //TODO: Ask Matt for help
+        public Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId)
         {
             throw new NotImplementedException();
         }

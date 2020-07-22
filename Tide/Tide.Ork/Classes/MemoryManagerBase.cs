@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,17 +10,17 @@ namespace Tide.Ork.Classes
 {
     public class MemoryManagerBase<T> : IManager<T> where T : SerializableByteBase<T>, IGuid, new()
     {
-        protected readonly Dictionary<Guid, string> _items;
+        protected readonly ConcurrentDictionary<Guid, string> _items;
 
         public MemoryManagerBase()
         {
-            _items = new Dictionary<Guid, string>();
+            _items = new ConcurrentDictionary<Guid, string>();
         }
 
         public Task Delete(Guid id)
         {
             if (_items.ContainsKey(id))
-                _items.Remove(id);
+                _items.Remove(id, out string elm);
 
             return Task.CompletedTask;
         }

@@ -17,7 +17,11 @@ namespace Tide.Core
         public string Condition { get; set; }
         public RuleAction Action { get; set; }
 
-        public RuleVault() : base(1) { }
+        public RuleVault() : base(1) { 
+            Condition = string.Empty;
+        }
+
+        public bool Apply() => !string.IsNullOrEmpty(Condition) && Condition.Trim().ToLower() == "true";
 
         protected override IEnumerable<byte[]> GetItems()
         {

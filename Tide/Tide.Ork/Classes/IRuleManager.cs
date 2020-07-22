@@ -22,6 +22,7 @@ namespace Tide.Ork.Classes
 {
     public interface IRuleManager : IManager<RuleVault>
     {
-        Task<List<RuleVault>> GetSetByOwner(Guid id);
+        Task<List<RuleVault>> GetSetBy(Guid ownerId);
+        Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId);
     }
 }
