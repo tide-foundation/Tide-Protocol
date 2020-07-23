@@ -1,0 +1,484 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class Tide
+   | Tide Documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class Tide
+   | Tide Documentation ">
+    <meta name="generator" content="docfx 2.56.1.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+                 <a class="navbar-brand" href="../../index.html">
+                  <img id="logo" src="../../images/logo.svg" height="37" alt=""> 
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search" id="t-main">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="tide-js.Tide">
+  
+  
+  <h1 id="tide_js_Tide" data-uid="tide-js.Tide">Class Tide
+  </h1>
+  <div class="markdown level0 summary"><p>The client side library to interface with the Tide ecosystem.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <h4 id="tide_js_Tide__ctor" data-uid="tide-js.Tide.#ctor">Tide(vendorId, serverUrl)</h4>
+  <div class="markdown level1 summary"><p>Initialize Tide.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-js hljs">new Tide(vendorId, serverUrl)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>vendorId</em></td>
+        <td>
+          <p>Your designated VendorId in which you will operate</p>
+
+          
+        </td>
+      </tr>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>serverUrl</em></td>
+        <td>
+          <p>The endpoint of your backend Tide server</p>
+
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="functions">Functions
+  </h3>
+  
+  
+  <h4 id="tide_js_Tide_register" data-uid="tide-js.Tide#register">register(username, password, email, orkIds)</h4>
+  <div class="markdown level1 summary"><p>Create a new Tide account.</p>
+<p>This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-js hljs">function register(username, password, email, orkIds)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>username</em></td>
+        <td>
+          <p>Plain text username of the new user</p>
+
+          
+        </td>
+      </tr>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>password</em></td>
+        <td>
+          <p>Plain text password of the new user</p>
+
+          
+        </td>
+      </tr>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>email</em></td>
+        <td>
+          <p>The recovery email to be used by the user.</p>
+
+          
+        </td>
+      </tr>
+      <tr>
+        <td><span class="xref">Array</span></td>
+        <td><em>orkIds</em></td>
+        <td>
+          <p>The desired ork nodes to be used for registration. An account can only be activated when all ork nodes have confirmed they have stored the shard.</p>
+
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">tide-js.AESKey</span></td>
+        <td><ul>
+<li>The users keys to be used on the data</li>
+</ul>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="tide_js_Tide_login" data-uid="tide-js.Tide#login">login(username, password)</h4>
+  <div class="markdown level1 summary"><p>Login to a previously created Tide account. The account must be fully enabled by the vendor before use.</p>
+<p>This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-js hljs">function login(username, password)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>username</em></td>
+        <td>
+          <p>Plain text username of the user</p>
+
+          
+        </td>
+      </tr>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>password</em></td>
+        <td>
+          <p>Plain text password of the user</p>
+
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">tide-js.AESKey</span></td>
+        <td><ul>
+<li>The users keys to be used on the data</li>
+</ul>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="tide_js_Tide_logout" data-uid="tide-js.Tide#logout">logout()</h4>
+  <div class="markdown level1 summary"><p>Strips all local user data from the browser.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-js hljs">function logout()</code></pre>
+  </div>
+  
+  
+  <h4 id="tide_js_Tide_encrypt" data-uid="tide-js.Tide#encrypt">encrypt(msg)</h4>
+  <div class="markdown level1 summary"><p>Encrypt a string with the logged in user keys.</p>
+<p>This action requires a logged in user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-js hljs">function encrypt(msg)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>msg</em></td>
+        <td>
+          <p>The string you wish to encrypt using the user keys</p>
+
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><ul>
+<li>The encrypted payload</li>
+</ul>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="tide_js_Tide_decrypt" data-uid="tide-js.Tide#decrypt">decrypt(cipher)</h4>
+  <div class="markdown level1 summary"><p>Decrypt an encrypted string with the logged in user keys.</p>
+<p>This action requires a logged in user.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-js hljs">function decrypt(cipher)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>cipher</em></td>
+        <td>
+          <p>The encrypted string you wish to decrypt using the user keys</p>
+
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><ul>
+<li>The plain text message</li>
+</ul>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="tide_js_Tide_recover" data-uid="tide-js.Tide#recover">recover(username)</h4>
+  <div class="markdown level1 summary"><p>Send a request to the ORK nodes used by the user to email them recovery shards. This is step 1 in a 2 step process to recover the user keys.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-js hljs">function recover(username)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>username</em></td>
+        <td>
+          <p>The username of the user who wishes to recover</p>
+
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="tide_js_Tide_reconstruct" data-uid="tide-js.Tide#reconstruct">reconstruct(username, shares, newPass)</h4>
+  <div class="markdown level1 summary"><p>Login to a previously created Tide account. The account must be fully enabled by the vendor before use.</p>
+<p>This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-js hljs">function reconstruct(username, shares, newPass)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>username</em></td>
+        <td>
+          <p>Plain text username of the user</p>
+
+          
+        </td>
+      </tr>
+      <tr>
+        <td><span class="xref">Array</span></td>
+        <td><em>shares</em></td>
+        <td>
+          <p>An array of shares sent to the users email(s)</p>
+
+          
+        </td>
+      </tr>
+      <tr>
+        <td><span class="xref">String</span></td>
+        <td><em>newPass</em></td>
+        <td>
+          <p>The new password of the user</p>
+
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span><strong>Tide</strong> Foundation</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

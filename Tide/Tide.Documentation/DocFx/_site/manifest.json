@@ -1,0 +1,860 @@
+{
+  "homepages": [],
+  "source_base_path": "X:/Git/Tide-Protocol/Tide/Tide.Documentation/DocFx",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.IEmailClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.IEmailClient.html",
+          "hash": "3ZjWRFCCvtmzoww9NiIukw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.IKeyManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.IKeyManager.html",
+          "hash": "dwbD+pjbkZvIHxPV1Sr0Fg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.IKeyManagerFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.IKeyManagerFactory.html",
+          "hash": "uHAEXlAVZJLVtJeithHlWw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.IManager-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.IManager-1.html",
+          "hash": "BmYrQXvLfBRz/lCHhkdAJw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.IRuleManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.IRuleManager.html",
+          "hash": "d4+AjrGoRc9/gusP1wIrew=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.IdGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.IdGenerator.html",
+          "hash": "4mHXr3eglGACY8bW0YNUjQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.MailKitClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.MailKitClient.html",
+          "hash": "xA+quA1I/WJ9mcsCix5k4Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.MemoryFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.MemoryFactory.html",
+          "hash": "1PIUg/PRmndCQbQRojkd9w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.MemoryKeyManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.MemoryKeyManager.html",
+          "hash": "JkaWzbGM9/CKudzanc+wtQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.MemoryManagerBase-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.MemoryManagerBase-1.html",
+          "hash": "fwrtlLiIfS3U5/oJlyc91g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.MemoryRuleManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.MemoryRuleManager.html",
+          "hash": "IQ7lVorfCV9yGHTeWUK8KQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.OrkShare.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.OrkShare.html",
+          "hash": "bOvzqoFW/dbF5LSusQn1iQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.SimulatorClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.SimulatorClient.html",
+          "hash": "bhgmMVq7n7ko5cnqBEraXg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.SimulatorFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.SimulatorFactory.html",
+          "hash": "UJWrdrMa2NtgOYUZi0BCTw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.SimulatorKeyManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.SimulatorKeyManager.html",
+          "hash": "KmMiqRvz+yg5f089SVm2LQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.SimulatorManagerBase-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.SimulatorManagerBase-1.html",
+          "hash": "9veoOWlWwOE4irLcbisupQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.SimulatorRuleManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.SimulatorRuleManager.html",
+          "hash": "4UF8Ka4cXJ228UJdVLq6zw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.TranToken.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.TranToken.html",
+          "hash": "2ZPQBxcUi7f2uD7RVJ+1ig=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.VerifyChallenge.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.VerifyChallenge.html",
+          "hash": "po5TBYSlhi/wZK7y0NF4rg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.html",
+          "hash": "4t5tsVSPHPF2SNLOloNcsw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Controllers.DAuthController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Controllers.DAuthController.html",
+          "hash": "mSNMJU8DYcMP/X5GDZJUxQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Controllers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Controllers.html",
+          "hash": "farf3BI4DCj/uvduwk+eiw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Models.EmailClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Models.EmailClient.html",
+          "hash": "B0vWQSkoIhy/vnI1wxKsLQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Models.Endpoint.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Models.Endpoint.html",
+          "hash": "qMBgoKjhtUtRsdLUgIRoBQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Models.Endpoints.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Models.Endpoints.html",
+          "hash": "S/+Ol4L3Lkz9udaKAbmlVQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Models.Instance.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Models.Instance.html",
+          "hash": "C1Oc6qlDI6wAaFuxubIrRQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Models.Settings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Models.Settings.html",
+          "hash": "HS274CwSpoMugeTcFmcJlg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Models.html",
+          "hash": "MHwmtrHDcXEq853Oan+p0w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Program.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Program.html",
+          "hash": "vwz4OW9pNAgYIBQ3YbVmyg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Startup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Startup.html",
+          "hash": "KH0D0CZVwIagHSULh7xb6g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.html",
+          "hash": "P9xYAlADT0c8H1wUA0qFBw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/ork/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/toc.html",
+          "hash": "3LfSDzcUKotkCIyimqtSQQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "UniversalReference",
+      "source_relative_path": "api/tide-js/Tide.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/tide-js/Tide.html",
+          "hash": "ink7ZQnvgFFCP6+5fCg34A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "UniversalReference",
+      "source_relative_path": "api/tide-js/index.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/tide-js/index.html",
+          "hash": "WTowkbHHr+2+QMIPeFcxLg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "UniversalReference",
+      "source_relative_path": "api/tide-js/module.exports#module.exports.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/tide-js/module.exports#module.exports.html",
+          "hash": "WNpR2YW2inI9dxLVnAPZIw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/tide-js/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/tide-js/toc.html",
+          "hash": "RB2n9I1jKmqtjM6GwxGqcw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.TideMiddleware.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.TideMiddleware.html",
+          "hash": "aM1DKcmyOlvRVZHw4ZIJbQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.TideMiddlewareExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.TideMiddlewareExtensions.html",
+          "hash": "SEVys99s4lC5bVe+cWMUdA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.html",
+          "hash": "cD34cwlOqaCaxYkXn4rr1w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.SimulatorClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.SimulatorClient.html",
+          "hash": "BZVO9/kcl/CPYwedN6AgSQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Storage.IDatabase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Storage.IDatabase.html",
+          "hash": "I2bS6Kw4p67FSNvDR16LeA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Storage.SqlDatabase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Storage.SqlDatabase.html",
+          "hash": "oGTfCh2YPNrKY3+GVlwSbQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Storage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Storage.html",
+          "hash": "fwGybMVcoDhpBHhBI9XNCQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.html",
+          "hash": "qHp/M8IaoQFu69j19E9LGQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.ConfigurationExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.ConfigurationExtensions.html",
+          "hash": "rxbA0sLNjcNB6ismWEK5Rw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.ITideConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.ITideConfiguration.html",
+          "hash": "eGlBtd4Dz4sQyfrDFfkuIg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.TideConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.TideConfiguration.html",
+          "hash": "u4StVnnG8Zi9BCmXNkCjsA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.html",
+          "hash": "xO8Ys81a0mjjTJ6rU/CYuA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.TideVendor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.TideVendor.html",
+          "hash": "s2f+R6nc+o8yC57mMGQTKA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.html",
+          "hash": "U2O2BrOj2uvNzsHqmxm6Mg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/vendor-sdk/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/toc.html",
+          "hash": "aSyhE2uX8gU7PZAPMAoYxw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/features/authentication.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/features/authentication.html",
+          "hash": "9jiMZpfMWIrJXAJ0c45Mog=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/features/encryption.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/features/encryption.html",
+          "hash": "XR1jLD4/uypRci4+qvmsrQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/features/marketplace.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/features/marketplace.html",
+          "hash": "lHrC3dr72fKli8Tx3ValiQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/general/about.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/general/about.html",
+          "hash": "ho/cFWsbuxJISw5If2pSng=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/general/high-level.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/general/high-level.html",
+          "hash": "mvEbIalbu/HKc3SdKcesug=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/integration/client-side.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/integration/client-side.html",
+          "hash": "76xWW4Yp1FLPzR8IUhWyJg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "docs/integration/getting-started.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/integration/getting-started.html",
+          "hash": "zotTfFRRdUdvy/c+l3GOBw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/integration/how-it-works.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/integration/how-it-works.html",
+          "hash": "qcahgivYOOxsCFU5qSzO6Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/integration/server-side.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/integration/server-side.html",
+          "hash": "2xXgHC+PtG6vwQFqAwNTBA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/toc.html",
+          "hash": "77ZUuefEzgVLeA8SZ4oZag=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/SadDemon.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/SadDemon.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/high-level.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/high-level.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/logo.svg",
+      "output": {
+        "resource": {
+          "relative_path": "images/logo.svg"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "tI28GsgQqgzp2gALwuv44g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "DEsiCY2xOnkgFje9zJKnmQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 10,
+          "skipped_file_count": 10
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 45,
+          "skipped_file_count": 45
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "UniversalReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor UniversalReferenceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
