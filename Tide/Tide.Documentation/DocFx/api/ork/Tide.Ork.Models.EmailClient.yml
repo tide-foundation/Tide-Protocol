@@ -1,0 +1,561 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Models.EmailClient
+  commentId: T:Tide.Ork.Models.EmailClient
+  id: EmailClient
+  parent: Tide.Ork.Models
+  children:
+  - Tide.Ork.Models.EmailClient.SenderEmail
+  - Tide.Ork.Models.EmailClient.SenderHost
+  - Tide.Ork.Models.EmailClient.SenderName
+  - Tide.Ork.Models.EmailClient.SenderPassword
+  - Tide.Ork.Models.EmailClient.SenderPort
+  langs:
+  - csharp
+  - vb
+  name: EmailClient
+  nameWithType: EmailClient
+  fullName: Tide.Ork.Models.EmailClient
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: EmailClient
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 25
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public class EmailClient
+    content.vb: Public Class EmailClient
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Tide.Ork.Models.EmailClient.SenderName
+  commentId: P:Tide.Ork.Models.EmailClient.SenderName
+  id: SenderName
+  parent: Tide.Ork.Models.EmailClient
+  langs:
+  - csharp
+  - vb
+  name: SenderName
+  nameWithType: EmailClient.SenderName
+  fullName: Tide.Ork.Models.EmailClient.SenderName
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SenderName
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 27
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public string SenderName { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property SenderName As String
+  overload: Tide.Ork.Models.EmailClient.SenderName*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Models.EmailClient.SenderEmail
+  commentId: P:Tide.Ork.Models.EmailClient.SenderEmail
+  id: SenderEmail
+  parent: Tide.Ork.Models.EmailClient
+  langs:
+  - csharp
+  - vb
+  name: SenderEmail
+  nameWithType: EmailClient.SenderEmail
+  fullName: Tide.Ork.Models.EmailClient.SenderEmail
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SenderEmail
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 28
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public string SenderEmail { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property SenderEmail As String
+  overload: Tide.Ork.Models.EmailClient.SenderEmail*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Models.EmailClient.SenderPassword
+  commentId: P:Tide.Ork.Models.EmailClient.SenderPassword
+  id: SenderPassword
+  parent: Tide.Ork.Models.EmailClient
+  langs:
+  - csharp
+  - vb
+  name: SenderPassword
+  nameWithType: EmailClient.SenderPassword
+  fullName: Tide.Ork.Models.EmailClient.SenderPassword
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SenderPassword
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 29
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public string SenderPassword { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property SenderPassword As String
+  overload: Tide.Ork.Models.EmailClient.SenderPassword*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Models.EmailClient.SenderHost
+  commentId: P:Tide.Ork.Models.EmailClient.SenderHost
+  id: SenderHost
+  parent: Tide.Ork.Models.EmailClient
+  langs:
+  - csharp
+  - vb
+  name: SenderHost
+  nameWithType: EmailClient.SenderHost
+  fullName: Tide.Ork.Models.EmailClient.SenderHost
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SenderHost
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 30
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public string SenderHost { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property SenderHost As String
+  overload: Tide.Ork.Models.EmailClient.SenderHost*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Models.EmailClient.SenderPort
+  commentId: P:Tide.Ork.Models.EmailClient.SenderPort
+  id: SenderPort
+  parent: Tide.Ork.Models.EmailClient
+  langs:
+  - csharp
+  - vb
+  name: SenderPort
+  nameWithType: EmailClient.SenderPort
+  fullName: Tide.Ork.Models.EmailClient.SenderPort
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SenderPort
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 31
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public int SenderPort { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Property SenderPort As Integer
+  overload: Tide.Ork.Models.EmailClient.SenderPort*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+references:
+- uid: Tide.Ork.Models
+  commentId: N:Tide.Ork.Models
+  name: Tide.Ork.Models
+  nameWithType: Tide.Ork.Models
+  fullName: Tide.Ork.Models
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.Ork.Models.EmailClient.SenderName*
+  commentId: Overload:Tide.Ork.Models.EmailClient.SenderName
+  name: SenderName
+  nameWithType: EmailClient.SenderName
+  fullName: Tide.Ork.Models.EmailClient.SenderName
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: Tide.Ork.Models.EmailClient.SenderEmail*
+  commentId: Overload:Tide.Ork.Models.EmailClient.SenderEmail
+  name: SenderEmail
+  nameWithType: EmailClient.SenderEmail
+  fullName: Tide.Ork.Models.EmailClient.SenderEmail
+- uid: Tide.Ork.Models.EmailClient.SenderPassword*
+  commentId: Overload:Tide.Ork.Models.EmailClient.SenderPassword
+  name: SenderPassword
+  nameWithType: EmailClient.SenderPassword
+  fullName: Tide.Ork.Models.EmailClient.SenderPassword
+- uid: Tide.Ork.Models.EmailClient.SenderHost*
+  commentId: Overload:Tide.Ork.Models.EmailClient.SenderHost
+  name: SenderHost
+  nameWithType: EmailClient.SenderHost
+  fullName: Tide.Ork.Models.EmailClient.SenderHost
+- uid: Tide.Ork.Models.EmailClient.SenderPort*
+  commentId: Overload:Tide.Ork.Models.EmailClient.SenderPort
+  name: SenderPort
+  nameWithType: EmailClient.SenderPort
+  fullName: Tide.Ork.Models.EmailClient.SenderPort
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32

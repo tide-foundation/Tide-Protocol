@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <div class="section-divider" v-if="!last"></div>
+    <div class="section-divider"></div>
   </div>
 </template>
 
@@ -68,12 +68,12 @@ export default {
 
       &:hover {
         .c-name {
-          color: #4bb5db;
+          color: #f86b02;
         }
       }
       .c-name {
         &.selected {
-          color: #4bb5db;
+          color: #f86b02;
           font-weight: 500;
         }
       }
@@ -100,7 +100,7 @@ export default {
         }
 
         .b-overlay {
-          background: #26a6d4;
+          background: #f86b02;
           height: 25px;
           width: 2px;
           opacity: 0;
@@ -108,14 +108,14 @@ export default {
         }
 
         &:hover {
-          color: #4bb5db;
+          color: #f86b02;
           .b-overlay {
             opacity: 1;
           }
         }
 
         &.enabled {
-          color: #4bb5db;
+          color: #f86b02;
           font-weight: 500;
           .b-overlay {
             opacity: 1;

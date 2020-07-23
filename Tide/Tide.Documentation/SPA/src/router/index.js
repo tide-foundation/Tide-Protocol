@@ -15,8 +15,8 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ "../views/docs/pages/About.vue"),
       },
       {
-        path: "/docs/tech-summary",
-        component: () => import(/* webpackChunkName: "techsummary" */ "../views/docs/pages/TechSummary.vue"),
+        path: "/docs/installation",
+        component: () => import(/* webpackChunkName: "highlevel" */ "../views/docs/pages/Installation.vue"),
       },
       {
         path: "/docs/high-level",
@@ -36,7 +36,7 @@ const routes = [
       },
       {
         path: "/docs/tide-csharp",
-        component: () => import(/* webpackChunkName: "null" */ "../views/docs/api/TideCSharp.vue"),
+        component: () => import(/* webpackChunkName: "null" */ "../views/docs/api/TideCS.vue"),
       },
     ],
   },

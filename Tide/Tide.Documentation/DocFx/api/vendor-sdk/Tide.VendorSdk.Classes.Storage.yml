@@ -1,0 +1,34 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.VendorSdk.Classes.Storage
+  commentId: N:Tide.VendorSdk.Classes.Storage
+  id: Tide.VendorSdk.Classes.Storage
+  children:
+  - Tide.VendorSdk.Classes.Storage.IDatabase
+  - Tide.VendorSdk.Classes.Storage.SqlDatabase
+  langs:
+  - csharp
+  - vb
+  name: Tide.VendorSdk.Classes.Storage
+  nameWithType: Tide.VendorSdk.Classes.Storage
+  fullName: Tide.VendorSdk.Classes.Storage
+  type: Namespace
+  assemblies:
+  - Tide.VendorSdk
+references:
+- uid: Tide.VendorSdk.Classes.Storage.IDatabase
+  commentId: T:Tide.VendorSdk.Classes.Storage.IDatabase
+  parent: Tide.VendorSdk.Classes.Storage
+  name: IDatabase
+  nameWithType: IDatabase
+  fullName: Tide.VendorSdk.Classes.Storage.IDatabase
+- uid: Tide.VendorSdk.Classes.Storage.SqlDatabase
+  commentId: T:Tide.VendorSdk.Classes.Storage.SqlDatabase
+  name: SqlDatabase
+  nameWithType: SqlDatabase
+  fullName: Tide.VendorSdk.Classes.Storage.SqlDatabase
+- uid: Tide.VendorSdk.Classes.Storage
+  commentId: N:Tide.VendorSdk.Classes.Storage
+  name: Tide.VendorSdk.Classes.Storage
+  nameWithType: Tide.VendorSdk.Classes.Storage
+  fullName: Tide.VendorSdk.Classes.Storage

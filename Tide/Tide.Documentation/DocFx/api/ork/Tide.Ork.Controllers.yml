@@ -1,0 +1,22 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Controllers
+  commentId: N:Tide.Ork.Controllers
+  id: Tide.Ork.Controllers
+  children:
+  - Tide.Ork.Controllers.DAuthController
+  langs:
+  - csharp
+  - vb
+  name: Tide.Ork.Controllers
+  nameWithType: Tide.Ork.Controllers
+  fullName: Tide.Ork.Controllers
+  type: Namespace
+  assemblies:
+  - Tide.Ork
+references:
+- uid: Tide.Ork.Controllers.DAuthController
+  commentId: T:Tide.Ork.Controllers.DAuthController
+  name: DAuthController
+  nameWithType: DAuthController
+  fullName: Tide.Ork.Controllers.DAuthController

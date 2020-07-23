@@ -1,0 +1,7 @@
+{
+  "source": {
+    "include": ["../../Tide.Js/src"]
+  },
+  "destination": "api/tide-js",
+  "package": "../../Tide.Js/package.json"
+}

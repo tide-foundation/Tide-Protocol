@@ -1,0 +1,27 @@
+{
+  "plugins": [],
+  "source": {
+    "include": ["../../Tide.js/src/Tide.js"]
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+
+    "systemName": "Tide JS",
+    "footer": "Footer here",
+    "copyright": "Copywrite here",
+    "includeDate": true,
+    "navType": "vertical",
+    "theme": "paper",
+    "linenums": true,
+    "collapseSymbols": false,
+    "inverseNav": false,
+    "syntaxTheme": "default",
+    "search": true
+  }
+}

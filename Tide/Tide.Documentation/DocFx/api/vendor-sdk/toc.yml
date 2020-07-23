@@ -1,0 +1,34 @@
+### YamlMime:TableOfContent
+- uid: Tide.VendorSdk
+  name: Tide.VendorSdk
+  items:
+  - uid: Tide.VendorSdk.TideVendor
+    name: TideVendor
+- uid: Tide.VendorSdk.Classes
+  name: Tide.VendorSdk.Classes
+  items:
+  - uid: Tide.VendorSdk.Classes.SimulatorClient
+    name: SimulatorClient
+- uid: Tide.VendorSdk.Classes.Middleware
+  name: Tide.VendorSdk.Classes.Middleware
+  items:
+  - uid: Tide.VendorSdk.Classes.Middleware.TideMiddleware
+    name: TideMiddleware
+  - uid: Tide.VendorSdk.Classes.Middleware.TideMiddlewareExtensions
+    name: TideMiddlewareExtensions
+- uid: Tide.VendorSdk.Classes.Storage
+  name: Tide.VendorSdk.Classes.Storage
+  items:
+  - uid: Tide.VendorSdk.Classes.Storage.IDatabase
+    name: IDatabase
+  - uid: Tide.VendorSdk.Classes.Storage.SqlDatabase
+    name: SqlDatabase
+- uid: Tide.VendorSdk.Configuration
+  name: Tide.VendorSdk.Configuration
+  items:
+  - uid: Tide.VendorSdk.Configuration.ConfigurationExtensions
+    name: ConfigurationExtensions
+  - uid: Tide.VendorSdk.Configuration.ITideConfiguration
+    name: ITideConfiguration
+  - uid: Tide.VendorSdk.Configuration.TideConfiguration
+    name: TideConfiguration

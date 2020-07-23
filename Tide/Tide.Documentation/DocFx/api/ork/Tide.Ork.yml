@@ -1,0 +1,28 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork
+  commentId: N:Tide.Ork
+  id: Tide.Ork
+  children:
+  - Tide.Ork.Program
+  - Tide.Ork.Startup
+  langs:
+  - csharp
+  - vb
+  name: Tide.Ork
+  nameWithType: Tide.Ork
+  fullName: Tide.Ork
+  type: Namespace
+  assemblies:
+  - Tide.Ork
+references:
+- uid: Tide.Ork.Program
+  commentId: T:Tide.Ork.Program
+  name: Program
+  nameWithType: Program
+  fullName: Tide.Ork.Program
+- uid: Tide.Ork.Startup
+  commentId: T:Tide.Ork.Startup
+  name: Startup
+  nameWithType: Startup
+  fullName: Tide.Ork.Startup

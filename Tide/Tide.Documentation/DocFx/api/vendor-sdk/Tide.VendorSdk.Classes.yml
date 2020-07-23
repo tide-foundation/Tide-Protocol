@@ -1,0 +1,22 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.VendorSdk.Classes
+  commentId: N:Tide.VendorSdk.Classes
+  id: Tide.VendorSdk.Classes
+  children:
+  - Tide.VendorSdk.Classes.SimulatorClient
+  langs:
+  - csharp
+  - vb
+  name: Tide.VendorSdk.Classes
+  nameWithType: Tide.VendorSdk.Classes
+  fullName: Tide.VendorSdk.Classes
+  type: Namespace
+  assemblies:
+  - Tide.VendorSdk
+references:
+- uid: Tide.VendorSdk.Classes.SimulatorClient
+  commentId: T:Tide.VendorSdk.Classes.SimulatorClient
+  name: SimulatorClient
+  nameWithType: SimulatorClient
+  fullName: Tide.VendorSdk.Classes.SimulatorClient

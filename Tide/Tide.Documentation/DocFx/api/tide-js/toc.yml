@@ -1,0 +1,4 @@
+- uid: tide-js.module.exports#module.exports
+  name: exports
+- uid: tide-js.Tide
+  name: Tide

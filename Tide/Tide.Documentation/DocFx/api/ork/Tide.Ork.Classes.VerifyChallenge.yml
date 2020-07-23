@@ -1,0 +1,479 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Classes.VerifyChallenge
+  commentId: T:Tide.Ork.Classes.VerifyChallenge
+  id: VerifyChallenge
+  parent: Tide.Ork.Classes
+  children:
+  - Tide.Ork.Classes.VerifyChallenge.Check(Tide.Encryption.AesMAC.AesKey,System.Byte[],System.Int64,System.Byte[][])
+  langs:
+  - csharp
+  - vb
+  name: VerifyChallenge
+  nameWithType: VerifyChallenge
+  fullName: Tide.Ork.Classes.VerifyChallenge
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/VerifyTicks.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: VerifyChallenge
+    path: ../../Tide.Ork/Classes/VerifyTicks.cs
+    startLine: 6
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: public class VerifyChallenge
+    content.vb: Public Class VerifyChallenge
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Tide.Ork.Classes.VerifyChallenge.Check(Tide.Encryption.AesMAC.AesKey,System.Byte[],System.Int64,System.Byte[][])
+  commentId: M:Tide.Ork.Classes.VerifyChallenge.Check(Tide.Encryption.AesMAC.AesKey,System.Byte[],System.Int64,System.Byte[][])
+  id: Check(Tide.Encryption.AesMAC.AesKey,System.Byte[],System.Int64,System.Byte[][])
+  parent: Tide.Ork.Classes.VerifyChallenge
+  langs:
+  - csharp
+  - vb
+  name: Check(AesKey, Byte[], Int64, Byte[][])
+  nameWithType: VerifyChallenge.Check(AesKey, Byte[], Int64, Byte[][])
+  fullName: Tide.Ork.Classes.VerifyChallenge.Check(Tide.Encryption.AesMAC.AesKey, System.Byte[], System.Int64, System.Byte[][])
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/VerifyTicks.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Check
+    path: ../../Tide.Ork/Classes/VerifyTicks.cs
+    startLine: 9
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: public static bool Check(AesKey key, byte[] signature, long ticks, params byte[][] message)
+    parameters:
+    - id: key
+      type: Tide.Encryption.AesMAC.AesKey
+    - id: signature
+      type: System.Byte[]
+    - id: ticks
+      type: System.Int64
+    - id: message
+      type: System.Byte[][]
+    return:
+      type: System.Boolean
+    content.vb: Public Shared Function Check(key As AesKey, signature As Byte(), ticks As Long, ParamArray message As Byte()()) As Boolean
+  overload: Tide.Ork.Classes.VerifyChallenge.Check*
+  nameWithType.vb: VerifyChallenge.Check(AesKey, Byte(), Int64, Byte()())
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+  fullName.vb: Tide.Ork.Classes.VerifyChallenge.Check(Tide.Encryption.AesMAC.AesKey, System.Byte(), System.Int64, System.Byte()())
+  name.vb: Check(AesKey, Byte(), Int64, Byte()())
+references:
+- uid: Tide.Ork.Classes
+  commentId: N:Tide.Ork.Classes
+  name: Tide.Ork.Classes
+  nameWithType: Tide.Ork.Classes
+  fullName: Tide.Ork.Classes
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.Ork.Classes.VerifyChallenge.Check*
+  commentId: Overload:Tide.Ork.Classes.VerifyChallenge.Check
+  name: Check
+  nameWithType: VerifyChallenge.Check
+  fullName: Tide.Ork.Classes.VerifyChallenge.Check
+- uid: Tide.Encryption.AesMAC.AesKey
+  commentId: T:Tide.Encryption.AesMAC.AesKey
+  parent: Tide.Encryption.AesMAC
+  isExternal: true
+  name: AesKey
+  nameWithType: AesKey
+  fullName: Tide.Encryption.AesMAC.AesKey
+- uid: System.Byte[]
+  isExternal: true
+  name: Byte[]
+  nameWithType: Byte[]
+  fullName: System.Byte[]
+  nameWithType.vb: Byte()
+  fullName.vb: System.Byte()
+  name.vb: Byte()
+  spec.csharp:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Int64
+  commentId: T:System.Int64
+  parent: System
+  isExternal: true
+  name: Int64
+  nameWithType: Int64
+  fullName: System.Int64
+- uid: System.Byte[][]
+  isExternal: true
+  name: Byte[][]
+  nameWithType: Byte[][]
+  fullName: System.Byte[][]
+  nameWithType.vb: Byte()()
+  fullName.vb: System.Byte()()
+  name.vb: Byte()()
+  spec.csharp:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: Tide.Encryption.AesMAC
+  commentId: N:Tide.Encryption.AesMAC
+  isExternal: true
+  name: Tide.Encryption.AesMAC
+  nameWithType: Tide.Encryption.AesMAC
+  fullName: Tide.Encryption.AesMAC

@@ -1,0 +1,116 @@
+### YamlMime:UniversalReference
+items:
+  - uid: tide-js
+    name: tide-js
+    langs:
+      - js
+    type: package
+    summary: ''
+    children:
+      - tide-js.Tide
+      - tide-js.module.exports#module.exports
+      - tide-js.fromBase64
+      - tide-js.urlEncode
+      - tide-js.encodeBase64Url
+      - tide-js.encodeFromBig
+      - tide-js.getId
+      - tide-js.getBufferId
+  - uid: tide-js.fromBase64
+    id: tide-js.fromBase64
+    name: fromBase64(text)
+    summary: ''
+    fullName: tide-js.fromBase64(text)
+    type: Function
+    syntax:
+      parameters:
+        - id: text
+          type:
+            - string
+          description: ''
+      content: function fromBase64(text)
+    langs:
+      - js
+  - uid: tide-js.urlEncode
+    id: tide-js.urlEncode
+    name: urlEncode(data)
+    summary: ''
+    fullName: tide-js.urlEncode(data)
+    type: Function
+    syntax:
+      parameters:
+        - id: data
+          type:
+            - string
+            - Uint8Array
+            - tide-js.bigInt.BigInteger
+          description: ''
+      content: function urlEncode(data)
+    langs:
+      - js
+  - uid: tide-js.encodeBase64Url
+    id: tide-js.encodeBase64Url
+    name: encodeBase64Url(input)
+    summary: ''
+    fullName: tide-js.encodeBase64Url(input)
+    type: Function
+    syntax:
+      parameters:
+        - id: input
+          type:
+            - string
+            - Uint8Array
+          description: ''
+      content: function encodeBase64Url(input)
+    langs:
+      - js
+  - uid: tide-js.encodeFromBig
+    id: tide-js.encodeFromBig
+    name: encodeFromBig(number)
+    summary: ''
+    fullName: tide-js.encodeFromBig(number)
+    type: Function
+    syntax:
+      parameters:
+        - id: number
+          type:
+            - tide-js.bigInt.BigInteger
+          description: ''
+      content: function encodeFromBig(number)
+    langs:
+      - js
+  - uid: tide-js.getId
+    id: tide-js.getId
+    name: getId(buffer)
+    summary: ''
+    fullName: tide-js.getId(buffer)
+    type: Function
+    syntax:
+      parameters:
+        - id: buffer
+          type:
+            - Uint8Array
+          description: ''
+      content: function getId(buffer)
+    langs:
+      - js
+  - uid: tide-js.getBufferId
+    id: tide-js.getBufferId
+    name: getBufferId(data)
+    summary: ''
+    fullName: tide-js.getBufferId(data)
+    type: Function
+    syntax:
+      parameters:
+        - id: data
+          type:
+            - string
+            - Uint8Array
+          description: ''
+      content: function getBufferId(data)
+    langs:
+      - js
+references:
+  - uid: tide-js.Tide
+    name: Tide
+  - uid: tide-js.module.exports#module.exports
+    name: exports

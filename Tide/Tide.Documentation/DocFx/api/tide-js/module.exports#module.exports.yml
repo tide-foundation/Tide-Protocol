@@ -1,0 +1,32 @@
+### YamlMime:UniversalReference
+items:
+  - uid: tide-js.module.exports#module.exports
+    id: tide-js.module.exports#module.exports
+    name: exports
+    summary: ''
+    fullName: tide-js.exports
+    type: Class
+    children:
+      - tide-js.module.exports#module.exports.#ctor
+    langs:
+      - js
+  - id: tide-js.module.exports#module.exports.#ctor
+    uid: tide-js.module.exports#module.exports.#ctor
+    parent: tide-js.module.exports#module.exports
+    name: 'exports(url, user)'
+    fullName: 'tide-js.exports.exports(url, user)'
+    summary: ''
+    type: Constructor
+    syntax:
+      parameters:
+        - id: url
+          type:
+            - string
+          description: ''
+        - id: user
+          type:
+            - string
+          description: ''
+      content: 'new exports(url, user)'
+    langs:
+      - js

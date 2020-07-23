@@ -1,0 +1,641 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Classes.IKeyManager
+  commentId: T:Tide.Ork.Classes.IKeyManager
+  id: IKeyManager
+  parent: Tide.Ork.Classes
+  children:
+  - Tide.Ork.Classes.IKeyManager.GetAuthShare(System.Guid)
+  langs:
+  - csharp
+  - vb
+  name: IKeyManager
+  nameWithType: IKeyManager
+  fullName: Tide.Ork.Classes.IKeyManager
+  type: Interface
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/IKeyManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: IKeyManager
+    path: ../../Tide.Ork/Classes/IKeyManager.cs
+    startLine: 22
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: 'public interface IKeyManager : IManager<KeyVault>'
+    content.vb: >-
+      Public Interface IKeyManager
+
+          Inherits IManager(Of KeyVault)
+  inheritedMembers:
+  - Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.Exist(System.Guid)
+  - Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.GetById(System.Guid)
+  - Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.GetAll
+  - Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.SetOrUpdate(Tide.Core.KeyVault)
+  - Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.Delete(System.Guid)
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+- uid: Tide.Ork.Classes.IKeyManager.GetAuthShare(System.Guid)
+  commentId: M:Tide.Ork.Classes.IKeyManager.GetAuthShare(System.Guid)
+  id: GetAuthShare(System.Guid)
+  parent: Tide.Ork.Classes.IKeyManager
+  langs:
+  - csharp
+  - vb
+  name: GetAuthShare(Guid)
+  nameWithType: IKeyManager.GetAuthShare(Guid)
+  fullName: Tide.Ork.Classes.IKeyManager.GetAuthShare(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/IKeyManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetAuthShare
+    path: ../../Tide.Ork/Classes/IKeyManager.cs
+    startLine: 24
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: Task<BigInteger> GetAuthShare(Guid user)
+    parameters:
+    - id: user
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{System.Numerics.BigInteger}
+    content.vb: Function GetAuthShare(user As Guid) As Task(Of BigInteger)
+  overload: Tide.Ork.Classes.IKeyManager.GetAuthShare*
+references:
+- uid: Tide.Ork.Classes
+  commentId: N:Tide.Ork.Classes
+  name: Tide.Ork.Classes
+  nameWithType: Tide.Ork.Classes
+  fullName: Tide.Ork.Classes
+- uid: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.Exist(System.Guid)
+  commentId: M:Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.Exist(System.Guid)
+  parent: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}
+  definition: Tide.Ork.Classes.IManager`1.Exist(System.Guid)
+  name: Exist(Guid)
+  nameWithType: IManager<KeyVault>.Exist(Guid)
+  fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.Exist(System.Guid)
+  nameWithType.vb: IManager(Of KeyVault).Exist(Guid)
+  fullName.vb: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).Exist(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: IManager<KeyVault>.Exist
+    fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: IManager(Of KeyVault).Exist
+    fullName: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.GetById(System.Guid)
+  commentId: M:Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.GetById(System.Guid)
+  parent: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}
+  definition: Tide.Ork.Classes.IManager`1.GetById(System.Guid)
+  name: GetById(Guid)
+  nameWithType: IManager<KeyVault>.GetById(Guid)
+  fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.GetById(System.Guid)
+  nameWithType.vb: IManager(Of KeyVault).GetById(Guid)
+  fullName.vb: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).GetById(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: IManager<KeyVault>.GetById
+    fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: IManager(Of KeyVault).GetById
+    fullName: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.GetAll
+  commentId: M:Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.GetAll
+  parent: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}
+  definition: Tide.Ork.Classes.IManager`1.GetAll
+  name: GetAll()
+  nameWithType: IManager<KeyVault>.GetAll()
+  fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.GetAll()
+  nameWithType.vb: IManager(Of KeyVault).GetAll()
+  fullName.vb: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).GetAll()
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.GetAll
+    name: GetAll
+    nameWithType: IManager<KeyVault>.GetAll
+    fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.GetAll
+    name: GetAll
+    nameWithType: IManager(Of KeyVault).GetAll
+    fullName: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.SetOrUpdate(Tide.Core.KeyVault)
+  commentId: M:Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.SetOrUpdate(Tide.Core.KeyVault)
+  parent: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}
+  definition: Tide.Ork.Classes.IManager`1.SetOrUpdate(`0)
+  name: SetOrUpdate(KeyVault)
+  nameWithType: IManager<KeyVault>.SetOrUpdate(KeyVault)
+  fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.SetOrUpdate(Tide.Core.KeyVault)
+  nameWithType.vb: IManager(Of KeyVault).SetOrUpdate(KeyVault)
+  fullName.vb: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).SetOrUpdate(Tide.Core.KeyVault)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: IManager<KeyVault>.SetOrUpdate
+    fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.Core.KeyVault
+    name: KeyVault
+    nameWithType: KeyVault
+    fullName: Tide.Core.KeyVault
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: IManager(Of KeyVault).SetOrUpdate
+    fullName: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.Core.KeyVault
+    name: KeyVault
+    nameWithType: KeyVault
+    fullName: Tide.Core.KeyVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.Delete(System.Guid)
+  commentId: M:Tide.Ork.Classes.IManager{Tide.Core.KeyVault}.Delete(System.Guid)
+  parent: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}
+  definition: Tide.Ork.Classes.IManager`1.Delete(System.Guid)
+  name: Delete(Guid)
+  nameWithType: IManager<KeyVault>.Delete(Guid)
+  fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.Delete(System.Guid)
+  nameWithType.vb: IManager(Of KeyVault).Delete(Guid)
+  fullName.vb: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).Delete(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: IManager<KeyVault>.Delete
+    fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>.Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: IManager(Of KeyVault).Delete
+    fullName: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault).Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager`1.Exist(System.Guid)
+  commentId: M:Tide.Ork.Classes.IManager`1.Exist(System.Guid)
+  isExternal: true
+  name: Exist(Guid)
+  nameWithType: IManager<T>.Exist(Guid)
+  fullName: Tide.Ork.Classes.IManager<T>.Exist(System.Guid)
+  nameWithType.vb: IManager(Of T).Exist(Guid)
+  fullName.vb: Tide.Ork.Classes.IManager(Of T).Exist(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: IManager<T>.Exist
+    fullName: Tide.Ork.Classes.IManager<T>.Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: IManager(Of T).Exist
+    fullName: Tide.Ork.Classes.IManager(Of T).Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager{Tide.Core.KeyVault}
+  commentId: T:Tide.Ork.Classes.IManager{Tide.Core.KeyVault}
+  parent: Tide.Ork.Classes
+  definition: Tide.Ork.Classes.IManager`1
+  name: IManager<KeyVault>
+  nameWithType: IManager<KeyVault>
+  fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyVault>
+  nameWithType.vb: IManager(Of KeyVault)
+  fullName.vb: Tide.Ork.Classes.IManager(Of Tide.Core.KeyVault)
+  name.vb: IManager(Of KeyVault)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.KeyVault
+    name: KeyVault
+    nameWithType: KeyVault
+    fullName: Tide.Core.KeyVault
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.KeyVault
+    name: KeyVault
+    nameWithType: KeyVault
+    fullName: Tide.Core.KeyVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager`1.GetById(System.Guid)
+  commentId: M:Tide.Ork.Classes.IManager`1.GetById(System.Guid)
+  isExternal: true
+  name: GetById(Guid)
+  nameWithType: IManager<T>.GetById(Guid)
+  fullName: Tide.Ork.Classes.IManager<T>.GetById(System.Guid)
+  nameWithType.vb: IManager(Of T).GetById(Guid)
+  fullName.vb: Tide.Ork.Classes.IManager(Of T).GetById(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: IManager<T>.GetById
+    fullName: Tide.Ork.Classes.IManager<T>.GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: IManager(Of T).GetById
+    fullName: Tide.Ork.Classes.IManager(Of T).GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager`1.GetAll
+  commentId: M:Tide.Ork.Classes.IManager`1.GetAll
+  name: GetAll()
+  nameWithType: IManager<T>.GetAll()
+  fullName: Tide.Ork.Classes.IManager<T>.GetAll()
+  nameWithType.vb: IManager(Of T).GetAll()
+  fullName.vb: Tide.Ork.Classes.IManager(Of T).GetAll()
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.GetAll
+    name: GetAll
+    nameWithType: IManager<T>.GetAll
+    fullName: Tide.Ork.Classes.IManager<T>.GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.GetAll
+    name: GetAll
+    nameWithType: IManager(Of T).GetAll
+    fullName: Tide.Ork.Classes.IManager(Of T).GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager`1.SetOrUpdate(`0)
+  commentId: M:Tide.Ork.Classes.IManager`1.SetOrUpdate(`0)
+  name: SetOrUpdate(T)
+  nameWithType: IManager<T>.SetOrUpdate(T)
+  fullName: Tide.Ork.Classes.IManager<T>.SetOrUpdate(T)
+  nameWithType.vb: IManager(Of T).SetOrUpdate(T)
+  fullName.vb: Tide.Ork.Classes.IManager(Of T).SetOrUpdate(T)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: IManager<T>.SetOrUpdate
+    fullName: Tide.Ork.Classes.IManager<T>.SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: IManager(Of T).SetOrUpdate
+    fullName: Tide.Ork.Classes.IManager(Of T).SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager`1.Delete(System.Guid)
+  commentId: M:Tide.Ork.Classes.IManager`1.Delete(System.Guid)
+  isExternal: true
+  name: Delete(Guid)
+  nameWithType: IManager<T>.Delete(Guid)
+  fullName: Tide.Ork.Classes.IManager<T>.Delete(System.Guid)
+  nameWithType.vb: IManager(Of T).Delete(Guid)
+  fullName.vb: Tide.Ork.Classes.IManager(Of T).Delete(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: IManager<T>.Delete
+    fullName: Tide.Ork.Classes.IManager<T>.Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: IManager(Of T).Delete
+    fullName: Tide.Ork.Classes.IManager(Of T).Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager`1
+  commentId: T:Tide.Ork.Classes.IManager`1
+  name: IManager<T>
+  nameWithType: IManager<T>
+  fullName: Tide.Ork.Classes.IManager<T>
+  nameWithType.vb: IManager(Of T)
+  fullName.vb: Tide.Ork.Classes.IManager(Of T)
+  name.vb: IManager(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IKeyManager.GetAuthShare*
+  commentId: Overload:Tide.Ork.Classes.IKeyManager.GetAuthShare
+  name: GetAuthShare
+  nameWithType: IKeyManager.GetAuthShare
+  fullName: Tide.Ork.Classes.IKeyManager.GetAuthShare
+- uid: System.Guid
+  commentId: T:System.Guid
+  parent: System
+  isExternal: true
+  name: Guid
+  nameWithType: Guid
+  fullName: System.Guid
+- uid: System.Threading.Tasks.Task{System.Numerics.BigInteger}
+  commentId: T:System.Threading.Tasks.Task{System.Numerics.BigInteger}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<BigInteger>
+  nameWithType: Task<BigInteger>
+  fullName: System.Threading.Tasks.Task<System.Numerics.BigInteger>
+  nameWithType.vb: Task(Of BigInteger)
+  fullName.vb: System.Threading.Tasks.Task(Of System.Numerics.BigInteger)
+  name.vb: Task(Of BigInteger)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Numerics.BigInteger
+    name: BigInteger
+    nameWithType: BigInteger
+    fullName: System.Numerics.BigInteger
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Numerics.BigInteger
+    name: BigInteger
+    nameWithType: BigInteger
+    fullName: System.Numerics.BigInteger
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks

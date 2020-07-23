@@ -1,0 +1,304 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Classes.IKeyManagerFactory
+  commentId: T:Tide.Ork.Classes.IKeyManagerFactory
+  id: IKeyManagerFactory
+  parent: Tide.Ork.Classes
+  children:
+  - Tide.Ork.Classes.IKeyManagerFactory.BuildKeyIdManager
+  - Tide.Ork.Classes.IKeyManagerFactory.BuildManager
+  - Tide.Ork.Classes.IKeyManagerFactory.BuildManagerCvk
+  - Tide.Ork.Classes.IKeyManagerFactory.BuildRuleManager
+  langs:
+  - csharp
+  - vb
+  name: IKeyManagerFactory
+  nameWithType: IKeyManagerFactory
+  fullName: Tide.Ork.Classes.IKeyManagerFactory
+  type: Interface
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/IKeyManagerFactory.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: IKeyManagerFactory
+    path: ../../Tide.Ork/Classes/IKeyManagerFactory.cs
+    startLine: 3
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: public interface IKeyManagerFactory
+    content.vb: Public Interface IKeyManagerFactory
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+- uid: Tide.Ork.Classes.IKeyManagerFactory.BuildManager
+  commentId: M:Tide.Ork.Classes.IKeyManagerFactory.BuildManager
+  id: BuildManager
+  parent: Tide.Ork.Classes.IKeyManagerFactory
+  langs:
+  - csharp
+  - vb
+  name: BuildManager()
+  nameWithType: IKeyManagerFactory.BuildManager()
+  fullName: Tide.Ork.Classes.IKeyManagerFactory.BuildManager()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/IKeyManagerFactory.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: BuildManager
+    path: ../../Tide.Ork/Classes/IKeyManagerFactory.cs
+    startLine: 4
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: IKeyManager BuildManager()
+    return:
+      type: Tide.Ork.Classes.IKeyManager
+    content.vb: Function BuildManager As IKeyManager
+  overload: Tide.Ork.Classes.IKeyManagerFactory.BuildManager*
+- uid: Tide.Ork.Classes.IKeyManagerFactory.BuildManagerCvk
+  commentId: M:Tide.Ork.Classes.IKeyManagerFactory.BuildManagerCvk
+  id: BuildManagerCvk
+  parent: Tide.Ork.Classes.IKeyManagerFactory
+  langs:
+  - csharp
+  - vb
+  name: BuildManagerCvk()
+  nameWithType: IKeyManagerFactory.BuildManagerCvk()
+  fullName: Tide.Ork.Classes.IKeyManagerFactory.BuildManagerCvk()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/IKeyManagerFactory.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: BuildManagerCvk
+    path: ../../Tide.Ork/Classes/IKeyManagerFactory.cs
+    startLine: 5
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: IManager<CvkVault> BuildManagerCvk()
+    return:
+      type: Tide.Ork.Classes.IManager{Tide.Core.CvkVault}
+    content.vb: Function BuildManagerCvk As IManager(Of CvkVault)
+  overload: Tide.Ork.Classes.IKeyManagerFactory.BuildManagerCvk*
+- uid: Tide.Ork.Classes.IKeyManagerFactory.BuildKeyIdManager
+  commentId: M:Tide.Ork.Classes.IKeyManagerFactory.BuildKeyIdManager
+  id: BuildKeyIdManager
+  parent: Tide.Ork.Classes.IKeyManagerFactory
+  langs:
+  - csharp
+  - vb
+  name: BuildKeyIdManager()
+  nameWithType: IKeyManagerFactory.BuildKeyIdManager()
+  fullName: Tide.Ork.Classes.IKeyManagerFactory.BuildKeyIdManager()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/IKeyManagerFactory.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: BuildKeyIdManager
+    path: ../../Tide.Ork/Classes/IKeyManagerFactory.cs
+    startLine: 6
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: IManager<KeyIdVault> BuildKeyIdManager()
+    return:
+      type: Tide.Ork.Classes.IManager{Tide.Core.KeyIdVault}
+    content.vb: Function BuildKeyIdManager As IManager(Of KeyIdVault)
+  overload: Tide.Ork.Classes.IKeyManagerFactory.BuildKeyIdManager*
+- uid: Tide.Ork.Classes.IKeyManagerFactory.BuildRuleManager
+  commentId: M:Tide.Ork.Classes.IKeyManagerFactory.BuildRuleManager
+  id: BuildRuleManager
+  parent: Tide.Ork.Classes.IKeyManagerFactory
+  langs:
+  - csharp
+  - vb
+  name: BuildRuleManager()
+  nameWithType: IKeyManagerFactory.BuildRuleManager()
+  fullName: Tide.Ork.Classes.IKeyManagerFactory.BuildRuleManager()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/IKeyManagerFactory.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: BuildRuleManager
+    path: ../../Tide.Ork/Classes/IKeyManagerFactory.cs
+    startLine: 7
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: IRuleManager BuildRuleManager()
+    return:
+      type: Tide.Ork.Classes.IRuleManager
+    content.vb: Function BuildRuleManager As IRuleManager
+  overload: Tide.Ork.Classes.IKeyManagerFactory.BuildRuleManager*
+references:
+- uid: Tide.Ork.Classes
+  commentId: N:Tide.Ork.Classes
+  name: Tide.Ork.Classes
+  nameWithType: Tide.Ork.Classes
+  fullName: Tide.Ork.Classes
+- uid: Tide.Ork.Classes.IKeyManagerFactory.BuildManager*
+  commentId: Overload:Tide.Ork.Classes.IKeyManagerFactory.BuildManager
+  name: BuildManager
+  nameWithType: IKeyManagerFactory.BuildManager
+  fullName: Tide.Ork.Classes.IKeyManagerFactory.BuildManager
+- uid: Tide.Ork.Classes.IKeyManager
+  commentId: T:Tide.Ork.Classes.IKeyManager
+  parent: Tide.Ork.Classes
+  name: IKeyManager
+  nameWithType: IKeyManager
+  fullName: Tide.Ork.Classes.IKeyManager
+- uid: Tide.Ork.Classes.IKeyManagerFactory.BuildManagerCvk*
+  commentId: Overload:Tide.Ork.Classes.IKeyManagerFactory.BuildManagerCvk
+  name: BuildManagerCvk
+  nameWithType: IKeyManagerFactory.BuildManagerCvk
+  fullName: Tide.Ork.Classes.IKeyManagerFactory.BuildManagerCvk
+- uid: Tide.Ork.Classes.IManager{Tide.Core.CvkVault}
+  commentId: T:Tide.Ork.Classes.IManager{Tide.Core.CvkVault}
+  parent: Tide.Ork.Classes
+  definition: Tide.Ork.Classes.IManager`1
+  name: IManager<CvkVault>
+  nameWithType: IManager<CvkVault>
+  fullName: Tide.Ork.Classes.IManager<Tide.Core.CvkVault>
+  nameWithType.vb: IManager(Of CvkVault)
+  fullName.vb: Tide.Ork.Classes.IManager(Of Tide.Core.CvkVault)
+  name.vb: IManager(Of CvkVault)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.CvkVault
+    name: CvkVault
+    nameWithType: CvkVault
+    fullName: Tide.Core.CvkVault
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.CvkVault
+    name: CvkVault
+    nameWithType: CvkVault
+    fullName: Tide.Core.CvkVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IManager`1
+  commentId: T:Tide.Ork.Classes.IManager`1
+  name: IManager<T>
+  nameWithType: IManager<T>
+  fullName: Tide.Ork.Classes.IManager<T>
+  nameWithType.vb: IManager(Of T)
+  fullName.vb: Tide.Ork.Classes.IManager(Of T)
+  name.vb: IManager(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IKeyManagerFactory.BuildKeyIdManager*
+  commentId: Overload:Tide.Ork.Classes.IKeyManagerFactory.BuildKeyIdManager
+  name: BuildKeyIdManager
+  nameWithType: IKeyManagerFactory.BuildKeyIdManager
+  fullName: Tide.Ork.Classes.IKeyManagerFactory.BuildKeyIdManager
+- uid: Tide.Ork.Classes.IManager{Tide.Core.KeyIdVault}
+  commentId: T:Tide.Ork.Classes.IManager{Tide.Core.KeyIdVault}
+  parent: Tide.Ork.Classes
+  definition: Tide.Ork.Classes.IManager`1
+  name: IManager<KeyIdVault>
+  nameWithType: IManager<KeyIdVault>
+  fullName: Tide.Ork.Classes.IManager<Tide.Core.KeyIdVault>
+  nameWithType.vb: IManager(Of KeyIdVault)
+  fullName.vb: Tide.Ork.Classes.IManager(Of Tide.Core.KeyIdVault)
+  name.vb: IManager(Of KeyIdVault)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.KeyIdVault
+    name: KeyIdVault
+    nameWithType: KeyIdVault
+    fullName: Tide.Core.KeyIdVault
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.KeyIdVault
+    name: KeyIdVault
+    nameWithType: KeyIdVault
+    fullName: Tide.Core.KeyIdVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IKeyManagerFactory.BuildRuleManager*
+  commentId: Overload:Tide.Ork.Classes.IKeyManagerFactory.BuildRuleManager
+  name: BuildRuleManager
+  nameWithType: IKeyManagerFactory.BuildRuleManager
+  fullName: Tide.Ork.Classes.IKeyManagerFactory.BuildRuleManager
+- uid: Tide.Ork.Classes.IRuleManager
+  commentId: T:Tide.Ork.Classes.IRuleManager
+  parent: Tide.Ork.Classes
+  name: IRuleManager
+  nameWithType: IRuleManager
+  fullName: Tide.Ork.Classes.IRuleManager

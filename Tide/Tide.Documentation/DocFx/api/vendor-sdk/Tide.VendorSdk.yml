@@ -1,0 +1,28 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.VendorSdk
+  commentId: N:Tide.VendorSdk
+  id: Tide.VendorSdk
+  children:
+  - Tide.VendorSdk.TideVendor
+  langs:
+  - csharp
+  - vb
+  name: Tide.VendorSdk
+  nameWithType: Tide.VendorSdk
+  fullName: Tide.VendorSdk
+  type: Namespace
+  assemblies:
+  - Tide.VendorSdk
+references:
+- uid: Tide.VendorSdk.TideVendor
+  commentId: T:Tide.VendorSdk.TideVendor
+  parent: Tide.VendorSdk
+  name: TideVendor
+  nameWithType: TideVendor
+  fullName: Tide.VendorSdk.TideVendor
+- uid: Tide.VendorSdk
+  commentId: N:Tide.VendorSdk
+  name: Tide.VendorSdk
+  nameWithType: Tide.VendorSdk
+  fullName: Tide.VendorSdk

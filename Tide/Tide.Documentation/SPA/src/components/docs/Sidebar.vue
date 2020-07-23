@@ -1,7 +1,7 @@
 <template>
   <div id="sidebar">
     <div id="logo-box">
-      <img src="../../assets/logo.svg" alt="Tide Logo" />
+      <a href="/"> <img src="../../assets/logo.svg" alt="Tide Logo"/></a>
     </div>
 
     <Section v-for="(section, sectionIndex) in sections" :section="section" :last="section.l" :key="sectionIndex" />
@@ -37,9 +37,9 @@ export default {
               n: "Before You Start",
               e: false,
               items: [
-                { n: "Tech Summary", u: "tech-summary", e: false },
-                { n: "High-Level Overview", u: "high-level", e: false },
                 { n: "How It Works", u: "how-it-works", e: false },
+                { n: "High-Level Overview", u: "high-level", e: false },
+                { n: "Installation", u: "installation", e: false },
               ],
             },
             {

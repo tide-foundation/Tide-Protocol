@@ -35,6 +35,8 @@ class Tide {
    * @fires progress
    *
    * @returns {AESKey} - The users keys to be used on the data
+   * @example
+   * var registerResult = await tide.register("myUsername", "pa$$w0rD", "john@wick.com",["ork-1","ork-2","ork-3"]);
    */
   register(username, password, email, orkIds) {
     return new Promise(async (resolve, reject) => {

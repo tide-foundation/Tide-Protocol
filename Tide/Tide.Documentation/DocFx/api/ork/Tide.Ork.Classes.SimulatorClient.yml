@@ -1,0 +1,567 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Classes.SimulatorClient
+  commentId: T:Tide.Ork.Classes.SimulatorClient
+  id: SimulatorClient
+  parent: Tide.Ork.Classes
+  children:
+  - Tide.Ork.Classes.SimulatorClient.#ctor(System.String,System.String,System.String)
+  - Tide.Ork.Classes.SimulatorClient.GetVault(System.String,System.String)
+  - Tide.Ork.Classes.SimulatorClient.PostVault(System.String,System.String,System.String)
+  langs:
+  - csharp
+  - vb
+  name: SimulatorClient
+  nameWithType: SimulatorClient
+  fullName: Tide.Ork.Classes.SimulatorClient
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/SimulatorClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SimulatorClient
+    path: ../../Tide.Ork/Classes/SimulatorClient.cs
+    startLine: 9
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: public class SimulatorClient
+    content.vb: Public Class SimulatorClient
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Tide.Ork.Classes.SimulatorClient.#ctor(System.String,System.String,System.String)
+  commentId: M:Tide.Ork.Classes.SimulatorClient.#ctor(System.String,System.String,System.String)
+  id: '#ctor(System.String,System.String,System.String)'
+  parent: Tide.Ork.Classes.SimulatorClient
+  langs:
+  - csharp
+  - vb
+  name: SimulatorClient(String, String, String)
+  nameWithType: SimulatorClient.SimulatorClient(String, String, String)
+  fullName: Tide.Ork.Classes.SimulatorClient.SimulatorClient(System.String, System.String, System.String)
+  type: Constructor
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/SimulatorClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: .ctor
+    path: ../../Tide.Ork/Classes/SimulatorClient.cs
+    startLine: 13
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: public SimulatorClient(string url, string orkId, string password)
+    parameters:
+    - id: url
+      type: System.String
+    - id: orkId
+      type: System.String
+    - id: password
+      type: System.String
+    content.vb: Public Sub New(url As String, orkId As String, password As String)
+  overload: Tide.Ork.Classes.SimulatorClient.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Classes.SimulatorClient.PostVault(System.String,System.String,System.String)
+  commentId: M:Tide.Ork.Classes.SimulatorClient.PostVault(System.String,System.String,System.String)
+  id: PostVault(System.String,System.String,System.String)
+  parent: Tide.Ork.Classes.SimulatorClient
+  langs:
+  - csharp
+  - vb
+  name: PostVault(String, String, String)
+  nameWithType: SimulatorClient.PostVault(String, String, String)
+  fullName: Tide.Ork.Classes.SimulatorClient.PostVault(System.String, System.String, System.String)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/SimulatorClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: PostVault
+    path: ../../Tide.Ork/Classes/SimulatorClient.cs
+    startLine: 19
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: public Task<TideResponse> PostVault(string ork, string username, string payload)
+    parameters:
+    - id: ork
+      type: System.String
+    - id: username
+      type: System.String
+    - id: payload
+      type: System.String
+    return:
+      type: System.Threading.Tasks.Task{Tide.Core.TideResponse}
+    content.vb: Public Function PostVault(ork As String, username As String, payload As String) As Task(Of TideResponse)
+  overload: Tide.Ork.Classes.SimulatorClient.PostVault*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Classes.SimulatorClient.GetVault(System.String,System.String)
+  commentId: M:Tide.Ork.Classes.SimulatorClient.GetVault(System.String,System.String)
+  id: GetVault(System.String,System.String)
+  parent: Tide.Ork.Classes.SimulatorClient
+  langs:
+  - csharp
+  - vb
+  name: GetVault(String, String)
+  nameWithType: SimulatorClient.GetVault(String, String)
+  fullName: Tide.Ork.Classes.SimulatorClient.GetVault(System.String, System.String)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/SimulatorClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetVault
+    path: ../../Tide.Ork/Classes/SimulatorClient.cs
+    startLine: 27
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: public Task<TideResponse> GetVault(string ork, string username)
+    parameters:
+    - id: ork
+      type: System.String
+    - id: username
+      type: System.String
+    return:
+      type: System.Threading.Tasks.Task{Tide.Core.TideResponse}
+    content.vb: Public Function GetVault(ork As String, username As String) As Task(Of TideResponse)
+  overload: Tide.Ork.Classes.SimulatorClient.GetVault*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: Tide.Ork.Classes
+  commentId: N:Tide.Ork.Classes
+  name: Tide.Ork.Classes
+  nameWithType: Tide.Ork.Classes
+  fullName: Tide.Ork.Classes
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.Ork.Classes.SimulatorClient.#ctor*
+  commentId: Overload:Tide.Ork.Classes.SimulatorClient.#ctor
+  name: SimulatorClient
+  nameWithType: SimulatorClient.SimulatorClient
+  fullName: Tide.Ork.Classes.SimulatorClient.SimulatorClient
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: Tide.Ork.Classes.SimulatorClient.PostVault*
+  commentId: Overload:Tide.Ork.Classes.SimulatorClient.PostVault
+  name: PostVault
+  nameWithType: SimulatorClient.PostVault
+  fullName: Tide.Ork.Classes.SimulatorClient.PostVault
+- uid: System.Threading.Tasks.Task{Tide.Core.TideResponse}
+  commentId: T:System.Threading.Tasks.Task{Tide.Core.TideResponse}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<TideResponse>
+  nameWithType: Task<TideResponse>
+  fullName: System.Threading.Tasks.Task<Tide.Core.TideResponse>
+  nameWithType.vb: Task(Of TideResponse)
+  fullName.vb: System.Threading.Tasks.Task(Of Tide.Core.TideResponse)
+  name.vb: Task(Of TideResponse)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.TideResponse
+    name: TideResponse
+    nameWithType: TideResponse
+    fullName: Tide.Core.TideResponse
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.TideResponse
+    name: TideResponse
+    nameWithType: TideResponse
+    fullName: Tide.Core.TideResponse
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+- uid: Tide.Ork.Classes.SimulatorClient.GetVault*
+  commentId: Overload:Tide.Ork.Classes.SimulatorClient.GetVault
+  name: GetVault
+  nameWithType: SimulatorClient.GetVault
+  fullName: Tide.Ork.Classes.SimulatorClient.GetVault

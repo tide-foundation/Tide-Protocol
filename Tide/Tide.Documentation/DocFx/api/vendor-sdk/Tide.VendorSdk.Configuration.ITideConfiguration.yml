@@ -1,0 +1,231 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.VendorSdk.Configuration.ITideConfiguration
+  commentId: T:Tide.VendorSdk.Configuration.ITideConfiguration
+  id: ITideConfiguration
+  parent: Tide.VendorSdk.Configuration
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: ITideConfiguration
+  nameWithType: ITideConfiguration
+  fullName: Tide.VendorSdk.Configuration.ITideConfiguration
+  type: Interface
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Configuration/ITideConfiguration.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: ITideConfiguration
+    path: ../../Tide.VendorSdk/Configuration/ITideConfiguration.cs
+    startLine: 4
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Configuration
+  syntax:
+    content: public interface ITideConfiguration
+    content.vb: Public Interface ITideConfiguration
+  extensionMethods:
+  - Tide.VendorSdk.Configuration.ITideConfiguration.Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(System.String)
+  - Tide.VendorSdk.Configuration.ITideConfiguration.Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(System.String)
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+references:
+- uid: Tide.VendorSdk.Configuration
+  commentId: N:Tide.VendorSdk.Configuration
+  name: Tide.VendorSdk.Configuration
+  nameWithType: Tide.VendorSdk.Configuration
+  fullName: Tide.VendorSdk.Configuration
+- uid: Tide.VendorSdk.Configuration.ITideConfiguration.Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(System.String)
+  commentId: M:Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+  parent: Tide.VendorSdk.Configuration.ConfigurationExtensions
+  definition: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+  name: UseSqlServerStorage(String)
+  nameWithType: ConfigurationExtensions.UseSqlServerStorage(String)
+  fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(System.String)
+  spec.csharp:
+  - uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(System.String)
+    name: UseSqlServerStorage
+    nameWithType: ConfigurationExtensions.UseSqlServerStorage
+    fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(System.String)
+    name: UseSqlServerStorage
+    nameWithType: ConfigurationExtensions.UseSqlServerStorage
+    fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Configuration.ITideConfiguration.Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(System.String)
+  commentId: M:Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+  parent: Tide.VendorSdk.Configuration.ConfigurationExtensions
+  definition: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+  name: SetEndpoint(String)
+  nameWithType: ConfigurationExtensions.SetEndpoint(String)
+  fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(System.String)
+  spec.csharp:
+  - uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(System.String)
+    name: SetEndpoint
+    nameWithType: ConfigurationExtensions.SetEndpoint
+    fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(System.String)
+    name: SetEndpoint
+    nameWithType: ConfigurationExtensions.SetEndpoint
+    fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+  commentId: M:Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+  isExternal: true
+  name: UseSqlServerStorage(ITideConfiguration, String)
+  nameWithType: ConfigurationExtensions.UseSqlServerStorage(ITideConfiguration, String)
+  fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(Tide.VendorSdk.Configuration.ITideConfiguration, System.String)
+  spec.csharp:
+  - uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+    name: UseSqlServerStorage
+    nameWithType: ConfigurationExtensions.UseSqlServerStorage
+    fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.VendorSdk.Configuration.ITideConfiguration
+    name: ITideConfiguration
+    nameWithType: ITideConfiguration
+    fullName: Tide.VendorSdk.Configuration.ITideConfiguration
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+    name: UseSqlServerStorage
+    nameWithType: ConfigurationExtensions.UseSqlServerStorage
+    fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.UseSqlServerStorage
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.VendorSdk.Configuration.ITideConfiguration
+    name: ITideConfiguration
+    nameWithType: ITideConfiguration
+    fullName: Tide.VendorSdk.Configuration.ITideConfiguration
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Configuration.ConfigurationExtensions
+  commentId: T:Tide.VendorSdk.Configuration.ConfigurationExtensions
+  parent: Tide.VendorSdk.Configuration
+  name: ConfigurationExtensions
+  nameWithType: ConfigurationExtensions
+  fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions
+- uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+  commentId: M:Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+  isExternal: true
+  name: SetEndpoint(ITideConfiguration, String)
+  nameWithType: ConfigurationExtensions.SetEndpoint(ITideConfiguration, String)
+  fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(Tide.VendorSdk.Configuration.ITideConfiguration, System.String)
+  spec.csharp:
+  - uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+    name: SetEndpoint
+    nameWithType: ConfigurationExtensions.SetEndpoint
+    fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.VendorSdk.Configuration.ITideConfiguration
+    name: ITideConfiguration
+    nameWithType: ITideConfiguration
+    fullName: Tide.VendorSdk.Configuration.ITideConfiguration
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint(Tide.VendorSdk.Configuration.ITideConfiguration,System.String)
+    name: SetEndpoint
+    nameWithType: ConfigurationExtensions.SetEndpoint
+    fullName: Tide.VendorSdk.Configuration.ConfigurationExtensions.SetEndpoint
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.VendorSdk.Configuration.ITideConfiguration
+    name: ITideConfiguration
+    nameWithType: ITideConfiguration
+    fullName: Tide.VendorSdk.Configuration.ITideConfiguration
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )

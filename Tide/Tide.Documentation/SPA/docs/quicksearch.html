@@ -1,0 +1,31 @@
+<html>
+<head>
+</head>
+<body style="background: transparent;">
+    <script src="scripts/docstrap.lib.js"></script>
+    <script src="scripts/lunr.min.js"></script>
+    <script src="scripts/fulltext-search.js"></script>
+
+    <script type="text/x-docstrap-searchdb">
+    {"classes.list.html":{"id":"classes.list.html","title":"Classes","body":" Tide JS Classes Tide Classes Classes Tide × Search results Close Footer here "},"index.html":{"id":"index.html","title":"Index","body":" Tide JS Classes Tide × Search results Close Footer here "},"Tide.html":{"id":"Tide.html","title":"Class: Tide","body":" Tide JS Classes Tide Class: Tide Tide The client side library to interface with the Tide ecosystem. new Tide(vendorId, serverUrl) Initialize Tide. Parameters: Name Type Description vendorId String Your designated VendorId in which you will operate serverUrl String The endpoint of your backend Tide server Methods decrypt(cipher) Decrypt an encrypted string with the logged in user keys. This action requires a logged in user. Parameters: Name Type Description cipher String The encrypted string you wish to decrypt using the user keys Returns: - The plain text message Type String encrypt(msg) Encrypt a string with the logged in user keys. This action requires a logged in user. Parameters: Name Type Description msg String The string you wish to encrypt using the user keys Returns: - The encrypted payload Type String login(username, password) Login to a previously created Tide account. The account must be fully enabled by the vendor before use. This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret). Parameters: Name Type Description username String Plain text username of the user password String Plain text password of the user Returns: - The users keys to be used on the data Type AESKey logout() Strips all local user data from the browser. reconstruct(username, shares, newPass) Login to a previously created Tide account. The account must be fully enabled by the vendor before use. This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret). Parameters: Name Type Description username String Plain text username of the user shares Array An array of shares sent to the users email(s) newPass String The new password of the user &lt;async&gt; recover(username) Send a request to the ORK nodes used by the user to email them recovery shards. This is step 1 in a 2 step process to recover the user keys. Parameters: Name Type Description username String The username of the user who wishes to recover register(username, password, email, orkIds) Create a new Tide account. This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret). Parameters: Name Type Description username String Plain text username of the new user password String Plain text password of the new user email String The recovery email to be used by the user. orkIds Array The desired ork nodes to be used for registration. An account can only be activated when all ork nodes have confirmed they have stored the shard. Fires: event:progress Returns: - The users keys to be used on the data Type AESKey Example var registerResult = await tide.register(\"myUsername\", \"pa$$w0rD\", \"john@wick.com\",[\"ork-1\",\"ork-2\",\"ork-3\"]); × Search results Close Footer here "}}
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            Searcher.init();
+        });
+
+        $(window).on("message", function(msg) {
+            var msgData = msg.originalEvent.data;
+
+            if (msgData.msgid != "docstrap.quicksearch.start") {
+                return;
+            }
+
+            var results = Searcher.search(msgData.searchTerms);
+
+            window.parent.postMessage({"results": results, "msgid": "docstrap.quicksearch.done"}, "*");
+        });
+    </script>
+</body>
+</html>

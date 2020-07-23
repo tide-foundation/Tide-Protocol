@@ -1,0 +1,39 @@
+html,
+body {
+  font-family: "Segoe UI", Tahoma, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #3b495c;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+  color: #f86b02;
+}
+
+a:hover {
+  color: #af4c00;
+}
+
+.tide-blue {
+  color: #005ce3;
+}
+.tide-orange {
+  color: #ff6c00;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+.navbar-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  margin-right: 25px;
+}

@@ -1,0 +1,24 @@
+- name: General
+  items:
+    - name: About Tide
+      href: general/about.md
+    - name: High-Level Overview
+      href: general/high-level.md
+- name: Features
+  items:
+    - name: Authentication
+      href: features/authentication.md
+    - name: Encryption
+      href: features/encryption.md
+    - name: Marketplace
+      href: features/marketplace.md
+- name: Integration
+  items:
+    - name: How It Works
+      href: integration/how-it-works.md
+    - name: Getting Started
+      href: integration/getting-started.md
+    - name: Server-Side
+      href: integration/server-side.md
+    - name: Client-Side
+      href: integration/client-side.md

@@ -4,6 +4,9 @@ import router from "./router";
 import store from "./store.js";
 import "./assets/css/main.scss";
 
+import VueHighlightJS from "vue-highlightjs";
+Vue.use(VueHighlightJS);
+
 Vue.config.productionTip = false;
 
 Vue.prototype.$bus = new Vue();

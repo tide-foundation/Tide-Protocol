@@ -8,7 +8,7 @@
 }
 
 .tide-blue {
-  color: #26a6d4;
+  color: #005ce3;
 }
 .tide-orange {
   color: #ff6c00;
@@ -20,5 +20,13 @@
 
 a {
   text-decoration: none;
-  color: #26a6d4;
+  color: #f86b02;
+
+  &:hover {
+    color: #af4c00;
+  }
+}
+
+.indent-30 {
+  padding-left: 30px;
 }

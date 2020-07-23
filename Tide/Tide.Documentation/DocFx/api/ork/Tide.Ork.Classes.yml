@@ -1,0 +1,235 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Classes
+  commentId: N:Tide.Ork.Classes
+  id: Tide.Ork.Classes
+  children:
+  - Tide.Ork.Classes.IdGenerator
+  - Tide.Ork.Classes.IEmailClient
+  - Tide.Ork.Classes.IKeyManager
+  - Tide.Ork.Classes.IKeyManagerFactory
+  - Tide.Ork.Classes.IManager`1
+  - Tide.Ork.Classes.IRuleManager
+  - Tide.Ork.Classes.MailKitClient
+  - Tide.Ork.Classes.MemoryFactory
+  - Tide.Ork.Classes.MemoryKeyManager
+  - Tide.Ork.Classes.MemoryManagerBase`1
+  - Tide.Ork.Classes.MemoryRuleManager
+  - Tide.Ork.Classes.OrkShare
+  - Tide.Ork.Classes.SimulatorClient
+  - Tide.Ork.Classes.SimulatorFactory
+  - Tide.Ork.Classes.SimulatorKeyManager
+  - Tide.Ork.Classes.SimulatorManagerBase`1
+  - Tide.Ork.Classes.SimulatorRuleManager
+  - Tide.Ork.Classes.TranToken
+  - Tide.Ork.Classes.VerifyChallenge
+  langs:
+  - csharp
+  - vb
+  name: Tide.Ork.Classes
+  nameWithType: Tide.Ork.Classes
+  fullName: Tide.Ork.Classes
+  type: Namespace
+  assemblies:
+  - Tide.Ork
+references:
+- uid: Tide.Ork.Classes.IdGenerator
+  commentId: T:Tide.Ork.Classes.IdGenerator
+  parent: Tide.Ork.Classes
+  name: IdGenerator
+  nameWithType: IdGenerator
+  fullName: Tide.Ork.Classes.IdGenerator
+- uid: Tide.Ork.Classes.IEmailClient
+  commentId: T:Tide.Ork.Classes.IEmailClient
+  parent: Tide.Ork.Classes
+  name: IEmailClient
+  nameWithType: IEmailClient
+  fullName: Tide.Ork.Classes.IEmailClient
+- uid: Tide.Ork.Classes.IKeyManager
+  commentId: T:Tide.Ork.Classes.IKeyManager
+  parent: Tide.Ork.Classes
+  name: IKeyManager
+  nameWithType: IKeyManager
+  fullName: Tide.Ork.Classes.IKeyManager
+- uid: Tide.Ork.Classes.IKeyManagerFactory
+  commentId: T:Tide.Ork.Classes.IKeyManagerFactory
+  parent: Tide.Ork.Classes
+  name: IKeyManagerFactory
+  nameWithType: IKeyManagerFactory
+  fullName: Tide.Ork.Classes.IKeyManagerFactory
+- uid: Tide.Ork.Classes.IManager`1
+  commentId: T:Tide.Ork.Classes.IManager`1
+  name: IManager<T>
+  nameWithType: IManager<T>
+  fullName: Tide.Ork.Classes.IManager<T>
+  nameWithType.vb: IManager(Of T)
+  fullName.vb: Tide.Ork.Classes.IManager(Of T)
+  name.vb: IManager(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Classes.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Classes.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.IRuleManager
+  commentId: T:Tide.Ork.Classes.IRuleManager
+  parent: Tide.Ork.Classes
+  name: IRuleManager
+  nameWithType: IRuleManager
+  fullName: Tide.Ork.Classes.IRuleManager
+- uid: Tide.Ork.Classes.MailKitClient
+  commentId: T:Tide.Ork.Classes.MailKitClient
+  name: MailKitClient
+  nameWithType: MailKitClient
+  fullName: Tide.Ork.Classes.MailKitClient
+- uid: Tide.Ork.Classes.MemoryFactory
+  commentId: T:Tide.Ork.Classes.MemoryFactory
+  name: MemoryFactory
+  nameWithType: MemoryFactory
+  fullName: Tide.Ork.Classes.MemoryFactory
+- uid: Tide.Ork.Classes.MemoryKeyManager
+  commentId: T:Tide.Ork.Classes.MemoryKeyManager
+  name: MemoryKeyManager
+  nameWithType: MemoryKeyManager
+  fullName: Tide.Ork.Classes.MemoryKeyManager
+- uid: Tide.Ork.Classes.MemoryManagerBase`1
+  commentId: T:Tide.Ork.Classes.MemoryManagerBase`1
+  name: MemoryManagerBase<T>
+  nameWithType: MemoryManagerBase<T>
+  fullName: Tide.Ork.Classes.MemoryManagerBase<T>
+  nameWithType.vb: MemoryManagerBase(Of T)
+  fullName.vb: Tide.Ork.Classes.MemoryManagerBase(Of T)
+  name.vb: MemoryManagerBase(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Classes.MemoryManagerBase
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Classes.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Classes.MemoryManagerBase
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.MemoryRuleManager
+  commentId: T:Tide.Ork.Classes.MemoryRuleManager
+  name: MemoryRuleManager
+  nameWithType: MemoryRuleManager
+  fullName: Tide.Ork.Classes.MemoryRuleManager
+- uid: Tide.Ork.Classes.OrkShare
+  commentId: T:Tide.Ork.Classes.OrkShare
+  name: OrkShare
+  nameWithType: OrkShare
+  fullName: Tide.Ork.Classes.OrkShare
+- uid: Tide.Ork.Classes.SimulatorClient
+  commentId: T:Tide.Ork.Classes.SimulatorClient
+  parent: Tide.Ork.Classes
+  name: SimulatorClient
+  nameWithType: SimulatorClient
+  fullName: Tide.Ork.Classes.SimulatorClient
+- uid: Tide.Ork.Classes.SimulatorFactory
+  commentId: T:Tide.Ork.Classes.SimulatorFactory
+  name: SimulatorFactory
+  nameWithType: SimulatorFactory
+  fullName: Tide.Ork.Classes.SimulatorFactory
+- uid: Tide.Ork.Classes.SimulatorKeyManager
+  commentId: T:Tide.Ork.Classes.SimulatorKeyManager
+  name: SimulatorKeyManager
+  nameWithType: SimulatorKeyManager
+  fullName: Tide.Ork.Classes.SimulatorKeyManager
+- uid: Tide.Ork.Classes.SimulatorManagerBase`1
+  commentId: T:Tide.Ork.Classes.SimulatorManagerBase`1
+  name: SimulatorManagerBase<T>
+  nameWithType: SimulatorManagerBase<T>
+  fullName: Tide.Ork.Classes.SimulatorManagerBase<T>
+  nameWithType.vb: SimulatorManagerBase(Of T)
+  fullName.vb: Tide.Ork.Classes.SimulatorManagerBase(Of T)
+  name.vb: SimulatorManagerBase(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Classes.SimulatorManagerBase`1
+    name: SimulatorManagerBase
+    nameWithType: SimulatorManagerBase
+    fullName: Tide.Ork.Classes.SimulatorManagerBase
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Classes.SimulatorManagerBase`1
+    name: SimulatorManagerBase
+    nameWithType: SimulatorManagerBase
+    fullName: Tide.Ork.Classes.SimulatorManagerBase
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.SimulatorRuleManager
+  commentId: T:Tide.Ork.Classes.SimulatorRuleManager
+  name: SimulatorRuleManager
+  nameWithType: SimulatorRuleManager
+  fullName: Tide.Ork.Classes.SimulatorRuleManager
+- uid: Tide.Ork.Classes.TranToken
+  commentId: T:Tide.Ork.Classes.TranToken
+  parent: Tide.Ork.Classes
+  name: TranToken
+  nameWithType: TranToken
+  fullName: Tide.Ork.Classes.TranToken
+- uid: Tide.Ork.Classes.VerifyChallenge
+  commentId: T:Tide.Ork.Classes.VerifyChallenge
+  name: VerifyChallenge
+  nameWithType: VerifyChallenge
+  fullName: Tide.Ork.Classes.VerifyChallenge
+- uid: Tide.Ork.Classes
+  commentId: N:Tide.Ork.Classes
+  name: Tide.Ork.Classes
+  nameWithType: Tide.Ork.Classes
+  fullName: Tide.Ork.Classes
