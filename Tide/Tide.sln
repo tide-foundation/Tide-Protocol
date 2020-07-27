@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.Dev", "Tide.Dev\Tide.Dev.csproj", "{7CA63DF3-60C2-42C8-8231-5588525543CD}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Ork", "Tide.Ork\Tide.Ork.csproj", "{25323717-F2E6-4263-81C4-4046703E07F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Simulator", "Tide.Simulator\Tide.Simulator.csproj", "{8FC24724-B788-44CE-AA1E-EC6D67D8B50C}"
@@ -13,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Core", "Tide.Core\Tide
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.Usecase", "Tide.Usecase\Tide.Usecase.csproj", "{8CA02B13-769D-42AB-9F1B-371D3E569AB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tide.VendorSdk", "Tide.VendorSdk\Tide.VendorSdk.csproj", "{C105E453-F8C0-4B85-9FAA-11111D2ED2FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tide.VendorSdk", "Tide.VendorSdk\Tide.VendorSdk.csproj", "{C105E453-F8C0-4B85-9FAA-11111D2ED2FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7CA63DF3-60C2-42C8-8231-5588525543CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CA63DF3-60C2-42C8-8231-5588525543CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CA63DF3-60C2-42C8-8231-5588525543CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CA63DF3-60C2-42C8-8231-5588525543CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{25323717-F2E6-4263-81C4-4046703E07F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{25323717-F2E6-4263-81C4-4046703E07F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25323717-F2E6-4263-81C4-4046703E07F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
