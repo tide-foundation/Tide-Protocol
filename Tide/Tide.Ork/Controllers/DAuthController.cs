@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Web;
@@ -34,10 +35,14 @@ namespace Tide.Ork.Controllers {
         private readonly IdGenerator _generator;
         private readonly IKeyManager _manager;
         private readonly IManager<CvkVault> _managerCvk;
+        private readonly IRuleManager _ruleManager;
+        private readonly IManager<KeyIdVault> _keyIdManager;
 
         public DAuthController(IKeyManagerFactory factory, IEmailClient mail, ILogger<DAuthController> logger, IdGenerator gen) {
             _manager = factory.BuildManager();
             _managerCvk = factory.BuildManagerCvk();
+            _ruleManager = factory.BuildRuleManager();
+            _keyIdManager = factory.BuildKeyIdManager();
             _mail = mail;
             _logger = logger;
             _generator = gen;
@@ -48,7 +53,7 @@ namespace Tide.Ork.Controllers {
             var g = C25519Point.From(Convert.FromBase64String(pass.DecodeBase64Url()));
             if (!g.IsValid) return BadRequest();
 
-            var s = await _manager.GetAuthShare(GetUserId(user));
+            var s = await _manager.GetAuthShare(GetGuid(user));
             if (s == BigInteger.Zero) return BadRequest("Invalid username.");
             var gs = g * s;
 
@@ -58,7 +63,7 @@ namespace Tide.Ork.Controllers {
 
         [HttpGet("{user}/signin/{ticks}/{sign}")]
         public async Task<ActionResult> SignIn([FromRoute] string user, [FromRoute] string ticks, [FromRoute] string sign) {
-            var account = await _manager.GetById(GetUserId(user));
+            var account = await _manager.GetById(GetGuid(user));
             if (account == null) return BadRequest("That user does not exist.");
             if (!VerifyChallenge.Check(account.Secret, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(ticks))) {
                 _logger.LogInformation($"Unsuccessful login for {user}", user, ticks, sign);
@@ -77,7 +82,7 @@ namespace Tide.Ork.Controllers {
             _logger.LogInformation($"New registration for {user}", user);
             var account = new KeyVault
             {
-                User = GetUserId(user),
+                User = GetGuid(user),
                 AuthShare = GetBigInteger(authShare),
                 KeyShare = GetBigInteger(keyShare),
                 Secret = AesKey.Parse(FromBase64(secret)),
@@ -91,7 +96,7 @@ namespace Tide.Ork.Controllers {
         [HttpPost("{user}/pass/{authShare}/{secret}/{ticks}/{sign}")]
         public async Task<ActionResult> ChangePass([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string secret, [FromRoute] string ticks, [FromRoute] string sign, [FromQuery] bool withCmk = false)
         {
-            var account = await _manager.GetById(GetUserId(user));
+            var account = await _manager.GetById(GetGuid(user));
             var authKey = withCmk ? account.CmkAuth : account.Secret;
             if (!VerifyChallenge.Check(authKey, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(authShare), FromBase64(secret), FromBase64(ticks)))
             {
@@ -113,7 +118,7 @@ namespace Tide.Ork.Controllers {
         [HttpGet("{user}/cmk")]
         public async Task<ActionResult> Recover([FromRoute] string user)
         {
-            var account = await _manager.GetById(GetUserId(user));
+            var account = await _manager.GetById(GetGuid(user));
             var share = new OrkShare(_generator.Id, account.KeyShare).ToString();
             var msg = $"You have requested to recover the CMK. Introduce the code [{share}] into tide wallet.";
             
@@ -129,7 +134,7 @@ namespace Tide.Ork.Controllers {
         {
             var account = new CvkVault
             {
-                User = GetUserId(user),
+                User = GetGuid(user),
                 VendorPub = C25519Key.Parse(FromBase64(data[0])),
                 CVKi = GetBigInteger(data[1]),
                 CvkAuth = AesKey.Parse(FromBase64(data[2])),
@@ -143,7 +148,7 @@ namespace Tide.Ork.Controllers {
         [HttpGet("{user}/challenge")]
         public async Task<ActionResult> ChallengeVendor([FromRoute] string user)
         {
-            var account = await _managerCvk.GetById(GetUserId(user));
+            var account = await _managerCvk.GetById(GetGuid(user));
             var token = TranToken.Generate(account.CvkAuth);
 
             var cipher = account.VendorPub.Encrypt(token.GenKey(account.CvkAuth));
@@ -152,27 +157,61 @@ namespace Tide.Ork.Controllers {
             return Ok(new { Token = token.ToString(), Challenge = cipher.ToString() });
         }
 
-        [HttpGet("{user}/decrypt/{data}/{token}/{sign}")]
-        public async Task<ActionResult> Decrypt([FromRoute] string user, string data, string token, string sign)
+
+        [HttpGet("{user}/challenge/{keyId}")]
+        public async Task<ActionResult> Challenge([FromRoute] string user, [FromRoute] Guid keyId)
+        {
+            _logger.LogInformation($"Challenge from {user}", user, keyId);
+
+            var account = await _managerCvk.GetById(GetGuid(user));
+            var token = TranToken.Generate(account.CvkAuth);
+
+            var keyPub = await _keyIdManager.GetById(keyId);
+            if (keyPub == null)
+                return Deny($"Denied Challenge for {keyId}");
+
+            var cipher = keyPub.Key.Encrypt(token.GenKey(account.CvkAuth));
+
+            return Ok(new { Token = token.ToString(), Challenge = cipher.ToString() });
+        }
+
+        [HttpGet("{user}/decrypt/{keyId}/{data}/{token}/{sign}")]
+        public async Task<ActionResult> Decrypt([FromRoute] string user, [FromRoute] Guid keyId, string data, string token, string sign)
         {
             var msgErr = $"Denied data decryption belonging to {user}";
+            var account = await _managerCvk.GetById(GetGuid(user));
 
-            var account = await _managerCvk.GetById(GetUserId(user));
-            
             var tran = TranToken.Parse(Convert.FromBase64String(token.DecodeBase64Url()));
             if (!tran.Check(account.CvkAuth)) return Deny(msgErr);
 
-            var toCheck = Convert.FromBase64String(sign.DecodeBase64Url()); 
-            var toSign = Convert.FromBase64String(data.DecodeBase64Url());
-            var key = tran.GenKey(account.CvkAuth);
-            if (!Utils.Equals(key.Hash(toSign), toCheck)) return Deny(msgErr);
+            var keyPub = await _keyIdManager.GetById(keyId);
+            if (keyPub == null)
+                return Deny(msgErr);
 
-            var c1 = C25519Point.From(toSign);
+            var dataBuffer = Convert.FromBase64String(data.DecodeBase64Url());
+            //TODO: CheckAsymmetric must be verified with the user public key
+            //TODO: Change VendorPub to UserPub
+            if (!Cipher.CheckAsymmetric(dataBuffer, account.VendorPub))
+                return Deny(msgErr);
+
+            var tag = Cipher.GetTag(dataBuffer);
+            var rules = await _ruleManager.GetSetBy(account.User, tag, keyPub.Id);
+            if (!rules.Any(rule => rule.Apply() && rule.Action == RuleAction.Allow))
+                return Deny(msgErr);
+
+            if (rules.Any(rule => rule.Apply() && rule.Action == RuleAction.Deny))
+                return Deny(msgErr);
+
+            var bufferSign = Convert.FromBase64String(sign.DecodeBase64Url());
+            var sessionKey = tran.GenKey(account.CvkAuth);
+            if (!Utils.Equals(sessionKey.Hash(dataBuffer), bufferSign)) return Deny(msgErr);
+
+            var c1 = Cipher.GetCipherC1(dataBuffer);
             if (!c1.IsValid) return Deny(msgErr);
 
-
+            var cipher = sessionKey.Encrypt((c1 * account.CVKi).ToByteArray());
+            
             _logger.LogInformation($"Decrypt data belonging to {user}", user, data, token);
-            var cipher = key.Encrypt((c1 * account.CVKi).ToByteArray());
             return Ok(Convert.ToBase64String(cipher));
         }
 
@@ -180,7 +219,7 @@ namespace Tide.Ork.Controllers {
             return Convert.FromBase64String(input.DecodeBase64Url());
         }
 
-        private Guid GetUserId(string user) {
+        private Guid GetGuid(string user) {
             return new Guid(FromBase64(user));
         }
 

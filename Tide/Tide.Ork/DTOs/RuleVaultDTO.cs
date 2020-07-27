@@ -7,7 +7,7 @@ namespace Tide.Ork.DTOs
     {
         public Guid RuleId { get; set; }
         public Guid OwnerId { get; set; }
-        public ulong Tag { get; set; }
+        public string Tag { get; set; }
         public Guid KeyId { get; set; }
         public string Condition { get; set; }
         public string Action { get; set; }
@@ -18,7 +18,7 @@ namespace Tide.Ork.DTOs
         {
             RuleId = rule.RuleId;
             OwnerId = rule.OwnerId;
-            Tag = rule.Tag;
+            Tag = rule.Tag.ToString();
             KeyId = rule.KeyId;
             Condition = rule.Condition;
             Action = rule.Action.ToString();
@@ -26,11 +26,12 @@ namespace Tide.Ork.DTOs
 
         public RuleVault Map() 
         {
+            ulong tag = ulong.TryParse(Tag, out tag) ? tag : 0;
             return new RuleVault()
             {
                 RuleId = RuleId,
                 OwnerId = OwnerId,
-                Tag = Tag,
+                Tag = tag,
                 KeyId = KeyId,
                 Condition = Condition,
                 Action = (RuleAction)Enum.Parse(typeof(RuleAction), Action, true)
