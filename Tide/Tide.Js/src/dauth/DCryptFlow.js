@@ -15,6 +15,8 @@
 
 import DCryptClient from "./DCryptClient";
 import { C25519Point, AESKey, C25519Key, C25519Cipher } from "cryptide";
+import KeyStore from "../keyStore";
+import Cipher from "../Cipher";
 
 export default class DCryptFlow {
   //TODO: cvkAuth should not be included here to generate user id
@@ -51,21 +53,23 @@ export default class DCryptFlow {
   }
 
   /** 
-   * @param {C25519Cipher} cipher
+   * @param {Uint8Array} cipher
    * @param {C25519Key} prv
    */
   async decrypt(cipher, prv) {
     try {
-      const challenges = await Promise.all(this.clients.map(cli => cli.challenge()));
+      const keyId = new KeyStore(prv.public()).keyId;
+      const challenges = await Promise.all(this.clients.map(cli => cli.challenge(keyId)));
 
-      const keys = challenges.map(ch => prv.decryptKey(ch.challenge));
-      const signs = keys.map(key => key.hash(cipher.c1.toArray()));
+      const sessionKeys = challenges.map(ch => prv.decryptKey(ch.challenge));
+      const signs = sessionKeys.map(key => key.hash(cipher));
 
       const ciphers = await Promise.all(this.clients.map((cli, i) =>
-        cli.decrypt(cipher.c1, challenges[i].token, signs[i])));
+        cli.decrypt(cipher, keyId, challenges[i].token, signs[i])));
 
-      const partials = ciphers.map((cph, i) => C25519Point.from(keys[i].decrypt(cph)))
-        .map(pnt => new C25519Cipher(pnt, cipher.c2));
+      const ciph = Cipher.cipherFromAsymmetric(cipher);
+      const partials = ciphers.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph)))
+        .map(pnt => new C25519Cipher(pnt, ciph.c2));
 
       const ids = this.clients.map((c) => c.clientId);
       return C25519Cipher.decryptShares(partials, ids);

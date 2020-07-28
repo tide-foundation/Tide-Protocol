@@ -30,7 +30,7 @@ export default class KeyClient {
   }
 
   /** @param {KeyStore} key */
-  async SetOrUpdate(key) {
+  async setOrUpdate(key) {
     await superagent.post(this.url).set('Content-Type', 'application/json').send(key.stringify());
   }
 }

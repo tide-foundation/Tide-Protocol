@@ -13,35 +13,32 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import superagent from "superagent";
 import Guid from "../guid";
 import Rule from "../rule";
+import RuleClient from "./RuleClient";
 
-export default class RuleClient {
+export default class RuleClientSet {
   /**
-   * @param {string} url
+   * @param {string[]} urls
    * @param {Guid} user
    */
-  constructor(url, user) {
-    this.url = url + "/api/rule";
+  constructor(urls, user) {
+    this.clients = urls.map(url => new RuleClient(url, user));
     this.guid = user;
   }
 
   /** @param {Guid} ruleId */
   async getById(ruleId) {
-    const res = await superagent.get(this.url + '/' + ruleId.toString());
-    return Rule.from(res.body);
+    return await Promise.all(this.clients.map(cln => cln.getById(ruleId)));
   }
 
-  /** @returns { Promise<Rule[]> } */
   async getSet() {
-    const res = await superagent.get(this.url + '/user/' + this.guid.toString());
-    return res.body.map(r => Rule.from(r));
+    return await Promise.all(this.clients.map(cln => cln.getSet()));
   }
 
   /** @param {Rule} rule */
   async setOrUpdate(rule) {
-    await superagent.post(this.url).set('Content-Type', 'application/json').send(rule.stringify());
+    return await Promise.all(this.clients.map(cln => cln.setOrUpdate(rule)));
   }
 }
 

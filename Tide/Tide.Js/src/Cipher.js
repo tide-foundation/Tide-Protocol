@@ -21,30 +21,31 @@ import {
   C25519Cipher,
   BnInput,
 } from "cryptide";
+import Num64 from "./Num64";
 
 export default class Cipher {
   /**
-   * @param {string} data
-   * @param {string} tag
+   * @param {string|Uint8Array} data
+   * @param {Num64} tag
    * @param {C25519Key} key
    */
   static encrypt(data, tag, key) {
-    const buffer = Buffer.from(data, "utf-8");
-
+    const buffer = typeof data === 'string' ? Buffer.from(data, "utf-8") : Buffer.from(data);
+    
     /**@type Uint8Array */
     let toAsymmetricEncrypt = C25519Cipher.pad(buffer);
     let bufferSymmetric = Buffer.alloc(0);
-
+    
     if (buffer.length > 32) {
       const secret = new AesSherableKey();
       bufferSymmetric = secret.encrypt(buffer);
       toAsymmetricEncrypt = secret.toArray();
     }
-
+    
     const bufferAsymmetric = key.encrypt(toAsymmetricEncrypt).toArray();
-    const tagBuffer = Hash.shaBuffer(tag).slice(0, 8);
+    const tagBuffer = tag.toArray();
     const signature = randomBytes(32 * 3);
-
+    
     const size =
       bufferAsymmetric.length +
       tagBuffer.length +
@@ -73,7 +74,7 @@ export default class Cipher {
   }
 
   /**
-   * @param {Buffer} data
+   * @param {Uint8Array} data
    * @param {C25519Key} key
    */
   static decrypt(data, key) {
@@ -90,20 +91,26 @@ export default class Cipher {
     var asymmetricPlain = key.decrypt(asymmetricCipher);
     step += asymmetricSize();
 
-    if (size === 200) return C25519Cipher.unpad(asymmetricPlain);
+    if (size === 200)
+      return C25519Cipher.unpad(asymmetricPlain);
 
     const symmetricKey = AesSherableKey.from(asymmetricPlain);
-    return symmetricKey.decrypt(data.slice(step));
+    return symmetricKey.decrypt(data.slice(step));;
   }
 
-  /** @param {Buffer} data */
+  /** @param {Uint8Array} data */
   static asymmetric(data) {
     const step = headEnd(data);
     return data.slice(step, step + asymmetricSize());
   }
+
+  /** @param {Uint8Array} data */
+  static cipherFromAsymmetric(data) {
+    return C25519Cipher.from(data.slice(0, 32 * 3));
+  }
 }
 
-/** @param {Buffer} data */
+/** @param {Uint8Array} data */
 function headEnd(data) {
   const sizeLength = (data[1] & 128) !== 0 ? data[1] & 127 : 0;
   return 2 + sizeLength;
@@ -111,7 +118,7 @@ function headEnd(data) {
 
 /**
  * @param {number} size
- * @returns {Buffer}
+ * @returns {Uint8Array}
  */
 function dimensionBuffer(size) {
   const buffer = BnInput.getArray(BnInput.getBig(size));

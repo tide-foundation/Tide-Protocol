@@ -20,12 +20,14 @@ export default class Guid {
     }
 
     toString() {
-        const sec1 = this.buffer.slice(0, 4).toString('hex');
-        const sec2 = this.buffer.slice(4, 6).toString('hex');
-        const sec3 = this.buffer.slice(6, 8).toString('hex');
-        const sec4 = this.buffer.slice(8, 10).toString('hex');
-        const sec5 = this.buffer.slice(10, 16).toString('hex');
-        return `${sec1}-${sec2}-${sec3}-${sec4}-${sec5}`;
+        const buff = Buffer.from(this.buffer);
+        const segments = [buff.slice(0, 4), buff.slice(4, 6), buff.slice(6, 8), buff.slice(8, 10), buff.slice(10, 16)];
+
+        segments[0].swap32();
+        segments[1].swap16();
+        segments[2].swap16();
+
+        return segments.map(b => b.toString('hex')).join('-');
     }
 
     inspect() {

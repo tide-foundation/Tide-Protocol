@@ -20,6 +20,7 @@ Developer
 nuget.exe
 *.nupkg
 appsettings.Development.json
+Tide/Tide.Client/dist/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

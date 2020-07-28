@@ -13,35 +13,23 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import superagent from "superagent";
 import Guid from "../guid";
-import Rule from "../rule";
+import KeyStore from "../keyStore";
+import KeyClient from "./keyClient";
 
-export default class RuleClient {
-  /**
-   * @param {string} url
-   * @param {Guid} user
-   */
-  constructor(url, user) {
-    this.url = url + "/api/rule";
-    this.guid = user;
+export default class KeyClientSet {
+  /** @param {string[]} urls */
+  constructor(urls) {
+    this.clients = urls.map(url => new KeyClient(url))
   }
 
-  /** @param {Guid} ruleId */
-  async getById(ruleId) {
-    const res = await superagent.get(this.url + '/' + ruleId.toString());
-    return Rule.from(res.body);
+  /** @param {Guid} id */
+  async getById(id) {
+    return await Promise.all(this.clients.map(cln => cln.getById(id)));
   }
 
-  /** @returns { Promise<Rule[]> } */
-  async getSet() {
-    const res = await superagent.get(this.url + '/user/' + this.guid.toString());
-    return res.body.map(r => Rule.from(r));
-  }
-
-  /** @param {Rule} rule */
-  async setOrUpdate(rule) {
-    await superagent.post(this.url).set('Content-Type', 'application/json').send(rule.stringify());
+  /** @param {KeyStore} key */
+  async setOrUpdate(key) {
+    return await Promise.all(this.clients.map(cln => cln.setOrUpdate(key)));
   }
 }
-
