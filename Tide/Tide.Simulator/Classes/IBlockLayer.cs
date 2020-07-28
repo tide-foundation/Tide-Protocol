@@ -32,8 +32,21 @@ namespace Tide.Simulator.Classes {
         ///     their own scopes.
         /// </param>
         /// <param name="index">The primary index for the data under the selected scope.</param>
-        /// <returns>True is the read was successful</returns>
+        /// <returns>Serialized object</returns>
         string Read(Contract contract, Table table, string scope, string index);
+
+
+
+        /// <summary>
+        ///     Read all the non-stale data in a scope
+        /// </summary>
+        /// <typeparam name="T">The Type you want to deserialize to.</typeparam>
+        /// <param name="contract">The contract you want to read from.</param>
+        /// <param name="table">The table you want to read from.</param>
+        /// <param name="scope">The scope you want to read from.</param>
+        /// <returns>A list of serialized objects</returns>
+        List<string> Read(Contract contract, Table table, string scope);
+
 
         /// <summary>
         ///     This effectively deletes an index from a smart contract

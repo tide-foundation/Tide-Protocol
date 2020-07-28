@@ -11,15 +11,25 @@ import { AESKey } from "cryptide";
  */
 class Tide {
   /**
-   * Initialize Tide.
+   * Create Tide.
    *
    * @param {String} vendorId - Your designated VendorId in which you will operate
    * @param {String} serverUrl - The endpoint of your backend Tide server
+   * @param {Array} homeOrks - The suggested initial point of contacts. At least 1 is required.
    *
    */
-  constructor(vendorId, serverUrl) {
+  constructor(vendorId, serverUrl, homeOrks) {
     this.vendorId = vendorId;
     this.serverUrl = serverUrl;
+    this.homeOrks = homeOrks;
+  }
+
+  /**
+   * Initialize Tide.
+   */
+  async initialize() {
+    var discoveryOrk = await selectDiscoveryOrk(this.homeOrks);
+    this.orks = await get(`${discoveryOrk}/getorks/10`);
   }
 
   /**
@@ -179,6 +189,22 @@ class Tide {
   }
 }
 
+async function selectDiscoveryOrk(homeOrks) {
+  return new Promise(async (resolve, reject) => {
+    var count = 0;
+    homeOrks.forEach(async (ork) => {
+      try {
+        (await request.get(`${ork}/discover`)).body;
+
+        return resolve(ork);
+      } catch (error) {
+        count++;
+        if (count == homeOrks.length) return reject();
+      }
+    });
+  });
+}
+
 function post(url, data) {
   return new Promise(async (resolve, reject) => {
     var r = (await request.post(url).send(data)).body;
@@ -199,8 +225,8 @@ function generateOrkUrls(ids) {
 }
 
 function event(name, payload) {
-  const event = new CustomEvent(name, payload);
-  document.dispatchEvent(event);
+  // const event = new CustomEvent(name, payload);
+  // document.dispatchEvent(event);
 }
 
 export default Tide;

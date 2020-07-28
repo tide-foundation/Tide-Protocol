@@ -35,7 +35,7 @@ namespace Tide.Ork.Classes {
         }
 
         public async Task<T> GetById(Guid id) {
-            var response = await _client.GetVault(_orkId, id.ToString());
+            var response = await _client.GetData($"Simulator/Vault/{_orkId}/{id}");
             if (!response.Success) return null;
 
             return SerializableByteBase<T>.Parse(_key.Decrypt((string)response.Content));

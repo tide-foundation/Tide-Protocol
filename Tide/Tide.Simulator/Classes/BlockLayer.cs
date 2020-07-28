@@ -82,6 +82,14 @@ namespace Tide.Simulator.Classes {
             return currentData?.Data;
         }
 
+        public List<string> Read(Contract contract, Table table, string scope) {
+            return _context.Data.Where(d =>
+                d.Contract == contract &&
+                d.Table == table &&
+                d.Scope == scope &&
+                !d.Stale).Select(d => d.Data).ToList();
+        }
+
         public bool SetStale(Contract contract, Table table, string scope, string index)
         {
             var currentData = _context.Data.FirstOrDefault(d =>

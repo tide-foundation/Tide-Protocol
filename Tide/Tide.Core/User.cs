@@ -12,7 +12,7 @@ namespace Tide.Core
         public string Vendor { get; set; }
 
         /// <summary>
-        /// Ork nodes used for this set of fragments
+        /// OrkNode nodes used for this set of fragments
         /// </summary>
         public List<OrkStatus> Nodes { get; set; } = new List<OrkStatus>();
 

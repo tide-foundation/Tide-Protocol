@@ -26,8 +26,9 @@ namespace Tide.Ork {
             services.AddTransient<IdGenerator>();
             services.AddTransient<IEmailClient, MailKitClient>();
             services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
-            //services.AddTransient<IKeyManagerFactory, MemoryFactory>();
 
+            // TODO: GET JOSE TO HELP INITIALIZING THIS INSIDE FACTORY
+            services.AddSingleton(new SimulatorClient(settings.Endpoints.Simulator.Api, settings.Instance.Username, settings.Endpoints.Simulator.Password));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -29,6 +29,8 @@ namespace Tide.Simulator.Controllers {
 
         #region Onboarding
 
+
+
         // CLIENT CALL
         [HttpGet("GetUserNodes/{username}")]
         public ActionResult GetUserNodes([FromRoute] string username)
@@ -67,7 +69,7 @@ namespace Tide.Simulator.Controllers {
             if (user.Vendor != Request.Headers["VendorId"]) return BadRequest("You are not the authorized vendor");
             if (user.Status != UserStatus.Pending) return BadRequest("That user is not in the pending state");
 
-            if (!user.Nodes.All(n => n.Confirmed)) return BadRequest("All ork nodes have not been confirmed");
+            if (!user.Nodes.All(n => n.Confirmed)) return BadRequest("All orkNode nodes have not been confirmed");
 
             user.Status = UserStatus.Active;
 
@@ -85,7 +87,7 @@ namespace Tide.Simulator.Controllers {
             return _blockchain.SetStale(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username) ? Ok() : StatusCode(500);
         }
 
-        [HttpGet("Vault/{ork}/{username}")]
+        [HttpGet("Vault/{orkNode}/{username}")]
         public TideResponse GetVault([FromRoute] string ork, string username)
         {
             var result = _blockchain.Read(Contract.Authentication, Table.Vault, ork, username);
@@ -95,7 +97,7 @@ namespace Tide.Simulator.Controllers {
 
         //[Authorize]
         // ORK CALL
-        [HttpPost("Vault/{ork}/{username}")]
+        [HttpPost("Vault/{orkNode}/{username}")]
         public TideResponse PostVault([FromRoute] string ork, string username, [FromBody] string payload)
         {
             lock (WriteLock)
@@ -103,7 +105,7 @@ namespace Tide.Simulator.Controllers {
                 if (!GetUser(username, out var user)) return new TideResponse("That username does not exist");
 
                 var desiredOrk = user.Nodes.FirstOrDefault(o => o.Ork == ork);
-                if (desiredOrk == null) return new TideResponse("You are not a desired Ork node. Ork: " + ork);
+                if (desiredOrk == null) return new TideResponse("You are not a desired OrkNode node. OrkNode: " + ork);
 
                 desiredOrk.Confirmed = true;
 
@@ -113,13 +115,37 @@ namespace Tide.Simulator.Controllers {
                 };
 
                 //var transactions = new List<BlockData> {
-                //    new BlockData(Contract.Authentication, Table.Vault, ork, username, payload),
+                //    new BlockData(Contract.Authentication, Table.Vault, orkNode, username, payload),
                 //   // new BlockData(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
                 //};
 
-                //if (HttpContext.User.Identity.Name != ork) return Unauthorized("You do not have write privileges to that scope.");
+                //if (HttpContext.User.Identity.Name != orkNode) return Unauthorized("You do not have write privileges to that scope.");
                 return _blockchain.Write(transactions) ? new TideResponse() : new TideResponse("Internal Server Error");
             }
+        }
+
+        #endregion
+
+        #region Orks
+
+        // ORK CALL
+        [HttpPost("RegisterOrk")]
+        public ActionResult RegisterOrk([FromBody] OrkNode orkNode) {
+
+            var currentOrk = _blockchain.Read(Contract.Authentication, Table.Orks, Contract.Authentication.ToString(), orkNode.Id);
+            if (currentOrk != null) return Conflict();
+
+            var transaction = new BlockData(Contract.Authentication, Table.Orks, Contract.Authentication.ToString(),orkNode.Id, JsonConvert.SerializeObject(orkNode));
+
+            return _blockchain.Write(transaction) ? Ok() : StatusCode(500);
+        }
+
+        // ORK CALL
+        [HttpGet("GetOrks")]
+        public TideResponse GetOrks()
+        {
+            var orks = _blockchain.Read(Contract.Authentication, Table.Orks, Contract.Authentication.ToString());
+            return new TideResponse(true,JsonConvert.SerializeObject(orks),null);
         }
 
         #endregion
