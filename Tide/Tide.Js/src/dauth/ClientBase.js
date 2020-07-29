@@ -24,8 +24,8 @@ export default class ClientBase {
   constructor(url, user) {
     this.url = url + "/api";
     this.user = user;
-    this._clientId = new IdGenerator(new URL(url).host);
-    this._userId = new IdGenerator(user);
+    this._clientId = IdGenerator.seed(new URL(url).host);
+    this._userId = IdGenerator.seed(user);
   }
 
   get clientId() { return this._clientId.id; }

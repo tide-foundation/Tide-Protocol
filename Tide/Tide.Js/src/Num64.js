@@ -11,9 +11,9 @@ import { Hash } from "cryptide";
 import BN from 'bn.js';
 
 export default class Num64 {
-    /** @param {number|string|BN} num */
+    /** @param {number|BN} num */
     constructor(num=0) {
-        this.num = (typeof num === 'number' || typeof num === 'string') ? new BN(num) : num;
+        this.num = typeof num === 'number' ? new BN(num) : num;
     }
 
     /** @returns {Uint8Array} */
@@ -35,7 +35,12 @@ export default class Num64 {
 
     /** @param {string|Uint8Array} data */
     static from(data) {
-        const buff = typeof data === 'string' ? Hash.shaBuffer(data) : data;
-        return new Num64(new BN(buff.slice(0, 8), 10, 'le'));
+        return new Num64(typeof data === 'string'
+            ? new BN(data) : new BN(data, 10, 'le'));
+    }
+
+    /** @param {string|Uint8Array} data */
+    static seed(data) {
+        return Num64.from(Hash.shaBuffer(data).slice(8));
     }
 }

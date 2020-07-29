@@ -56,7 +56,7 @@ class Tide {
           return reject("Invalid credentials");
 
         var flow = new DAuthFlow(generateOrkUrls(orkIds), username);
-        var userId = encodeBase64Url(new IdGenerator(username).buffer);
+        var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
         // Ask the vendor to create the user as a liability.
 
         await post(`${this.serverUrl}/CreateUser/${userId}`, orkIds);
@@ -92,7 +92,7 @@ class Tide {
   login(username, password) {
     return new Promise(async (resolve, reject) => {
       try {
-        var userId = encodeBase64Url(new IdGenerator(username).buffer);
+        var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
         var userNodes = JSON.parse(
           await get(`${this.serverUrl}/GetUserNodes/${userId}`)
         );
@@ -150,7 +150,7 @@ class Tide {
    * @param {String} username - The username of the user who wishes to recover
    */
   async recover(username) {
-    var userId = encodeBase64Url(new IdGenerator(username).buffer);
+    var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
     var userNodes = JSON.parse(
       await get(`${this.serverUrl}/GetUserNodes/${userId}`)
     );
@@ -174,7 +174,7 @@ class Tide {
   reconstruct(username, shares, newPass) {
     return new Promise(async (resolve, reject) => {
       try {
-        var userId = encodeBase64Url(new IdGenerator(username).buffer);
+        var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
         var userNodes = JSON.parse(
           await get(`${this.serverUrl}/GetUserNodes/${userId}`)
         );

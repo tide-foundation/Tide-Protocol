@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import Guid from "../guid";
+import Guid from "../Guid";
 import KeyStore from "../keyStore";
 import KeyClient from "./keyClient";
 

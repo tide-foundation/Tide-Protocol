@@ -7,16 +7,12 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 import { randomBytes } from 'crypto';
+import { Hash } from 'cryptide';
 
 export default class Guid {
-    /** @param {Buffer} data */
+    /** @param {Uint8Array} data */
     constructor(data = null) {
         this.buffer = typeof data === 'undefined' || data === null ? randomBytes(16) : data;
-    }
-
-    /** @param {Uint8Array|string} data */
-    static from(data) {
-        return new Guid(typeof data === 'string' ? Buffer.from(data, 'hex') : Buffer.from(data)) ;
     }
 
     toString() {
@@ -30,7 +26,22 @@ export default class Guid {
         return segments.map(b => b.toString('hex')).join('-');
     }
 
+    /** @returns {Uint8Array} */
+    toArray() {
+        return this.buffer;
+    }
+
     inspect() {
         return this.toString();
+    }
+
+    /** @param {Uint8Array|string} data */
+    static from(data) {
+        return new Guid(typeof data === 'string' ? Buffer.from(data, 'hex') : data);
+    }
+
+    /** @param {Uint8Array|string} data */
+    static seed(data) {
+        return new Guid(Hash.shaBuffer(data).slice(0, 16));
     }
 }

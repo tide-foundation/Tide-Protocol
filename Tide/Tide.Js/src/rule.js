@@ -7,7 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import Guid from "./guid";
+import Guid from "./Guid";
 import Num64 from "./Num64";
 import KeyStore from "./keyStore";
 

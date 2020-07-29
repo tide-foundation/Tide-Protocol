@@ -17,7 +17,7 @@ import { C25519Key, AesSherableKey, AESKey } from "cryptide";
 import DCryptFlow from "../src/dauth/DCryptFlow";
 import KeyClientSet from "../src/dauth/keyClientSet";
 import RuleClientSet from "../src/dauth/RuleClientSet";
-import Guid from "../src/guid";
+import Guid from "../src/Guid";
 import KeyStore from "../src/keyStore";
 import Rule from "../src/rule";
 import Num64 from "../src/Num64";

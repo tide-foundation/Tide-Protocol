@@ -15,8 +15,8 @@
 
 import { C25519Point, AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
-import IdMacGenerator from "../IdMacGenerator";
-import Guid from "../guid";
+import IdGenerator from "../IdGenerator";
+import Guid from "../Guid";
 
 export default class DCryptClient extends ClientBase {
   /**
@@ -26,7 +26,7 @@ export default class DCryptClient extends ClientBase {
    */
   constructor(url, user, key) {
     super(url, user);
-    this._userId = new IdMacGenerator(user, key);
+    this._userId = IdGenerator.seed(user, key);
   }
 
   /**

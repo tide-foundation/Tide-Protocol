@@ -1,23 +1,22 @@
-import BigInt from 'big-integer';
-import { Hash } from 'cryptide';
+import { BnInput, AESKey } from 'cryptide';
+import Guid from './guid';
 
 export default class IdGenerator {
-    /** @param {string} text */
-    constructor(text) {
-        this.text = text;
+    /** @param {Guid} guid */
+    constructor(guid) {
+        this.guid = guid;
     }
 
-    get id() { return getId(this.buffer); }
+    get id() { return BnInput.getBig(this.buffer); }
 
-    get buffer() { return getBufferId(this.text); }
-}
+    get buffer() { return this.guid.toArray(); }
 
-/** @param {Uint8Array} buffer */
-export function getId(buffer) {
-    return BigInt.fromArray(Array.from(buffer), 256, false);
-}
-
-/** @param {string|Uint8Array} data */
-export function getBufferId(data) {
-    return Hash.shaBuffer(data).slice(0, 16);
+    /** @param {string | Uint8Array} data
+     * @param {AESKey} key */
+    static seed(data, key = null) {
+        if (key == null)
+            return new IdGenerator(Guid.seed(data));
+        
+        return new IdGenerator(Guid.from(key.hash(data).slice(0, 16)));
+    }
 }
