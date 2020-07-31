@@ -48,41 +48,41 @@ namespace Tide.Ork.Controllers {
             _generator = gen;
         }
 
-        [HttpGet("{user}/share/{pass}")]
-        public async Task<ActionResult> GetShare([FromRoute] string user, [FromRoute] string pass) {
+        [HttpGet("{user}/convert/{pass}")]
+        public async Task<ActionResult<string>> ConvertPass([FromRoute] Guid uid, [FromRoute] string pass) {
             var g = C25519Point.From(Convert.FromBase64String(pass.DecodeBase64Url()));
             if (!g.IsValid) return BadRequest();
 
-            var s = await _manager.GetAuthShare(GetGuid(user));
+            var s = await _manager.GetAuthShare(uid);
             if (s == BigInteger.Zero) return BadRequest("Invalid username.");
             var gs = g * s;
 
-            _logger.LogInformation($"Login attempt for {user}", user, pass);
+            _logger.LogInformation($"Login attempt for {uid}", uid, pass);
             return Ok(Convert.ToBase64String(gs.ToByteArray()));
         }
 
-        [HttpGet("{user}/signin/{ticks}/{sign}")]
-        public async Task<ActionResult> SignIn([FromRoute] string user, [FromRoute] string ticks, [FromRoute] string sign) {
-            var account = await _manager.GetById(GetGuid(user));
+        [HttpGet("{user}/authenticate/{ticks}/{sign}")]
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] long ticks, [FromRoute] string sign) {
+            var account = await _manager.GetById(uid);
             if (account == null) return BadRequest("That user does not exist.");
-            if (!VerifyChallenge.Check(account.Secret, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(ticks))) {
-                _logger.LogInformation($"Unsuccessful login for {user}", user, ticks, sign);
+            if (!VerifyChallenge.Check(account.Secret, FromBase64(sign), ticks, uid.ToByteArray(), BitConverter.GetBytes(ticks))) {
+                _logger.LogInformation($"Unsuccessful login for {uid}", uid, ticks, sign);
                 return BadRequest();
             }
 
-            _logger.LogInformation($"Successful login for {user}", user, ticks, sign);
+            _logger.LogInformation($"Successful login for {uid}", uid, ticks, sign);
             return Ok(account.Secret.EncryptStr(account.KeyShare.ToByteArray(true, true)));
         }
 
         //TODO: Move secrets out of the url
         //TODO: there is not verification if the account already exists
         [HttpPost("{user}/signup/{authShare}/{keyShare}/{secret}/{cmkAuth}/{email}")]
-        public async Task<TideResponse> SignUp([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret, [FromRoute] string cmkAuth, [FromRoute] string email)
+        public async Task<TideResponse> SignUp([FromRoute] Guid uid, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret, [FromRoute] string cmkAuth, [FromRoute] string email)
         {
-            _logger.LogInformation($"New registration for {user}", user);
+            _logger.LogInformation($"New registration for {uid}", uid);
             var account = new KeyVault
             {
-                User = GetGuid(user),
+                User = uid,
                 AuthShare = GetBigInteger(authShare),
                 KeyShare = GetBigInteger(keyShare),
                 Secret = AesKey.Parse(FromBase64(secret)),
@@ -94,11 +94,11 @@ namespace Tide.Ork.Controllers {
         }
 
         [HttpPost("{user}/pass/{authShare}/{secret}/{ticks}/{sign}")]
-        public async Task<ActionResult> ChangePass([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string secret, [FromRoute] string ticks, [FromRoute] string sign, [FromQuery] bool withCmk = false)
+        public async Task<ActionResult> ChangePass([FromRoute] string user, [FromRoute] string authShare, [FromRoute] string secret, [FromRoute] long ticks, [FromRoute] string sign, [FromQuery] bool withCmk = false)
         {
             var account = await _manager.GetById(GetGuid(user));
             var authKey = withCmk ? account.CmkAuth : account.Secret;
-            if (!VerifyChallenge.Check(authKey, FromBase64(sign), (long)GetBigInteger(ticks), FromBase64(user), FromBase64(authShare), FromBase64(secret), FromBase64(ticks)))
+            if (!VerifyChallenge.Check(authKey, FromBase64(sign), ticks, FromBase64(user), FromBase64(authShare), FromBase64(secret), BitConverter.GetBytes(ticks)))
             {
                 _logger.LogInformation($"Unsuccessful change password for {user}", user, authShare, secret, ticks, sign);
                 return BadRequest();
@@ -176,6 +176,7 @@ namespace Tide.Ork.Controllers {
         }
 
         [HttpGet("{user}/decrypt/{keyId}/{data}/{token}/{sign}")]
+        //TODO: Check the signature of the keyId
         public async Task<ActionResult> Decrypt([FromRoute] string user, [FromRoute] Guid keyId, string data, string token, string sign)
         {
             var msgErr = $"Denied data decryption belonging to {user}";

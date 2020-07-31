@@ -34,6 +34,8 @@ export default class ClientBase {
 
   get userId() { return this._userId.id; }
 
+  get userGuid() { return this._userId.guid; }
+
   get userBuffer() { return this._userId.buffer; }
 
   get userUrl() { return urlEncode(this.userBuffer);  }

@@ -25,13 +25,21 @@ export default class Num64 {
         return buffer;
     }
 
-    toString() {
-        return this.num.toString();
-    }
+    /** @param {Num64} number */
+    add(number) { return new Num64(this.num.add(number.num)); }
 
-    inspect() {
-        return this.toString();
-    }
+    /** @param {Num64} number */
+    mul(number) { return new Num64(this.num.mul(number.num)); }
+
+    /** @param {Num64} number */
+    sub(number) { return new Num64(this.num.sub(number.num)); }
+
+    /** @param {Num64} number */
+    div(number) { return new Num64(this.num.div(number.num)); }
+
+    toString() { return this.num.toString(); }
+
+    inspect() { return this.toString(); }
 
     /** @param {string|Uint8Array} data */
     static from(data) {

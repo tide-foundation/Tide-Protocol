@@ -17,6 +17,7 @@ import BigInt from "big-integer";
 import DAuthClient from "./DAuthClient";
 import DAuthShare from "./DAuthShare";
 import { SecretShare, Utils, C25519Point, AESKey } from "cryptide";
+import Num64 from "../Num64";
 
 export default class DAuthFlow {
   /**
@@ -77,7 +78,7 @@ export default class DAuthFlow {
 
       var ticks = getTicks();
       var signs = this.clients.map((c, i) =>
-        sAuths[i].hash(Buffer.concat([c.userBuffer, ticks]))
+        sAuths[i].hash(Buffer.concat([c.userBuffer, Buffer.from(ticks.toArray())]))
       );
 
       var ciphers = await Promise.all(
@@ -200,7 +201,7 @@ export default class DAuthFlow {
             c.userBuffer,
             Buffer.from(ais[i].toArray(256).value),
             Buffer.from(sAuths[i].toArray()),
-            ticks,
+            Buffer.from(ticks.toArray()),
           ])
         )
       );
@@ -221,8 +222,6 @@ function random() {
 }
 
 function getTicks() {
-  var time = BigInt(new Date().getTime());
-  return Buffer.from(
-    time.times(10000).add(621355968000000000).toArray(256).value
-  );
+  return new Num64(new Date().getTime()).mul(new Num64(10000))
+    .add(Num64.from("621355968000000000"));
 }
