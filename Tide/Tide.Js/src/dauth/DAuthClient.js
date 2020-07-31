@@ -72,10 +72,10 @@ export default class DAuthClient extends ClientBase {
     var sec = urlEncode(secret.toString());
     var sgn = urlEncode(sign);
 
-    await this._post(`/dauth/${this.userUrl}/pass/${auth}/${sec}/${ticks}/${sgn}?withCmk=${withCmk}`);
+    await this._post(`/dauth/${this.userGuid}/pass/${auth}/${sec}/${ticks}/${sgn}?withCmk=${withCmk}`);
   }
 
   async Recover() {
-    await this._get(`/dauth/${this.userUrl}/cmk/`);
+    await this._get(`/dauth/${this.userGuid}/cmk/`);
   }
 }
