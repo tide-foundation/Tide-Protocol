@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import transitionBox from '../components/TransitionBox.vue'
-import Register from '../components/Register.vue'
-import Login from '../components/Login.vue'
+import transitionBox from "../components/TransitionBox.vue";
+import Register from "../components/Register.vue";
+import Login from "../components/Login.vue";
 export default {
   components: {
     transitionBox,
@@ -48,18 +48,18 @@ export default {
     return {
       registerMode: true,
       show: false
-    }
+    };
   },
   created() {
-    this.$bus.$on('changeRegisterMode', mode => this.registerMode = mode);
-    this.$bus.$on('showLoginModal', show => {
+    this.$bus.$on("changeRegisterMode", mode => (this.registerMode = mode));
+    this.$bus.$on("showLoginModal", show => {
       if (show && this.$store.getters.user != null) {
         return location.reload();
       }
-      this.show = show
+      this.show = show;
     });
-  },
-}
+  }
+};
 </script>
 
 <style scoped>

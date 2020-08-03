@@ -2,7 +2,9 @@
   <section class="tide-input">
     <p :class="{ 'white-text': !lockedText }">
       {{ label }}
-      <span class="classification" v-if="classification != null">({{ classification }})</span>
+      <span class="classification" v-if="classification != null"
+        >({{ classification }})</span
+      >
     </p>
     <div class="input-content">
       <input
@@ -23,9 +25,7 @@
 </template>
 
 <script>
-import transitionBox from "../components/TransitionBox.vue";
 export default {
-  components: { transitionBox },
   props: [
     "value",
     "label",

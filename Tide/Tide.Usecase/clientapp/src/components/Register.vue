@@ -55,13 +55,10 @@
 
 <script>
 // @ is an alias to /src
-import TideInput from "../components/TideInput.vue";
 
 export default {
   name: "home",
-  components: {
-    TideInput
-  },
+
   data() {
     return {
       error: "",
@@ -86,9 +83,13 @@ export default {
           //   this.user.password,
           //   "tmp@tide.org"
           // );
-  
-          var signUp = await this.$tide.register(this.user.username, this.user.password, "tmp@tide.org");
-console.log(signUp.key)
+
+          var signUp = await this.$tide.register(
+            this.user.username,
+            this.user.password,
+            "tmp@tide.org"
+          );
+          console.log(signUp.key);
           // await this.$helper.sleep(2000);
           const registerTideResult = {
             privateKey: "5J9mJizKfGrFdnSZNswomzTeoVoLi3649YdrHGwT3EQTCTPLf3Z",
@@ -112,7 +113,7 @@ console.log(signUp.key)
           this.$store.commit("storeUser", {
             username: this.user.username,
             account: registerTideResult.accountName,
-           aes:signUp.key,
+            aes: signUp.key,
             keys: {
               tide: {
                 pub: registerTideResult.publicKey,
@@ -132,7 +133,12 @@ console.log(signUp.key)
           this.$loading(false, "");
           this.$authAction();
         } catch (thrownError) {
-          this.$bus.$emit("show-error",thrownError.response != null && thrownError.response.text != null ? thrownError.response.text : thrownError.status);
+          this.$bus.$emit(
+            "show-error",
+            thrownError.response != null && thrownError.response.text != null
+              ? thrownError.response.text
+              : thrownError.status
+          );
           this.$loading(false, "");
         }
       }, 100);

@@ -21,7 +21,7 @@ namespace Tide.Usecase.Controllers {
             _tideVendor = tideVendor;
         }
 
-        [HttpGet("Test/{name}/{noob}")]
+        [HttpGet("/Test/{name}/{noob}")]
         public string Test([FromRoute]string name,bool noob) {
             return $"{name} {(noob ? "is a" : "is not a")} noob";
         }

@@ -1,5 +1,5 @@
 <template>
-  <div id="error-container" v-if="error != ''">{{error}}</div>
+  <div id="error-container" v-if="error != ''">{{ error }}</div>
 </template>
 
 <script>

@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import config from './assets/js/config'
+import Vue from "vue";
+import Vuex from "vuex";
+import config from "./assets/js/config";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     loading: {
       active: false,
-      text: 'Loading...'
+      text: "Loading..."
     },
-    error: 'Blockchain account failed to be created',
+    error: "Blockchain account failed to be created",
     locked: false,
     tideEngaged: false,
     tideProcessing: false,
@@ -28,17 +28,16 @@ export default new Vuex.Store({
   },
   mutations: {
     updateLoading(state, data) {
-      state.loading = data
+      state.loading = data;
     },
     updateError(state, data) {
-      state.error = data
+      state.error = data;
     },
     updateLocked(state, data) {
-      state.locked = data
+      state.locked = data;
     },
     updatedisabledFields(state, data) {
-      state.disabledFields = data
-
+      state.disabledFields = data;
     },
     storeUser(state, data) {
       state.user = data;
@@ -53,30 +52,30 @@ export default new Vuex.Store({
       state.details = data;
     },
     addDeals(state, data) {
-      data.forEach((d) => state.deals.push(d));
+      data.forEach(d => state.deals.push(d));
     },
     addDealToHistory(state, data) {
-      data.forEach((d) => state.dealHistory.push(d));
+      data.forEach(d => state.dealHistory.push(d));
     },
     removeDeals(state, data) {
       state.deals = state.deals.filter(d => !data.includes(d.id));
     },
     acceptDeal(state, data) {
-      state.deals.forEach((d) => {
+      state.deals.forEach(d => {
         if (d.id == data.id) {
           d.accepted = true;
           state.user.tide += d.value;
         }
-      })
+      });
     },
-    autoAcceptDeal(state, data) {
+    autoAcceptDeal(state) {
       var done = false;
-      state.deals.forEach((d) => {
+      state.deals.forEach(d => {
         if (done) return;
         d.accepted = true;
         state.user.tide += d.value;
         done = true;
-      })
+      });
     },
     updateTide(state, data) {
       state.user.tide = data;
@@ -118,16 +117,19 @@ export default new Vuex.Store({
       try {
         // Remove accepted deals and add to history
         const dealsToRemove = context.getters.deals.filter(d => d.accepted);
-        context.commit('addDealToHistory', dealsToRemove);
-        context.commit('removeDeals', dealsToRemove.map(d => d.id));
+        context.commit("addDealToHistory", dealsToRemove);
+        context.commit(
+          "removeDeals",
+          dealsToRemove.map(d => d.id)
+        );
 
         // Add new deals
         if (context.getters.deals.length < 3 && add) {
-          context.commit('addDeals', [config.getNextDeal()]);
+          context.commit("addDeals", [config.getNextDeal()]);
         }
       } catch (thrownError) {
         console.log(thrownError);
       }
     }
   }
-})
+});

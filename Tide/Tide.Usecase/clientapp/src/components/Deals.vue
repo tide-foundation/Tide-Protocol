@@ -108,57 +108,57 @@
 </template>
 
 <script>
-
 export default {
   components: {},
   data() {
     return {
       show: false
-    }
+    };
   },
   async created() {
-    this.$bus.$on('show-deals', async () => {
+    this.$bus.$on("show-deals", async () => {
       if (this.$store.getters.user == null) {
-        this.$store.commit('updateRoute', {
-          action: 'event',
-          value: 'show-deals'
+        this.$store.commit("updateRoute", {
+          action: "event",
+          value: "show-deals"
         });
-        this.$bus.$emit('show-message', 'Please login or register to continue')
-        return this.$bus.$emit('showLoginModal', true);
+        this.$bus.$emit("show-message", "Please login or register to continue");
+        return this.$bus.$emit("showLoginModal", true);
       }
 
       if (this.$store.getters.details == null) {
         try {
-          this.$loading(true, 'Fetching your settings')
+          this.$loading(true, "Fetching your settings");
           if (this.$store.getters.details == null) {
-            this.$bus.$emit('show-message', 'Please apply for a property before accessing your deals')
-            this.$router.push('/apply')
-            this.$loading(false, '')
+            this.$bus.$emit(
+              "show-message",
+              "Please apply for a property before accessing your deals"
+            );
+            this.$router.push("/apply");
+            this.$loading(false, "");
             return;
           }
-
         } catch (errorThrown) {
-          this.$bus.$emit('show-error', errorThrown)
+          this.$bus.$emit("show-error", errorThrown);
         }
 
-
-        this.$loading(false, '')
+        this.$loading(false, "");
       }
 
-      this.show = true
+      this.show = true;
     });
   },
   computed: {
     getButtonText(state) {
       switch (state) {
-        case 'Pending':
-          return 'Approve';
-        case 'Approved':
-          return 'Approved';
-        case 'Processing':
-          return 'Processing';
+        case "Pending":
+          return "Approve";
+        case "Approved":
+          return "Approved";
+        case "Processing":
+          return "Processing";
       }
-      return 'Approve';
+      return "Approve";
     }
   },
   methods: {
@@ -166,18 +166,18 @@ export default {
       return `Ŧ ${parseFloat(val).toFixed(2)}`;
     },
     acceptDeal(deal) {
-      this.$store.commit('updateDeal', {
+      this.$store.commit("updateDeal", {
         id: deal.id,
         state: "Processing"
       });
-      this.$store.dispatch('acceptDeal', { deal: deal, state: 'Approved' });
+      this.$store.dispatch("acceptDeal", { deal: deal, state: "Approved" });
     },
     async toggleTrustee() {
-      this.$store.commit('updateTrustee', !this.$store.getters.user.trustee);
+      this.$store.commit("updateTrustee", !this.$store.getters.user.trustee);
       this.trustee = this.$store.getters.user.trustee;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

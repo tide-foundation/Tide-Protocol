@@ -22,9 +22,9 @@
 <script>
 export default {
   created() {
-    this.$loading(false, '')
+    this.$loading(false, "");
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,79 +1,73 @@
 export default class TideHelper {
-
   constructor(tide, bus, store) {
-    this.characters = "a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S U V W X Y Z 1 2 3 4 5 6 7 8 9 0 ! @ # $ % ^ & * ( ) _ + - =".split(" ");
+    this.characters = "a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S U V W X Y Z 1 2 3 4 5 6 7 8 9 0 ! @ # $ % ^ & * ( ) _ + - =".split(
+      " "
+    );
     this.tide = tide;
     this.bus = bus;
     this.store = store;
-    this.event = new Event('input');
+    this.event = new Event("input");
   }
 
   getTideInputs() {
     return document.getElementsByClassName("tide-input-main");
   }
 
-  async toggleTide(keys) {
-    console.log(this.tide)
+  async toggleTide() {
+    console.log(this.tide);
     const inputs = this.getTideInputs();
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async resolve => {
+      this.bus.$emit("toggle-tide-start", !this.store.getters.tideEngaged);
 
-      this.bus.$emit('toggle-tide-start', !this.store.getters.tideEngaged);
-
-      this.store.commit('updateTideProcessing', true);
-      this.store.commit('updateTideEngaged', !this.store.getters.tideEngaged);
+      this.store.commit("updateTideProcessing", true);
+      this.store.commit("updateTideEngaged", !this.store.getters.tideEngaged);
       if (this.store.getters.tideEngaged) {
-        this.bus.$emit('tint', true);
+        this.bus.$emit("tint", true);
       }
       for (let input of inputs) {
-
         if (this.store.getters.tideEngaged) {
-          this.bus.$emit('engage-input', {
+          this.bus.$emit("engage-input", {
             key: input.name,
             val: true
-          })
-       
+          });
+
           this.scatterReveal(input, this.tide.decrypt(input.value));
         } else {
-          this.bus.$emit('engage-input', {
+          this.bus.$emit("engage-input", {
             key: input.name,
             val: false
-          })
+          });
 
           this.scatterReveal(input, this.tide.encrypt(input.value));
         }
         await this.sleep(70);
-
-
       }
-      this.store.commit('updateTideProcessing', false);
-      if (!this.store.getters.tideEngaged) this.bus.$emit('tint', false);
+      this.store.commit("updateTideProcessing", false);
+      if (!this.store.getters.tideEngaged) this.bus.$emit("tint", false);
       return resolve();
     });
   }
 
   async scatterReveal(input, endResult) {
-  //  console.log(input)
-  var test = input.value== 'Ansager';
-    if(input.value== 'Ansager') console.log(input.value,endResult)
-    if (!input.classList.contains('tidify')) return
+    if (!input.classList.contains("tidify")) return;
     var length = input.value.length;
-    this.bus.$emit('update-lock-start', {
+    this.bus.$emit("update-lock-start", {
       key: input.name,
       val: !this.store.getters.tideEngaged
-    })
+    });
     for (var i = 0; i < 20; i++) {
       if (length < endResult.length) length++;
       else if (length > endResult.length) length--;
-      this.shuffleArray(this.characters)
+      this.shuffleArray(this.characters);
       input.value = this.characters.slice(0, length).join("");
       await this.sleep(20);
     }
     input.value = endResult;
     input.dispatchEvent(this.event);
-    this.bus.$emit('update-lock-end', {
+    this.bus.$emit("update-lock-end", {
       key: input.name,
       val: !this.store.getters.tideEngaged
-    })
+    });
   }
 
   shuffleArray(array) {
@@ -131,7 +125,11 @@ export default class TideHelper {
     const data = {
       location: details.addresses.current.suburb,
       earn: this.getAmountBracket(parseInt(details.employment.current.pay)),
-      debt: this.getAmountBracket(parseInt(details.credit.creditCard) + parseInt(details.credit.personalLoan) + parseInt(details.credit.otherLoan)),
+      debt: this.getAmountBracket(
+        parseInt(details.credit.creditCard) +
+          parseInt(details.credit.personalLoan) +
+          parseInt(details.credit.otherLoan)
+      ),
       age: this.getAgeBracket(details.personal.date)
     };
     return data;
@@ -141,6 +139,5 @@ export default class TideHelper {
     var numminutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
     var numseconds = (((seconds % 31536000) % 86400) % 3600) % 60;
     return numminutes + " m " + numseconds + " s";
-
   }
 }

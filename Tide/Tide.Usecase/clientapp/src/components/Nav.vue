@@ -11,7 +11,8 @@
           <span
             :class="{ 'nav-current-menu-item': menu == 'home' }"
             @click="$bus.$emit('update-menu', { name: 'Home', route: '/' })"
-          >Home</span>
+            >Home</span
+          >
           <span
             :class="{ 'nav-current-menu-item': menu == 'property' }"
             @click="
@@ -20,13 +21,15 @@
                 route: '/property'
               })
             "
-          >Property</span>
+            >Property</span
+          >
           <span
             :class="{ 'nav-current-menu-item': menu == 'apply' }"
             @click="
               $bus.$emit('update-menu', { name: 'Apply', route: '/apply' })
             "
-          >Apply</span>
+            >Apply</span
+          >
           <span
             :class="{ 'nav-current-menu-item': menu == 'dashboard' }"
             @click="
@@ -35,7 +38,8 @@
                 route: '/dashboard'
               })
             "
-          >Dashboard</span>
+            >Dashboard</span
+          >
         </section>
       </div>
       <div class="mobile-header-nav">
@@ -47,19 +51,13 @@
             </a>
           </li>
           <li>
-            <a>
-              <i class="fa fa-user pointer"></i>Profile
-            </a>
+            <a> <i class="fa fa-user pointer"></i>Profile </a>
           </li>
           <li>
-            <a>
-              <i class="fa fa-th-list pointer"></i>My Properties
-            </a>
+            <a> <i class="fa fa-th-list pointer"></i>My Properties </a>
           </li>
           <li>
-            <a>
-              <i class="fa fa-star pointer"></i>Favorites
-            </a>
+            <a> <i class="fa fa-star pointer"></i>Favorites </a>
           </li>
           <li>
             <a class="submit-property-link pointer">
@@ -97,7 +95,9 @@
                     alt="Logo"
                   />
                 </a>
-                <small class="tag-line hidden-xs hidden-sm">Live your dream today</small>
+                <small class="tag-line hidden-xs hidden-sm"
+                  >Live your dream today</small
+                >
               </div>
             </div>
           </div>
@@ -185,7 +185,8 @@
                 <a
                   class="mobile-version visible-xs-inline-block pointer"
                   title="Make a Call"
-                >1-800-555-1234</a>
+                  >1-800-555-1234</a
+                >
               </div>
             </div>
             <div class="header-bottom clearfix">
@@ -197,7 +198,8 @@
                       @click="
                         $bus.$emit('update-menu', { name: 'Home', route: '/' })
                       "
-                    >Home</a>
+                      >Home</a
+                    >
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'property' }">
                     <a
@@ -208,7 +210,8 @@
                           route: '/property'
                         })
                       "
-                    >Property</a>
+                      >Property</a
+                    >
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'apply' }">
                     <a
@@ -219,7 +222,8 @@
                           route: '/apply'
                         })
                       "
-                    >Apply</a>
+                      >Apply</a
+                    >
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'news' }">
                     <a
@@ -230,7 +234,8 @@
                           route: '/not-real'
                         })
                       "
-                    >News</a>
+                      >News</a
+                    >
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'pages' }">
                     <a
@@ -241,7 +246,8 @@
                           route: '/not-real'
                         })
                       "
-                    >Pages</a>
+                      >Pages</a
+                    >
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'galleries' }">
                     <a
@@ -252,7 +258,8 @@
                           route: '/not-real'
                         })
                       "
-                    >Galleries</a>
+                      >Galleries</a
+                    >
                   </li>
                   <li :class="{ 'current-menu-item': menu == 'contact' }">
                     <a
@@ -263,7 +270,8 @@
                           route: '/not-real'
                         })
                       "
-                    >Contact</a>
+                      >Contact</a
+                    >
                   </li>
                 </ul>
               </nav>

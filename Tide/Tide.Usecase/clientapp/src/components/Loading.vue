@@ -1,7 +1,7 @@
 <template>
   <div class="loading" v-if="$store.getters.loading.active">
     <img src="../assets/img/loading.svg" />
-    <h4>{{$store.getters.loading.text}}</h4>
+    <h4>{{ $store.getters.loading.text }}</h4>
   </div>
 </template>
 

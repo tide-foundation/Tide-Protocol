@@ -75,16 +75,15 @@ export default {
       fetchCycle: 3,
       updateTimer: null,
       autoAcceptTimer: null
-    }
+    };
   },
   async created() {
-    if (this.$store.getters.user == null) return this.$router.push('/apply')
+    if (this.$store.getters.user == null) return this.$router.push("/apply");
     setInterval(async () => {
-
       if (this.$store.getters.details != null) {
-        this.$store.dispatch('getDeals', this.fetchCycle == 3);
+        this.$store.dispatch("getDeals", this.fetchCycle == 3);
 
-        this.$store.commit('updateTide', this.$store.getters.user.tide)
+        this.$store.commit("updateTide", this.$store.getters.user.tide);
 
         this.lastUpdatedTide = 0;
         this.tide = this.presentTide;
@@ -100,8 +99,8 @@ export default {
     }, 1000);
 
     this.autoAcceptTimer = setInterval(() => {
-      if (this.$store.getters.user.trustee) this.$store.commit('autoAcceptDeal')
-
+      if (this.$store.getters.user.trustee)
+        this.$store.commit("autoAcceptDeal");
     }, 5000);
 
     this.trustee = this.$store.getters.user.trustee;
@@ -116,11 +115,11 @@ export default {
   },
   methods: {
     async toggleTrustee() {
-      this.$store.commit('updateTrustee', !this.$store.getters.user.trustee);
+      this.$store.commit("updateTrustee", !this.$store.getters.user.trustee);
       this.trustee = this.$store.getters.user.trustee;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

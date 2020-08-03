@@ -1,8 +1,6 @@
 <template>
   <section>
-    <pageHead>
-      Dashboard
-    </pageHead>
+    <pageHead>Dashboard</pageHead>
     <div id="content-wrapper" class="site-content-wrapper">
       <div class="container" id="dashboard-content">
         <adminbox />
@@ -67,21 +65,19 @@
 </template>
 
 <script>
-import transitionBox from '@/components/TransitionBox.vue'
-import pageHead from '../components/PageHead.vue'
-import adminbox from '../components/dashboard/AdminBox.vue'
-import tideInput from '../components/TideInput.vue'
-import About from '@/components/dashboard/About.vue'
-import Tide from '@/components/dashboard/Tide.vue'
-import Deals from '@/components/dashboard/Deals.vue'
-import Fields from '@/components/dashboard/Fields.vue'
-import Settings from '@/components/dashboard/Settings.vue'
+import pageHead from "../components/PageHead.vue";
+import adminbox from "../components/dashboard/AdminBox.vue";
+import About from "@/components/dashboard/About.vue";
+import Tide from "@/components/dashboard/Tide.vue";
+import Deals from "@/components/dashboard/Deals.vue";
+import Fields from "@/components/dashboard/Fields.vue";
+import Settings from "@/components/dashboard/Settings.vue";
 export default {
   components: {
     pageHead,
-    tideInput,
+
     adminbox,
-    transitionBox,
+
     About,
     Tide,
     Deals,
@@ -90,36 +86,40 @@ export default {
   },
   data() {
     return {
-      pages: [{
-        page: 'Tide',
-        subtitle: 'Spend and transfer your Tide'
-      }, {
-        page: 'Deals',
-        subtitle: 'An overview of your deals'
-      }, {
-        page: 'Fields',
-        subtitle: 'Toggle the fields you wish to make available to potential buyers'
-      }, {
-        page: 'Settings',
-        subtitle: 'Alter the way you interact with Tide'
-      },
-      {
-        page: 'About',
-        subtitle: 'About Tide and how to intergrate it within your life'
-      }],
+      pages: [
+        {
+          page: "Tide",
+          subtitle: "Spend and transfer your Tide"
+        },
+        {
+          page: "Deals",
+          subtitle: "An overview of your deals"
+        },
+        {
+          page: "Fields",
+          subtitle:
+            "Toggle the fields you wish to make available to potential buyers"
+        },
+        {
+          page: "Settings",
+          subtitle: "Alter the way you interact with Tide"
+        },
+        {
+          page: "About",
+          subtitle: "About Tide and how to intergrate it within your life"
+        }
+      ],
 
-      adminPage: 'Tide'
-    }
+      adminPage: "Tide"
+    };
   },
-  created() {
-
-  },
+  created() {},
   computed: {
     getSubtitle() {
       return this.pages.find(p => p.page == this.adminPage).subtitle;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

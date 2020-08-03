@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="tint"
-    :class="{'full-opacity':!tinted}"
-  >
-
-  </div>
-
+  <div class="tint" :class="{ 'full-opacity': !tinted }"></div>
 </template>
 
 <script>
@@ -13,12 +7,12 @@ export default {
   data() {
     return {
       tinted: false
-    }
+    };
   },
   created() {
-    this.$bus.$on('tint', (t) => this.tinted = t);
+    this.$bus.$on("tint", t => (this.tinted = t));
   }
-}
+};
 </script>
 
 <style scoped>

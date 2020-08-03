@@ -232,8 +232,8 @@
 </template>
 
 <script>
-import pageHead from '../components/PageHead.vue'
-import TideInput from '../components/TideInput.vue'
+import pageHead from "../components/PageHead.vue";
+import TideInput from "../components/TideInput.vue";
 export default {
   components: {
     pageHead,
@@ -246,50 +246,52 @@ export default {
       details: this.$config.scaffoldDetails,
       classification: {},
       submitting: false
-    }
+    };
   },
   async created() {
     this.details = JSON.parse(this.$store.getters.details.details);
     this.classification = this.$store.getters.details.classified;
-    this.$loading(false, '')
-    this.$bus.$on('toggle-tide-start', (on) => {
+    this.$loading(false, "");
+    this.$bus.$on("toggle-tide-start", on => {
       if (!on) this.classification = this.$helper.classifyData(this.details);
-    })
+    });
   },
 
   methods: {
     async submit() {
       try {
-
         this.submitting = true;
         if (this.$store.getters.tideEngaged) {
-          this.$bus.$emit('toggle-tide');
+          this.$bus.$emit("toggle-tide");
           await this.$helper.sleep(1000);
         }
 
-        this.$loading(true, 'Encrypting your data and storing it with the vendor.')
+        this.$loading(
+          true,
+          "Encrypting your data and storing it with the vendor."
+        );
 
         setTimeout(async () => {
-
-          this.$store.commit('storeDetails', {
+          this.$store.commit("storeDetails", {
             details: JSON.stringify(this.details),
             classified: this.classification
           });
 
-          this.$loading(false, '')
-          this.$bus.$emit('show-message', 'Your information has been successfully submitted')
+          this.$loading(false, "");
+          this.$bus.$emit(
+            "show-message",
+            "Your information has been successfully submitted"
+          );
           this.submitting = false;
-        }, 2000)
+        }, 2000);
       } catch (thrownError) {
-        this.$bus.$emit('show-error', thrownError)
-        this.$loading(false, '')
+        this.$bus.$emit("show-error", thrownError);
+        this.$loading(false, "");
         this.submitting = false;
       }
     }
-
-  },
-
-}
+  }
+};
 </script>
 
 <style lang="scss" scoped>

@@ -50,13 +50,9 @@
 </template>
 
 <script>
-import TideInput from "../components/TideInput.vue";
-
 export default {
   name: "home",
-  components: {
-    TideInput
-  },
+
   data() {
     return {
       user: {
@@ -72,75 +68,40 @@ export default {
       // Artificial wait to allow loading overlay to react
       setTimeout(async () => {
         try {
-          var user = {};
-          if (false) {
-            user = {
-              username: "user285366@email.com",
-              account: "tidegwhfxvls",
-              nodes: [
-                {
-                  ork_node: "tideorkxxxx2",
-                  ork_url: "https://tide-ork-02.azurewebsites.net/"
-                },
-                {
-                  ork_node: "tideorkxxxx1",
-                  ork_url: "https://tide-ork-01.azurewebsites.net/"
-                }
-              ],
-              keys: {
-                tide: {
-                  pub: "ungathered",
-                  priv: "5HsH3U6DG8VAmVHdyPcekLkuRQ1LUmsiaBZMWYSeE4uXe3chcTT"
-                },
-                vendor: {
-                  pub: "AIqX6YNpQPBzCQ2GUg==",
-                  priv: "AoqX6YNpQPBzErzaEQ=="
-                }
-              },
-              tide: 0,
-              trustee: false
-            };
-          } else {
-            // const tideCredentialResult = await this.$tide.getTideCredentials(
-            //   this.user.username,
-            //   this.user.password
-            // );
+          var loginResult = await this.$tide.login(
+            this.user.username,
+            this.user.password
+          );
+          console.log(loginResult.key);
+          this.$loading(true, "Gathering Vendor account...");
 
-            var loginResult = await this.$tide.login(this.user.username, this.user.password);
-            console.log(loginResult.key)
-            this.$loading(true, "Gathering Vendor account...");
-            // const vendorResult = await this.$tide.getVendorCredentials(
-            //   tideCredentialResult.userNodes,
-            //   tideCredentialResult.account
-            // );
-            user = {
-              username: this.user.username,
-              account: "tidegwhfxvls",
-              aes:loginResult.key,
-              nodes: [
-                {
-                  ork_node: "tideorkxxxx2",
-                  ork_url: "https://tide-ork-02.azurewebsites.net/"
-                },
-                {
-                  ork_node: "tideorkxxxx1",
-                  ork_url: "https://tide-ork-01.azurewebsites.net/"
-                }
-              ],
-              keys: {
-                tide: {
-                  pub: "ungathered",
-                  priv: "5HsH3U6DG8VAmVHdyPcekLkuRQ1LUmsiaBZMWYSeE4uXe3chcTT"
-                },
-                vendor: {
-                  pub: "AIqX6YNpQPBzCQ2GUg==",
-                  priv: "AoqX6YNpQPBzErzaEQ=="
-                }
+          const user = {
+            username: this.user.username,
+            account: "tidegwhfxvls",
+            aes: loginResult.key,
+            nodes: [
+              {
+                ork_node: "tideorkxxxx2",
+                ork_url: "https://tide-ork-02.azurewebsites.net/"
               },
-              tide: 0,
-              trustee: false
-            };
-          }
+              {
+                ork_node: "tideorkxxxx1",
+                ork_url: "https://tide-ork-01.azurewebsites.net/"
+              }
+            ],
+            keys: {
+              tide: {
+                pub: "ungathered",
+                priv: "5HsH3U6DG8VAmVHdyPcekLkuRQ1LUmsiaBZMWYSeE4uXe3chcTT"
+              },
+              vendor: {
+                pub: "AIqX6YNpQPBzCQ2GUg==",
+                priv: "AoqX6YNpQPBzErzaEQ=="
+              }
+            },
+            tide: 0,
+            trustee: false
+          };
 
           this.$store.commit("storeUser", user);
 
@@ -149,7 +110,12 @@ export default {
           this.$loading(false, "");
           this.$authAction();
         } catch (thrownError) {
-         this.$bus.$emit("show-error", thrownError.response.text != null ? thrownError.response.text : thrownError.status);
+          this.$bus.$emit(
+            "show-error",
+            thrownError.response.text != null
+              ? thrownError.response.text
+              : thrownError.status
+          );
           this.$loading(false, "");
         }
       }, 100);

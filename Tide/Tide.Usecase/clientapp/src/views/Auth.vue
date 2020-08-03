@@ -1,13 +1,9 @@
 <template>
-  <section id="auth-container">
-
-  </section>
+  <section id="auth-container"></section>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style>

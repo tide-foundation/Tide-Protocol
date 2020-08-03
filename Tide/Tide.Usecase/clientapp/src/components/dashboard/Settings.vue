@@ -1,9 +1,6 @@
 <template>
   <section class="settings-section">
-    <div
-      class="box"
-      id="account"
-    >
+    <div class="box" id="account">
       <h4>Account</h4>
       <div class="row">
         <div class="settings-field col-xs-6 col-sm-4">
@@ -13,7 +10,7 @@
             type="text"
             :value="$store.getters.user.username"
             disabled
-          >
+          />
         </div>
         <div class="settings-field col-xs-6 col-sm-4">
           <label>Tide Account</label>
@@ -22,17 +19,12 @@
             type="text"
             :value="$store.getters.user.account"
             disabled
-          >
+          />
         </div>
-
       </div>
-
     </div>
 
-    <div
-      class="box"
-      id="credentials"
-    >
+    <div class="box" id="credentials">
       <h4>Credentials</h4>
       <div class="row">
         <div class="settings-field col-xs-12">
@@ -43,18 +35,20 @@
               type="text"
               :value="$store.getters.user.keys.tide.pub"
               disabled
-            >
+            />
             <input
               class="long col-xs-6 ml click-reveal"
               type="text"
-              :value="tideRevealed ? $store.getters.user.keys.tide.priv : 'Click to reveal'"
+              :value="
+                tideRevealed
+                  ? $store.getters.user.keys.tide.priv
+                  : 'Click to reveal'
+              "
               @click="tideRevealed = true"
               readonly
-            >
+            />
           </section>
-
         </div>
-
       </div>
 
       <div class="row">
@@ -66,40 +60,37 @@
               type="text"
               :value="$store.getters.user.keys.vendor.pub"
               disabled
-            >
+            />
             <input
               class="long col-xs-6 ml click-reveal"
               type="text"
-              :value="vendorRevealed ? $store.getters.user.keys.vendor.priv : 'Click to reveal'"
+              :value="
+                vendorRevealed
+                  ? $store.getters.user.keys.vendor.priv
+                  : 'Click to reveal'
+              "
               @click="vendorRevealed = true"
               readonly
-            >
+            />
           </section>
         </div>
-
       </div>
     </div>
 
-    <div
-      class="box"
-      id="nodes"
-    >
+    <div class="box" id="nodes">
       <h4>Nodes</h4>
       <div class="row">
         <div class="settings-field col-xs-6 col-sm-4">
-
           <input
-            v-for="(node,index) in $config.orkNodes"
+            v-for="(node, index) in $config.orkNodes"
             :key="index"
             class="inline"
             type="text"
             :value="node"
             disabled
-          >
+          />
         </div>
-
       </div>
-
     </div>
   </section>
 </template>
@@ -109,14 +100,12 @@ export default {
   data() {
     return {
       vendorRevealed: false,
-      tideRevealed: false,
-    }
+      tideRevealed: false
+    };
   },
 
-  methods: {
-
-  }
-}
+  methods: {}
+};
 </script>
 
 <style lang="scss" scoped>

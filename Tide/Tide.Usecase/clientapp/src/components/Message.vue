@@ -8,17 +8,17 @@
 export default {
   data() {
     return {
-      message: "",
+      message: ""
     };
   },
   created() {
-    this.$bus.$on("show-message", (m) => {
+    this.$bus.$on("show-message", m => {
       this.message = m;
       setTimeout(async () => {
         this.message = "";
       }, 5000);
     });
-  },
+  }
 };
 </script>
 

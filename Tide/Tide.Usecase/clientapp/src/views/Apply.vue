@@ -8,7 +8,11 @@
             <div class="col-xs-12 site-main-content">
               <main id="main" class="site-main">
                 <div class="white-box user-profile-wrapper">
-                  <form autocomplete="off" class="submit-form" @submit.prevent="submit">
+                  <form
+                    autocomplete="off"
+                    class="submit-form"
+                    @submit.prevent="submit"
+                  >
                     <div class="row">
                       <div class="col-md-12" id="page-info">
                         <h2>Rental Application</h2>
@@ -224,9 +228,9 @@
                       />
                       <label for="disclaimer-checkbox">
                         I hereby accept
-                        <span
-                          class="disclaimer-link"
-                        >Future Places Terms and Conditions</span>
+                        <span class="disclaimer-link"
+                          >Future Places Terms and Conditions</span
+                        >
                       </label>
                     </div>
 
@@ -235,7 +239,9 @@
                       v-if="!submitting"
                       id="submit-btn"
                       type="submit"
-                    >Submit application</button>
+                    >
+                      Submit application
+                    </button>
                   </form>
                 </div>
               </main>
@@ -275,7 +281,7 @@ export default {
     // })
   },
   watch: {
-    "details.personal.first": function(newVal, oldVal) {
+    "details.personal.first": function(newVal) {
       if (this.$store.getters.tideProcessing) return;
       var mockData;
       switch (newVal) {
@@ -334,8 +340,8 @@ export default {
       }
 
       // Add new field
-      for (var i = -1; i < endResult.length; i++) {
-        input.value += endResult.slice(i, i + 1);
+      for (var j = -1; j < endResult.length; j++) {
+        input.value += endResult.slice(j, j + 1);
         await this.$helper.sleep(20);
       }
 

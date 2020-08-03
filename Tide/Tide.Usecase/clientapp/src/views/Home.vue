@@ -9,10 +9,9 @@
           <div class="slide-inner-container">
             <div class="slide-header">
               <h3 class="slide-entry-title entry-title">
-                <a
-                  href="property-single.html"
-                  rel="bookmark"
-                >VILLA IN CORAL GABLES</a>
+                <a href="property-single.html" rel="bookmark"
+                  >VILLA IN CORAL GABLES</a
+                >
               </h3>
               <div class="price-and-status">
                 <span class="price">$5,000</span>
@@ -41,7 +40,9 @@
                   </i>
                   <div class="meta-inner-wrapper">
                     <span class="meta-item-label">Area</span>
-                    <span class="meta-item-value">3500<sub class="meta-item-unit">Sq Ft</sub></span>
+                    <span class="meta-item-value"
+                      >3500<sub class="meta-item-unit">Sq Ft</sub></span
+                    >
                   </div>
                 </div>
                 <div class="meta-item">
@@ -136,25 +137,24 @@
             <a
               class="btn-default btn-orange "
               id="take-a-look"
-              @click="$bus.$emit('update-menu',{name:'Property',route:'/property'})"
+              @click="
+                $bus.$emit('update-menu', {
+                  name: 'Property',
+                  route: '/property'
+                })
+              "
             >
-
-              Take a look<i class="fa fa-angle-right"></i></a>
-
+              Take a look<i class="fa fa-angle-right"></i
+            ></a>
           </div>
         </div>
       </li>
     </ul>
-
   </section>
-
 </template>
 
 <script>
-
-export default {
-
-}
+export default {};
 </script>
 
 <style lang="scss" scoped>

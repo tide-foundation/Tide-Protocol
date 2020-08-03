@@ -7,8 +7,7 @@ export default {
   created() {
     this.$authAction();
   }
-}
+};
 </script>
 
-<style>
-</style>
+<style></style>

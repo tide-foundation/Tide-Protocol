@@ -4,7 +4,6 @@
       <div class="container">
         <nav>
           <ol class="breadcrumb">
-
             <li class="active">
               <slot></slot>
             </li>
@@ -17,9 +16,7 @@
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style>

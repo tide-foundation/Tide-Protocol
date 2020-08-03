@@ -1,11 +1,11 @@
 <template>
-  <section id="not-real-container">We're not actually a real-estate site (:</section>
+  <section id="not-real-container">
+    We're not actually a real-estate site (:
+  </section>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
 <style lang="scss" scoped>

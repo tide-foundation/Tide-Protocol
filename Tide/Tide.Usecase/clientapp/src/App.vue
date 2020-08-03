@@ -35,8 +35,6 @@ import message from "./components/Message.vue";
 import loading from "./components/Loading.vue";
 import error from "./components/Error.vue";
 import tint from "./components/Tint.vue";
-import tideBox from "./components/TideBox.vue";
-import axios from "axios";
 
 export default {
   components: {
@@ -46,8 +44,7 @@ export default {
     message,
     loading,
     error,
-    tint,
-    tideBox
+    tint
   }
 };
 </script>

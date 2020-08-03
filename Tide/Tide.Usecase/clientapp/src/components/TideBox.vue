@@ -2,11 +2,18 @@
   <section id="tide-box" v-if="show">
     <div
       @click="toggle"
-      :class="{'selected shadow' : $store.getters.tideEngaged,'processing':$store.getters.tideProcessing,'button-glow':!$store.getters.tideEngaged && !$store.getters.clickedTide}"
+      :class="{
+        'selected shadow': $store.getters.tideEngaged,
+        processing: $store.getters.tideProcessing,
+        'button-glow':
+          !$store.getters.tideEngaged && !$store.getters.clickedTide
+      }"
       id="btn-container"
     >
       <img
-        :class="{'shake':!$store.getters.tideEngaged && !$store.getters.clickedTide}"
+        :class="{
+          shake: !$store.getters.tideEngaged && !$store.getters.clickedTide
+        }"
         src="../assets/img/logo.svg"
         alt="side button"
       />
@@ -38,13 +45,13 @@ export default {
       this.$store.commit("updateClickedTide", true);
       this.$bus.$emit("toggle-tide");
     },
-    checkShow(r) {
+    checkShow() {
       return (this.show = false); // No more tide box
-      if (r == "apply" || r == "profile") {
-        this.show = true;
-      } else {
-        this.show = false;
-      }
+      // if (r == "apply" || r == "profile") {
+      //   this.show = true;
+      // } else {
+      //   this.show = false;
+      // }
     }
   }
 };

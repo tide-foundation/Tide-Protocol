@@ -56,51 +56,48 @@ export default {
       hideRemaining: true,
       spendMethods: [
         {
-          icon: 'fa-home',
-          color: '#01acfe',
-          desc: 'Put Tide towards your next rental bill'
+          icon: "fa-home",
+          color: "#01acfe",
+          desc: "Put Tide towards your next rental bill"
         },
         {
-          icon: 'fa-usd',
-          color: '#8FBE00',
-          desc: 'Withdraw to your bank account'
+          icon: "fa-usd",
+          color: "#8FBE00",
+          desc: "Withdraw to your bank account"
         },
         {
-          icon: 'fa-btc',
-          color: '#F7931A',
-          desc: 'Exchange for Bitcoin'
-        }
-        ,
+          icon: "fa-btc",
+          color: "#F7931A",
+          desc: "Exchange for Bitcoin"
+        },
         {
-          icon: 'fa-exchange',
-          color: '#CC2A41',
-          desc: 'Transfer to another account'
+          icon: "fa-exchange",
+          color: "#CC2A41",
+          desc: "Transfer to another account"
         }
       ]
-    }
-  }, created() {
-
+    };
   },
+  created() {},
   computed: {
     transactions() {
       var currentBalance = 0;
       var transactionList = [];
-      this.$store.getters.dealHistory.forEach(function (element) {
+      this.$store.getters.dealHistory.forEach(function(element) {
         currentBalance += element.value;
         transactionList.push({
           method: "Credit",
           tide: element.value.toFixed(2),
           balance: currentBalance.toFixed(2)
-        })
-
+        });
       });
 
-
-
-      return transactionList.reverse().slice(0, this.hideRemaining ? 20 : 20000);
+      return transactionList
+        .reverse()
+        .slice(0, this.hideRemaining ? 20 : 20000);
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

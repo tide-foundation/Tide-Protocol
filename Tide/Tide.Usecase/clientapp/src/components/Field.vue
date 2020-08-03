@@ -4,53 +4,55 @@
 
     <span
       class="field-char"
-      v-for="(char,index) in currentValue"
+      v-for="(char, index) in currentValue"
       :key="`char-${index}`"
-    >{{char == ' ' ? '&nbsp;' : char}}</span>
-
+      >{{ char == " " ? "&nbsp;" : char }}</span
+    >
   </div>
 </template>
 
 <script>
 export default {
-  props: ['value', 'fieldName'],
+  props: ["value", "fieldName"],
   data() {
     return {
-      currentValue: ''
-    }
+      currentValue: ""
+    };
   },
   created() {
-    this.currentValue = this.value
+    this.currentValue = this.value;
 
-    this.$bus.$on('decrypt', (data) => {
-      if (data.fieldName != this.fieldName) return
-      this.animateOut(data.newData)
-    })
+    this.$bus.$on("decrypt", data => {
+      if (data.fieldName != this.fieldName) return;
+      this.animateOut(data.newData);
+    });
   },
   methods: {
     animateOut(newData) {
-      var elementList = document.querySelectorAll('.field-char')
+      var elementList = document.querySelectorAll(".field-char");
       for (var i = 0; i < elementList.length; i++) {
-        elementList[i].style.transform = `translate(0px,-${Math.floor(Math.random() * Math.floor(100))}px) `
-        elementList[i].style.opacity = 0
+        elementList[i].style.transform = `translate(0px,-${Math.floor(
+          Math.random() * Math.floor(100)
+        )}px) `;
+        elementList[i].style.opacity = 0;
       }
 
       setTimeout(() => {
-        var elementList = document.querySelectorAll('.field')
+        var elementList = document.querySelectorAll(".field");
         for (var i = 0; i < elementList.length; i++) {
-          elementList[i].style.border = '1px solid white'
+          elementList[i].style.border = "1px solid white";
         }
 
-        elementList = document.querySelectorAll('.field-char')
-        for (var i = 0; i < elementList.length; i++) {
-          elementList[i].style.transform = `translate(0px,0px) `
-          elementList[i].style.opacity = 1
+        elementList = document.querySelectorAll(".field-char");
+        for (var j = 0; j < elementList.length; j++) {
+          elementList[j].style.transform = `translate(0px,0px) `;
+          elementList[j].style.opacity = 1;
         }
-        this.currentValue = newData
-      }, 1200)
+        this.currentValue = newData;
+      }, 1200);
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

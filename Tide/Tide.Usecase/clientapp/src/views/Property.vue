@@ -1,34 +1,32 @@
 <template>
   <section>
-
     <pageHead>
       Villa in Coral Gables
     </pageHead>
 
-    <div
-      id="content-wrapper"
-      class="site-content-wrapper site-pages"
-    >
-      <div
-        id="content"
-        class="site-content layout-boxed"
-      >
+    <div id="content-wrapper" class="site-content-wrapper site-pages">
+      <div id="content" class="site-content layout-boxed">
         <div class="container">
           <div class="container-property-single clearfix">
-            <div class="col-lg-8 zero-horizontal-padding property-slider-wrapper">
+            <div
+              class="col-lg-8 zero-horizontal-padding property-slider-wrapper"
+            >
               <div class="single-property-slider gallery-slider">
                 <img
                   id="property-img"
                   src="../assets/img/slide2.jpg"
                   alt="Villa in Coral Gables"
-                >
+                />
               </div>
-
             </div>
-            <div class="col-lg-4 zero-horizontal-padding property-title-wrapper">
+            <div
+              class="col-lg-4 zero-horizontal-padding property-title-wrapper"
+            >
               <div class="single-property-wrapper">
                 <header class="entry-header single-property-header">
-                  <h1 class="entry-title single-property-title">Villa in Coral Gables</h1>
+                  <h1 class="entry-title single-property-title">
+                    Villa in Coral Gables
+                  </h1>
                   <span class="single-property-price price">$5,000</span>
                 </header>
                 <div class="property-meta entry-meta clearfix ">
@@ -73,7 +71,9 @@
                     </i>
                     <div class="meta-inner-wrapper">
                       <span class="meta-item-label">Area</span>
-                      <span class="meta-item-value">3500<sub class="meta-item-unit">Sq Ft</sub></span>
+                      <span class="meta-item-value"
+                        >3500<sub class="meta-item-unit">Sq Ft</sub></span
+                      >
                     </div>
                   </div>
                   <div class="meta-item">
@@ -190,22 +190,37 @@
               <div class="favorite-and-print clearfix">
                 <a
                   class="add-to-fav  pointer"
-                  @click="$bus.$emit('update-menu', {name:'Apply',route:'/apply'})"
+                  @click="
+                    $bus.$emit('update-menu', {
+                      name: 'Apply',
+                      route: '/apply'
+                    })
+                  "
                   data-toggle="modal"
-                ><i class="fa fa-star"></i>&nbsp;&nbsp;APPLY NOW</a>
-                <a class="printer-icon  pointer"><i class="fa fa-print"></i>&nbsp;&nbsp;Print</a>
+                  ><i class="fa fa-star"></i>&nbsp;&nbsp;APPLY NOW</a
+                >
+                <a class="printer-icon  pointer"
+                  ><i class="fa fa-print"></i>&nbsp;&nbsp;Print</a
+                >
               </div>
             </div>
             <div class="col-md-8 site-main-content property-single-content">
-              <main
-                id="main"
-                class="site-main"
-              >
+              <main id="main" class="site-main">
                 <article class="hentry clearfix">
                   <div class="entry-content clearfix">
                     <h4 class="fancy-title">Description</h4>
                     <div class="property-content">
-                      <p>Enjoy the cool serenity of Deering Bay all day from this spectacular North or South, three bedroom, three and a half bath Milano unit with 10ft ceilings which provide light and airy views of the golf course and pool. Oversized open balconies provide luxurious entertainment spaces. Spacious flow-through floor plan with lavish master bedroom suite with his and her walk-in closets, gourmet cook’s kitchen with granite counters and top of the line Thermador and Sub Zero appliances.</p>
+                      <p>
+                        Enjoy the cool serenity of Deering Bay all day from this
+                        spectacular North or South, three bedroom, three and a
+                        half bath Milano unit with 10ft ceilings which provide
+                        light and airy views of the golf course and pool.
+                        Oversized open balconies provide luxurious entertainment
+                        spaces. Spacious flow-through floor plan with lavish
+                        master bedroom suite with his and her walk-in closets,
+                        gourmet cook’s kitchen with granite counters and top of
+                        the line Thermador and Sub Zero appliances.
+                      </p>
                     </div>
                     <div class="property-additional-details clearfix">
                       <h4 class="fancy-title">Additional Details</h4>
@@ -249,7 +264,9 @@
                         <li>
                           <dl>
                             <dt>Parking</dt>
-                            <dd>2 Or More Spaces,Covered Parking,Valet Parking</dd>
+                            <dd>
+                              2 Or More Spaces,Covered Parking,Valet Parking
+                            </dd>
                           </dl>
                         </li>
                       </ul>
@@ -280,7 +297,7 @@
                             src="../assets/img/property-12-850x570.jpg"
                             class="img-responsive wp-post-image"
                             alt="Exterior"
-                          >
+                          />
                         </a>
                       </div>
                     </section>
@@ -290,8 +307,12 @@
                 <div class="property-attachments clearfix">
                   <h4 class="fancy-title">Property Attachments</h4>
                   <ul class="property-attachments-list clearfix">
-                    <li class="pdf pointer"><a><i class="fa fa-file-pdf-o"></i>Demo PDF</a></li>
-                    <li class="jpg pointer"><a><i class="fa fa-file-image-o"></i>Demo JPG</a></li>
+                    <li class="pdf pointer">
+                      <a><i class="fa fa-file-pdf-o"></i>Demo PDF</a>
+                    </li>
+                    <li class="jpg pointer">
+                      <a><i class="fa fa-file-image-o"></i>Demo JPG</a>
+                    </li>
                   </ul>
                 </div>
                 <div id="comments">
@@ -301,10 +322,7 @@
                       class="comment byuser comment-author-msaqibsarwar bypostauthor even thread-even depth-1"
                       id="li-comment-2"
                     >
-                      <article
-                        id="comment-2"
-                        class="comment-body"
-                      >
+                      <article id="comment-2" class="comment-body">
                         <div class="author-photo">
                           <a class="avatar pointer">
                             <img
@@ -313,7 +331,7 @@
                               class="avatar avatar-68 photo img-circle"
                               height="68"
                               width="68"
-                            >
+                            />
                           </a>
                         </div>
                         <div class="comment-wrapper">
@@ -322,18 +340,31 @@
                               <h5 class="fn">John Doe</h5>
                             </div>
                             <div class="comment-metadata">
-                              <time datetime="2015-09-09T14:50:26+00:00">September 9, 2015</time>
+                              <time datetime="2015-09-09T14:50:26+00:00"
+                                >September 9, 2015</time
+                              >
                             </div>
                           </div>
                           <div class="comment-content">
-                            <p>This is a sample comment. We have been extremely pleased with your attentiveness, communication, honesty and advice throughout the entire process. Selling a house is a stressful occurrence for anyone and you have helped to make it as smooth as possible for us. We feel that you truly go beyond the general duties of a real estate agent with thorough follow ups, reporting and always being ‘on top’ of potential buyers.</p>
+                            <p>
+                              This is a sample comment. We have been extremely
+                              pleased with your attentiveness, communication,
+                              honesty and advice throughout the entire process.
+                              Selling a house is a stressful occurrence for
+                              anyone and you have helped to make it as smooth as
+                              possible for us. We feel that you truly go beyond
+                              the general duties of a real estate agent with
+                              thorough follow ups, reporting and always being
+                              ‘on top’ of potential buyers.
+                            </p>
                           </div>
                           <div class="reply">
                             <a
                               rel="nofollow"
                               class="comment-reply-link pointer"
                               aria-label="Reply to John Doe"
-                            >Reply</a>
+                              >Reply</a
+                            >
                           </div>
                         </div>
                       </article>
@@ -341,19 +372,17 @@
                     </li>
                     <!-- #comment-## -->
                   </ol>
-                  <div
-                    id="respond"
-                    class="comment-respond"
-                  >
-                    <h3
-                      id="reply-title"
-                      class="comment-reply-title pointer"
-                    >Leave a Reply
-                      <small><a
+                  <div id="respond" class="comment-respond">
+                    <h3 id="reply-title" class="comment-reply-title pointer">
+                      Leave a Reply
+                      <small
+                        ><a
                           rel="nofollow"
                           id="cancel-comment-reply-link"
                           style="display:none;"
-                        >Cancel reply</a></small>
+                          >Cancel reply</a
+                        ></small
+                      >
                     </h3>
                     <form
                       @submit.prevent
@@ -363,8 +392,11 @@
                       novalidate=""
                     >
                       <p class="comment-notes">
-                        <span id="email-notes">Your email address will not be published.</span>
-                        Required fields are marked <span class="required">*</span>
+                        <span id="email-notes"
+                          >Your email address will not be published.</span
+                        >
+                        Required fields are marked
+                        <span class="required">*</span>
                       </p>
                       <p class="comment-form-comment">
                         <label for="comment">Comment</label>
@@ -376,7 +408,10 @@
                           required="required"
                         ></textarea>
                       </p>
-                      <p class="comment-form-author"><label for="author">Name <span class="required">*</span></label>
+                      <p class="comment-form-author">
+                        <label for="author"
+                          >Name <span class="required">*</span></label
+                        >
                         <input
                           id="author"
                           name="author"
@@ -384,10 +419,12 @@
                           value=""
                           size="30"
                           required="required"
-                        >
+                        />
                       </p>
                       <p class="comment-form-email">
-                        <label for="email">Email <span class="required">*</span></label>
+                        <label for="email"
+                          >Email <span class="required">*</span></label
+                        >
                         <input
                           id="email"
                           name="email"
@@ -395,7 +432,7 @@
                           value=""
                           size="30"
                           required="required"
-                        >
+                        />
                       </p>
                       <p class="comment-form-url">
                         <label for="url">Website</label>
@@ -405,7 +442,7 @@
                           type="url"
                           value=""
                           size="30"
-                        >
+                        />
                       </p>
                       <p class="form-submit">
                         <input
@@ -414,19 +451,19 @@
                           id="submit"
                           class="submit"
                           value="Post Comment"
-                        >
+                        />
                         <input
                           type="hidden"
                           name="comment_post_ID"
                           value="101"
                           id="comment_post_ID"
-                        >
+                        />
                         <input
                           type="hidden"
                           name="comment_parent"
                           id="comment_parent"
                           value="0"
-                        >
+                        />
                       </p>
                     </form>
                   </div>
@@ -449,7 +486,7 @@
                             src="../assets/img/agent-1.jpg"
                             class="img-circle wp-post-image"
                             alt="Nathan James"
-                          >
+                          />
                         </a>
                       </figure>
                       <h3 class="agent-name pointer">
@@ -457,12 +494,24 @@
                         <span>Real Estate Agent</span>
                       </h3>
                       <div class="agent-social-profiles">
-                        <a class="twitter pointer"><i class="fa fa-twitter"></i></a>
-                        <a class="facebook pointer"><i class="fa fa-facebook"></i></a>
-                        <a class="gplus pointer"><i class="fa fa-google-plus"></i></a>
-                        <a class="linkedin pointer"><i class="fa fa-linkedin"></i></a>
-                        <a class="pinterest pointer"><i class="fa fa-pinterest"></i></a>
-                        <a class="instagram pointer"><i class="fa fa-instagram"></i></a>
+                        <a class="twitter pointer"
+                          ><i class="fa fa-twitter"></i
+                        ></a>
+                        <a class="facebook pointer"
+                          ><i class="fa fa-facebook"></i
+                        ></a>
+                        <a class="gplus pointer"
+                          ><i class="fa fa-google-plus"></i
+                        ></a>
+                        <a class="linkedin pointer"
+                          ><i class="fa fa-linkedin"></i
+                        ></a>
+                        <a class="pinterest pointer"
+                          ><i class="fa fa-pinterest"></i
+                        ></a>
+                        <a class="instagram pointer"
+                          ><i class="fa fa-instagram"></i
+                        ></a>
                       </div>
                     </div>
                     <ul class="agent-contacts-list">
@@ -515,12 +564,7 @@
                             d="M6 20c0 1.105.896 2 2 2h8c1.104 0 2-.895 2-2v-8h-12v8zm2-6h8v2h-8v-2zm0 4h8v2h-8v-2zM17 2h-10c-1.104 0-2 .896-2 2v3h14v-3c0-1.105-.896-2-2-2z"
                             fill="none"
                           />
-                          <circle
-                            cx="21"
-                            cy="11"
-                            r="1"
-                            fill="none"
-                          />
+                          <circle cx="21" cy="11" r="1" fill="none" />
                           <path
                             class="fax-fill-two"
                             fill="#0080bc"
@@ -548,8 +592,13 @@
                         900 Biscayne Blvd Way Miami, FL, USA
                       </li>
                     </ul>
-                    <p>Donec ullamcorper nulla non metus auctor fringilla. Curabitur blandit tempus porttitor. Duis mollis, est non…</p>
-                    <a class="btn-default show-details  pointer">View Profile<i class="fa fa-angle-right"></i></a>
+                    <p>
+                      Donec ullamcorper nulla non metus auctor fringilla.
+                      Curabitur blandit tempus porttitor. Duis mollis, est non…
+                    </p>
+                    <a class="btn-default show-details  pointer"
+                      >View Profile<i class="fa fa-angle-right"></i
+                    ></a>
                     <div class="agent-contact-form">
                       <h3 class="agent-contact-form-title">Contact Agent</h3>
                       <form
@@ -567,7 +616,7 @@
                               placeholder="Name"
                               class="required"
                               title="* Please provide your name"
-                            >
+                            />
                           </div>
                           <div class="col-sm-6 right-field">
                             <input
@@ -576,7 +625,7 @@
                               placeholder="Email"
                               class="email required"
                               title="* Please provide valid email address"
-                            >
+                            />
                           </div>
                         </div>
                         <textarea
@@ -591,8 +640,7 @@
                           name="submit"
                           class="btn-default btn-round"
                           value="Send Message"
-                        >
-
+                        />
                       </form>
                       <div id="error-container"></div>
                       <div id="message-container">&nbsp;</div>
@@ -602,7 +650,6 @@
                 <section class="similar-properties meta-item-half clearfix">
                   <div class="nav-and-title clearfix">
                     <h3 class="title">Similar Properties</h3>
-
                   </div>
                   <div class="similar-properties-carousel">
                     <div class="owl-carousel">
@@ -615,15 +662,22 @@
                               src="../assets/img/property-1-850x570.jpg"
                               class="img-responsive wp-post-image"
                               alt=""
-                            >
+                            />
                           </a>
                         </figure>
                         <div class="property-description">
                           <div class="arrow"></div>
                           <header class="entry-header">
-                            <h3 class="entry-title  pointer"><a rel="bookmark">Home in Merrick Way</a></h3>
+                            <h3 class="entry-title  pointer">
+                              <a rel="bookmark">Home in Merrick Way</a>
+                            </h3>
                             <div class="price-and-status">
-                              <span class="price  pointer">$4,000</span><a><span class="property-status-tag  pointer">For Rent</span></a>
+                              <span class="price  pointer">$4,000</span
+                              ><a
+                                ><span class="property-status-tag  pointer"
+                                  >For Rent</span
+                                ></a
+                              >
                             </div>
                           </header>
                           <div class="property-meta entry-meta clearfix ">
@@ -645,7 +699,11 @@
                               </i>
                               <div class="meta-inner-wrapper">
                                 <span class="meta-item-label">Area</span>
-                                <span class="meta-item-value">4300<sub class="meta-item-unit">Sq Ft</sub></span>
+                                <span class="meta-item-value"
+                                  >4300<sub class="meta-item-unit"
+                                    >Sq Ft</sub
+                                  ></span
+                                >
                               </div>
                             </div>
                             <div class="meta-item">
@@ -731,7 +789,9 @@
                               </i>
                               <div class="meta-inner-wrapper">
                                 <span class="meta-item-label">Type</span>
-                                <span class="meta-item-value">Single Family Home</span>
+                                <span class="meta-item-value"
+                                  >Single Family Home</span
+                                >
                               </div>
                             </div>
                           </div>
@@ -741,7 +801,6 @@
                     </div>
                   </div>
                 </section>
-
               </aside>
               <!-- .sidebar -->
             </div>
@@ -753,17 +812,16 @@
       </div>
       <!-- .site-content -->
     </div>
-
   </section>
 </template>
 
 <script>
-import pageHead from '../components/PageHead.vue'
+import pageHead from "../components/PageHead.vue";
 export default {
   components: {
     pageHead
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
