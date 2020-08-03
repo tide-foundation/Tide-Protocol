@@ -15,8 +15,8 @@
 
 import { C25519Point, AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
-import IdMacGenerator from "../IdMacGenerator";
-import Guid from "../guid";
+import IdGenerator from "../IdGenerator";
+import Guid from "../Guid";
 
 export default class DCryptClient extends ClientBase {
   /**
@@ -26,7 +26,7 @@ export default class DCryptClient extends ClientBase {
    */
   constructor(url, user, key) {
     super(url, user);
-    this._userId = new IdMacGenerator(user, key);
+    this._userId = IdGenerator.seed(user, key);
   }
 
   /**
@@ -39,14 +39,14 @@ export default class DCryptClient extends ClientBase {
       urlEncode(cvki),
       urlEncode(auth.toArray()) ];
     
-    await this._post(`/dauth/${this.userUrl}/cvk`).send(body);
+    await this._post(`/dauth/${this.userGuid}/cvk`).send(body);
   }
 
   /** @param {Guid} keyId
    *  @return {Promise<{ token: string; challenge: string}>} */
   async challenge(keyId = null) {
     const pathId = keyId ? '/' + keyId.toString() : '';
-    return (await this._get(`/dauth/${this.userUrl}/challenge${pathId}`)).body;
+    return (await this._get(`/dauth/${this.userGuid}/challenge${pathId}`)).body;
   }
 
   /**
@@ -60,7 +60,7 @@ export default class DCryptClient extends ClientBase {
     var tkn = urlEncode(token);
     var sgn = urlEncode(sign);
     
-    var res = await this._get(`/dauth/${this.userUrl}/decrypt/${keyId}/${cipher}/${tkn}/${sgn}`);
+    var res = await this._get(`/dauth/${this.userGuid}/decrypt/${keyId}/${cipher}/${tkn}/${sgn}`);
     return fromBase64(res.text);
   }
 }

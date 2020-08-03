@@ -15,6 +15,7 @@
 
 import { C25519Point, AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
+import Num64 from "../Num64";
 
 export default class DAuthClient extends ClientBase {
   /**
@@ -27,19 +28,18 @@ export default class DAuthClient extends ClientBase {
 
   /** @param {C25519Point} pass */
   async GetShare(pass) {
-    var res = await this._get(`/dauth/${this.userUrl}/share/${urlEncode(pass.toArray())}`);
+    var res = await this._get(`/dauth/${this.userGuid}/convert/${urlEncode(pass.toArray())}`);
     return C25519Point.from(fromBase64(res.text));
   }
 
   /**
-   * @param {Uint8Array} ticks
+   * @param {Num64} ticks
    * @param {Uint8Array} sign
    */
   async signIn(ticks, sign) {
-    var tck = urlEncode(ticks);
     var sgn = urlEncode(sign);
 
-    var res = await this._get(`/dauth/${this.userUrl}/signin/${tck}/${sgn}`);
+    var res = await this._get(`/dauth/${this.userGuid}/authenticate/${ticks}/${sgn}`);
     return fromBase64(res.text);
   }
 
@@ -51,7 +51,7 @@ export default class DAuthClient extends ClientBase {
    * @param {string} email
    */
   async signUp(authShare, keyShare, secret, cmkAuth, email) {
-    var user = this.userUrl;
+    var user = this.userGuid;
     var auth = urlEncode(authShare);
     var key = urlEncode(keyShare);
     var sec = urlEncode(secret.toString());
@@ -64,19 +64,18 @@ export default class DAuthClient extends ClientBase {
   /**
    * @param {bigInt.BigInteger} authShare
    * @param {AESKey} secret
-   * @param {Uint8Array} ticks
+   * @param {Num64} ticks
    * @param {Uint8Array} sign
    */
   async changePass(authShare, secret, ticks, sign, withCmk = false) {
     var auth = urlEncode(authShare);
     var sec = urlEncode(secret.toString());
-    var tck = urlEncode(ticks);
     var sgn = urlEncode(sign);
 
-    await this._post(`/dauth/${this.userUrl}/pass/${auth}/${sec}/${tck}/${sgn}?withCmk=${withCmk}`);
+    await this._post(`/dauth/${this.userGuid}/pass/${auth}/${sec}/${ticks}/${sgn}?withCmk=${withCmk}`);
   }
 
   async Recover() {
-    await this._get(`/dauth/${this.userUrl}/cmk/`);
+    await this._get(`/dauth/${this.userGuid}/cmk/`);
   }
 }
