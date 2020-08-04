@@ -17,20 +17,20 @@ import { C25519Key, AesSherableKey, AESKey } from "cryptide";
 import DCryptFlow from "../src/dauth/DCryptFlow";
 import KeyClientSet from "../src/dauth/keyClientSet";
 import RuleClientSet from "../src/dauth/RuleClientSet";
-import Guid from "../src/Guid";
 import KeyStore from "../src/keyStore";
 import Rule from "../src/rule";
 import Num64 from "../src/Num64";
 import Cipher from "../src/Cipher";
+import IdGenerator from "../src/IdGenerator";
 
 var threshold = 3;
 var user = "admin";
-var cvkAuth = new AESKey();
+var cvkAuth = AESKey.from("AhATyXYow4qdCw7nFGVFu87JICzd7w9PbzAyp7M4r6PiHS7h0RTUNSP5XmcOVUmsvPKe");
 var urls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
 //var urls = [...Array(threshold)].map((_, i) => `https://raziel-ork-${i + 1}.azurewebsites.net`);
 
 const flow = new DCryptFlow(urls, user, cvkAuth);
-const userId = new Guid(flow.clients[0].userBuffer);
+const userId = IdGenerator.seed(user, cvkAuth).guid;
 
 const keyCln = new KeyClientSet(urls);
 const ruleCln = new RuleClientSet(urls, userId);
@@ -41,14 +41,14 @@ const ruleCln = new RuleClientSet(urls, userId);
 
 async function main() {
   try {
-    var vendorKey = C25519Key.generate();
+    var vendorKey = C25519Key.fromString("DeXSP3DBdA2mlgkxGEWxq7lIJO6gyd0pUcqM3c71TLAAQbUNuNbGAR7dM9Pc2083PQ8JxydPhGNM8M37eVnOZUI9eL2HtqSbhEo3wYVnflW0xNvlUs8YMaBuK0yydCHK");
     var secret = new AesSherableKey();
 
     const tag = Num64.from("key");
     const keyStore = new KeyStore(vendorKey.public());
     const rule = Rule.allow(userId, tag, keyStore);
 
-    var cvkPromise = flow.signUp(vendorKey.public(), threshold);
+    var cvkPromise = flow.signUp(threshold);
     await Promise.all([cvkPromise, 
       keyCln.setOrUpdate(keyStore),
       ruleCln.setOrUpdate(rule)]);

@@ -20,6 +20,7 @@ import {
   AesSherableKey,
   C25519Cipher,
   BnInput,
+  Utils,
 } from "cryptide";
 import Num64 from "./Num64";
 
@@ -44,7 +45,7 @@ export default class Cipher {
     
     const bufferAsymmetric = key.encrypt(toAsymmetricEncrypt).toArray();
     const tagBuffer = tag.toArray();
-    const signature = randomBytes(32 * 3);
+    const signature = Buffer.from(Utils.padLeft(key.sign(Buffer.concat([bufferAsymmetric, tagBuffer])), 32 * 3));
     
     const size =
       bufferAsymmetric.length +

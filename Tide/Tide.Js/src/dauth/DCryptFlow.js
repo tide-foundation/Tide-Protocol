@@ -32,11 +32,8 @@ export default class DCryptFlow {
     this.cvkAuth = cvkAuth;
   }
 
-  /**
-   * @param {C25519Key} vendor
-   * @param {number} threshold
-   */
-  async signUp(vendor, threshold) {
+  /** @param {number} threshold */
+  async signUp(threshold) {
     try {
       const cvk = C25519Key.generate();
       const ids = this.clients.map((c) => c.clientId);
@@ -44,7 +41,7 @@ export default class DCryptFlow {
       const shrs = cvk.share(threshold, ids, true);
       const auths = this.clients.map((c) => this.cvkAuth.derive(c.clientBuffer));
       await Promise.all(this.clients.map((cli, i) => 
-        cli.register(vendor, shrs[i].x, auths[i])));
+        cli.register(cvk.public(), shrs[i].x, auths[i])));
 
       return cvk;
     } catch (err) {

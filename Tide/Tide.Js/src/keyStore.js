@@ -19,7 +19,7 @@ export default class KeyStore {
         /**@type {Guid}*/
         this.keyId = null;
         if (key)
-            this.keyId = Guid.from(Hash.shaBuffer(key.toArray()).slice(16));
+            this.keyId = Guid.from(Hash.shaBuffer(key.toArray()).slice(0, 16));
     }
 
     stringify() {
