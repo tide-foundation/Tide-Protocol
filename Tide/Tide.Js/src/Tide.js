@@ -207,17 +207,38 @@ async function selectDiscoveryOrk(homeOrks) {
 
 function post(url, data) {
   return new Promise(async (resolve, reject) => {
-    var r = (await request.post(url).send(data)).body;
-
-    return r.success ? resolve(r.content) : reject(r.error);
+    try {
+      return extractTideResponse(
+        await request.post(url).send(data),
+        resolve,
+        reject
+      );
+    } catch (error) {
+      throw error;
+    }
   });
 }
 
 function get(url) {
   return new Promise(async (resolve, reject) => {
-    var r = (await request.get(url)).body;
-    return r.success ? resolve(r.content) : reject(r.error);
+    try {
+      return extractTideResponse(await request.get(url), resolve, reject);
+    } catch (error) {
+      throw error;
+    }
   });
+}
+
+function extractTideResponse(result, resolve, reject) {
+  // Temporary function until we normalize the way the orks and vendor backend respond.
+  // Currently the Tide Vendor SDK is returning text instead of correctly returning body.
+  if (Object.keys(result.body).length != 0) {
+    var r = result.body;
+    return r.success ? resolve(r.content) : reject(r.error);
+  } else {
+    var r = JSON.parse(result.text);
+    return r.Success ? resolve(r.Content) : reject(r.Error);
+  }
 }
 
 function generateOrkUrls(ids) {

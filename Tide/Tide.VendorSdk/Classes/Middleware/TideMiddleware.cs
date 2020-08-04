@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -56,7 +57,10 @@ namespace Tide.VendorSdk.Classes.Middleware {
                     break;
             }
 
-            if (response != null) await context.Response.Body.WriteAsync(EncodeResponse(response));
+            if (response != null) {
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(response), Encoding.UTF8);
+                return;
+            }
 
             await _next.Invoke(context);
         }
@@ -77,5 +81,7 @@ namespace Tide.VendorSdk.Classes.Middleware {
         private byte[] EncodeResponse(object data) {
             return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data));
         }
+
+       
     }
 }

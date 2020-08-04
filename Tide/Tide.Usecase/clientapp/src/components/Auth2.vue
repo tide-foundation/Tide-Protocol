@@ -28,13 +28,14 @@
             <span style="color:#29AAFC">Future Places</span>
             great features.
           </p>
-          <p v-if="step == 1">
+          <p v-if="step == 1">Please choose your DNS ork, or use the one provided.</p>
+          <p v-if="step == 2">
             We have randomly selected 3 Ork nodes to be used in the secret
             sharing of your
             <span style="color:#29AAFC">Tide account</span>. Feel free to change
             them to your liking.
           </p>
-          <p v-if="step == 2">
+          <p v-if="step == 3">
             We've chosen 3 random orks for your
             <span style="color:#29AAFC">Future Places</span> account. Feel free
             to change them to your liking.
@@ -60,8 +61,8 @@
             <input v-model="user.email" placeholder="Email" type="email" />
             <password @score="showScore" v-model="user.password" :toggle="true" placeholder="Password" />
             <input v-model="user.confirm" placeholder="Confirm Password" type="password" />
-            <div id="advanced-checkbox" @click="advancedSecurity = !advancedSecurity" :class="{ checked: advancedSecurity }">
-              <div id="holder">
+            <div class="s-checkbox" @click="advancedSecurity = !advancedSecurity" :class="{ checked: advancedSecurity }">
+              <div class="holder">
                 <div class="slideOne" :class="{ checked: advancedSecurity }">
                   <input type="checkbox" value="None" id="sec" :checked="advancedSecurity" />
                   <label for="sec"></label>
@@ -79,6 +80,22 @@
           </form>
         </section>
         <section v-if="step == 1" key="reg1">
+          <label for="dns-ork"></label>
+          <input v-model="dnsOrk" id="dns-ork" placeholder="Enter your manual DNS ork" type="text" :disabled="!manualDns" />
+          <div class="s-checkbox" @click="manualDns = !manualDns" :class="{ checked: manualDns }">
+            <div class="holder">
+              <div class="slideOne" :class="{ checked: manualDns }">
+                <input type="checkbox" value="None" id="sec" :checked="manualDns" />
+                <label for="sec"></label>
+              </div>
+            </div>Manual DNS Selection
+          </div>
+          <button :class="{ disabled: dnsOrk.length == 0 }" @click="initializeTide" class="gradiant-button">
+            CONTINUE &nbsp;&nbsp;
+            <i class="fa fa-arrow-right"></i>
+          </button>
+        </section>
+        <section v-if="step == 2" key="reg2">
           <div class="accordian">
             <div class="accordian-button" @click="showCMKorks = !showCMKorks">
               <span>Select your Master Orks</span>
@@ -88,15 +105,15 @@
                 }" aria-hidden="true"></i>
             </div>
             <div class="accordian-rows" v-if="showCMKorks">
-              <div class="accordian-row" v-for="ork in CMKorks" :key="ork.id" @click="ork.enabled = !ork.enabled" :class="{ disabled: !ork.enabled && CMKSelectedCount >= 3 }">
+              <div class="accordian-row" v-for="(ork,index) in orks" :key="ork.id" @click="$set(orks, index, toggledOrk(ork,'cmk'))" :class="{ disabled: !ork.cmk && CMKSelectedCount >= 3 }">
                 <div class="enabled-col">
-                  <div class="slideOne" :class="{ checked: ork.enabled }">
-                    <input type="checkbox" value="None" :id="`cmk-${ork.orkId}`" :checked="ork.enabled" />
-                    <label :for="`cmk-${ork.orkId}`"></label>
+                  <div class="slideOne" :class="{ checked: ork.cmk }">
+                    <input type="checkbox" value="None" :id="`cmk-${ork.id}`" :checked="ork.cmk" />
+                    <label :for="`cmk-${ork.id}`"></label>
                   </div>
                 </div>
-                <div class="id-col">{{ ork.orkId }}</div>
-                <div class="endpoint-col">{{ ork.endpoint }}</div>
+                <div class="id-col">{{ ork.id }}</div>
+                <div class="endpoint-col">{{ ork.url }}</div>
               </div>
             </div>
           </div>
@@ -105,7 +122,7 @@
             <button class="gradiant-button back" @click="step = 0">
               <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; BACK
             </button>
-            <button :class="{ disabled: CMKSelectedCount < 3 }" class="gradiant-button" @click="step = 2">
+            <button :class="{ disabled: CMKSelectedCount < 3 }" class="gradiant-button" @click="step = 3">
               NEXT &nbsp;&nbsp;
               <i class="fa fa-arrow-right"></i>
             </button>
@@ -113,7 +130,7 @@
         </section>
         <a href="#" @click="loginMode = 'Login'">Have an account?</a>
       </section>
-      <section v-if="step == 2" key="3">
+      <section v-if="step == 3" key="reg3">
         <div class="accordian">
           <div class="accordian-button" @click="showCVKorks = !showCVKorks">
             <span>Select your Vendor Orks</span>
@@ -123,13 +140,13 @@
               }" aria-hidden="true"></i>
           </div>
           <div class="accordian-rows" v-if="showCVKorks">
-            <div class="accordian-row" v-for="ork in CVKorks" :key="ork.id" @click="ork.enabled = !ork.enabled" :class="{ disabled: !ork.enabled && CVKSelectedCount >= 3 }">
-              <div class="slideOne" :class="{ checked: ork.enabled }">
-                <input type="checkbox" value="None" :id="`cvk-${ork.orkId}`" :checked="ork.enabled" />
-                <label :for="`cvk-${ork.orkId}`"></label>
+            <div class="accordian-row" v-for="(ork,index) in orks" :key="ork.id" @click="$set(orks, index, toggledOrk(ork,'cvk'))" :class="{ disabled: !ork.cvk && CVKSelectedCount >= 3 }">
+              <div class="slideOne" :class="{ checked: ork.cvk }">
+                <input type="checkbox" value="None" :id="`cvk-${ork.id}`" :checked="ork.cvk" />
+                <label :for="`cvk-${ork.id}`"></label>
               </div>
-              <div class="id-col">{{ ork.orkId }}</div>
-              <div class="endpoint-col">{{ ork.endpoint }}</div>
+              <div class="id-col">{{ ork.id }}</div>
+              <div class="endpoint-col">{{ ork.url }}</div>
             </div>
           </div>
         </div>
@@ -196,6 +213,8 @@ export default {
             passwordScore: 0,
             newPasswordScore: 0,
             advancedSecurity: false,
+            manualDns: false,
+            vendorProvidedOrk: ["https://ork-0.azurewebsites.net", "https://ork-4.azurewebsites.net"],
             user: {
                 email: `${Math.floor(Math.random() * 1000000)}@gmail.com`,
                 password: "mLwRGT7uY6tbsoB4j6Fc6hZ6CWQpwb1ixw1",
@@ -219,24 +238,26 @@ export default {
                 frag9: "",
                 frag10: ""
             },
+            dnsOrk: "",
+            cmkOrkIndex: [],
+            cvkOrkIndex: [],
             showCMKorks: false,
             showCVKorks: false,
             recoveryEmail: "",
             newPassword: "",
             error: "",
             expandedOrks: false,
-            CMKorks: [],
-            CVKorks: []
+            tide: null,
+            orks: []
         };
     },
     created() {
-        this.CMKorks = this.generateOrks();
-        this.CVKorks = this.generateOrks();
         this.$bus.$on("show-auth", s => {
             this.loginMode = "Login";
             this.step = 0;
             this.show = s;
         });
+        this.autoSelectDnsOrk();
     },
     watch: {
         step: function() {
@@ -245,6 +266,10 @@ export default {
         loginMode: function() {
             this.error = " ";
             this.step = 0;
+        },
+        manualDns: function() {
+            if (this.manualDns) this.dnsOrk = "";
+            else this.autoSelectDnsOrk();
         }
     },
     computed: {
@@ -258,17 +283,20 @@ export default {
             return this.user.password == this.user.confirm ? " " : "Passwords do not match.";
         },
         CMKSelectedCount: function() {
-            var length = this.CMKorks.filter(o => o.enabled).length;
+            var length = this.orks.filter(o => o.cmk).length;
             this.error = length < 3 ? "You must select 3 ork nodes." : "";
             return length;
         },
         CVKSelectedCount: function() {
-            var length = this.CVKorks.filter(o => o.enabled).length;
+            var length = this.orks.filter(o => o.cvk).length;
             this.error = length < 3 ? "You must select 3 ork nodes." : "";
             return length;
         }
     },
     methods: {
+        autoSelectDnsOrk() {
+            this.dnsOrk = this.vendorProvidedOrk.sort(() => 0.5 - Math.random())[0];
+        },
         autoFill() {
             this.user = {
                 email: `${Math.floor(Math.random() * 1000000)}@gmail.com`,
@@ -281,32 +309,37 @@ export default {
             if (this.passwordScore < 4) this.error = "Please choose a stronger password.";
             else this.error = "";
         },
-        generateOrks() {
-            var orks = [...Array(10)].map((_, i) => {
-                return {
-                    id: i,
-                    enabled: false,
-                    orkId: `ork-${i}`,
-                    endpoint: `https://ork-${i}.azurewebsites.net`
-                };
-            });
-
-            const shuffled = orks.sort(() => 0.5 - Math.random());
-
-            for (let i = 0; i < 3; i++) {
-                shuffled[i].enabled = true;
-            }
-
-            orks = shuffled.sort(function(a, b) {
-                return a.id - b.id;
-            });
-            return orks;
-        },
         registerButtonClicked() {
             if (this.advancedSecurity) {
                 this.step = 1;
-                console.log("hey");
             } else this.register();
+        },
+        async initializeTide() {
+            this.$loading(true, "Initializing Tide...");
+            this.tide = new Tide("VendorId", "https://tidevendor.azurewebsites.net/tide/v1", [this.dnsOrk]);
+            await this.tide.initialize();
+
+            var orks = this.tide.orks.slice();
+            orks.forEach(ork => {
+                ork.cmk = false;
+                ork.cvk = false;
+            });
+
+            const shuffled = orks.sort(() => 0.5 - Math.random());
+            for (let i = 0; i < 3; i++) {
+                shuffled[i].cmk = true;
+            }
+            for (let i = 3; i < 7; i++) {
+                shuffled[i].cvk = true;
+            }
+            this.orks = orks;
+
+            this.step++;
+            this.$loading(false);
+        },
+        toggledOrk(ork, key) {
+            ork[key] = !ork[key];
+            return ork;
         },
         register() {
             if (this.user.password.length < 4) return (this.error = "Password requires at least 4 characters.");
@@ -316,14 +349,12 @@ export default {
             // Artificial wait to allow loading overlay to react
             setTimeout(async () => {
                 try {
-                    var tide = new Tide("VendorId", "https://tidevendor.azurewebsites.net/vendor");
-
-                    var orkIds = this.CMKorks.filter(o => o.enabled).map(n => n.orkId);
+                    var orkIds = this.orks.filter(o => o.cmk).map(n => n.id);
                     // var orkIds = ["ork-0", "ork-1", "ork-2", "ork-3", "ork-4", "ork-5"];
+                    console.log(orkIds);
+                    var signUp = await this.tide.register(this.user.email, this.user.password, this.user.email, orkIds);
 
-                    var signUp = await tide.register(this.user.email, this.user.password, this.user.email, orkIds);
-
-                    console.log(signUp.key);
+                    console.log("lol");
 
                     const registerTideResult = {
                         privateKey: "5J9mJizKfGrFdnSZNswomzTeoVoLi3649YdrHGwT3EQTCTPLf3Z",
@@ -758,6 +789,23 @@ input[type="checkbox"] {
 .slideOne input[type="checkbox"]:checked + label {
     pointer-events: none;
     left: 17px;
+}
+
+.s-checkbox {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0.6;
+    &.checked {
+        opacity: 1;
+    }
+
+    .holder {
+        width: 50px;
+    }
 }
 
 #advanced-checkbox {

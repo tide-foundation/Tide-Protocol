@@ -11,7 +11,7 @@ async function main() {
     );
     var tide = new Tide(
       "VendorId",
-      "https://tidevendor.azurewebsites.net/vendor",
+      "https://tidevendor.azurewebsites.net/tide/v1",
       urls
     );
 
@@ -24,7 +24,6 @@ async function main() {
     // var user = "lol1232";
     var pass = "123456";
     var signUp = await tide.register(user, pass, "tmp@tide.org", orkIds);
-    console.log(signUp);
 
     var cipher = tide.encrypt("heyyyo");
     console.log(tide.decrypt(cipher));
