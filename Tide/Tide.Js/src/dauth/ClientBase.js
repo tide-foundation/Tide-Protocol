@@ -15,17 +15,19 @@
 
 import superagent from "superagent";
 import IdGenerator from "../IdGenerator";
+import Guid from "../guid";
 
 export default class ClientBase {
   /**
    * @param {string} url
-   * @param {string} user
+   * @param {string|Guid} user
    */
   constructor(url, user) {
     this.url = url + "/api";
     this.user = user;
     this._clientId = IdGenerator.seed(new URL(url).host);
-    this._userId = IdGenerator.seed(user);
+    this._userId = typeof user === 'string'
+      ? IdGenerator.seed(user) : new IdGenerator(user);
   }
 
   get clientId() { return this._clientId.id; }

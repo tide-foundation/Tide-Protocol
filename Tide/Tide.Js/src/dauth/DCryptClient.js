@@ -21,12 +21,10 @@ import Guid from "../Guid";
 export default class DCryptClient extends ClientBase {
   /**
    * @param {string} url
-   * @param {string} user
-   * @param {AESKey} key
+   * @param {Guid} user
    */
-  constructor(url, user, key) {
+  constructor(url, user) {
     super(url, user);
-    this._userId = IdGenerator.seed(user, key);
   }
 
   /**

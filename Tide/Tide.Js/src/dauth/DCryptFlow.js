@@ -17,29 +17,29 @@ import DCryptClient from "./DCryptClient";
 import { C25519Point, AESKey, C25519Key, C25519Cipher } from "cryptide";
 import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
+import Guid from "../guid";
 
 export default class DCryptFlow {
-  //TODO: cvkAuth should not be included here to generate user id
-  //      due to vendor workflow that does not have access to it.
   /**
    * @param {string[]} urls
-   * @param {string} user
-   * @param {AESKey} cvkAuth
+   * @param {Guid} user
    */
-  constructor(urls, user, cvkAuth) {
-    this.clients = urls.map((url) => new DCryptClient(url, user, cvkAuth));
+  constructor(urls, user) {
+    this.clients = urls.map((url) => new DCryptClient(url, user));
     this.user = user;
-    this.cvkAuth = cvkAuth;
   }
 
-  /** @param {number} threshold */
-  async signUp(threshold) {
+  /**
+   * @param {AESKey} cvkAuth
+   * @param {number} threshold
+   */
+  async signUp(cvkAuth, threshold) {
     try {
       const cvk = C25519Key.generate();
       const ids = this.clients.map((c) => c.clientId);
       
       const shrs = cvk.share(threshold, ids, true);
-      const auths = this.clients.map((c) => this.cvkAuth.derive(c.clientBuffer));
+      const auths = this.clients.map((c) => cvkAuth.derive(c.clientBuffer));
       await Promise.all(this.clients.map((cli, i) => 
         cli.register(cvk.public(), shrs[i].x, auths[i])));
 

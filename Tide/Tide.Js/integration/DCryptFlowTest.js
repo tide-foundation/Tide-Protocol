@@ -29,11 +29,10 @@ var cvkAuth = AESKey.from("AhATyXYow4qdCw7nFGVFu87JICzd7w9PbzAyp7M4r6PiHS7h0RTUN
 var urls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
 //var urls = [...Array(threshold)].map((_, i) => `https://raziel-ork-${i + 1}.azurewebsites.net`);
 
-const flow = new DCryptFlow(urls, user, cvkAuth);
 const userId = IdGenerator.seed(user, cvkAuth).guid;
-
-const keyCln = new KeyClientSet(urls);
+const flow = new DCryptFlow(urls, userId);
 const ruleCln = new RuleClientSet(urls, userId);
+const keyCln = new KeyClientSet(urls);
 
 (async () => {
   await main();
@@ -48,7 +47,7 @@ async function main() {
     const keyStore = new KeyStore(vendorKey.public());
     const rule = Rule.allow(userId, tag, keyStore);
 
-    var cvkPromise = flow.signUp(threshold);
+    var cvkPromise = flow.signUp(cvkAuth, threshold);
     await Promise.all([cvkPromise, 
       keyCln.setOrUpdate(keyStore),
       ruleCln.setOrUpdate(rule)]);

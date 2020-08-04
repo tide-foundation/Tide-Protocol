@@ -16,9 +16,6 @@ namespace Tide.VendorSdk.Classes
         public BigInteger UserId { get => _userId.Id; }
         public Guid UserGuid { get => _userId.Guid; }
 
-        public DCryptFlow(string user, AesKey key, IEnumerable<Uri> uris)
-            : this(IdGenerator.Seed(user, key).Guid, uris) { }
-
         public DCryptFlow(Guid guid, IEnumerable<Uri> uris)
         {
             _clients = uris.Select(uris => new OrkClient(uris)).ToList();
