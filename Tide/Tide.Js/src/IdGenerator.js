@@ -11,12 +11,16 @@ export default class IdGenerator {
 
     get buffer() { return this.guid.toArray(); }
 
-    /** @param {string | Uint8Array} data
+    /** @param {string | URL | Uint8Array} data
      * @param {AESKey} key */
     static seed(data, key = null) {
-        if (key == null)
-            return new IdGenerator(Guid.seed(data));
+        const buffer = typeof data === 'string' ? Buffer.from(data, 'utf8')
+            : data instanceof URL ? Buffer.from(data.host, 'utf8')
+            : data;
         
-        return new IdGenerator(Guid.from(key.hash(data).slice(0, 16)));
+        if (key == null)
+            return new IdGenerator(Guid.seed(buffer));
+        
+        return new IdGenerator(Guid.from(key.hash(buffer).slice(0, 16)));
     }
 }

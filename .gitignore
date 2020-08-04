@@ -13,7 +13,6 @@
 
 # Development
 appsettings.Development.json
-Tide.Vendor
 Tide.Dev
 playground
 Developer

@@ -1,0 +1,65 @@
+// Tide Protocol - Infrastructure for the Personal Data economy
+// Copyright (C) 2019 Tide Foundation Ltd
+//
+// This program is free software and is subject to the terms of
+// the Tide Community Open Source License as published by the
+// Tide Foundation Limited. You may modify it and redistribute
+// it in accordance with and subject to the terms of that License.
+// This program is distributed WITHOUT WARRANTY of any kind,
+// including without any implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.
+// See the Tide Community Open Source License for more details.
+// You should have received a copy of the Tide Community Open
+// Source License along with this program.
+// If not, see https://tide.org/licenses_tcosl-1-0-en
+
+import { AESKey, C25519Cipher } from "cryptide";
+import DCryptFlow from "../src/dauth/DCryptFlow";
+import KeyClientSet from "../src/dauth/keyClientSet";
+import RuleClientSet from "../src/dauth/RuleClientSet";
+import KeyStore from "../src/keyStore";
+import Rule from "../src/rule";
+import Num64 from "../src/Num64";
+import Cipher from "../src/Cipher";
+import IdGenerator from "../src/IdGenerator";
+import VendorClient from "../src/VendorClient";
+
+var threshold = 3;
+var user = "admin";
+var cvkAuth = new AESKey();
+var vendorClient = new VendorClient("http://127.0.0.1:6001");
+
+(async () => {
+  await main();
+})();
+
+async function main() {
+  const { orkUrls, pubKey } = await vendorClient.register();
+
+  const vuid = IdGenerator.seed(user, cvkAuth).guid;
+  const flow = new DCryptFlow(orkUrls, vuid);
+  const ruleCln = new RuleClientSet(orkUrls, vuid);
+  const keyCln = new KeyClientSet(orkUrls);
+
+  //user register cvk
+  var cvk = await flow.signUp(cvkAuth, threshold);
+
+  //user register rule
+  const emailTag = Num64.from("email");
+  const vendorPubStore = new KeyStore(pubKey);
+  const allowEmailToVendor = Rule.allow(vuid, emailTag, vendorPubStore);
+
+  await Promise.all([keyCln.setOrUpdate(vendorPubStore),
+    ruleCln.setOrUpdate(allowEmailToVendor)]);
+
+  //user encrypt email
+  const email = "info@tide.org";
+  var cipher = Cipher.encrypt(email, emailTag, cvk);
+
+  //user send cipher to vendor
+  const plain = await vendorClient.testCipher(vuid, cipher);
+  const emailPlain = Buffer.from(C25519Cipher.unpad(plain)).toString('utf-8')
+  
+  console.log(email);
+  console.log(emailPlain);
+}

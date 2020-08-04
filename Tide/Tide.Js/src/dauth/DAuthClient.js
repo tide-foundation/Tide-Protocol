@@ -19,7 +19,7 @@ import Num64 from "../Num64";
 
 export default class DAuthClient extends ClientBase {
   /**
-   * @param {string} url
+   * @param {string|URL} url
    * @param {string} user
    */
   constructor(url, user) {

@@ -13,14 +13,13 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { C25519Point, AESKey } from "cryptide";
+import { AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
-import IdGenerator from "../IdGenerator";
 import Guid from "../Guid";
 
 export default class DCryptClient extends ClientBase {
   /**
-   * @param {string} url
+   * @param {string|URL} url
    * @param {Guid} user
    */
   constructor(url, user) {

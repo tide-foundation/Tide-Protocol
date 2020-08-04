@@ -19,13 +19,14 @@ import Guid from "../guid";
 
 export default class ClientBase {
   /**
-   * @param {string} url
+   * @param {string|URL} url
    * @param {string|Guid} user
    */
   constructor(url, user) {
-    this.url = url + "/api";
-    this.user = user;
-    this._clientId = IdGenerator.seed(new URL(url).host);
+    const baseUrl = typeof url === 'string' ? new URL(url) : url;
+
+    this.url = baseUrl.origin + "/api";
+    this._clientId = IdGenerator.seed(baseUrl);
     this._userId = typeof user === 'string'
       ? IdGenerator.seed(user) : new IdGenerator(user);
   }

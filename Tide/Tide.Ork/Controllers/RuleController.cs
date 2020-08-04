@@ -54,6 +54,9 @@ namespace Tide.Ork.Controllers {
         public async Task<ActionResult> SetOrUpdate([FromBody] RuleVaultDTO rule)
         {
             var result = await _manager.SetOrUpdate(rule);
+
+            _logger.LogInformation($"Rule added from user {rule.OwnerId} with tag {rule.Tag} for key {rule.KeyId}");
+
             return result.Success ? Ok() : BadRequest() as ActionResult;
         }
 
