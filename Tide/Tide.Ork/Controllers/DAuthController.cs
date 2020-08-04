@@ -18,6 +18,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tide.Core;
@@ -25,6 +26,7 @@ using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
+using Tide.VendorSdk.Classes;
 
 namespace Tide.Ork.Controllers
 {
@@ -34,13 +36,12 @@ namespace Tide.Ork.Controllers
     {
         private readonly IEmailClient _mail;
         private readonly ILogger _logger;
-        private readonly IdGenerator _generator;
         private readonly IKeyManager _manager;
         private readonly IManager<CvkVault> _managerCvk;
         private readonly IRuleManager _ruleManager;
         private readonly IManager<KeyIdVault> _keyIdManager;
 
-        public DAuthController(IKeyManagerFactory factory, IEmailClient mail, ILogger<DAuthController> logger, IdGenerator gen)
+        public DAuthController(IKeyManagerFactory factory, IEmailClient mail, ILogger<DAuthController> logger)
         {
             _manager = factory.BuildManager();
             _managerCvk = factory.BuildManagerCvk();
@@ -48,7 +49,6 @@ namespace Tide.Ork.Controllers
             _keyIdManager = factory.BuildKeyIdManager();
             _mail = mail;
             _logger = logger;
-            _generator = gen;
         }
 
         [HttpGet("{uid}/convert/{pass}")]
@@ -125,7 +125,8 @@ namespace Tide.Ork.Controllers
         public async Task<ActionResult> Recover([FromRoute] Guid uid)
         {
             var account = await _manager.GetById(uid);
-            var share = new OrkShare(_generator.Id, account.KeyShare).ToString();
+            var generator = IdGenerator.Seed(new Uri(Request.GetDisplayUrl()));
+            var share = new OrkShare(generator.Id, account.KeyShare).ToString();
             var msg = $"You have requested to recover the CMK. Introduce the code [{share}] into tide wallet.";
 
             _mail.SendEmail(uid.ToString(), account.Email, "Key Recovery", msg);
@@ -196,7 +197,6 @@ namespace Tide.Ork.Controllers
                 return Deny(msgErr);
 
             var dataBuffer = Convert.FromBase64String(data.DecodeBase64Url());
-            //TODO: CheckAsymmetric must be verified with the user public key
             //TODO: Change VendorPub to UserPub
             if (!Cipher.CheckAsymmetric(dataBuffer, account.VendorPub))
                 return Deny(msgErr);
@@ -225,11 +225,6 @@ namespace Tide.Ork.Controllers
         private byte[] FromBase64(string input)
         {
             return Convert.FromBase64String(input.DecodeBase64Url());
-        }
-
-        private Guid GetGuid(string user)
-        {
-            return new Guid(FromBase64(user));
         }
 
         private ActionResult Deny(string message, params object[] args)
