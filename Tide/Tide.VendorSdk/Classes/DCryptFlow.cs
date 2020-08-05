@@ -41,13 +41,14 @@ namespace Tide.VendorSdk.Classes
 
             var challenges = await Task.WhenAll(_clients.Select(cli => cli.Challenge(UserGuid, keyId)));
 
+            var asymmetric = Cipher.Asymmetric(cipher);
             var sessionKeys = challenges.Select(ch => prv.DecryptKey(ch.Challenge)).ToList();
-            var signs = sessionKeys.Select(key => key.Hash(cipher)).ToList();
+            var signs = sessionKeys.Select(key => key.Hash(asymmetric)).ToList();
 
             var ciphers = await Task.WhenAll(_clients.Select((cli, i) =>
-                cli.Decrypt(UserGuid, keyId, cipher, challenges[i].Token, signs[i])));
+                cli.Decrypt(UserGuid, keyId, asymmetric, challenges[i].Token, signs[i])));
 
-            var ciph = Cipher.CipherFromAsymmetric(cipher);
+            var ciph = Cipher.CipherFromAsymmetric(asymmetric);
             var partials = ciphers.Select((cph, i) => C25519Point.From(sessionKeys[i].Decrypt(cph)))
                 .Select(pnt => new C25519Cipher(pnt, ciph.C2)).ToList();
 

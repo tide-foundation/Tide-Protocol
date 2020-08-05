@@ -55,8 +55,7 @@ async function main() {
     var cvk = await cvkPromise;
     var cipher = Cipher.encrypt(secret.toArray(), tag, cvk);
 
-    const asymmetric = Cipher.asymmetric(cipher);
-    var plain = await flow.decrypt(asymmetric, vendorKey);
+    var plain = await flow.decrypt(cipher, vendorKey);
     var secretTag = AesSherableKey.from(plain);
 
     console.log(secret.toString());

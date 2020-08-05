@@ -58,13 +58,14 @@ export default class DCryptFlow {
       const keyId = new KeyStore(prv.public()).keyId;
       const challenges = await Promise.all(this.clients.map(cli => cli.challenge(keyId)));
 
+      const asymmetric = Cipher.asymmetric(cipher);
       const sessionKeys = challenges.map(ch => prv.decryptKey(ch.challenge));
-      const signs = sessionKeys.map(key => key.hash(cipher));
+      const signs = sessionKeys.map(key => key.hash(asymmetric));
 
       const ciphers = await Promise.all(this.clients.map((cli, i) =>
-        cli.decrypt(cipher, keyId, challenges[i].token, signs[i])));
+        cli.decrypt(asymmetric, keyId, challenges[i].token, signs[i])));
 
-      const ciph = Cipher.cipherFromAsymmetric(cipher);
+      const ciph = Cipher.cipherFromAsymmetric(asymmetric);
       const partials = ciphers.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph)))
         .map(pnt => new C25519Cipher(pnt, ciph.c2));
 

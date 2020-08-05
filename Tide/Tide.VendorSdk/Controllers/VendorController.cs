@@ -50,8 +50,7 @@ namespace Tide.VendorSdk.Controllers {
             var flow = new DCryptFlow(vuid, uris);
 
             var cipher = Convert.FromBase64String(cipherText);
-            var asymmetric = Cipher.Asymmetric(cipher);
-            var plain = await flow.Decrypt(asymmetric, Config.PrivateKey);
+            var plain = await flow.Decrypt(cipher, Config.PrivateKey);
 
             return Convert.ToBase64String(plain);
         }
