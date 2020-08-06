@@ -49,6 +49,10 @@ namespace Tide.Vendor
 
             app.UseAuthorization();
 
+            app.UseCors(builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader());
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
