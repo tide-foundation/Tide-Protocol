@@ -45,7 +45,7 @@ async function main() {
   var cvk = await flow.signUp(cvkAuth, threshold);
 
   //user register rule
-  const emailTag = Num64.from("email");
+  const emailTag = Num64.seed("email");
   const vendorPubStore = new KeyStore(pubKey);
   const allowEmailToVendor = Rule.allow(vuid, emailTag, vendorPubStore);
 

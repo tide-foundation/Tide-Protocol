@@ -49,6 +49,6 @@ export default class Num64 {
 
     /** @param {string|Uint8Array} data */
     static seed(data) {
-        return Num64.from(Hash.shaBuffer(data).slice(8));
+        return Num64.from(Hash.shaBuffer(data).slice(0, 8));
     }
 }

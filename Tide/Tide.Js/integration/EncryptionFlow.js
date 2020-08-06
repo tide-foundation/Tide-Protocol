@@ -3,7 +3,7 @@ import Cipher from "../src/Cipher";
 import Num64 from "../src/Num64";
 
 var msg = "👋🏿 this is you!!!  😰🥰";
-var tag = Num64.from("note");
+var tag = Num64.seed("note");
 var key = C25519Key.generate();
 var cipher = Cipher.encrypt(msg, tag, key);
 var plain = Cipher.decrypt(cipher, key);

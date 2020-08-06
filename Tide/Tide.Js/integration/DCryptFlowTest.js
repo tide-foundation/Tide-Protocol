@@ -49,7 +49,7 @@ async function main() {
     );
     var secret = new AesSherableKey();
 
-    const tag = Num64.from("key");
+    const tag = Num64.seed("key");
     const keyStore = new KeyStore(vendorKey.public());
     const rule = Rule.allow(userId, tag, keyStore);
 
