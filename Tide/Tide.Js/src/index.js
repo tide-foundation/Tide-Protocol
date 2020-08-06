@@ -7,6 +7,10 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-export { default as DAuthFlow } from "./dauth/DAuthFlow";
-export { default as DCryptFlow } from "./dauth/DCryptFlow";
-export { default } from "./Tide";
+// export { default as DAuthFlow } from "./dauth/DAuthFlow";
+// export { default as DCryptFlow } from "./dauth/DCryptFlow";
+//export { AEScrypt } from "cryptide";
+// export { default } from "./Tide";
+
+const Tide = require("./Tide").default;
+module.exports = Tide;

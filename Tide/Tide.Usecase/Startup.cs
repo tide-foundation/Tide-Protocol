@@ -1,5 +1,3 @@
-
-
 using System;
 using System.IO;
 using System.Net;
@@ -30,7 +28,6 @@ namespace Tide.Usecase
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
 
             var settings = new Settings();
@@ -39,11 +36,7 @@ namespace Tide.Usecase
 
             services.AddDbContext<VendorContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
 
-            services.AddTide("VendorId", configuration => configuration
-                .UseSqlServerStorage(settings.Connection));
-
-
-
+            services.AddTide("VendorId", configuration => configuration.UseSqlServerStorage(settings.Connection));
 
             services.AddLiveReload();
             services.AddControllers();
@@ -53,7 +46,6 @@ namespace Tide.Usecase
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseTide();
@@ -82,8 +74,5 @@ namespace Tide.Usecase
 
             //});
         }
-
     }
-
-    
 }

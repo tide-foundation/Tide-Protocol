@@ -51,5 +51,15 @@ namespace Tide.VendorSdk
         }
 
         #endregion
+
+        #region Data
+
+        public TideResponse TestCipher(string username)
+        {
+            var (success, content) = _client.GetUserNodes(username);
+            return new TideResponse(success, success ? content : null, !success ? content : null);
+        }
+
+        #endregion
     }
 }

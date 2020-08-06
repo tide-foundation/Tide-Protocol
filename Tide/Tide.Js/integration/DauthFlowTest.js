@@ -32,13 +32,14 @@ var flow = new DAuthFlow(urls, user);
 })();
 
 async function Reconstruct() {
-  var msg = "NppNUoqnsRgDrKs/x0qkmw3c2l6zXjc8ADqzRE89skQ+rEugJ1qyRwbjT9VVBT7I\n\
+  var msg =
+    "NppNUoqnsRgDrKs/x0qkmw3c2l6zXjc8ADqzRE89skQ+rEugJ1qyRwbjT9VVBT7I\n\
     8eX2Q7ncWPYWc5Ju2OyUpgAASAa9UbnWSb+GYXPZsF07kA43OweII2jCO5ITg9Mg\n\
     EKLoBKh2t3SBQaKg7nheeA18TeB/8j5KZYiEvgrbDmQsQ/UrhW2OPGwmVekcKAUs";
 
-  var latestPass = '654321';
+  var latestPass = "654321";
   var key = await flow.Reconstruct(msg, latestPass, threshold);
-  
+
   var keyTag = await flow.logIn(latestPass);
   assert.equal(key.toString(), keyTag.toString());
 }
@@ -48,15 +49,15 @@ async function main() {
     var key = await flow.signUp(pass, mail, threshold);
 
     var keyTag1 = await flow.logIn(pass);
-    
+
     assert.equal(key.toString(), keyTag1.toString());
 
     await flow.changePass(pass, newPass, threshold);
     var keyTag2 = await flow.logIn(newPass);
     assert.equal(key.toString(), keyTag2.toString());
     await flow.Recover();
+    console.log("finished");
   } catch (error) {
     console.log(error);
   }
 }
-

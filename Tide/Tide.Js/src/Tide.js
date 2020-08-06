@@ -9,7 +9,7 @@ import { AESKey } from "cryptide";
  * @class
  * @classdesc The client side library to interface with the Tide ecosystem.
  */
-class Tide {
+export default class {
   /**
    * Create Tide.
    *
@@ -232,7 +232,7 @@ function get(url) {
 function extractTideResponse(result, resolve, reject) {
   // Temporary function until we normalize the way the orks and vendor backend respond.
   // Currently the Tide Vendor SDK is returning text instead of correctly returning body.
-  if (Object.keys(result.body).length != 0) {
+  if (result.body != null && Object.keys(result.body).length != 0) {
     var r = result.body;
     return r.success ? resolve(r.content) : reject(r.error);
   } else {
@@ -249,5 +249,3 @@ function event(name, payload) {
   // const event = new CustomEvent(name, payload);
   // document.dispatchEvent(event);
 }
-
-export default Tide;

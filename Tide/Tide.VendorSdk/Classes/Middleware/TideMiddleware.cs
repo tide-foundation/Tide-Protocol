@@ -81,7 +81,5 @@ namespace Tide.VendorSdk.Classes.Middleware {
         private byte[] EncodeResponse(object data) {
             return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data));
         }
-
-       
     }
 }

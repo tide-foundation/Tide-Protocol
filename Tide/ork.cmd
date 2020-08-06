@@ -1,0 +1,1 @@
+dotnet watch --project Tide.Ork run --urls=http://0.0.0.0:500%1 --environment "Ork%1" --logger "console;verbosity=detailed"

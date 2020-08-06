@@ -1,78 +1,42 @@
 {
-  "private": false,
   "name": "tide-js",
-  "version": "1.1.18",
   "description": "An interface to interact with the Tide ecosystem",
   "homepage": "https://tide.org",
-  "repository": "tide",
   "author": "Tide (info@tide.org)",
   "contributors": [
     "Matthew Spencer",
     "Jose Luis Lobo"
   ],
   "license": "MIT",
-  "keywords": [],
-  "main": "src/index.js",
-  "jsnext:main": "index.es.js",
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ],
-    "plugins": [
-      "@babel/plugin-transform-runtime"
-    ]
+  "version": "1.0.0",
+  "main": "dist/tide.js",
+  "scripts": {
+    "build": "webpack --config ./webpack/webpack.prod.js",
+    "build:dev": "webpack --config ./webpack/webpack.dev.js",
+    "start": "webpack-dev-server --open --config ./webpack/webpack.dev.js",
+    "integration": "parcel ./integration/index.html"
   },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": "airbnb-base"
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "keywords": [
+    "Tide",
+    "Decentralized"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "html-webpack-plugin": "^4.3.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "parcel": "^1.12.4"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
     "big-integer": "1.6.36",
-    "cryptide": "^2.0.0-alpha.7",
-    "superagent": "^5.2.2"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/node": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/register": "^7.0.0",
-    "babel-eslint": "^10.0.1",
-    "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
-    "coveralls": "^2.11.14",
-    "del": "^2.2.2",
-    "easystatic": "^0.1.12",
-    "eslint": "^5.9.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.2.0",
-    "esm": "^3.2.25",
-    "istanbul": "^1.1.0-alpha.1",
-    "mocha": "^5.2.0",
-    "node2docfx": "^1.0.45",
-    "nyc": "^13.1.0",
-    "parcel": "^1.12.4",
-    "rollup": "^0.67.3",
-    "rollup-plugin-babel": "^4.0.3",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "sinon": "^7.1.1"
-  },
-  "scripts": {
-    "conf:dev": "npm rm -S cryptide && npm i file:../../../cryptide-js -S",
-    "conf:prd": "npm rm -S cryptide && npm i cryptide -S",
-    "clean": "rm -rf dist && rm -rf .cache",
-    "lint": "eslint src test tools",
-    "test": "mocha -r esm",
-    "test:watch": "mocha --require @babel/register --reporter min --watch",
-    "test:cover": "nyc npm test",
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "build": "node tools/build",
-    "prepublish": "npm run build",
-    "publish:docs": "easystatic deploy docs --repo kriasoft/babel-starter-kit",
-    "start": "easystatic start docs",
-    "integration": "parcel ./integration/index.html"
+    "cryptide": "^2.0.0-alpha.8",
+    "superagent": "^5.2.2",
+    "webpack-merge": "^5.1.1"
   }
 }

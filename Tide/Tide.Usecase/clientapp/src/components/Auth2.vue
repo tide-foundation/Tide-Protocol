@@ -217,8 +217,8 @@ export default {
             vendorProvidedOrk: ["https://ork-0.azurewebsites.net", "https://ork-4.azurewebsites.net"],
             user: {
                 email: `${Math.floor(Math.random() * 1000000)}@gmail.com`,
-                password: "mLwRGT7uY6tbsoB4j6Fc6hZ6CWQpwb1ixw1",
-                confirm: "mLwRGT7uY6tbsoB4j6Fc6hZ6CWQpwb1ixw1"
+                password: "mLwRGT7uY6tbsoB41",
+                confirm: "mLwRGT7uY6tbsoB41"
                 // email: `${Math.floor(Math.random() * 1000000)}@gmail.com`,
                 // password: "Ff09&QcBWEXk",
                 // confirm: "Ff09&QcBWEXk",
@@ -351,10 +351,8 @@ export default {
                 try {
                     var orkIds = this.orks.filter(o => o.cmk).map(n => n.id);
                     // var orkIds = ["ork-0", "ork-1", "ork-2", "ork-3", "ork-4", "ork-5"];
-                    console.log(orkIds);
+                    orkIds = ["ork-9", "ork-4", "ork-1", "ork-7"];
                     var signUp = await this.tide.register(this.user.email, this.user.password, this.user.email, orkIds);
-
-                    console.log("lol");
 
                     const registerTideResult = {
                         privateKey: "5J9mJizKfGrFdnSZNswomzTeoVoLi3649YdrHGwT3EQTCTPLf3Z",

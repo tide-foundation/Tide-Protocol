@@ -6,13 +6,14 @@ import Tide from "../src/Tide";
 
 async function main() {
   try {
-    var urls = [...Array(3)].map(
+    var dnsOrks = [...Array(3)].map(
       (_, i) => `https://ork-${i}.azurewebsites.net`
     );
+
     var tide = new Tide(
       "VendorId",
       "https://tidevendor.azurewebsites.net/tide/v1",
-      urls
+      dnsOrks
     );
 
     await tide.initialize();
@@ -21,15 +22,16 @@ async function main() {
     var orkIds = shuffledOrks.slice(0, 4).map((o) => o.id);
 
     var user = `User${Math.floor(Math.random() * 1000000)}`;
-    // var user = "lol1232";
     var pass = "123456";
-    var signUp = await tide.register(user, pass, "tmp@tide.org", orkIds);
 
-    var cipher = tide.encrypt("heyyyo");
-    console.log(tide.decrypt(cipher));
+    var signUp = await tide.register(user, pass, user, orkIds);
+
+    var msg = "Test Cipher";
+    var cipher = tide.encrypt(msg);
+    console.log(`cipher: ${msg}. decrypted: ${tide.decrypt(cipher)}`);
 
     var loginResult = await tide.login(user, pass);
-    console.log(loginResult);
+    console.log("Completed register & login, key: ", loginResult);
   } catch (error) {
     console.log(error);
   }
