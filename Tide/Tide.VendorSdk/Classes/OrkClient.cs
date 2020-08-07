@@ -26,12 +26,12 @@ namespace Tide.VendorSdk.Classes
             _client = new HttpClient { BaseAddress = uri };
         }
 
-        public async Task RegisterCvk(Guid viud, BigInteger cvki, AesKey cvkAuthi, C25519Key pub)
+        public async Task RegisterCvk(Guid viud, BigInteger cvki, AesKey cvkiAuth, C25519Key cvkPub)
         {
             var payload = JsonSerializer.Serialize(new[] {
-                pub.ToByteArray(),
+                cvkPub.ToByteArray(),
                 cvki.ToByteArray(true, true),
-                cvkAuthi.ToByteArray(),
+                cvkiAuth.ToByteArray(),
             });
 
             var body = new StringContent(payload, Encoding.UTF8, "application/json");

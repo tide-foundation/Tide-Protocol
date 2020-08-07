@@ -57,7 +57,7 @@ namespace Tide.Ork.Controllers
             var g = C25519Point.From(Convert.FromBase64String(pass.DecodeBase64Url()));
             if (!g.IsValid) return BadRequest();
 
-            var s = await _manager.GetAuthShare(uid);
+            var s = await _manager.GetPrism(uid);
             if (s == BigInteger.Zero) return BadRequest("Invalid username.");
             var gs = g * s;
 
@@ -70,50 +70,50 @@ namespace Tide.Ork.Controllers
         {
             var account = await _manager.GetById(uid);
             if (account == null) return BadRequest("That user does not exist.");
-            if (!VerifyChallenge.Check(account.Secret, FromBase64(sign), ticks, uid.ToByteArray(), BitConverter.GetBytes(ticks)))
+            if (!VerifyChallenge.Check(account.PrismiAuth, FromBase64(sign), ticks, uid.ToByteArray(), BitConverter.GetBytes(ticks)))
             {
                 _logger.LogInformation($"Unsuccessful login for {uid}", uid, ticks, sign);
                 return BadRequest();
             }
 
             _logger.LogInformation($"Successful login for {uid}", uid, ticks, sign);
-            return Ok(account.Secret.EncryptStr(account.KeyShare.ToByteArray(true, true)));
+            return Ok(account.PrismiAuth.EncryptStr(account.Cmki.ToByteArray(true, true)));
         }
 
         //TODO: Move secrets out of the url
         //TODO: there is not verification if the account already exists
-        [HttpPost("{uid}/signup/{authShare}/{keyShare}/{secret}/{cmkAuth}/{email}")]
-        public async Task<TideResponse> SignUp([FromRoute] Guid uid, [FromRoute] string authShare, [FromRoute] string keyShare, [FromRoute] string secret, [FromRoute] string cmkAuth, [FromRoute] string email)
+        [HttpPost("{uid}/signup/{prism}/{cmk}/{prismAuth}/{cmkAuth}/{email}")]
+        public async Task<TideResponse> SignUp([FromRoute] Guid uid, [FromRoute] string prism, [FromRoute] string cmk, [FromRoute] string prismAuth, [FromRoute] string cmkAuth, [FromRoute] string email)
         {
             _logger.LogInformation($"New registration for {uid}", uid);
             var account = new KeyVault
             {
-                User = uid,
-                AuthShare = GetBigInteger(authShare),
-                KeyShare = GetBigInteger(keyShare),
-                Secret = AesKey.Parse(FromBase64(secret)),
-                CmkAuth = AesKey.Parse(FromBase64(cmkAuth)),
+                UserId = uid,
+                Prismi = GetBigInteger(prism),
+                Cmki = GetBigInteger(cmk),
+                PrismiAuth = AesKey.Parse(FromBase64(prismAuth)),
+                CmkiAuth = AesKey.Parse(FromBase64(cmkAuth)),
                 Email = HttpUtility.UrlDecode(email)
             };
 
             return await _manager.SetOrUpdate(account);
         }
 
-        [HttpPost("{uid}/pass/{authShare}/{secret}/{ticks}/{sign}")]
-        public async Task<ActionResult> ChangePass([FromRoute] Guid uid, [FromRoute] string authShare, [FromRoute] string secret, [FromRoute] long ticks, [FromRoute] string sign, [FromQuery] bool withCmk = false)
+        [HttpPost("{uid}/pass/{prism}/{prismAuth}/{ticks}/{sign}")]
+        public async Task<ActionResult> ChangePass([FromRoute] Guid uid, [FromRoute] string prism, [FromRoute] string prismAuth, [FromRoute] long ticks, [FromRoute] string sign, [FromQuery] bool withCmk = false)
         {
             var account = await _manager.GetById(uid);
-            var authKey = withCmk ? account.CmkAuth : account.Secret;
-            if (!VerifyChallenge.Check(authKey, FromBase64(sign), ticks, uid.ToByteArray(), FromBase64(authShare), FromBase64(secret), BitConverter.GetBytes(ticks)))
+            var authKey = withCmk ? account.CmkiAuth : account.PrismiAuth;
+            if (!VerifyChallenge.Check(authKey, FromBase64(sign), ticks, uid.ToByteArray(), FromBase64(prism), FromBase64(prismAuth), BitConverter.GetBytes(ticks)))
             {
-                _logger.LogInformation($"Unsuccessful change password for {uid}", uid, authShare, secret, ticks, sign);
+                _logger.LogInformation($"Unsuccessful change password for {uid}", uid, prism, prismAuth, ticks, sign);
                 return BadRequest();
             }
 
             _logger.LogInformation($"Change password for {uid}", uid);
 
-            account.AuthShare = GetBigInteger(authShare);
-            account.Secret = AesKey.Parse(FromBase64(secret));
+            account.Prismi = GetBigInteger(prism);
+            account.PrismiAuth = AesKey.Parse(FromBase64(prismAuth));
 
             await _manager.SetOrUpdate(account);
             return Ok();
@@ -126,7 +126,7 @@ namespace Tide.Ork.Controllers
         {
             var account = await _manager.GetById(uid);
             var generator = IdGenerator.Seed(new Uri(Request.GetDisplayUrl()));
-            var share = new OrkShare(generator.Id, account.KeyShare).ToString();
+            var share = new OrkShare(generator.Id, account.Cmki).ToString();
             var msg = $"You have requested to recover the CMK. Introduce the code [{share}] into tide wallet.";
 
             _mail.SendEmail(uid.ToString(), account.Email, "Key Recovery", msg);
@@ -141,10 +141,10 @@ namespace Tide.Ork.Controllers
         {
             var account = new CvkVault
             {
-                User = vuid,
-                VendorPub = C25519Key.Parse(FromBase64(data[0])),
+                VuId = vuid,
+                CvkPub = C25519Key.Parse(FromBase64(data[0])),
                 CVKi = GetBigInteger(data[1]),
-                CvkAuth = AesKey.Parse(FromBase64(data[2])),
+                CvkiAuth = AesKey.Parse(FromBase64(data[2])),
             };
 
             _logger.LogInformation($"New cvk for {vuid} with share {data[1]}", vuid, data[0]);
@@ -156,9 +156,9 @@ namespace Tide.Ork.Controllers
         public async Task<ActionResult> ChallengeVendor([FromRoute] Guid vuid)
         {
             var account = await _managerCvk.GetById(vuid);
-            var token = TranToken.Generate(account.CvkAuth);
+            var token = TranToken.Generate(account.CvkiAuth);
 
-            var cipher = account.VendorPub.Encrypt(token.GenKey(account.CvkAuth));
+            var cipher = account.CvkPub.Encrypt(token.GenKey(account.CvkiAuth));
             _logger.LogInformation($"Challenge from {vuid}", vuid, cipher.ToString());
 
             return Ok(new { Token = token.ToString(), Challenge = cipher.ToString() });
@@ -171,38 +171,36 @@ namespace Tide.Ork.Controllers
             _logger.LogInformation($"Challenge from {vuid}", vuid, keyId);
 
             var account = await _managerCvk.GetById(vuid);
-            var token = TranToken.Generate(account.CvkAuth);
+            var token = TranToken.Generate(account.CvkiAuth);
 
             var keyPub = await _keyIdManager.GetById(keyId);
             if (keyPub == null)
                 return Deny($"Denied Challenge for {keyId}");
 
-            var cipher = keyPub.Key.Encrypt(token.GenKey(account.CvkAuth));
+            var cipher = keyPub.Key.Encrypt(token.GenKey(account.CvkiAuth));
 
             return Ok(new { Token = token.ToString(), Challenge = cipher.ToString() });
         }
 
         [HttpGet("{vuid}/decrypt/{keyId}/{data}/{token}/{sign}")]
-        //TODO: Check the signature of the keyId
         public async Task<ActionResult> Decrypt([FromRoute] Guid vuid, [FromRoute] Guid keyId, string data, string token, string sign)
         {
             var msgErr = $"Denied data decryption belonging to {vuid}";
             var account = await _managerCvk.GetById(vuid);
 
             var tran = TranToken.Parse(Convert.FromBase64String(token.DecodeBase64Url()));
-            if (!tran.Check(account.CvkAuth)) return Deny(msgErr);
+            if (!tran.Check(account.CvkiAuth)) return Deny(msgErr);
 
             var keyPub = await _keyIdManager.GetById(keyId);
             if (keyPub == null)
                 return Deny(msgErr);
 
             var dataBuffer = Convert.FromBase64String(data.DecodeBase64Url());
-            //TODO: Change VendorPub to UserPub
-            if (!Cipher.CheckAsymmetric(dataBuffer, account.VendorPub))
+            if (!Cipher.CheckAsymmetric(dataBuffer, account.CvkPub))
                 return Deny(msgErr);
 
             var tag = Cipher.GetTag(dataBuffer);
-            var rules = await _ruleManager.GetSetBy(account.User, tag, keyPub.Id);
+            var rules = await _ruleManager.GetSetBy(account.VuId, tag, keyPub.Id);
             if (!rules.Any(rule => rule.Apply() && rule.Action == RuleAction.Allow))
                 return Deny(msgErr);
 
@@ -210,7 +208,7 @@ namespace Tide.Ork.Controllers
                 return Deny(msgErr);
 
             var bufferSign = Convert.FromBase64String(sign.DecodeBase64Url());
-            var sessionKey = tran.GenKey(account.CvkAuth);
+            var sessionKey = tran.GenKey(account.CvkiAuth);
             if (!Utils.Equals(sessionKey.Hash(dataBuffer), bufferSign)) return Deny(msgErr);
 
             var c1 = Cipher.GetCipherC1(dataBuffer);

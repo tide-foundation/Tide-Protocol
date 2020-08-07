@@ -11,9 +11,9 @@ namespace Tide.Ork.Classes {
         {
         }
 
-        public async Task<BigInteger> GetAuthShare(Guid userId) {
+        public async Task<BigInteger> GetPrism(Guid userId) {
             var user = await GetById(userId);
-            return user != null ? user.AuthShare : BigInteger.Zero;
+            return user != null ? user.Prismi : BigInteger.Zero;
         }
     }
 }

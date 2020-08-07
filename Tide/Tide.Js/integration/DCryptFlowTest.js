@@ -25,7 +25,7 @@ import IdGenerator from "../src/IdGenerator";
 
 var threshold = 3;
 var user = "admin";
-var cvkAuth = AESKey.from(
+var cmkAuth = AESKey.from(
   "AhATyXYow4qdCw7nFGVFu87JICzd7w9PbzAyp7M4r6PiHS7h0RTUNSP5XmcOVUmsvPKe"
 );
 var urls = [...Array(threshold)].map(
@@ -33,7 +33,7 @@ var urls = [...Array(threshold)].map(
 );
 //var urls = [...Array(threshold)].map((_, i) => `https://raziel-ork-${i + 1}.azurewebsites.net`);
 
-const userId = IdGenerator.seed(user, cvkAuth).guid;
+const userId = IdGenerator.seed(user, cmkAuth).guid;
 const flow = new DCryptFlow(urls, userId);
 const ruleCln = new RuleClientSet(urls, userId);
 const keyCln = new KeyClientSet(urls);
@@ -53,7 +53,7 @@ async function main() {
     const keyStore = new KeyStore(vendorKey.public());
     const rule = Rule.allow(userId, tag, keyStore);
 
-    var cvkPromise = flow.signUp(cvkAuth, threshold);
+    var cvkPromise = flow.signUp(cmkAuth, threshold);
     await Promise.all([
       cvkPromise,
       keyCln.setOrUpdate(keyStore),

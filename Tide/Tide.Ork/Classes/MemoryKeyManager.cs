@@ -7,10 +7,10 @@ namespace Tide.Ork.Classes
 {
     public class MemoryKeyManager : MemoryManagerBase<KeyVault>, IKeyManager
     {
-        public async Task<BigInteger> GetAuthShare(Guid user)
+        public async Task<BigInteger> GetPrism(Guid user)
         {
             var vault = await this.GetById(user);
-            return vault != null ? vault.AuthShare : BigInteger.Zero;
+            return vault != null ? vault.Prismi : BigInteger.Zero;
         }
     }
 }

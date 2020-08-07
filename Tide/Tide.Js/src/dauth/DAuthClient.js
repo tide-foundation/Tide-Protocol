@@ -44,37 +44,37 @@ export default class DAuthClient extends ClientBase {
   }
 
   /**
-   * @param {bigInt.BigInteger} authShare
-   * @param {bigInt.BigInteger} keyShare
-   * @param {AESKey} secret
-   * @param {AESKey} cmkAuth
+   * @param {bigInt.BigInteger} prismi
+   * @param {bigInt.BigInteger} cmki
+   * @param {AESKey} prismAuthi
+   * @param {AESKey} cmkAuthi
    * @param {string} email
    */
-  async signUp(authShare, keyShare, secret, cmkAuth, email) {
+  async signUp(prismi, cmki, prismAuthi, cmkAuthi, email) {
     var user = this.userGuid;
-    var auth = urlEncode(authShare);
-    var key = urlEncode(keyShare);
-    var sec = urlEncode(secret.toString());
-    var cmk = urlEncode(cmkAuth.toString());
+    var prism = urlEncode(prismi);
+    var cmk = urlEncode(cmki);
+    var prismAuth = urlEncode(prismAuthi.toString());
+    var cmkAuth = urlEncode(cmkAuthi.toString());
     var mail = encodeURIComponent(email);
 
-    return (await this._post(`/dauth/${user}/signup/${auth}/${key}/${sec}/${cmk}/${mail}`)).body;
+    return (await this._post(`/dauth/${user}/signup/${prism}/${cmk}/${prismAuth}/${cmkAuth}/${mail}`)).body;
   }
 
   /**
-   * @param {bigInt.BigInteger} authShare
-   * @param {AESKey} secret
+   * @param {bigInt.BigInteger} prismi
+   * @param {AESKey} prismAuthi
    * @param {Num64} ticks
    * @param {Uint8Array} sign
    */
-  async changePass(authShare, secret, ticks, sign, withCmk = false) {
-    var auth = urlEncode(authShare);
-    var sec = urlEncode(secret.toString());
+  async changePass(prismi, prismAuthi, ticks, sign, withCmk = false) {
+    var prism = urlEncode(prismi);
+    var prismAuth = urlEncode(prismAuthi.toString());
     var sgn = urlEncode(sign);
 
-    await this._post(`/dauth/${this.userGuid}/pass/${auth}/${sec}/${ticks}/${sgn}?withCmk=${withCmk}`);
+    await this._post(`/dauth/${this.userGuid}/pass/${prism}/${prismAuth}/${ticks}/${sgn}?withCmk=${withCmk}`);
   }
-
+  
   async Recover() {
     await this._get(`/dauth/${this.userGuid}/cmk/`);
   }

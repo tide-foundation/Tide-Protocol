@@ -9,38 +9,38 @@ namespace Tide.Core
 {
     public class KeyVault : SerializableByteBase<KeyVault>, IGuid
     {
-        public Guid Id => User;
-        public Guid User { get; set; }
-        public BigInteger AuthShare { get; set; }
-        public BigInteger KeyShare { get; set; }
-        public AesKey Secret { get; set; }
-        public AesKey CmkAuth { get; set; }
+        public Guid Id => UserId;
+        public Guid UserId { get; set; }
+        public BigInteger Prismi { get; set; }
+        public BigInteger Cmki { get; set; }
+        public AesKey PrismiAuth { get; set; }
+        public AesKey CmkiAuth { get; set; }
         public string Email { get; set; }
 
         public KeyVault() : base(1)
         {
-            Secret = new AesKey();
-            CmkAuth = new AesKey();
+            PrismiAuth = new AesKey();
+            CmkiAuth = new AesKey();
             Email = string.Empty;
         }
 
         protected override IEnumerable<byte[]> GetItems()
         {
-            yield return User.ToByteArray();
-            yield return AuthShare.ToByteArray(true, true);
-            yield return KeyShare.ToByteArray(true, true);
-            yield return Secret.ToByteArray();
-            yield return CmkAuth.ToByteArray();
+            yield return UserId.ToByteArray();
+            yield return Prismi.ToByteArray(true, true);
+            yield return Cmki.ToByteArray(true, true);
+            yield return PrismiAuth.ToByteArray();
+            yield return CmkiAuth.ToByteArray();
             yield return Encoding.UTF8.GetBytes(Email);
         }
 
         protected override void SetItems(IReadOnlyList<byte[]> data)
         {
-            User = new Guid(data[0]);
-            AuthShare = new BigInteger(data[1], true, true);
-            KeyShare = new BigInteger(data[2], true, true);
-            Secret = AesKey.Parse(data[3]);
-            CmkAuth = AesKey.Parse(data[4]);
+            UserId = new Guid(data[0]);
+            Prismi = new BigInteger(data[1], true, true);
+            Cmki = new BigInteger(data[2], true, true);
+            PrismiAuth = AesKey.Parse(data[3]);
+            CmkiAuth = AesKey.Parse(data[4]);
             Email =  Encoding.UTF8.GetString(data[5]);
         }
     }

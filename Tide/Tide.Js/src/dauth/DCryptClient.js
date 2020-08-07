@@ -27,14 +27,14 @@ export default class DCryptClient extends ClientBase {
   }
 
   /**
-   * @param {import("cryptide").C25519Key} vendor
+   * @param {import("cryptide").C25519Key} cvkPub
    * @param {import("big-integer").BigInteger} cvki
-   * @param {AESKey} auth
+   * @param {AESKey} cvkAuthi
    */
-  async register(vendor, cvki, auth) {
-    var body = [ urlEncode(vendor.toArray()),
+  async register(cvkPub, cvki, cvkAuthi) {
+    var body = [ urlEncode(cvkPub.toArray()),
       urlEncode(cvki),
-      urlEncode(auth.toArray()) ];
+      urlEncode(cvkAuthi.toArray()) ];
     
     await this._post(`/dauth/${this.userGuid}/cvk`).send(body);
   }

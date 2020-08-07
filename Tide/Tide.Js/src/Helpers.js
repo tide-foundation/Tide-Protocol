@@ -9,3 +9,18 @@ export function encodeBase64Url(input) {
 export function encodeFromBig(number) {
   return encodeBase64Url(Buffer.from(number.toArray(256).value));
 }
+
+/** @param  {...Uint8Array} buffers */
+export function concat(...buffers) {
+  const length = buffers.reduce((sum, buff) => buff.length + sum, 0);
+  const buffer = new Uint8Array(length);
+  
+  console.log("length:", length);
+  let step = 0;
+  for (const buff of buffers) {
+    buffer.set(buff, step);
+    step += buff.length;
+  }
+
+  return buffer;
+}

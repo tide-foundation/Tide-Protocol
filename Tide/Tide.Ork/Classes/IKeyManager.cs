@@ -22,6 +22,6 @@ namespace Tide.Ork.Classes
 {
     public interface IKeyManager : IManager<KeyVault>
     {
-        Task<BigInteger> GetAuthShare(Guid user);
+        Task<BigInteger> GetPrism(Guid user);
     }
 }

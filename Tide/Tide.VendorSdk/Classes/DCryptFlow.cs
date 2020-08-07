@@ -14,7 +14,7 @@ namespace Tide.VendorSdk.Classes
         private readonly IdGenerator _userId;
 
         public BigInteger UserId { get => _userId.Id; }
-        public Guid UserGuid { get => _userId.Guid; }
+        public Guid VuId { get => _userId.Guid; }
 
         public DCryptFlow(Guid guid, IEnumerable<Uri> uris)
         {
@@ -22,15 +22,17 @@ namespace Tide.VendorSdk.Classes
             _userId = new IdGenerator(guid);
         }
 
-        public async Task<C25519Key> SignUp(AesKey cvkAuth, int threshold)
+        public async Task<C25519Key> SignUp(AesKey cmkAuth, int threshold)
         {
             var cvk = new C25519Key();
             var ids = _clients.Select(cln => cln.Id).ToList();
 
-            var shrs = cvk.Share(threshold, ids, true);
-            var auths = _clients.Select(cln => cvkAuth.Derive(cln.Guid.ToByteArray())).ToList();
+            var cvks = cvk.Share(threshold, ids, true);
+            var cvkAuths = _clients.Select(cln => cln.Guid.ToByteArray().Concat(VuId.ToByteArray()))
+                .Select(buff => cmkAuth.Derive(buff.ToArray())).ToList();
+
             await Task.WhenAll(_clients.Select((cli, i) =>
-              cli.RegisterCvk(UserGuid, shrs[i].X, auths[i], cvk.GetPublic())));
+              cli.RegisterCvk(VuId, cvks[i].X, cvkAuths[i], cvk.GetPublic())));
 
             return cvk;
         }
@@ -39,14 +41,14 @@ namespace Tide.VendorSdk.Classes
         {
             var keyId = IdGenerator.Seed(prv.GetPublic().ToByteArray()).Guid;
 
-            var challenges = await Task.WhenAll(_clients.Select(cli => cli.Challenge(UserGuid, keyId)));
+            var challenges = await Task.WhenAll(_clients.Select(cli => cli.Challenge(VuId, keyId)));
 
             var asymmetric = Cipher.Asymmetric(cipher);
             var sessionKeys = challenges.Select(ch => prv.DecryptKey(ch.Challenge)).ToList();
             var signs = sessionKeys.Select(key => key.Hash(asymmetric)).ToList();
 
             var ciphers = await Task.WhenAll(_clients.Select((cli, i) =>
-                cli.Decrypt(UserGuid, keyId, asymmetric, challenges[i].Token, signs[i])));
+                cli.Decrypt(VuId, keyId, asymmetric, challenges[i].Token, signs[i])));
 
             var ciph = Cipher.CipherFromAsymmetric(asymmetric);
             var partials = ciphers.Select((cph, i) => C25519Point.From(sessionKeys[i].Decrypt(cph)))
