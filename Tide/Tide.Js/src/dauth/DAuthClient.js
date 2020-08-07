@@ -28,7 +28,7 @@ export default class DAuthClient extends ClientBase {
 
   /** @param {C25519Point} pass */
   async GetShare(pass) {
-    var res = await this._get(`/dauth/${this.userGuid}/convert/${urlEncode(pass.toArray())}`);
+    var res = await this._get(`/cmk/prism/${this.userGuid}/${urlEncode(pass.toArray())}`);
     return C25519Point.from(fromBase64(res.text));
   }
 
@@ -39,7 +39,7 @@ export default class DAuthClient extends ClientBase {
   async signIn(ticks, sign) {
     var sgn = urlEncode(sign);
 
-    var res = await this._get(`/dauth/${this.userGuid}/authenticate/${ticks}/${sgn}`);
+    var res = await this._get(`/cmk/auth/${this.userGuid}/${ticks}/${sgn}`);
     return fromBase64(res.text);
   }
 
@@ -58,7 +58,7 @@ export default class DAuthClient extends ClientBase {
     var cmkAuth = urlEncode(cmkAuthi.toString());
     var mail = encodeURIComponent(email);
 
-    return (await this._post(`/dauth/${user}/signup/${prism}/${cmk}/${prismAuth}/${cmkAuth}/${mail}`)).body;
+    return (await this._put(`/cmk/${user}/${prism}/${cmk}/${prismAuth}/${cmkAuth}/${mail}`)).body;
   }
 
   /**
@@ -72,10 +72,10 @@ export default class DAuthClient extends ClientBase {
     var prismAuth = urlEncode(prismAuthi.toString());
     var sgn = urlEncode(sign);
 
-    await this._post(`/dauth/${this.userGuid}/pass/${prism}/${prismAuth}/${ticks}/${sgn}?withCmk=${withCmk}`);
+    await this._post(`/cmk/prism/${this.userGuid}/${prism}/${prismAuth}/${ticks}/${sgn}?withCmk=${withCmk}`);
   }
   
   async Recover() {
-    await this._get(`/dauth/${this.userGuid}/cmk/`);
+    await this._get(`/cmk/mail/${this.userGuid}`);
   }
 }

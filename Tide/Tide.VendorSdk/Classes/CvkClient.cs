@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace Tide.VendorSdk.Classes
 {
-    public class OrkClient
+    public class CvkClient
     {
         private readonly IdGenerator _idGen;
         private readonly HttpClient _client;
@@ -20,13 +20,13 @@ namespace Tide.VendorSdk.Classes
         public BigInteger Id { get => _idGen.Id; }
         public Guid Guid { get => _idGen.Guid; }
 
-        public OrkClient(Uri uri)
+        public CvkClient(Uri uri)
         {
             _idGen = IdGenerator.Seed(uri);
             _client = new HttpClient { BaseAddress = uri };
         }
 
-        public async Task RegisterCvk(Guid viud, BigInteger cvki, AesKey cvkiAuth, C25519Key cvkPub)
+        public async Task Add(Guid viud, BigInteger cvki, AesKey cvkiAuth, C25519Key cvkPub)
         {
             var payload = JsonSerializer.Serialize(new[] {
                 cvkPub.ToByteArray(),
@@ -35,7 +35,7 @@ namespace Tide.VendorSdk.Classes
             });
 
             var body = new StringContent(payload, Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync($"api/dauth/{viud}/cvk", body);
+            var response = await _client.PutAsync($"api/cvk/{viud}", body);
 
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new HttpRequestException(response.RequestMessage.ToString());
@@ -43,7 +43,7 @@ namespace Tide.VendorSdk.Classes
 
         public async Task<(byte[] Token, C25519Cipher Challenge)> Challenge(Guid viud, Guid keyId)
         {
-            var response = await _client.GetAsync($"api/dauth/{viud}/challenge/{keyId}");
+            var response = await _client.GetAsync($"api/cvk/challenge/{viud}/{keyId}");
 
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new HttpRequestException(response.RequestMessage.ToString());
@@ -58,7 +58,7 @@ namespace Tide.VendorSdk.Classes
             var tkn = WebEncoders.Base64UrlEncode(token);
             var sgn = WebEncoders.Base64UrlEncode(sign);
 
-            var response = await _client.GetAsync($"api/dauth/{viud}/decrypt/{keyId}/{dta}/{tkn}/{sgn}");
+            var response = await _client.GetAsync($"api/cvk/plaintext/{viud}/{keyId}/{dta}/{tkn}/{sgn}");
 
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new HttpRequestException(response.RequestMessage.ToString());

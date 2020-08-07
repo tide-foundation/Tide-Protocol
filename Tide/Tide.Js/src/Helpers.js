@@ -15,7 +15,6 @@ export function concat(...buffers) {
   const length = buffers.reduce((sum, buff) => buff.length + sum, 0);
   const buffer = new Uint8Array(length);
   
-  console.log("length:", length);
   let step = 0;
   for (const buff of buffers) {
     buffer.set(buff, step);

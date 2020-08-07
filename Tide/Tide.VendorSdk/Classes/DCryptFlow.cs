@@ -10,7 +10,7 @@ namespace Tide.VendorSdk.Classes
 {
     public class DCryptFlow
     {
-        private readonly List<OrkClient> _clients;
+        private readonly List<CvkClient> _clients;
         private readonly IdGenerator _userId;
 
         public BigInteger UserId { get => _userId.Id; }
@@ -18,7 +18,7 @@ namespace Tide.VendorSdk.Classes
 
         public DCryptFlow(Guid guid, IEnumerable<Uri> uris)
         {
-            _clients = uris.Select(uris => new OrkClient(uris)).ToList();
+            _clients = uris.Select(uris => new CvkClient(uris)).ToList();
             _userId = new IdGenerator(guid);
         }
 
@@ -32,7 +32,7 @@ namespace Tide.VendorSdk.Classes
                 .Select(buff => cmkAuth.Derive(buff.ToArray())).ToList();
 
             await Task.WhenAll(_clients.Select((cli, i) =>
-              cli.RegisterCvk(VuId, cvks[i].X, cvkAuths[i], cvk.GetPublic())));
+              cli.Add(VuId, cvks[i].X, cvkAuths[i], cvk.GetPublic())));
 
             return cvk;
         }

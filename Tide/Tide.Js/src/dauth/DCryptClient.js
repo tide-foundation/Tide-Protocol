@@ -36,14 +36,14 @@ export default class DCryptClient extends ClientBase {
       urlEncode(cvki),
       urlEncode(cvkAuthi.toArray()) ];
     
-    await this._post(`/dauth/${this.userGuid}/cvk`).send(body);
+    await this._put(`/cvk/${this.userGuid}`).send(body);
   }
 
   /** @param {Guid} keyId
    *  @return {Promise<{ token: string; challenge: string}>} */
   async challenge(keyId = null) {
     const pathId = keyId ? '/' + keyId.toString() : '';
-    return (await this._get(`/dauth/${this.userGuid}/challenge${pathId}`)).body;
+    return (await this._get(`/cvk/challenge/${this.userGuid}${pathId}`)).body;
   }
 
   /**
@@ -57,7 +57,7 @@ export default class DCryptClient extends ClientBase {
     var tkn = urlEncode(token);
     var sgn = urlEncode(sign);
     
-    var res = await this._get(`/dauth/${this.userGuid}/decrypt/${keyId}/${cipher}/${tkn}/${sgn}`);
+    var res = await this._get(`/cvk/plaintext/${this.userGuid}/${keyId}/${cipher}/${tkn}/${sgn}`);
     return fromBase64(res.text);
   }
 }
