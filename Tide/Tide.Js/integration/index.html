@@ -4,8 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tide Frontend Tests</title>
+    <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
   </head>
   <body>
-    <script src="./VendorAuthFlow.js"></script>
+    <div id="mocha"></div>
+
+    <script src="../dist/tide.js"></script>
+
+    <script src="https://unpkg.com/chai/chai.js"></script>
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
+
+    <script src="../test/test.js"></script>
+    <script class="mocha-exec">
+      mocha.run();
+    </script>
   </body>
 </html>

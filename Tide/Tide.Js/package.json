@@ -7,31 +7,33 @@
     "Matthew Spencer",
     "Jose Luis Lobo"
   ],
-  "license": "MIT",
-  "version": "1.0.0",
-  "main": "dist/tide.js",
-  "scripts": {
-    "build": "webpack --config ./webpack/webpack.prod.js",
-    "build:dev": "webpack --config ./webpack/webpack.dev.js",
-    "start": "webpack-dev-server --open --config ./webpack/webpack.dev.js",
-    "integration": "parcel ./integration/index.html"
-  },
-  "presets": [
-    "@babel/preset-env"
-  ],
   "keywords": [
     "Tide",
     "Decentralized"
   ],
+  "license": "MIT",
+  "version": "1.0.0",
+  "main": "dist/tide.js",
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "scripts": {
+    "build": "webpack --config ./webpack/webpack.prod.js",
+    "build:dev": "webpack --config ./webpack/webpack.dev.js",
+    "start": "webpack-dev-server --open --config ./webpack/webpack.dev.js",
+    "test": "mocha",
+    "integration": "parcel ./integration/index.html"
+  },
   "devDependencies": {
     "@babel/core": "^7.11.1",
     "@babel/preset-env": "^7.11.0",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "html-webpack-plugin": "^4.3.0",
+    "mocha": "^8.1.1",
+    "parcel": "^1.12.4",
     "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12",
-    "parcel": "^1.12.4"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "big-integer": "1.6.36",

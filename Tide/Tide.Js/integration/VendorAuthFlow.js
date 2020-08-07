@@ -6,15 +6,9 @@ import Tide from "../src/Tide";
 
 async function main() {
   try {
-    var dnsOrks = [...Array(3)].map(
-      (_, i) => `https://ork-${i}.azurewebsites.net`
-    );
+    var dnsOrks = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
 
-    var tide = new Tide(
-      "VendorId",
-      "https://tidevendor.azurewebsites.net/tide/v1",
-      dnsOrks
-    );
+    var tide = new Tide("VendorId", "https://tidevendor.azurewebsites.net/tide/v1", dnsOrks);
 
     await tide.initialize();
 
