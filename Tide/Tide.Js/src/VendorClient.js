@@ -16,17 +16,27 @@
 import superagent from "superagent";
 import { C25519Key } from "cryptide";
 import Guid from "./Guid";
+import IdGenerator from "./IdGenerator";
+import { urlEncode } from "./dauth/ClientBase";
+import TranToken from "./TranToken";
 
 export default class VendorClient {
+
+  get id() { return this._idGen.id; }
+
+  get guid() { return this._idGen.guid; }
+
   /** @param {string|URL} url */
   constructor(url) {
     const baseUrl = typeof url === 'string' ? new URL(url) : url;
     this.url = baseUrl.origin + "/vendor";
+    this._idGen = IdGenerator.seed(baseUrl);
+
   }
 
   /** @returns {Promise<{ orkUrls: string[]; pubKey: C25519Key; }>}   */
-  async register() {
-    const res = await superagent.get(`${this.url}/register`);
+  async configuration() {
+    const res = await superagent.get(`${this.url}/configuration`);
     return {
       orkUrls: res.body.orkUrls,
       pubKey: C25519Key.from(res.body.pubKey)
@@ -34,13 +44,38 @@ export default class VendorClient {
   }
 
   /** @param {Guid} vuid
-   * @param {Uint8Array} cipher
-   * @returns {Promise<Uint8Array>} */
-  async testCipher(vuid, cipher) {
-    const res = await superagent.post(`${this.url}/cipher/vuid/${vuid}`)
+   *  @param {import("cryptide").AESKey} auth */
+  async signup(vuid, auth) {
+    const res = await superagent.put(`${this.url}/account/${vuid}`)
       .set('Content-Type', 'application/json')
-      .send(`"${Buffer.from(cipher).toString('base64')}"`);
+      .send(`"${Buffer.from(auth.toArray()).toString('base64')}"`);
+    
+    return TranToken.from(res.text) 
+  }
 
-    return Buffer.from(res.text, 'base64');
+  /** @param {Guid} vuid
+   * @param {TranToken} token */
+  async signin(vuid, token) {
+    var tkn = urlEncode(token.toArray());
+
+    await superagent.get(`${this.url}/auth/${vuid}/${tkn}`);
+  }
+
+  /** @param {Guid} vuid
+   * @param {TranToken} token
+   * @param {Uint8Array} cipher */
+  async testCipher(vuid, token, cipher) {
+    var tkn = urlEncode(token.toArray());
+    var ciphertext = urlEncode(cipher);
+
+    try {
+      await superagent.get(`${this.url}/testcipher/${vuid}/${tkn}/${ciphertext}`)
+        .set('Content-Type', 'application/json')
+        .send([token.toString(), Buffer.from(cipher).toString('base64')]);
+
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

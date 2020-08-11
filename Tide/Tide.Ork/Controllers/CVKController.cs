@@ -62,6 +62,21 @@ namespace Tide.Ork.Controllers
             return await _managerCvk.SetOrUpdate(account);
         }
 
+        [HttpGet("{vuid}/{token}")]
+        public async Task<ActionResult<byte[]>> GetCvk([FromRoute] Guid vuid, [FromRoute] string token)
+        {
+            var tran = TranToken.Parse(FromBase64(token));
+
+            var account = await _managerCvk.GetById(vuid);
+            if (account == null) return BadRequest("Invalid user id or signature");
+
+            if (!tran.OnTime || !tran.Check(account.CvkiAuth, vuid.ToByteArray()))
+                return BadRequest("Invalid user id or signature");
+
+            _logger.LogInformation($"Returning cvk from {vuid}", vuid, token);
+            return account.CvkiAuth.Encrypt(account.CVKi.ToByteArray(true, true));
+        }
+
         [HttpGet("challenge/{vuid}/{keyId}")]
         public async Task<ActionResult> Challenge([FromRoute] Guid vuid, [FromRoute] Guid keyId)
         {

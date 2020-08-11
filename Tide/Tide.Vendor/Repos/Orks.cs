@@ -1,8 +1,32 @@
+using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Tide.Encryption.AesMAC;
 using Tide.VendorSdk.Classes;
 
 public class OrkRepo : IOrkRepo
 {
+    protected readonly ConcurrentDictionary<Guid, AesKey> _items;
+
+    public OrkRepo()
+    {
+        _items = new ConcurrentDictionary<Guid, AesKey>();
+    }
+
+    public Task AddUser(Guid vuid, AesKey auth)
+    {
+        _items[vuid] = auth;
+        return Task.CompletedTask;
+    }
+
+    public Task<AesKey> GetKey(Guid vuid)
+    {
+        if (!_items.ContainsKey(vuid))
+            return Task.FromResult<AesKey>(null);
+
+        return Task.FromResult(_items[vuid]);
+    }
+
     public Task<string[]> GetListOrks()
     {
         return Task.FromResult(new[] {
