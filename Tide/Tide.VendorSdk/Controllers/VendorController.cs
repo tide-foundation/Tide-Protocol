@@ -25,7 +25,9 @@ using Tide.VendorSdk.Classes;
 using Tide.VendorSdk.Models;
 
 namespace Tide.VendorSdk.Controllers {
-    public abstract class VendorController : ControllerBase {
+    [ApiController]
+    [Route("tide/vendor")]
+    public class VendorController : ControllerBase {
         protected readonly IOrkRepo OrkRepo;
         protected readonly VendorConfig Config;
         protected readonly ILogger Logger;

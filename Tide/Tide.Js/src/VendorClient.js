@@ -29,7 +29,7 @@ export default class VendorClient {
   /** @param {string|URL} url */
   constructor(url) {
     const baseUrl = typeof url === 'string' ? new URL(url) : url;
-    this.url = baseUrl.origin + "/vendor";
+    this.url = baseUrl.origin + "/tide/vendor";
     this._idGen = IdGenerator.seed(baseUrl);
 
   }
