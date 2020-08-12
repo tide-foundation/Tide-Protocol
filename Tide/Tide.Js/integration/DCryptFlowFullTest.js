@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { AESKey, C25519Cipher } from "cryptide";
+import { AESKey, C25519Cipher, Hash } from "cryptide";
 import DCryptFlow from "../src/dauth/DCryptFlow";
 import KeyClientSet from "../src/dauth/keyClientSet";
 import RuleClientSet from "../src/dauth/RuleClientSet";
@@ -34,7 +34,7 @@ var vendorClient = new VendorClient("http://127.0.0.1:6001");
 })();
 
 async function main() {
-  const { orkUrls, pubKey } = await vendorClient.register();
+  const { orkUrls, pubKey } = await vendorClient.configuration();
 
   const vuid = IdGenerator.seed(user, cvkAuth).guid;
   const flow = new DCryptFlow(orkUrls, vuid);
@@ -44,22 +44,23 @@ async function main() {
   //user register cvk
   var cvk = await flow.signUp(cvkAuth, threshold);
 
+  //register vendor account
+  const vuidAuth = AESKey.seed(cvk.toArray()).derive(vendorClient.guid.toArray());
+  const vendorToken = await vendorClient.signup(vuid, vuidAuth);
+
   //user register rule
-  const emailTag = Num64.seed("email");
+  const tokenTag = Num64.seed("token");
   const vendorPubStore = new KeyStore(pubKey);
-  const allowEmailToVendor = Rule.allow(vuid, emailTag, vendorPubStore);
+  const allowTokenToVendor = Rule.allow(vuid, tokenTag, vendorPubStore);
 
   await Promise.all([keyCln.setOrUpdate(vendorPubStore),
-    ruleCln.setOrUpdate(allowEmailToVendor)]);
+    ruleCln.setOrUpdate(allowTokenToVendor)]);
 
-  //user encrypt email
-  const email = "info@tide.org";
-  var cipher = Cipher.encrypt(email, emailTag, cvk);
+  //user encrypt token
+  const hashToken = Hash.shaBuffer(vendorToken.toArray());
+  const cipher = Cipher.encrypt(hashToken, tokenTag, cvk);
 
   //user send cipher to vendor
-  const plain = await vendorClient.testCipher(vuid, cipher);
-  const emailPlain = Buffer.from(C25519Cipher.unpad(plain)).toString('utf-8')
-  
-  console.log(email);
-  console.log(emailPlain);
+  const isOk = await vendorClient.testCipher(vuid, vendorToken, cipher);
+  console.log(isOk);
 }
