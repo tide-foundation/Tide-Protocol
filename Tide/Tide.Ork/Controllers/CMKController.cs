@@ -25,6 +25,7 @@ using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
+using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
 
 namespace Tide.Ork.Controllers
@@ -35,11 +36,11 @@ namespace Tide.Ork.Controllers
     {
         private readonly IEmailClient _mail;
         private readonly ILogger _logger;
-        private readonly IKeyManager _manager;
+        private readonly ICmkManager _manager;
 
         public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger)
         {
-            _manager = factory.BuildManager();
+            _manager = factory.BuildCmkManager();
             _mail = mail;
             _logger = logger;
         }
@@ -50,7 +51,7 @@ namespace Tide.Ork.Controllers
         public async Task<TideResponse> Add([FromRoute] Guid uid, [FromRoute] string prism, [FromRoute] string cmk, [FromRoute] string prismAuth, [FromRoute] string cmkAuth, [FromRoute] string email)
         {
             _logger.LogInformation($"New registration for {uid}", uid);
-            var account = new KeyVault
+            var account = new CmkVault
             {
                 UserId = uid,
                 Prismi = GetBigInteger(prism),

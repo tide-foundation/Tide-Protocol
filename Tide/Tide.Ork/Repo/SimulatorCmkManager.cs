@@ -3,11 +3,12 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Tide.Core;
 using Tide.Encryption.AesMAC;
+using Tide.Ork.Classes;
 
-namespace Tide.Ork.Classes {
-    public class SimulatorKeyManager : SimulatorManagerBase<KeyVault>, IKeyManager {
+namespace Tide.Ork.Repo {
+    public class SimulatorCmkManager : SimulatorManagerBase<CmkVault>, ICmkManager {
 
-        public SimulatorKeyManager(string orkId, SimulatorClient client, AesKey key) : base(orkId, client, key)
+        public SimulatorCmkManager(string orkId, SimulatorClient client, AesKey key) : base(orkId, client, key)
         {
         }
 

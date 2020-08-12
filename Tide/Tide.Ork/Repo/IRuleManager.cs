@@ -14,14 +14,20 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
-using System.Numerics;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tide.Core;
 
-namespace Tide.Ork.Classes
+namespace Tide.Ork.Repo
 {
-    public interface IKeyManager : IManager<KeyVault>
+    public interface IRuleManager
     {
-        Task<BigInteger> GetPrism(Guid user);
+        Task<bool> Exist(Guid id);
+        Task<RuleVault> GetById(Guid id);
+        Task<List<RuleVault>> GetAll();
+        Task<TideResponse> SetOrUpdate(RuleVault entity);
+        Task Delete(Guid id);
+        Task<List<RuleVault>> GetSetBy(Guid ownerId);
+        Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId);
     }
 }

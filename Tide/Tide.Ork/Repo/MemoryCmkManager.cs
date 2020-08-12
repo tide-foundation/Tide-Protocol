@@ -3,9 +3,9 @@ using System.Numerics;
 using System.Threading.Tasks;
 using Tide.Core;
 
-namespace Tide.Ork.Classes
+namespace Tide.Ork.Repo
 {
-    public class MemoryKeyManager : MemoryManagerBase<KeyVault>, IKeyManager
+    public class MemoryCmkManager : MemoryManagerBase<CmkVault>, ICmkManager
     {
         public async Task<BigInteger> GetPrism(Guid user)
         {

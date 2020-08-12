@@ -23,7 +23,7 @@ using Tide.Core;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
-using Tide.Ork.Classes;
+using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
 
 namespace Tide.Ork.Controllers
@@ -33,9 +33,9 @@ namespace Tide.Ork.Controllers
     public class CVKController : ControllerBase
     {
         private readonly ILogger _logger;
-        private readonly IManager<CvkVault> _managerCvk;
+        private readonly ICvkManager _managerCvk;
         private readonly IRuleManager _ruleManager;
-        private readonly IManager<KeyIdVault> _keyIdManager;
+        private readonly IKeyIdManager _keyIdManager;
 
         public CVKController(IKeyManagerFactory factory, ILogger<CVKController> logger)
         {

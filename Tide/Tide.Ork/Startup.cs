@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
+using Tide.Ork.Repo;
 
 namespace Tide.Ork {
     public class Startup {

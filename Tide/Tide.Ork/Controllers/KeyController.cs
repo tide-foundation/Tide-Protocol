@@ -17,16 +17,15 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Tide.Core;
-using Tide.Ork.Classes;
 using Tide.Ork.DTOs;
+using Tide.Ork.Repo;
 
 namespace Tide.Ork.Controllers {
     [ApiController]
     [Route("api/key")]
     public class KeyController : ControllerBase {
         private readonly ILogger _logger;
-        private readonly IManager<KeyIdVault> _manager;
+        private readonly IKeyIdManager _manager;
 
         public KeyController(IKeyManagerFactory factory, ILogger<KeyController> logger) {
             _manager = factory.BuildKeyIdManager();

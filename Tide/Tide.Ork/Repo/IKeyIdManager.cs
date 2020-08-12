@@ -1,4 +1,5 @@
 // Tide Protocol - Infrastructure for the Personal Data economy
+// Tide Protocol - Infrastructure for the Personal Data economy
 // Copyright (C) 2019 Tide Foundation Ltd
 // 
 // This program is free software and is subject to the terms of 
@@ -18,14 +19,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tide.Core;
 
-namespace Tide.Ork.Classes
+namespace Tide.Ork.Repo
 {
-    public interface IManager<T> where T : IGuid
+    public interface IKeyIdManager
     {
         Task<bool> Exist(Guid id);
-        Task<T> GetById(Guid id);
-        Task<List<T>> GetAll();
-        Task<TideResponse> SetOrUpdate(T entity);
+        Task<KeyIdVault> GetById(Guid id);
+        Task<List<KeyIdVault>> GetAll();
+        Task<TideResponse> SetOrUpdate(KeyIdVault entity);
         Task Delete(Guid id);
     }
 }

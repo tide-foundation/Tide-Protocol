@@ -19,8 +19,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Tide.Ork.Classes;
 using Tide.Ork.DTOs;
+using Tide.Ork.Repo;
 
 namespace Tide.Ork.Controllers {
     [ApiController]

@@ -7,7 +7,7 @@ using Tide.Encryption.AesMAC;
 
 namespace Tide.Core
 {
-    public class KeyVault : SerializableByteBase<KeyVault>, IGuid
+    public class CmkVault : SerializableByteBase<CmkVault>, IGuid
     {
         public Guid Id => UserId;
         public Guid UserId { get; set; }
@@ -17,7 +17,7 @@ namespace Tide.Core
         public AesKey CmkiAuth { get; set; }
         public string Email { get; set; }
 
-        public KeyVault() : base(1)
+        public CmkVault() : base(1)
         {
             PrismiAuth = new AesKey();
             CmkiAuth = new AesKey();
