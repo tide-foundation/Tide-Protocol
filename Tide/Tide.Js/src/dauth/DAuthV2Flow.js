@@ -85,9 +85,11 @@ export default class DAuthV2Flow {
       const hashToken = Hash.shaBuffer(vendorToken.toArray());
       const cipher = Cipher.encrypt(hashToken, tokenTag, cvk);
 
-      //test dcrypt and dauth
-      const dcryptOk = await vendorCln.testCipher(vuid, vendorToken, cipher);
+      //test dauth and dcrypt
       const vuidAuthTag = await this.logIn(password);
+      await vendorCln.signin(vuid, vuidAuthTag);
+      
+      const dcryptOk = await vendorCln.testCipher(vuid, vendorToken, cipher);
       if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString())
         return Promise.reject(new Error("Error in the verification workflow"));
 

@@ -13,6 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
+using Microsoft.IdentityModel.Tokens;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 
@@ -22,5 +23,7 @@ namespace Tide.VendorSdk.Classes
     {
         public C25519Key PrivateKey { get; set; }
         public AesKey SecretKey { get; set; }
+        
+        public SecurityKey GetSessionKey() => new SymmetricSecurityKey(SecretKey.Hash(new byte[32]));
     }
 }
