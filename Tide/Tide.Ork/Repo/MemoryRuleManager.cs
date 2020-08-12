@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tide.Core;
 
-namespace Tide.Ork.Classes
+namespace Tide.Ork.Repo
 {
     public class MemoryRuleManager : MemoryManagerBase<RuleVault>, IRuleManager
     {

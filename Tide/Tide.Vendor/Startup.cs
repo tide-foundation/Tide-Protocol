@@ -29,9 +29,8 @@ namespace Tide.Vendor
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
 
-            services.AddSingleton(settings.Keys.CreateVendorConfig());
-            services.AddTransient<IOrkRepo, OrkRepo>();
-
+            services.AddSingleton<IOrkRepo, OrkRepo>();
+            services.AddTideEndpoint(settings.Keys.CreateVendorConfig());
             services.AddControllers();
         }
 

@@ -54,6 +54,12 @@ export default class ClientBase {
   _post(path) {
     return superagent.post(this.url + path);
   }
+
+  /** @param {string} path
+   *  @protected */
+  _put(path) {
+    return superagent.put(this.url + path);
+  }
 }
 
 /** @param {string} text */

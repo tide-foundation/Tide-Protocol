@@ -18,14 +18,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tide.Core;
 
-namespace Tide.Ork.Classes
+namespace Tide.Ork.Repo
 {
-    public interface IManager<T> where T : IGuid
+    public interface IRuleManager
     {
         Task<bool> Exist(Guid id);
-        Task<T> GetById(Guid id);
-        Task<List<T>> GetAll();
-        Task<TideResponse> SetOrUpdate(T entity);
+        Task<RuleVault> GetById(Guid id);
+        Task<List<RuleVault>> GetAll();
+        Task<TideResponse> SetOrUpdate(RuleVault entity);
         Task Delete(Guid id);
+        Task<List<RuleVault>> GetSetBy(Guid ownerId);
+        Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId);
     }
 }

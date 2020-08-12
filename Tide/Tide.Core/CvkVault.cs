@@ -9,31 +9,31 @@ namespace Tide.Core
 {
     public class CvkVault : SerializableByteBase<CvkVault>, IGuid
     {
-        public Guid Id => User;
-        public Guid User { get; set; }
-        public C25519Key VendorPub { get; set; }
+        public Guid Id => VuId;
+        public Guid VuId { get; set; }
+        public C25519Key CvkPub { get; set; }
         public BigInteger CVKi { get; set; }
-        public AesKey CvkAuth { get; set; }
+        public AesKey CvkiAuth { get; set; }
 
         public CvkVault() : base(1)
         {
-            CvkAuth = new AesKey();
+            CvkiAuth = new AesKey();
         }
 
         protected override IEnumerable<byte[]> GetItems()
         {
-            yield return User.ToByteArray();
-            yield return VendorPub != null ? VendorPub.ToByteArray() : new byte[] { };
+            yield return VuId.ToByteArray();
+            yield return CvkPub != null ? CvkPub.ToByteArray() : new byte[] { };
             yield return CVKi.ToByteArray(true, true);
-            yield return CvkAuth.ToByteArray();
+            yield return CvkiAuth.ToByteArray();
         }
 
         protected override void SetItems(IReadOnlyList<byte[]> data)
         {
-            User = new Guid(data[0]);
-            VendorPub = data[1].Length != 0 ? C25519Key.Parse(data[1]) : null;
+            VuId = new Guid(data[0]);
+            CvkPub = data[1].Length != 0 ? C25519Key.Parse(data[1]) : null;
             CVKi = new BigInteger(data[2], true, true);
-            CvkAuth = AesKey.Parse(data[3]);
+            CvkiAuth = AesKey.Parse(data[3]);
         }
     }
 }

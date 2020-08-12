@@ -27,23 +27,31 @@ export default class DCryptClient extends ClientBase {
   }
 
   /**
-   * @param {import("cryptide").C25519Key} vendor
+   * @param {import("cryptide").C25519Key} cvkPub
    * @param {import("big-integer").BigInteger} cvki
-   * @param {AESKey} auth
+   * @param {AESKey} cvkAuthi
    */
-  async register(vendor, cvki, auth) {
-    var body = [ urlEncode(vendor.toArray()),
+  async register(cvkPub, cvki, cvkAuthi) {
+    var body = [ urlEncode(cvkPub.toArray()),
       urlEncode(cvki),
-      urlEncode(auth.toArray()) ];
+      urlEncode(cvkAuthi.toArray()) ];
     
-    await this._post(`/dauth/${this.userGuid}/cvk`).send(body);
+    await this._put(`/cvk/${this.userGuid}`).send(body);
+  }
+
+  /** @param {import("../TranToken").default} token */
+  async getCvk(token) {
+    var tkn = urlEncode(token.toArray());
+    
+    const res = await this._get(`/cvk/${this.userGuid}/${tkn}`);
+    return fromBase64(res.text);
   }
 
   /** @param {Guid} keyId
    *  @return {Promise<{ token: string; challenge: string}>} */
   async challenge(keyId = null) {
     const pathId = keyId ? '/' + keyId.toString() : '';
-    return (await this._get(`/dauth/${this.userGuid}/challenge${pathId}`)).body;
+    return (await this._get(`/cvk/challenge/${this.userGuid}${pathId}`)).body;
   }
 
   /**
@@ -57,7 +65,7 @@ export default class DCryptClient extends ClientBase {
     var tkn = urlEncode(token);
     var sgn = urlEncode(sign);
     
-    var res = await this._get(`/dauth/${this.userGuid}/decrypt/${keyId}/${cipher}/${tkn}/${sgn}`);
+    var res = await this._get(`/cvk/plaintext/${this.userGuid}/${keyId}/${cipher}/${tkn}/${sgn}`);
     return fromBase64(res.text);
   }
 }

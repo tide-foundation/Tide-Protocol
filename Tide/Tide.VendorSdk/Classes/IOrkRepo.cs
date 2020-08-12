@@ -13,12 +13,16 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
+using System;
 using System.Threading.Tasks;
+using Tide.Encryption.AesMAC;
 
 namespace Tide.VendorSdk.Classes
 {
     public interface IOrkRepo
     {
         Task<string[]> GetListOrks();
+        Task AddUser(Guid vuid, AesKey auth);
+        Task<AesKey> GetKey(Guid vuid);
     }
 }

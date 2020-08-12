@@ -1,9 +1,9 @@
 ﻿using System;
-using Tide.Core;
 using Tide.Encryption.AesMAC;
+using Tide.Ork.Classes;
 using Tide.Ork.Models;
 
-namespace Tide.Ork.Classes {
+namespace Tide.Ork.Repo {
     public class SimulatorFactory : IKeyManagerFactory {
         private readonly AesKey _key;
         private readonly Models.Endpoint _config;
@@ -15,13 +15,13 @@ namespace Tide.Ork.Classes {
             _orkId = settings.Instance.Username;
         }
 
-        public IKeyManager BuildManager() => new SimulatorKeyManager(_orkId, BuildClient(), _key);
+        public ICmkManager BuildCmkManager() => new SimulatorCmkManager(_orkId, BuildClient(), _key);
 
-        public IManager<CvkVault> BuildManagerCvk() => new SimulatorManagerBase<CvkVault>(_orkId, BuildClient(), _key);
+        public ICvkManager BuildManagerCvk() => new SimulatorCvkManager(_orkId, BuildClient(), _key);
 
         public SimulatorClient BuildClient() => new SimulatorClient(_config.Api, _orkId, _config.Password);
 
-        public IManager<KeyIdVault> BuildKeyIdManager() => new SimulatorManagerBase<KeyIdVault>(_orkId, BuildClient(), _key);
+        public IKeyIdManager BuildKeyIdManager() => new SimulatorKeyIdManager(_orkId, BuildClient(), _key);
 
         public IRuleManager BuildRuleManager() => new SimulatorRuleManager(_orkId, BuildClient(), _key);
     }

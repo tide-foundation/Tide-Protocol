@@ -14,10 +14,12 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import DCryptClient from "./DCryptClient";
-import { C25519Point, AESKey, C25519Key, C25519Cipher } from "cryptide";
+import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare } from "cryptide";
 import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
 import Guid from "../guid";
+import { concat } from "../Helpers";
+import TranToken from "../TranToken";
 
 export default class DCryptFlow {
   /**
@@ -30,23 +32,44 @@ export default class DCryptFlow {
   }
 
   /**
-   * @param {AESKey} cvkAuth
+   * @param {AESKey} cmkAuth
    * @param {number} threshold
    */
-  async signUp(cvkAuth, threshold) {
+  async signUp(cmkAuth, threshold) {
     try {
       const cvk = C25519Key.generate();
       const ids = this.clients.map((c) => c.clientId);
       
-      const shrs = cvk.share(threshold, ids, true);
-      const auths = this.clients.map((c) => cvkAuth.derive(c.clientBuffer));
+      const cvks = cvk.share(threshold, ids, true);
+      const cvkAuths = this.clients.map(c => concat(c.clientBuffer, this.user.toArray()))
+        .map(buff => cmkAuth.derive(buff));
+
       await Promise.all(this.clients.map((cli, i) => 
-        cli.register(cvk.public(), shrs[i].x, auths[i])));
+        cli.register(cvk.public(), cvks[i].x, cvkAuths[i])));
 
       return cvk;
     } catch (err) {
       throw err;
     }
+  }
+
+  /** @param {AESKey} cmkAuth */
+  async getKey(cmkAuth) {
+    const cvkAuths = this.clients.map(c => concat(c.clientBuffer, this.user.toArray()))
+      .map(buff => cmkAuth.derive(buff));
+    
+    const tokens = cvkAuths.map(() => new TranToken());
+    tokens.forEach((tkn, i) => tkn.sign(cvkAuths[i], this.user.toArray()));
+    
+    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(tokens[i])));
+    
+    var cvks = cvkAuths.map((auth, i) => auth.decrypt(cipherCvks[i]))
+      .map((shr) => BnInput.getBig(shr));
+    
+    var ids = this.clients.map((c) => c.clientId);
+    var cvk = SecretShare.interpolate(ids, cvks, C25519Point.n);
+
+    return C25519Key.private(cvk);
   }
 
   /** 

@@ -1,4 +1,5 @@
 // Tide Protocol - Infrastructure for the Personal Data economy
+// Tide Protocol - Infrastructure for the Personal Data economy
 // Copyright (C) 2019 Tide Foundation Ltd
 // 
 // This program is free software and is subject to the terms of 
@@ -14,14 +15,18 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
-using System.Numerics;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tide.Core;
 
-namespace Tide.Ork.Classes
+namespace Tide.Ork.Repo
 {
-    public interface IKeyManager : IManager<KeyVault>
+    public interface IKeyIdManager
     {
-        Task<BigInteger> GetAuthShare(Guid user);
+        Task<bool> Exist(Guid id);
+        Task<KeyIdVault> GetById(Guid id);
+        Task<List<KeyIdVault>> GetAll();
+        Task<TideResponse> SetOrUpdate(KeyIdVault entity);
+        Task Delete(Guid id);
     }
 }

@@ -8,14 +8,20 @@ namespace Tide.Core {
     public class TranToken
     {
         public TranToken() { }
+        private const long _window = TimeSpan.TicksPerSecond * 10;
 
         public ulong Id { get; set; }
         public long Ticks { get; set; }
         public byte[] Sign { get; set; }
 
-        public bool Check(AesKey key) => Utils.Equals(Sign, GenSign(key));
+        public DateTime Time => DateTime.FromBinary(Ticks);
+        
+        public bool OnTime => Time >= DateTime.UtcNow.AddTicks(-_window)
+            && Time <= DateTime.UtcNow.AddTicks(_window);
 
-        private byte[] GenSign(AesKey key) => GenSign(key, Id, Ticks);
+        public bool Check(AesKey key, byte[] data = null) => Utils.Equals(Sign, GenSign(key, data));
+
+        private byte[] GenSign(AesKey key, byte[] data = null) => GenSign(key, Id, Ticks, data);
 
         public AesSherableKey GenKey(AesKey key) => AesSherableKey.Parse(key.Hash(ToByteArray()));
 
@@ -26,10 +32,11 @@ namespace Tide.Core {
         public byte[] ToByteArray() => BitConverter.GetBytes(Id)
             .Concat(BitConverter.GetBytes(Ticks)).Concat(Sign).ToArray();
 
-        private static byte[] GenSign(AesKey key, ulong id, long ticks) =>
+        private static byte[] GenSign(AesKey key, ulong id, long ticks, byte[] data = null) =>
             key.Hash(BitConverter.GetBytes(id)
-            .Concat(BitConverter.GetBytes(ticks)).ToArray())
-            .Take(16).ToArray();
+                .Concat(BitConverter.GetBytes(ticks))
+                .Concat(data ?? new byte[0]).ToArray())
+                    .Take(16).ToArray();
 
         public static TranToken Generate(AesKey key)
         {

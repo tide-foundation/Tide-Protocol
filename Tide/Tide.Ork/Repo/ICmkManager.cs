@@ -15,14 +15,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 using Tide.Core;
 
-namespace Tide.Ork.Classes
+namespace Tide.Ork.Repo
 {
-    public interface IRuleManager : IManager<RuleVault>
+    public interface ICmkManager
     {
-        Task<List<RuleVault>> GetSetBy(Guid ownerId);
-        Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId);
+        Task<bool> Exist(Guid id);
+        Task<CmkVault> GetById(Guid id);
+        Task<List<CmkVault>> GetAll();
+        Task<TideResponse> SetOrUpdate(CmkVault entity);
+        Task Delete(Guid id);
+        Task<BigInteger> GetPrism(Guid user);
     }
 }
