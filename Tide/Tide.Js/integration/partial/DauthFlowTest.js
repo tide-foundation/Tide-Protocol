@@ -14,15 +14,13 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import assert from "assert";
-import DAuthFlow from "../src/dauth/DAuthFlow";
+import DAuthFlow from "../../src/dauth/DAuthFlow";
 
 var threshold = 3;
 var user = "admin";
 var pass = "123456";
 var newPass = "1234567";
-var urls = [...Array(threshold)].map(
-  (_, i) => "http://localhost:500" + (i + 1)
-);
+var urls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
 var mail = "tmp@tide.org";
 
 //var urls = [...Array(threshold)].map((_, i) => `https://raziel-ork-${i + 1}.azurewebsites.net`);
@@ -32,8 +30,7 @@ var flow = new DAuthFlow(urls, user);
 })();
 
 async function Reconstruct() {
-  var msg =
-    "NppNUoqnsRgDrKs/x0qkmw3c2l6zXjc8ADqzRE89skQ+rEugJ1qyRwbjT9VVBT7I\n\
+  var msg = "NppNUoqnsRgDrKs/x0qkmw3c2l6zXjc8ADqzRE89skQ+rEugJ1qyRwbjT9VVBT7I\n\
     8eX2Q7ncWPYWc5Ju2OyUpgAASAa9UbnWSb+GYXPZsF07kA43OweII2jCO5ITg9Mg\n\
     EKLoBKh2t3SBQaKg7nheeA18TeB/8j5KZYiEvgrbDmQsQ/UrhW2OPGwmVekcKAUs";
 

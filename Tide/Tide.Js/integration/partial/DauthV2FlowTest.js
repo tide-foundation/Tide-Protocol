@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import DAuthV2Flow from "../src/dauth/DAuthV2Flow";
+import DAuthV2Flow from "../../src/dauth/DAuthV2Flow";
 import assert from "assert";
 
 var threshold = 3;

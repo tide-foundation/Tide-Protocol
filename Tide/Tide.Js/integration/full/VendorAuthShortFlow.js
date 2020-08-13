@@ -13,8 +13,8 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import VendorClient from "../src/VendorClient";
-import Guid from "../src/guid";
+import VendorClient from "../../src/VendorClient";
+import Guid from "../../src/guid";
 import { AESKey } from "cryptide";
 
 var vendorUrl = "http://127.0.0.1:6001";
@@ -27,9 +27,9 @@ async function signUp() {
   try {
     const vuid = new Guid();
     var auth = new AESKey();
-  
+
     const vendor = new VendorClient(vendorUrl);
-    
+
     await vendor.signup(vuid, auth);
     await vendor.signin(vuid, auth);
   } catch (error) {

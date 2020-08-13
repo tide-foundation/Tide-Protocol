@@ -1,6 +1,6 @@
 import { C25519Key } from "cryptide";
-import Cipher from "../src/Cipher";
-import Num64 from "../src/Num64";
+import Cipher from "../../src/Cipher";
+import Num64 from "../../src/Num64";
 
 var msg = "👋🏿 this is you!!!  😰🥰";
 var tag = Num64.seed("note");

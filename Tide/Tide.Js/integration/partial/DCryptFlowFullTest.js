@@ -14,15 +14,15 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import { AESKey, C25519Cipher, Hash } from "cryptide";
-import DCryptFlow from "../src/dauth/DCryptFlow";
-import KeyClientSet from "../src/dauth/keyClientSet";
-import RuleClientSet from "../src/dauth/RuleClientSet";
-import KeyStore from "../src/keyStore";
-import Rule from "../src/rule";
-import Num64 from "../src/Num64";
-import Cipher from "../src/Cipher";
-import IdGenerator from "../src/IdGenerator";
-import VendorClient from "../src/VendorClient";
+import DCryptFlow from "../../src/dauth/DCryptFlow";
+import KeyClientSet from "../../src/dauth/keyClientSet";
+import RuleClientSet from "../../src/dauth/RuleClientSet";
+import KeyStore from "../../src/keyStore";
+import Rule from "../../src/rule";
+import Num64 from "../../src/Num64";
+import Cipher from "../../src/Cipher";
+import IdGenerator from "../../src/IdGenerator";
+import VendorClient from "../../src/VendorClient";
 
 var threshold = 3;
 var user = "admin";
@@ -53,8 +53,7 @@ async function main() {
   const vendorPubStore = new KeyStore(pubKey);
   const allowTokenToVendor = Rule.allow(vuid, tokenTag, vendorPubStore);
 
-  await Promise.all([keyCln.setOrUpdate(vendorPubStore),
-    ruleCln.setOrUpdate(allowTokenToVendor)]);
+  await Promise.all([keyCln.setOrUpdate(vendorPubStore), ruleCln.setOrUpdate(allowTokenToVendor)]);
 
   //user encrypt token
   const hashToken = Hash.shaBuffer(vendorToken.toArray());

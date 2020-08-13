@@ -1,4 +1,4 @@
-import Tide from "../src/Tide";
+import Tide from "../../../src/Tide";
 
 (async () => {
   await main();
