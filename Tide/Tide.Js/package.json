@@ -14,7 +14,10 @@
     "build": "webpack --config ./webpack/webpack.prod.js",
     "build:dev": "webpack --config ./webpack/webpack.dev.js",
     "start": "webpack-dev-server --open --config ./webpack/webpack.dev.js",
-    "integration": "parcel ./integration/index.html"
+    "clean": "rm -rf dist && rm -rf .cache",
+    "integration": "npm run clean && parcel ./integration/index.html",
+    "conf:dev": "npm rm -S cryptide && npm i file:../../../cryptide-js -S",
+    "conf:prd": "npm rm -S cryptide && npm i cryptide -S"
   },
   "presets": [
     "@babel/preset-env"
@@ -35,7 +38,7 @@
   },
   "dependencies": {
     "big-integer": "1.6.36",
-    "cryptide": "^2.0.0-alpha.8",
+    "cryptide": "^2.0.0-alpha.9",
     "superagent": "^5.2.2",
     "webpack-merge": "^5.1.1"
   }
