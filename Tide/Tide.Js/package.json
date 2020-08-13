@@ -22,7 +22,10 @@
     "build:dev": "webpack --config ./webpack/webpack.dev.js",
     "start": "webpack-dev-server --open --config ./webpack/webpack.dev.js",
     "test": "mocha",
-    "integration": "parcel ./integration/index.html"
+    "clean": "rm -rf dist && rm -rf .cache",
+    "integration": "npm run clean && parcel ./integration/index.html",
+    "conf:dev": "npm rm -S cryptide && npm i file:../../../cryptide-js -S",
+    "conf:prd": "npm rm -S cryptide && npm i cryptide -S"
   },
   "devDependencies": {
     "@babel/core": "^7.11.1",
@@ -37,7 +40,7 @@
   },
   "dependencies": {
     "big-integer": "1.6.36",
-    "cryptide": "^2.0.0-alpha.8",
+    "cryptide": "^2.0.0-alpha.9",
     "superagent": "^5.2.2",
     "webpack-merge": "^5.1.1"
   }

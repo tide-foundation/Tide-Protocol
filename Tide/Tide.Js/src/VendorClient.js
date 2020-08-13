@@ -14,7 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import superagent from "superagent";
-import { C25519Key } from "cryptide";
+import { C25519Key, AESKey } from "cryptide";
 import Guid from "./Guid";
 import IdGenerator from "./IdGenerator";
 import { urlEncode } from "./dauth/ClientBase";
@@ -31,6 +31,7 @@ export default class VendorClient {
     const baseUrl = typeof url === 'string' ? new URL(url) : url;
     this.url = baseUrl.origin + "/tide/vendor";
     this._idGen = IdGenerator.seed(baseUrl);
+    this.bearer = "";
 
   }
 
@@ -53,12 +54,20 @@ export default class VendorClient {
     return TranToken.from(res.text) 
   }
 
-  /** @param {Guid} vuid
-   * @param {TranToken} token */
-  async signin(vuid, token) {
+  /**
+   * @param {Guid} vuid
+   * @param {AESKey} authKey
+   */
+  async signin(vuid, authKey) {
+    const token = new TranToken();
+    token.sign(authKey, vuid.toArray());
+
     var tkn = urlEncode(token.toArray());
 
-    await superagent.get(`${this.url}/auth/${vuid}/${tkn}`);
+    var res = await superagent.get(`${this.url}/auth/${vuid}/${tkn}`);
+
+    this.bearer = res.text;
+    return res.text;
   }
 
   /** @param {Guid} vuid
@@ -70,8 +79,7 @@ export default class VendorClient {
 
     try {
       await superagent.get(`${this.url}/testcipher/${vuid}/${tkn}/${ciphertext}`)
-        .set('Content-Type', 'application/json')
-        .send([token.toString(), Buffer.from(cipher).toString('base64')]);
+        .set('Authorization', 'Bearer ' + this.bearer);
 
       return true;
     } catch {
