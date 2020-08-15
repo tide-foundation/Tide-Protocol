@@ -32,32 +32,26 @@ store.commit("storeDetails", config.mockData[0]);
 
 var urls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
 
-Vue.prototype.$tide = new Tide(
-  "VendorId",
-  "https://tidevendor.azurewebsites.net/vendor",
-  urls
-);
+// Vue.prototype.$tide = new Tide(
+//   "VendorId",
+//   "https://tidevendor.azurewebsites.net/vendor",
+//   urls
+// );
 
 Vue.prototype.$loading = (a, m) =>
   store.commit("updateLoading", {
     active: a,
-    text: m
+    text: m,
   });
 Vue.prototype.$config = config;
 Vue.prototype.$bus = new Vue();
-Vue.prototype.$helper = new helper(
-  Vue.prototype.$tide,
-  Vue.prototype.$bus,
-  store
-);
+Vue.prototype.$helper = new helper(Vue.prototype.$tide, Vue.prototype.$bus, store);
 Vue.prototype.$http = axios;
 
-Vue.prototype.$bus.$on("toggle-tide", () =>
-  Vue.prototype.$helper.toggleTide(store.getters.user.keys.vendor)
-);
+Vue.prototype.$bus.$on("toggle-tide", () => Vue.prototype.$helper.toggleTide(store.getters.user.keys.vendor));
 
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

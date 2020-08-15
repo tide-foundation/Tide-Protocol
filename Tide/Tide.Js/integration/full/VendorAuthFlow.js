@@ -1,4 +1,4 @@
-import Tide from "../../../src/Tide";
+import Tide from "../../src/Tide";
 
 (async () => {
   await main();
@@ -6,26 +6,23 @@ import Tide from "../../../src/Tide";
 
 async function main() {
   try {
-    var dnsOrks = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
+    var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
+    var vendorUrl = "https://tidevendor.azurewebsites.net/";
 
-    var tide = new Tide("VendorId", "https://tidevendor.azurewebsites.net/tide/v1", dnsOrks);
+    // var orkUrls = [...Array(3)].map((_, i) => "http://localhost:500" + (i + 1));
+    // var vendorUrl = "http://127.0.0.1:6001";
 
-    await tide.initialize();
-
-    const shuffledOrks = tide.orks.sort(() => 0.5 - Math.random());
-    var orkIds = shuffledOrks.slice(0, 4).map((o) => o.id);
-
-    var user = `User${Math.floor(Math.random() * 1000000)}`;
+    var user = "admin";
     var pass = "123456";
+    var email = "tmp@tide.org";
 
-    var signUp = await tide.register(user, pass, user, orkIds);
+    var tide = new Tide("VendorId", vendorUrl, orkUrls, "publickey");
 
-    var msg = "Test Cipher";
-    var cipher = tide.encrypt(msg);
-    console.log(`cipher: ${msg}. decrypted: ${tide.decrypt(cipher)}`);
-
-    var loginResult = await tide.login(user, pass);
-    console.log("Completed register & login, key: ", loginResult);
+    var signUp = await tide.registerV2(user, pass, email, orkUrls);
+    console.log(signUp);
+    //
+    var login = await tide.loginV2(user, pass, orkUrls);
+    console.log(login);
   } catch (error) {
     console.log(error);
   }

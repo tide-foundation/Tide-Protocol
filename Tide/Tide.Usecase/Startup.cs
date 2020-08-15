@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Tide.Usecase.Models;
 using Tide.VendorSdk;
+using Tide.VendorSdk.Classes;
 using Tide.VendorSdk.Classes.Middleware;
 using Tide.VendorSdk.Configuration;
 using VueCliMiddleware;
@@ -36,7 +37,11 @@ namespace Tide.Usecase
 
             services.AddDbContext<VendorContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
 
-            services.AddTide("VendorId", configuration => configuration.UseSqlServerStorage(settings.Connection));
+            // services.AddTide("VendorId", configuration => configuration.UseSqlServerStorage(settings.Connection));
+
+            services.AddSingleton<IOrkRepo, OrkRepo>();
+            services.AddTideEndpoint(settings.Keys.CreateVendorConfig());
+            services.AddControllers();
 
             services.AddLiveReload();
             services.AddControllers();
@@ -48,7 +53,7 @@ namespace Tide.Usecase
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseTide();
+           // app.UseTide();
 
             if (env.IsDevelopment())
             {
@@ -73,6 +78,12 @@ namespace Tide.Usecase
             //    }
 
             //});
+
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

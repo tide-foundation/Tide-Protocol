@@ -15,7 +15,7 @@
 
 import superagent from "superagent";
 import IdGenerator from "../IdGenerator";
-import Guid from "../guid";
+import Guid from "../Guid";
 
 export default class ClientBase {
   /**
@@ -23,25 +23,36 @@ export default class ClientBase {
    * @param {string|Guid} user
    */
   constructor(url, user) {
-    const baseUrl = typeof url === 'string' ? new URL(url) : url;
+    const baseUrl = typeof url === "string" ? new URL(url) : url;
 
     this.url = baseUrl.origin + "/api";
     this._clientId = IdGenerator.seed(baseUrl);
-    this._userId = typeof user === 'string'
-      ? IdGenerator.seed(user) : new IdGenerator(user);
+    this._userId = typeof user === "string" ? IdGenerator.seed(user) : new IdGenerator(user);
   }
 
-  get clientId() { return this._clientId.id; }
+  get clientId() {
+    return this._clientId.id;
+  }
 
-  get clientBuffer() { return this._clientId.buffer; }
+  get clientBuffer() {
+    return this._clientId.buffer;
+  }
 
-  get userId() { return this._userId.id; }
+  get userId() {
+    return this._userId.id;
+  }
 
-  get userGuid() { return this._userId.guid; }
+  get userGuid() {
+    return this._userId.guid;
+  }
 
-  get userBuffer() { return this._userId.buffer; }
+  get userBuffer() {
+    return this._userId.buffer;
+  }
 
-  get userUrl() { return urlEncode(this.userBuffer);  }
+  get userUrl() {
+    return urlEncode(this.userBuffer);
+  }
 
   /** @param {string} path
    *  @protected */
@@ -69,15 +80,12 @@ export function fromBase64(text) {
 
 /** @param {string|Uint8Array|bigInt.BigInteger} data */
 export function urlEncode(data) {
-  return typeof data === "string" || data instanceof Uint8Array ? encodeBase64Url(data)
-    : encodeBase64Url(Buffer.from(data.toArray(256).value));
+  return typeof data === "string" || data instanceof Uint8Array ? encodeBase64Url(data) : encodeBase64Url(Buffer.from(data.toArray(256).value));
 }
 
 /** @param {string|Uint8Array|Buffer} data */
 function encodeBase64Url(data) {
-  const text = typeof data === "string" ? data
-    : data instanceof Buffer ? data.toString("base64")
-    : Buffer.from(data).toString("base64");
-  
+  const text = typeof data === "string" ? data : data instanceof Buffer ? data.toString("base64") : Buffer.from(data).toString("base64");
+
   return text.replace(/\=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }

@@ -23,22 +23,21 @@ export default class RuleClientSet {
    * @param {Guid} user
    */
   constructor(urls, user) {
-    this.clients = urls.map(url => new RuleClient(url, user));
+    this.clients = urls.map((url) => new RuleClient(url, user));
     this.guid = user;
   }
 
   /** @param {Guid} ruleId */
   async getById(ruleId) {
-    return await Promise.all(this.clients.map(cln => cln.getById(ruleId)));
+    return await Promise.all(this.clients.map((cln) => cln.getById(ruleId)));
   }
 
   async getSet() {
-    return await Promise.all(this.clients.map(cln => cln.getSet()));
+    return await Promise.all(this.clients.map((cln) => cln.getSet()));
   }
 
   /** @param {Rule} rule */
   async setOrUpdate(rule) {
-    return await Promise.all(this.clients.map(cln => cln.setOrUpdate(rule)));
+    return await Promise.all(this.clients.map((cln) => cln.setOrUpdate(rule)));
   }
 }
-

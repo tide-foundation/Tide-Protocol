@@ -25,13 +25,12 @@ export default class KeyClient {
 
   /** @param {Guid} id */
   async getById(id) {
-    const res = await superagent.get(this.url + '/' + id.toString());
+    const res = await superagent.get(this.url + "/" + id.toString());
     return KeyStore.from(res.body);
   }
 
   /** @param {KeyStore} key */
   async setOrUpdate(key) {
-    await superagent.post(this.url).set('Content-Type', 'application/json').send(key.stringify());
+    await superagent.post(this.url).set("Content-Type", "application/json").send(key.stringify());
   }
 }
-

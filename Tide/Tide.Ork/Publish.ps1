@@ -9,9 +9,9 @@ $restartApp = {
     Restart-AzureRmWebApp -ResourceGroupName $group -Name ork-$number
 }
 
-For ($i = 0; $i -le 10; $i++) {
-    az webapp config appsettings set --resource-group $group --name ork-$i --settings WEBSITE_RUN_FROM_PACKAGE="0"
-}
+# For ($i = 0; $i -le 10; $i++) {
+#     az webapp config appsettings set --resource-group $group --name ork-$i --settings WEBSITE_RUN_FROM_PACKAGE="0"
+# }
 
 For ($i = 0; $i -le 10; $i++) {
     $pwd = az webapp deployment list-publishing-profiles --name ork-$i --resource-group $group --query '[].userPWD' -o tsv

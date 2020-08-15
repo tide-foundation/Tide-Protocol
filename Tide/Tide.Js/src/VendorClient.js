@@ -21,18 +21,20 @@ import { urlEncode } from "./dauth/ClientBase";
 import TranToken from "./TranToken";
 
 export default class VendorClient {
+  get id() {
+    return this._idGen.id;
+  }
 
-  get id() { return this._idGen.id; }
-
-  get guid() { return this._idGen.guid; }
+  get guid() {
+    return this._idGen.guid;
+  }
 
   /** @param {string|URL} url */
   constructor(url) {
-    const baseUrl = typeof url === 'string' ? new URL(url) : url;
+    const baseUrl = typeof url === "string" ? new URL(url) : url;
     this.url = baseUrl.origin + "/tide/vendor";
     this._idGen = IdGenerator.seed(baseUrl);
     this.bearer = "";
-
   }
 
   /** @returns {Promise<{ orkUrls: string[]; pubKey: C25519Key; }>}   */
@@ -40,18 +42,19 @@ export default class VendorClient {
     const res = await superagent.get(`${this.url}/configuration`);
     return {
       orkUrls: res.body.orkUrls,
-      pubKey: C25519Key.from(res.body.pubKey)
+      pubKey: C25519Key.from(res.body.pubKey),
     };
   }
 
   /** @param {Guid} vuid
    *  @param {import("cryptide").AESKey} auth */
   async signup(vuid, auth) {
-    const res = await superagent.put(`${this.url}/account/${vuid}`)
-      .set('Content-Type', 'application/json')
-      .send(`"${Buffer.from(auth.toArray()).toString('base64')}"`);
-    
-    return TranToken.from(res.text) 
+    const res = await superagent
+      .put(`${this.url}/account/${vuid}`)
+      .set("Content-Type", "application/json")
+      .send(`"${Buffer.from(auth.toArray()).toString("base64")}"`);
+
+    return TranToken.from(res.text);
   }
 
   /**
@@ -78,8 +81,7 @@ export default class VendorClient {
     var ciphertext = urlEncode(cipher);
 
     try {
-      await superagent.get(`${this.url}/testcipher/${vuid}/${tkn}/${ciphertext}`)
-        .set('Authorization', 'Bearer ' + this.bearer);
+      await superagent.get(`${this.url}/testcipher/${vuid}/${tkn}/${ciphertext}`).set("Authorization", "Bearer " + this.bearer);
 
       return true;
     } catch {

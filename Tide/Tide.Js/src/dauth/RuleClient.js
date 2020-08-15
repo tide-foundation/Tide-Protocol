@@ -29,19 +29,18 @@ export default class RuleClient {
 
   /** @param {Guid} ruleId */
   async getById(ruleId) {
-    const res = await superagent.get(this.url + '/' + ruleId.toString());
+    const res = await superagent.get(this.url + "/" + ruleId.toString());
     return Rule.from(res.body);
   }
 
   /** @returns { Promise<Rule[]> } */
   async getSet() {
-    const res = await superagent.get(this.url + '/user/' + this.guid.toString());
-    return res.body.map(r => Rule.from(r));
+    const res = await superagent.get(this.url + "/user/" + this.guid.toString());
+    return res.body.map((r) => Rule.from(r));
   }
 
   /** @param {Rule} rule */
   async setOrUpdate(rule) {
-    await superagent.post(this.url).set('Content-Type', 'application/json').send(rule.stringify());
+    await superagent.post(this.url).set("Content-Type", "application/json").send(rule.stringify());
   }
 }
-

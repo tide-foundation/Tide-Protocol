@@ -20,16 +20,16 @@ import KeyClient from "./keyClient";
 export default class KeyClientSet {
   /** @param {string[]} urls */
   constructor(urls) {
-    this.clients = urls.map(url => new KeyClient(url))
+    this.clients = urls.map((url) => new KeyClient(url));
   }
 
   /** @param {Guid} id */
   async getById(id) {
-    return await Promise.all(this.clients.map(cln => cln.getById(id)));
+    return await Promise.all(this.clients.map((cln) => cln.getById(id)));
   }
 
   /** @param {KeyStore} key */
   async setOrUpdate(key) {
-    return await Promise.all(this.clients.map(cln => cln.setOrUpdate(key)));
+    return await Promise.all(this.clients.map((cln) => cln.setOrUpdate(key)));
   }
 }

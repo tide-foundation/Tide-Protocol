@@ -17,7 +17,7 @@ import DCryptClient from "./DCryptClient";
 import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare } from "cryptide";
 import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
-import Guid from "../guid";
+import Guid from "../Guid";
 import { concat } from "../Helpers";
 import TranToken from "../TranToken";
 
@@ -39,13 +39,11 @@ export default class DCryptFlow {
     try {
       const cvk = C25519Key.generate();
       const ids = this.clients.map((c) => c.clientId);
-      
-      const cvks = cvk.share(threshold, ids, true);
-      const cvkAuths = this.clients.map(c => concat(c.clientBuffer, this.user.toArray()))
-        .map(buff => cmkAuth.derive(buff));
 
-      await Promise.all(this.clients.map((cli, i) => 
-        cli.register(cvk.public(), cvks[i].x, cvkAuths[i])));
+      const cvks = cvk.share(threshold, ids, true);
+      const cvkAuths = this.clients.map((c) => concat(c.clientBuffer, this.user.toArray())).map((buff) => cmkAuth.derive(buff));
+
+      await Promise.all(this.clients.map((cli, i) => cli.register(cvk.public(), cvks[i].x, cvkAuths[i])));
 
       return cvk;
     } catch (err) {
@@ -55,42 +53,38 @@ export default class DCryptFlow {
 
   /** @param {AESKey} cmkAuth */
   async getKey(cmkAuth) {
-    const cvkAuths = this.clients.map(c => concat(c.clientBuffer, this.user.toArray()))
-      .map(buff => cmkAuth.derive(buff));
-    
+    const cvkAuths = this.clients.map((c) => concat(c.clientBuffer, this.user.toArray())).map((buff) => cmkAuth.derive(buff));
+
     const tokens = cvkAuths.map(() => new TranToken());
     tokens.forEach((tkn, i) => tkn.sign(cvkAuths[i], this.user.toArray()));
-    
+
     const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(tokens[i])));
-    
-    var cvks = cvkAuths.map((auth, i) => auth.decrypt(cipherCvks[i]))
-      .map((shr) => BnInput.getBig(shr));
-    
+
+    var cvks = cvkAuths.map((auth, i) => auth.decrypt(cipherCvks[i])).map((shr) => BnInput.getBig(shr));
+
     var ids = this.clients.map((c) => c.clientId);
     var cvk = SecretShare.interpolate(ids, cvks, C25519Point.n);
 
     return C25519Key.private(cvk);
   }
 
-  /** 
+  /**
    * @param {Uint8Array} cipher
    * @param {C25519Key} prv
    */
   async decrypt(cipher, prv) {
     try {
       const keyId = new KeyStore(prv.public()).keyId;
-      const challenges = await Promise.all(this.clients.map(cli => cli.challenge(keyId)));
+      const challenges = await Promise.all(this.clients.map((cli) => cli.challenge(keyId)));
 
       const asymmetric = Cipher.asymmetric(cipher);
-      const sessionKeys = challenges.map(ch => prv.decryptKey(ch.challenge));
-      const signs = sessionKeys.map(key => key.hash(asymmetric));
+      const sessionKeys = challenges.map((ch) => prv.decryptKey(ch.challenge));
+      const signs = sessionKeys.map((key) => key.hash(asymmetric));
 
-      const ciphers = await Promise.all(this.clients.map((cli, i) =>
-        cli.decrypt(asymmetric, keyId, challenges[i].token, signs[i])));
+      const ciphers = await Promise.all(this.clients.map((cli, i) => cli.decrypt(asymmetric, keyId, challenges[i].token, signs[i])));
 
       const ciph = Cipher.cipherFromAsymmetric(asymmetric);
-      const partials = ciphers.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph)))
-        .map(pnt => new C25519Cipher(pnt, ciph.c2));
+      const partials = ciphers.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph))).map((pnt) => new C25519Cipher(pnt, ciph.c2));
 
       const ids = this.clients.map((c) => c.clientId);
       return C25519Cipher.decryptShares(partials, ids);

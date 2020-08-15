@@ -202,7 +202,8 @@
 
 <script>
 import Password from "vue-password-strength-meter";
-import Tide from "tide-js";
+// import Tide from "tide-js";
+import Tide from "../../../../Tide.Js/src/Tide";
 export default {
     components: { Password },
     data: function() {
@@ -251,7 +252,25 @@ export default {
             orks: []
         };
     },
-    created() {
+    async created() {
+        var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
+        var vendorUrl = "https://tidevendor.azurewebsites.net/";
+
+        // var orkUrls = [...Array(3)].map((_, i) => "http://localhost:500" + (i + 1));
+        // var vendorUrl = "http://127.0.0.1:6001";
+
+        var user = "admin";
+        var pass = "123456";
+        var email = "tmp@tide.org";
+
+        var tide = new Tide("VendorId", vendorUrl, orkUrls, "publickey");
+
+        var signUp = await tide.registerV2(user, pass, email, orkUrls);
+        console.log(signUp);
+        //
+        var login = await tide.loginV2(user, pass, orkUrls);
+        console.log(login);
+        console.log("it worked.");
         this.$bus.$on("show-auth", s => {
             this.loginMode = "Login";
             this.step = 0;

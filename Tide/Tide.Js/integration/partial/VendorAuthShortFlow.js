@@ -32,6 +32,7 @@ async function signUp() {
 
     await vendor.signup(vuid, auth);
     await vendor.signin(vuid, auth);
+    console.log("Wahoooo");
   } catch (error) {
     console.log(error);
   }

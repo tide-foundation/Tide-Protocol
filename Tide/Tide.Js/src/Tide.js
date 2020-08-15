@@ -3,6 +3,7 @@ import IdGenerator from "./IdGenerator";
 import request from "superagent";
 import { encodeBase64Url } from "./Helpers";
 import { AESKey } from "cryptide";
+import DAuthV2Flow from "../src/dauth/DAuthV2Flow";
 
 /**
  * A client-side library to interface with the Tide scosystem.
@@ -18,10 +19,12 @@ export default class {
    * @param {Array} homeOrks - The suggested initial point of contacts. At least 1 is required.
    *
    */
-  constructor(vendorId, serverUrl, homeOrks) {
+
+  constructor(vendorId, serverUrl, homeOrks, publicKey = "") {
     this.vendorId = vendorId;
     this.serverUrl = serverUrl;
     this.homeOrks = homeOrks;
+    this.publicKey = publicKey;
   }
 
   /**
@@ -52,8 +55,7 @@ export default class {
     return new Promise(async (resolve, reject) => {
       try {
         // Some local validation, which is all we can really do.
-        if (username.length < 3 || password.length < 6)
-          return reject("Invalid credentials");
+        if (username.length < 3 || password.length < 6) return reject("Invalid credentials");
 
         var flow = new DAuthFlow(generateOrkUrls(orkIds), username);
         var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
@@ -93,16 +95,48 @@ export default class {
     return new Promise(async (resolve, reject) => {
       try {
         var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
-        var userNodes = JSON.parse(
-          await get(`${this.serverUrl}/GetUserNodes/${userId}`)
-        );
+        var userNodes = JSON.parse(await get(`${this.serverUrl}/GetUserNodes/${userId}`));
 
-        var flow = new DAuthFlow(
-          generateOrkUrls(userNodes.map((un) => un.ork)),
-          username
-        );
+        var flow = new DAuthFlow(generateOrkUrls(userNodes.map((un) => un.ork)), username);
         var keyTag = await flow.logIn(password);
         return resolve({ key: keyTag });
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  registerV2(username, password, email, orks) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        var flow = new DAuthV2Flow(username);
+        flow.cmkUrls = orks;
+        flow.cvkUrls = orks;
+        flow.vendorUrl = this.serverUrl;
+
+        var authKey0 = await flow.signUp(password, email, 3);
+
+        resolve({ key: authKey0 });
+      } catch (error) {
+        reject(error);
+        // await get(`${this.serverUrl}/RollbackUser/${userId}/`);
+      }
+    });
+  }
+
+  loginV2(username, password, orks) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        var flow = new DAuthV2Flow(username);
+        flow.vendorUrl = this.serverUrl;
+        flow.cmkUrls = orks;
+        flow.cvkUrls = orks;
+        flow.vendorUrl = this.serverUrl;
+        //  var flow = getDauthFlowV2(username, this.serverUrl, orks);
+
+        var authKey1 = await flow.logIn(password);
+
+        return resolve({ key: authKey1 });
       } catch (error) {
         return reject(error);
       }
@@ -151,14 +185,9 @@ export default class {
    */
   async recover(username) {
     var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
-    var userNodes = JSON.parse(
-      await get(`${this.serverUrl}/GetUserNodes/${userId}`)
-    );
+    var userNodes = JSON.parse(await get(`${this.serverUrl}/GetUserNodes/${userId}`));
 
-    var flow = new DAuthFlow(
-      generateOrkUrls(userNodes.map((un) => un.ork)),
-      username
-    );
+    var flow = new DAuthFlow(generateOrkUrls(userNodes.map((un) => un.ork)), username);
     flow.Recover(username);
   }
 
@@ -175,9 +204,7 @@ export default class {
     return new Promise(async (resolve, reject) => {
       try {
         var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
-        var userNodes = JSON.parse(
-          await get(`${this.serverUrl}/GetUserNodes/${userId}`)
-        );
+        var userNodes = JSON.parse(await get(`${this.serverUrl}/GetUserNodes/${userId}`));
         var urls = generateOrkUrls(userNodes.map((un) => un.ork));
         var flow = new DAuthFlow(urls, username);
 
@@ -208,11 +235,7 @@ async function selectDiscoveryOrk(homeOrks) {
 function post(url, data) {
   return new Promise(async (resolve, reject) => {
     try {
-      return extractTideResponse(
-        await request.post(url).send(data),
-        resolve,
-        reject
-      );
+      return extractTideResponse(await request.post(url).send(data), resolve, reject);
     } catch (error) {
       throw error;
     }

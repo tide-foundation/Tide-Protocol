@@ -26,7 +26,7 @@ import Rule from "../rule";
 import Cipher from "../Cipher";
 
 export default class DAuthV2Flow {
-  get vuid () {
+  get vuid() {
     return this._getCvkFlow().user;
   }
 
@@ -42,7 +42,7 @@ export default class DAuthV2Flow {
 
     /** @type {string} */
     this.vendorUrl = null;
-    
+
     /** @type {AESKey} */
     this.cmkAuth = null;
   }
@@ -78,8 +78,7 @@ export default class DAuthV2Flow {
       const vendorPubStore = new KeyStore(pubKey);
       const allowTokenToVendor = Rule.allow(vuid, tokenTag, vendorPubStore);
 
-      await Promise.all([keyCln.setOrUpdate(vendorPubStore),
-        ruleCln.setOrUpdate(allowTokenToVendor)]);
+      await Promise.all([keyCln.setOrUpdate(vendorPubStore), ruleCln.setOrUpdate(allowTokenToVendor)]);
 
       //user encrypt vendor token
       const hashToken = Hash.shaBuffer(vendorToken.toArray());
@@ -88,10 +87,9 @@ export default class DAuthV2Flow {
       //test dauth and dcrypt
       const vuidAuthTag = await this.logIn(password);
       await vendorCln.signin(vuid, vuidAuthTag);
-      
+
       const dcryptOk = await vendorCln.testCipher(vuid, vendorToken, cipher);
-      if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString())
-        return Promise.reject(new Error("Error in the verification workflow"));
+      if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 
       return vuidAuth;
     } catch (err) {
@@ -104,7 +102,7 @@ export default class DAuthV2Flow {
     try {
       const flowCmk = this._getCmkFlow();
       this.cmkAuth = await flowCmk.logIn(password);
-      
+
       const flowCvk = this._getCvkFlow();
       const cvkTag = await flowCvk.getKey(this.cmkAuth);
 
@@ -140,31 +138,25 @@ export default class DAuthV2Flow {
   }
 
   _getVendorClient() {
-    if (this.vendorUrl === null || this.vendorUrl.length === 0)
-      throw new Error("vendorUrl must not be empty");
+    if (this.vendorUrl === null || this.vendorUrl.length === 0) throw new Error("vendorUrl must not be empty");
 
-    if (this._vendorClient === undefined)
-      this._vendorClient = new VendorClient(this.vendorUrl);
+    if (this._vendorClient === undefined) this._vendorClient = new VendorClient(this.vendorUrl);
 
     return this._vendorClient;
   }
 
   _getCmkFlow() {
-    if (this.cmkUrls === null || this.cmkUrls.length === 0)
-      throw new Error("cmkUrls must not be empty");
+    if (this.cmkUrls === null || this.cmkUrls.length === 0) throw new Error("cmkUrls must not be empty");
 
-    if (this._cmkFlow === undefined)
-      this._cmkFlow = new DAuthFlow(this.cmkUrls, this.user);
+    if (this._cmkFlow === undefined) this._cmkFlow = new DAuthFlow(this.cmkUrls, this.user);
 
     return this._cmkFlow;
   }
 
   _getCvkFlow() {
-    if (this.cvkUrls === null || this.cvkUrls.length === 0)
-      throw new Error("cvkUrls must not be empty");
+    if (this.cvkUrls === null || this.cvkUrls.length === 0) throw new Error("cvkUrls must not be empty");
 
-    if (this.cmkAuth == null)
-      throw new Error("cmkAuth must not be empty");
+    if (this.cmkAuth == null) throw new Error("cmkAuth must not be empty");
 
     if (this._cvkFlow === undefined) {
       const vuid = IdGenerator.seed(this.user, this.cmkAuth).guid;
