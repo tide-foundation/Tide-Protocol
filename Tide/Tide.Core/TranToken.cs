@@ -38,11 +38,11 @@ namespace Tide.Core {
                 .Concat(data ?? new byte[0]).ToArray())
                     .Take(16).ToArray();
 
-        public static TranToken Generate(AesKey key)
+        public static TranToken Generate(AesKey key, byte[] data = null)
         {
             var id = BitConverter.ToUInt64(Guid.NewGuid().ToByteArray().Take(8).ToArray());
             var ticks = DateTime.UtcNow.Ticks;
-            var sign = GenSign(key, id, ticks);
+            var sign = GenSign(key, id, ticks, data);
 
             return new TranToken { Id = id, Ticks = ticks, Sign = sign };
         }

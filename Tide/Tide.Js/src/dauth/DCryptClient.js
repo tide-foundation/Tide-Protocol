@@ -30,11 +30,16 @@ export default class DCryptClient extends ClientBase {
    * @param {import("cryptide").C25519Key} cvkPub
    * @param {import("big-integer").BigInteger} cvki
    * @param {AESKey} cvkAuthi
+   * @param {Guid} signedKeyId
+   * @param {Uint8Array} signature
    */
-  async register(cvkPub, cvki, cvkAuthi) {
-    var body = [urlEncode(cvkPub.toArray()), urlEncode(cvki), urlEncode(cvkAuthi.toArray())];
-
-    await this._put(`/cvk/${this.userGuid}`).send(body);
+  async register(cvkPub, cvki, cvkAuthi, signedKeyId, signature) {
+    var body = [ urlEncode(cvkPub.toArray()),
+      urlEncode(cvki),
+      urlEncode(cvkAuthi.toArray()),
+      urlEncode(signature) ];
+    
+    await this._put(`/cvk/${this.userGuid}/${signedKeyId}`).send(body);
   }
 
   /** @param {import("../TranToken").default} token */

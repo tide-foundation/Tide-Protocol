@@ -34,16 +34,21 @@ export default class DCryptFlow {
   /**
    * @param {AESKey} cmkAuth
    * @param {number} threshold
+   * @param {Guid} signedKeyId
+   * @param {Uint8Array[]} signatures
    */
-  async signUp(cmkAuth, threshold) {
+  async signUp(cmkAuth, threshold, signedKeyId, signatures, cvk = C25519Key.generate()) {
     try {
-      const cvk = C25519Key.generate();
+      if (!signatures && signatures.length != this.clients.length)
+        throw new Error("Signatures are required");
+
       const ids = this.clients.map((c) => c.clientId);
 
       const cvks = cvk.share(threshold, ids, true);
       const cvkAuths = this.clients.map((c) => concat(c.clientBuffer, this.user.toArray())).map((buff) => cmkAuth.derive(buff));
 
-      await Promise.all(this.clients.map((cli, i) => cli.register(cvk.public(), cvks[i].x, cvkAuths[i])));
+      await Promise.all(this.clients.map((cli, i) => 
+        cli.register(cvk.public(), cvks[i].x, cvkAuths[i], signedKeyId, signatures[i])));
 
       return cvk;
     } catch (err) {

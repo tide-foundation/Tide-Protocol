@@ -15,7 +15,7 @@
 
 namespace Tide.VendorSdk.Models
 {
-    public class SignUpRespose
+    public class ConfRespose
     {
         public string[] OrkUrls { get; set; }
         public byte[] PubKey { get; set; }

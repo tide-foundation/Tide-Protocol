@@ -34,6 +34,10 @@ export default class ClientBase {
     return this._clientId.id;
   }
 
+  get clientGuid() {
+    return this._clientId.guid;
+  }
+
   get clientBuffer() {
     return this._clientId.buffer;
   }

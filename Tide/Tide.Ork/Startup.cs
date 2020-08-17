@@ -47,6 +47,7 @@ namespace Tide.Ork {
             app.UseAuthorization();
 
             app.UseCors(builder => builder
+                    .AllowAnyMethod()
                     .AllowAnyOrigin()
                     .AllowAnyHeader());
 

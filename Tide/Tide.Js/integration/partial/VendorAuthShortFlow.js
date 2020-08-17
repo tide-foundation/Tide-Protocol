@@ -16,8 +16,10 @@
 import VendorClient from "../../src/VendorClient";
 import Guid from "../../src/guid";
 import { AESKey } from "cryptide";
+import DCryptClient from "../../src/dauth/DCryptClient";
 
 var vendorUrl = "http://127.0.0.1:6001";
+var orkUrl = "http://127.0.0.1:5001";
 
 (async () => {
   await signUp();
@@ -29,8 +31,9 @@ async function signUp() {
     var auth = new AESKey();
 
     const vendor = new VendorClient(vendorUrl);
+    const ork = new DCryptClient(orkUrl, vuid);
 
-    await vendor.signup(vuid, auth);
+    await vendor.signup(vuid, auth, [ork.clientGuid]);
     await vendor.signin(vuid, auth);
     console.log("Wahoooo");
   } catch (error) {

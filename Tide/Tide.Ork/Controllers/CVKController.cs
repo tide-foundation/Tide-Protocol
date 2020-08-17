@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tide.Core;
@@ -37,6 +38,8 @@ namespace Tide.Ork.Controllers
         private readonly IRuleManager _ruleManager;
         private readonly IKeyIdManager _keyIdManager;
 
+        private IdGenerator IdGen => IdGenerator.Seed(new Uri(Request.GetDisplayUrl()));
+
         public CVKController(IKeyManagerFactory factory, ILogger<CVKController> logger)
         {
             _managerCvk = factory.BuildManagerCvk();
@@ -46,16 +49,24 @@ namespace Tide.Ork.Controllers
         }
 
         //TODO: there is not verification if the account already exists
-        [HttpPut("{vuid}")]
-        public async Task<TideResponse> Add([FromRoute] Guid vuid, [FromBody] string[] data)
+        [HttpPut("{vuid}/{keyId}")]
+        public async Task<ActionResult<TideResponse>> Add([FromRoute] Guid vuid, [FromRoute] Guid keyId, [FromBody] string[] data)
         {
+            var signature = FromBase64(data[3]);
             var account = new CvkVault
             {
                 VuId = vuid,
                 CvkPub = C25519Key.Parse(FromBase64(data[0])),
                 CVKi = GetBigInteger(data[1]),
-                CvkiAuth = AesKey.Parse(FromBase64(data[2])),
+                CvkiAuth = AesKey.Parse(FromBase64(data[2]))
             };
+
+            var signer = await _keyIdManager.GetById(keyId);
+            if (signer == null)
+                return BadRequest("Signer's key must be defined");
+
+            if (!signer.Key.Verify(IdGen.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
+                return BadRequest("Signature is not valid ");
 
             _logger.LogInformation($"New cvk for {vuid} with share {data[1]}", vuid, data[0]);
 

@@ -34,9 +34,8 @@ export default class DAuthFlow {
    * @param {string} email
    * @param {number} threshold
    */
-  async signUp(password, email, threshold) {
+  async signUp(password, email, threshold, cmk = random()) {
     try {
-      var cmk = random();
       var prism = random();
       var g = C25519Point.fromString(password);
 

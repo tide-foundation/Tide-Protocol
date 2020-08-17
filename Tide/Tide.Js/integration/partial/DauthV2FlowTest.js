@@ -30,19 +30,23 @@ var vendorUrl = "http://127.0.0.1:6001";
 })();
 
 async function signUp() {
-  var flow = new DAuthV2Flow(user);
-  flow.cmkUrls = orkUrls;
-  flow.cvkUrls = orkUrls;
-  flow.vendorUrl = vendorUrl;
+  try {
+    var flow = new DAuthV2Flow(user);
+    flow.cmkUrls = orkUrls;
+    flow.cvkUrls = orkUrls;
+    flow.vendorUrl = vendorUrl;
 
-  var authKey0 = await flow.signUp(pass, email, threshold);
+    var authKey0 = await flow.signUp(pass, email, threshold);
 
-  var authKey1 = await flow.logIn(pass);
-  assert.equal(authKey0.toString(), authKey1.toString());
+    var authKey1 = await flow.logIn(pass);
+    assert.equal(authKey0.toString(), authKey1.toString());
 
-  await flow.changePass(pass, newPass, threshold);
-  var authKey2 = await flow.logIn(newPass);
-  assert.equal(authKey0.toString(), authKey2.toString());
+    await flow.changePass(pass, newPass, threshold);
+    var authKey2 = await flow.logIn(newPass);
+    assert.equal(authKey0.toString(), authKey2.toString());
 
-  console.log(`all good for vuid ${flow.vuid}`);
+    console.log(`all good for vuid ${flow.vuid}`);
+  } catch (error) {
+    console.log(error);
+  }
 }

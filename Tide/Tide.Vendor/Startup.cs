@@ -49,6 +49,7 @@ namespace Tide.Vendor
             app.UseAuthorization();
 
             app.UseCors(builder => builder
+                    .AllowAnyMethod()
                     .AllowAnyOrigin()
                     .AllowAnyHeader());
 

@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -43,9 +44,9 @@ namespace Tide.VendorSdk.Controllers {
         }
 
         [HttpGet("configuration")]
-        public async Task<ActionResult<SignUpRespose>> Configuration()
+        public async Task<ActionResult<ConfRespose>> Configuration()
         {
-            return new SignUpRespose
+            return new ConfRespose
             {
                 OrkUrls = await OrkRepo.GetListOrks(),
                 PubKey = Config.PrivateKey.GetPublic().ToByteArray()
@@ -53,13 +54,20 @@ namespace Tide.VendorSdk.Controllers {
         }
 
         [HttpPut("account/{vuid}")]
-        public async Task<ActionResult<byte[]>> SignUp([FromRoute] Guid vuid, [FromBody] string auth)
+        public async Task<ActionResult<SignupRsponse>> SignUp([FromRoute] Guid vuid, [FromBody] SignupRequest data)
         {
-            var authKey = AesKey.Parse(auth);
+            var authKey = AesKey.Parse(data.Auth);
+            
+            var signatures = data.OrkIds.Select(orkId => orkId.ToByteArray().Concat(vuid.ToByteArray()))
+                .Select(msg => Config.PrivateKey.Sign(msg.ToArray())).ToList();
+            
             await OrkRepo.AddUser(vuid, authKey);
 
             Logger.LogInformation($"Account created for {vuid}", vuid);
-            return TranToken.Generate(Config.SecretKey).ToByteArray(); ;
+            return new SignupRsponse {
+                Token = TranToken.Generate(Config.SecretKey, vuid.ToByteArray()).ToByteArray(),
+                Signatures = signatures
+            };
         }
 
         [Authorize]
@@ -70,7 +78,7 @@ namespace Tide.VendorSdk.Controllers {
             var cipher = FromBase64(ciphertext);
             var plain = await Decript(vuid, cipher);
 
-            if (!tran.Check(Config.SecretKey))
+            if (!tran.Check(Config.SecretKey, vuid.ToByteArray()))
                 return BadRequest("Invalid token");
 
             if (!Utils.Equals(plain, Utils.Hash(tran.ToByteArray())))

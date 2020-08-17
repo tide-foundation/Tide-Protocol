@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { AESKey, Hash } from "cryptide";
+import { AESKey, Hash, Utils, C25519Point, C25519Key } from "cryptide";
 import Num64 from "../Num64";
 import DAuthFlow from "./DAuthFlow";
 import IdGenerator from "../IdGenerator";
@@ -24,14 +24,11 @@ import KeyClientSet from "./keyClientSet";
 import KeyStore from "../keyStore";
 import Rule from "../rule";
 import Cipher from "../Cipher";
+import Guid from "../guid";
 
 export default class DAuthV2Flow {
-  get vuid() {
-    return this._getCvkFlow().user;
-  }
-
   /** @param {string} user */
-  constructor(user) {
+  constructor(user, newCvk = false) {
     this.user = user;
 
     /** @type {string[]} */
@@ -43,8 +40,25 @@ export default class DAuthV2Flow {
     /** @type {string} */
     this.vendorUrl = null;
 
+    /** @type {bigInt.BigInteger} */
+    this.cmk = null;
+
     /** @type {AESKey} */
     this.cmkAuth = null;
+
+    /** @type {Guid} */
+    this.vuid = null;
+    
+    this.userid = IdGenerator.seed(this.user).guid;
+
+    if (newCvk)
+      this.generateCvk();    
+  }
+
+  generateCvk() {
+    this.cmk = Utils.random(1, C25519Point.n.subtract(1));
+    this.cmkAuth = AESKey.seed(Buffer.from(this.cmk.toArray(256).value));
+    this.vuid = IdGenerator.seed(this.user, this.cmkAuth).guid;
   }
 
   /**
@@ -54,31 +68,39 @@ export default class DAuthV2Flow {
    */
   async signUp(password, email, threshold) {
     try {
-      const vendorCln = this._getVendorClient();
-      const { pubKey } = await vendorCln.configuration();
+      if (this.cmk === null)
+        this.generateCvk();
 
-      // register cmk
+      const cvk = C25519Key.generate();
+
       const flowCmk = this._getCmkFlow();
-      this.cmkAuth = await flowCmk.signUp(password, email, threshold);
-
-      // register cvk
       const flowCvk = this._getCvkFlow();
-      const vuid = flowCvk.user;
-      const cvk = await flowCvk.signUp(this.cmkAuth, threshold);
-
-      //register vendor account
-      const vuidAuth = AESKey.seed(cvk.toArray()).derive(vendorCln.guid.toArray());
-      const vendorToken = await vendorCln.signup(vuid, vuidAuth);
-
-      //user register rule
-      const ruleCln = new RuleClientSet(this.cmkUrls, vuid);
+      const vendorCln = this._getVendorClient();
+      const ruleCln = new RuleClientSet(this.cmkUrls, this.vuid);
       const keyCln = new KeyClientSet(this.cmkUrls);
 
-      const tokenTag = Num64.seed("token");
-      const vendorPubStore = new KeyStore(pubKey);
-      const allowTokenToVendor = Rule.allow(vuid, tokenTag, vendorPubStore);
+      // add vendor pub key
+      const { pubKey } = await vendorCln.configuration();
 
-      await Promise.all([keyCln.setOrUpdate(vendorPubStore), ruleCln.setOrUpdate(allowTokenToVendor)]);
+      const vendorPubStore = new KeyStore(pubKey);
+      await keyCln.setOrUpdate(vendorPubStore);
+
+      //register vendor account
+      const orkIds = flowCvk.clients.map(itm => itm.clientGuid);
+      const vuidAuth = AESKey.seed(cvk.toArray()).derive(vendorCln.guid.toArray());
+      const [vendorToken, signatures] = await vendorCln.signup(this.vuid, vuidAuth, orkIds);
+
+      // register cmk
+      await flowCmk.signUp(password, email, threshold, this.cmk);
+
+      // register cvk
+      await flowCvk.signUp(this.cmkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
+      
+      // allow vendor to partial decrypt
+      const tokenTag = Num64.seed("token");
+      const allowTokenToVendor = Rule.allow(this.vuid, tokenTag, vendorPubStore);
+
+      await ruleCln.setOrUpdate(allowTokenToVendor);
 
       //user encrypt vendor token
       const hashToken = Hash.shaBuffer(vendorToken.toArray());
@@ -86,10 +108,11 @@ export default class DAuthV2Flow {
 
       //test dauth and dcrypt
       const vuidAuthTag = await this.logIn(password);
-      await vendorCln.signin(vuid, vuidAuthTag);
-
-      const dcryptOk = await vendorCln.testCipher(vuid, vendorToken, cipher);
-      if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
+      await vendorCln.signin(this.vuid, vuidAuthTag);
+      
+      const dcryptOk = await vendorCln.testCipher(this.vuid, vendorToken, cipher);
+      if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString())
+        return Promise.reject(new Error("Error in the verification workflow"));
 
       return vuidAuth;
     } catch (err) {
@@ -156,12 +179,11 @@ export default class DAuthV2Flow {
   _getCvkFlow() {
     if (this.cvkUrls === null || this.cvkUrls.length === 0) throw new Error("cvkUrls must not be empty");
 
-    if (this.cmkAuth == null) throw new Error("cmkAuth must not be empty");
+    if (this.vuid === null)
+      throw new Error("vuid must not be empty");
 
-    if (this._cvkFlow === undefined) {
-      const vuid = IdGenerator.seed(this.user, this.cmkAuth).guid;
-      this._cvkFlow = new DCryptFlow(this.cvkUrls, vuid);
-    }
+    if (this._cvkFlow === undefined)
+      this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid);
 
     return this._cvkFlow;
   }

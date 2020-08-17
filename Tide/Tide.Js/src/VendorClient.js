@@ -47,14 +47,18 @@ export default class VendorClient {
   }
 
   /** @param {Guid} vuid
-   *  @param {import("cryptide").AESKey} auth */
-  async signup(vuid, auth) {
-    const res = await superagent
-      .put(`${this.url}/account/${vuid}`)
-      .set("Content-Type", "application/json")
-      .send(`"${Buffer.from(auth.toArray()).toString("base64")}"`);
-
-    return TranToken.from(res.text);
+   *  @param {import("cryptide").AESKey} auth
+   *  @param {Guid[]} orkIds
+   *  @returns {Promise<[TranToken, Buffer[]]>}
+   * */
+  async signup(vuid, auth, orkIds) {
+    const res = await superagent.put(`${this.url}/account/${vuid}`)
+      .set('Content-Type', 'application/json')
+      .send({ orkIds: orkIds.map(id => id.toString()),
+        auth: Buffer.from(auth.toArray()).toString('base64') });
+    
+    return [TranToken.from(res.body.token), 
+      res.body.signatures.map(sign => Buffer.from(sign, 'base64'))];
   }
 
   /**

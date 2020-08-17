@@ -38,6 +38,8 @@ namespace Tide.Ork.Controllers
         private readonly ILogger _logger;
         private readonly ICmkManager _manager;
 
+        private IdGenerator IdGen => IdGenerator.Seed(new Uri(Request.GetDisplayUrl()));
+
         public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger)
         {
             _manager = factory.BuildCmkManager();
@@ -119,8 +121,7 @@ namespace Tide.Ork.Controllers
         public async Task<ActionResult> Recover([FromRoute] Guid uid)
         {
             var account = await _manager.GetById(uid);
-            var generator = IdGenerator.Seed(new Uri(Request.GetDisplayUrl()));
-            var share = new OrkShare(generator.Id, account.Cmki).ToString();
+            var share = new OrkShare(IdGen.Id, account.Cmki).ToString();
             var msg = $"You have requested to recover the CMK. Introduce the code [{share}] into tide wallet.";
 
             _mail.SendEmail(uid.ToString(), account.Email, "Key Recovery", msg);
