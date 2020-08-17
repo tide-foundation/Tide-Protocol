@@ -39,7 +39,7 @@ namespace Tide.Usecase
 
             // services.AddTide("VendorId", configuration => configuration.UseSqlServerStorage(settings.Connection));
 
-            services.AddSingleton<IOrkRepo, OrkRepo>();
+            services.AddSingleton<IVendorRepo, VendorRepo>();
             services.AddTideEndpoint(settings.Keys.CreateVendorConfig());
             services.AddControllers();
 
