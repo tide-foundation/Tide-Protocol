@@ -33,12 +33,12 @@ namespace Tide.VendorSdk.Controllers {
     [ApiController]
     [Route("tide/vendor")]
     public class VendorController : ControllerBase {
-        protected readonly IOrkRepo OrkRepo;
+        protected readonly IVendorRepo Repo;
         protected readonly VendorConfig Config;
         protected readonly ILogger Logger;
 
-        public VendorController(IOrkRepo repo, VendorConfig config, ILogger<VendorController> logger) {
-            OrkRepo = repo;
+        public VendorController(IVendorRepo repo, VendorConfig config, ILogger<VendorController> logger) {
+            Repo = repo;
             Config = config;
             Logger = logger;
         }
@@ -48,11 +48,12 @@ namespace Tide.VendorSdk.Controllers {
         {
             return new ConfRespose
             {
-                OrkUrls = await OrkRepo.GetListOrks(),
+                OrkUrls = await Repo.GetListOrks(),
                 PubKey = Config.PrivateKey.GetPublic().ToByteArray()
             };
         }
 
+        //TODO: Add throttling ip and port number
         [HttpPut("account/{vuid}")]
         public async Task<ActionResult<SignupRsponse>> SignUp([FromRoute] Guid vuid, [FromBody] SignupRequest data)
         {
@@ -61,7 +62,7 @@ namespace Tide.VendorSdk.Controllers {
             var signatures = data.OrkIds.Select(orkId => orkId.ToByteArray().Concat(vuid.ToByteArray()))
                 .Select(msg => Config.PrivateKey.Sign(msg.ToArray())).ToList();
             
-            await OrkRepo.AddUser(vuid, authKey);
+            await Repo.CreateUser(vuid, authKey);
 
             Logger.LogInformation($"Account created for {vuid}", vuid);
             return new SignupRsponse {
@@ -78,12 +79,17 @@ namespace Tide.VendorSdk.Controllers {
             var cipher = FromBase64(ciphertext);
             var plain = await Decript(vuid, cipher);
 
-            if (!tran.Check(Config.SecretKey, vuid.ToByteArray()))
+            if (!tran.Check(Config.SecretKey, vuid.ToByteArray())) {
+                await Repo.RollbackUser(vuid);
                 return BadRequest("Invalid token");
+            }
 
-            if (!Utils.Equals(plain, Utils.Hash(tran.ToByteArray())))
+            if (!Utils.Equals(plain, Utils.Hash(tran.ToByteArray()))) {
+                await Repo.RollbackUser(vuid);
                 return BadRequest("Invalid decryption");
+            }
 
+            await Repo.ConfirmUser(vuid);
             Logger.LogInformation($"Successful account creation for {vuid}", vuid);
             return Ok();
         }
@@ -93,7 +99,7 @@ namespace Tide.VendorSdk.Controllers {
         {
             var tran = TranToken.Parse(FromBase64(token));
 
-            var authKey = await OrkRepo.GetKey(vuid);
+            var authKey = await Repo.GetKey(vuid);
             if (authKey == null) return BadRequest("User or invalid signature");
 
             if (!tran.OnTime || !tran.Check(authKey, vuid.ToByteArray()))
@@ -105,7 +111,7 @@ namespace Tide.VendorSdk.Controllers {
 
         private async Task<byte[]> Decript(Guid vuid, byte[] cipher)
         {
-            var uris = (await OrkRepo.GetListOrks()).Select(url => new Uri(url)).ToList();
+            var uris = (await Repo.GetListOrks()).Select(url => new Uri(url)).ToList();
             var flow = new DCryptFlow(vuid, uris);
 
             return await flow.Decrypt(cipher, Config.PrivateKey);

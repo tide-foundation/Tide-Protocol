@@ -29,5 +29,7 @@ namespace Tide.Ork.Repo
         Task<TideResponse> SetOrUpdate(CmkVault entity);
         Task Delete(Guid id);
         Task<BigInteger> GetPrism(Guid user);
+        Task Confirm(Guid id);
+        Task Rollback(Guid id);
     }
 }

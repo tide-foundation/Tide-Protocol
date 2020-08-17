@@ -19,10 +19,12 @@ using Tide.Encryption.AesMAC;
 
 namespace Tide.VendorSdk.Classes
 {
-    public interface IOrkRepo
+    public interface IVendorRepo
     {
         Task<string[]> GetListOrks();
-        Task AddUser(Guid vuid, AesKey auth);
+        Task CreateUser(Guid vuid, AesKey auth);
         Task<AesKey> GetKey(Guid vuid);
+        Task ConfirmUser(Guid vuid);
+        Task RollbackUser(Guid vuid);        
     }
 }

@@ -5,7 +5,7 @@ using Tide.Core;
 
 namespace Tide.Ork.Repo
 {
-    public class MemoryCmkManager : MemoryManagerBase<CmkVault>, ICmkManager
+    public class MemoryCmkManager : MemoryTransactionManagerBase<CmkVault>, ICmkManager
     {
         public async Task<BigInteger> GetPrism(Guid user)
         {

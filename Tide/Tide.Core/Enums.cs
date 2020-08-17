@@ -11,5 +11,9 @@
         Orks = 3
     }
 
-
+    public enum TransactionState { 
+        New = 0,
+        Confirmed = 1,
+        Reverted = 2
+    };
 }

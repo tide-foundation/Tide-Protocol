@@ -7,7 +7,7 @@ using Tide.Encryption.AesMAC;
 
 namespace Tide.Core
 {
-    public class CmkVault : SerializableByteBase<CmkVault>, IGuid
+    public class CmkVault : SerializableByteBase<CmkVault>, IGuid, ITransactionState
     {
         public Guid Id => UserId;
         public Guid UserId { get; set; }
@@ -16,12 +16,14 @@ namespace Tide.Core
         public AesKey PrismiAuth { get; set; }
         public AesKey CmkiAuth { get; set; }
         public string Email { get; set; }
+        public TransactionState State { get; set; }
 
         public CmkVault() : base(1)
         {
             PrismiAuth = new AesKey();
             CmkiAuth = new AesKey();
             Email = string.Empty;
+            State = TransactionState.New;
         }
 
         protected override IEnumerable<byte[]> GetItems()
@@ -32,6 +34,7 @@ namespace Tide.Core
             yield return PrismiAuth.ToByteArray();
             yield return CmkiAuth.ToByteArray();
             yield return Encoding.UTF8.GetBytes(Email);
+            yield return new[] { (byte)State };
         }
 
         protected override void SetItems(IReadOnlyList<byte[]> data)
@@ -42,6 +45,7 @@ namespace Tide.Core
             PrismiAuth = AesKey.Parse(data[3]);
             CmkiAuth = AesKey.Parse(data[4]);
             Email =  Encoding.UTF8.GetString(data[5]);
+            State = (TransactionState) data[6][0];
         }
     }
 }

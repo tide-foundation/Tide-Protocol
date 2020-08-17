@@ -28,5 +28,7 @@ namespace Tide.Ork.Repo
         Task<List<CvkVault>> GetAll();
         Task<TideResponse> SetOrUpdate(CvkVault entity);
         Task Delete(Guid id);
+        Task Confirm(Guid id);
+        Task Rollback(Guid id);
     }
 }

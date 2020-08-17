@@ -80,6 +80,7 @@ namespace Tide.Ork.Controllers
             return Ok(Convert.ToBase64String(gs.ToByteArray()));
         }
 
+        //TODO: Add throttling by ip and account separate
         [HttpGet("auth/{uid}/{ticks}/{sign}")]
         public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] long ticks, [FromRoute] string sign)
         {

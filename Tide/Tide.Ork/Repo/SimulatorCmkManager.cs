@@ -16,5 +16,15 @@ namespace Tide.Ork.Repo {
             var user = await GetById(userId);
             return user != null ? user.Prismi : BigInteger.Zero;
         }
+
+        public Task Confirm(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task Rollback(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
