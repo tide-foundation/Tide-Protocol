@@ -38,6 +38,11 @@ async function signUp() {
 
     var authKey0 = await flow.signUp(pass, email, threshold);
 
+    flow = new DAuthV2Flow(user);
+    flow.cmkUrls = orkUrls;
+    flow.cvkUrls = orkUrls;
+    flow.vendorUrl = vendorUrl;
+
     var authKey1 = await flow.logIn(pass);
     assert.equal(authKey0.toString(), authKey1.toString());
 

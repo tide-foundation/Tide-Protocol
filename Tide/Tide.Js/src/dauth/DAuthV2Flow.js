@@ -57,8 +57,13 @@ export default class DAuthV2Flow {
 
   generateCvk() {
     this.cmk = Utils.random(1, C25519Point.n.subtract(1));
-    this.cmkAuth = AESKey.seed(Buffer.from(this.cmk.toArray(256).value));
-    this.vuid = IdGenerator.seed(this.user, this.cmkAuth).guid;
+    this._setCmk(AESKey.seed(Buffer.from(this.cmk.toArray(256).value)));
+  }
+
+  /** @param {AESKey} key */
+  _setCmk(key) {
+    this.cmkAuth = key
+    this.vuid = IdGenerator.seed(this.user, key).guid;
   }
 
   /**
@@ -124,7 +129,7 @@ export default class DAuthV2Flow {
   async logIn(password) {
     try {
       const flowCmk = this._getCmkFlow();
-      this.cmkAuth = await flowCmk.logIn(password);
+      this._setCmk(await flowCmk.logIn(password));
 
       const flowCvk = this._getCvkFlow();
       const cvkTag = await flowCvk.getKey(this.cmkAuth);
