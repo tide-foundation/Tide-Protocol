@@ -33,18 +33,15 @@ namespace Tide.Usecase
 
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
-            services.AddSingleton(settings);
-
-            services.AddDbContext<VendorContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
-
-            // services.AddTide("VendorId", configuration => configuration.UseSqlServerStorage(settings.Connection));
 
             services.AddSingleton<IVendorRepo, VendorRepo>();
             services.AddTideEndpoint(settings.Keys.CreateVendorConfig());
             services.AddControllers();
 
-            services.AddLiveReload();
-            services.AddControllers();
+            //services.AddDbContext<VendorContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
+
+            //services.AddLiveReload();
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
@@ -53,36 +50,38 @@ namespace Tide.Usecase
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-           // app.UseTide();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseLiveReload();
             }
 
+            app.UseHttpsRedirection();
+
             app.UseRouting();
-            app.UseSpaStaticFiles();
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.UseSpa(spa =>
-            //{
-            //    if (env.IsDevelopment())
-            //        spa.Options.SourcePath = "ClientApp";
-            //    else
-            //        spa.Options.SourcePath = "dist";
-
-            //    if (env.IsDevelopment())
-            //    {
-            //        spa.UseVueCli(npmScript: "serve");
-            //    }
-
-            //});
-
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader());
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                if (env.IsDevelopment())
+                    spa.Options.SourcePath = "ClientApp";
+                else
+                    spa.Options.SourcePath = "dist";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseVueCli(npmScript: "serve");
+                }
+
             });
         }
     }
