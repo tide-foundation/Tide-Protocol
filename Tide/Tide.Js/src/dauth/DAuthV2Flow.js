@@ -91,9 +91,8 @@ export default class DAuthV2Flow {
       await keyCln.setOrUpdate(vendorPubStore);
 
       //register vendor account
-      const orkIds = flowCvk.clients.map(itm => itm.clientGuid);
       const vuidAuth = AESKey.seed(cvk.toArray()).derive(vendorCln.guid.toArray());
-      const [vendorToken, signatures] = await vendorCln.signup(this.vuid, vuidAuth, orkIds);
+      const [vendorToken, signatures] = await vendorCln.signup(this.vuid, vuidAuth, this.cvkUrls);
 
       // register cmk
       await flowCmk.signUp(password, email, threshold, this.cmk);

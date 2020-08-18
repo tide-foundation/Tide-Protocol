@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tide.Encryption.AesMAC;
 
@@ -21,10 +22,11 @@ namespace Tide.VendorSdk.Classes
 {
     public interface IVendorRepo
     {
-        Task<string[]> GetListOrks();
-        Task CreateUser(Guid vuid, AesKey auth);
+        Task<List<string>> GetListOrks();
+        Task<List<string>> GetListOrks(Guid vuid);
+        Task CreateUser(Guid vuid, AesKey auth, List<string> orks);
         Task<AesKey> GetKey(Guid vuid);
         Task ConfirmUser(Guid vuid);
-        Task RollbackUser(Guid vuid);        
+        Task RollbackUser(Guid vuid);
     }
 }

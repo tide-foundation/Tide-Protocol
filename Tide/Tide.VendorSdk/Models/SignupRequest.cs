@@ -14,12 +14,22 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Tide.VendorSdk.Classes;
 
 namespace Tide.VendorSdk.Models
 {
     public class SignupRequest
     {
-        public Guid[] OrkIds { get; set; }
+        public List<string> OrkUrls { get; set; }
         public byte[] Auth { get; set; }
+
+        public List<Guid> GetUrlIds() {
+            if (Auth == null || Auth.Length == 0)
+                return null;
+
+            return OrkUrls.Select(url => IdGenerator.Seed(new Uri(url)).Guid).ToList();
+        }
     }
 }

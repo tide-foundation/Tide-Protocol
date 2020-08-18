@@ -59,10 +59,10 @@ namespace Tide.VendorSdk.Controllers {
         {
             var authKey = AesKey.Parse(data.Auth);
             
-            var signatures = data.OrkIds.Select(orkId => orkId.ToByteArray().Concat(vuid.ToByteArray()))
+            var signatures = data.GetUrlIds().Select(orkId => orkId.ToByteArray().Concat(vuid.ToByteArray()))
                 .Select(msg => Config.PrivateKey.Sign(msg.ToArray())).ToList();
             
-            await Repo.CreateUser(vuid, authKey);
+            await Repo.CreateUser(vuid, authKey, data.OrkUrls);
 
             Logger.LogInformation($"Account created for {vuid}", vuid);
             return new SignupRsponse {
@@ -111,7 +111,7 @@ namespace Tide.VendorSdk.Controllers {
 
         private async Task<byte[]> Decript(Guid vuid, byte[] cipher)
         {
-            var uris = (await Repo.GetListOrks()).Select(url => new Uri(url)).ToList();
+            var uris = (await Repo.GetListOrks(vuid)).Select(url => new Uri(url)).ToList();
             var flow = new DCryptFlow(vuid, uris);
 
             return await flow.Decrypt(cipher, Config.PrivateKey);

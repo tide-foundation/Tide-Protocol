@@ -13,11 +13,13 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
+using System.Collections.Generic;
+
 namespace Tide.VendorSdk.Models
 {
     public class ConfRespose
     {
-        public string[] OrkUrls { get; set; }
+        public List<string> OrkUrls { get; set; }
         public byte[] PubKey { get; set; }
     }
 }
