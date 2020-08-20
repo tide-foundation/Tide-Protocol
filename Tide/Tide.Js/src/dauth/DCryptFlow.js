@@ -60,10 +60,7 @@ export default class DCryptFlow {
   async getKey(cmkAuth) {
     const cvkAuths = this.clients.map((c) => concat(c.clientBuffer, this.user.toArray())).map((buff) => cmkAuth.derive(buff));
 
-    const tokens = cvkAuths.map(() => new TranToken());
-    tokens.forEach((tkn, i) => tkn.sign(cvkAuths[i], this.user.toArray()));
-
-    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(tokens[i])));
+    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(cvkAuths[i])));
 
     var cvks = cvkAuths.map((auth, i) => auth.decrypt(cipherCvks[i])).map((shr) => BnInput.getBig(shr));
 

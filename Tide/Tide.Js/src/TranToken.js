@@ -78,7 +78,7 @@ export default class TranToken {
 }
 
 function getTicks() {
-    return new Num64(new Date().getTime()).mul(new Num64(10000))
+    return new Num64(new Date().getTime()).mul(10000)
         .add(Num64.from("621355968000000000"));
 }
 

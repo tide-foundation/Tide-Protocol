@@ -79,10 +79,12 @@ namespace Tide.Ork.Controllers
             var tran = TranToken.Parse(FromBase64(token));
 
             var account = await _managerCvk.GetById(vuid);
-            if (account == null) return BadRequest("Invalid user id or signature");
+            if (account == null || !tran.Check(account.CvkiAuth, vuid.ToByteArray()))
+                return _logger.Log(Unauthorized($"Invalid account or signature"),
+                    $"Unsuccessful login for {vuid} with {token}");
 
-            if (!tran.OnTime || !tran.Check(account.CvkiAuth, vuid.ToByteArray()))
-                return BadRequest("Invalid user id or signature");
+            if (!tran.OnTime)
+                return _logger.Log(StatusCode(408, new TranToken().ToString()), $"Expired token: {token}");
 
             _logger.LogInformation($"Returning cvk from {vuid}", vuid, token);
             return account.CvkiAuth.Encrypt(account.CVKi.ToByteArray(true, true));

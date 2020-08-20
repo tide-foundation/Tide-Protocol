@@ -16,6 +16,7 @@
 import { AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
 import Guid from "../Guid";
+import TranToken from "../TranToken";
 
 export default class DCryptClient extends ClientBase {
   /**
@@ -42,12 +43,23 @@ export default class DCryptClient extends ClientBase {
     await this._put(`/cvk/${this.userGuid}/${signedKeyId}`).send(body);
   }
 
-  /** @param {import("../TranToken").default} token */
-  async getCvk(token) {
-    var tkn = urlEncode(token.toArray());
+  /**@param {AESKey} key */
+  async getCvk(key) {
+    let token = new TranToken().sign(key, this.userBuffer);
+    
+    for (let i = 0; i < 2; i++) {
+      try {
+        const tkn = urlEncode(token.toArray());
+        const res = await this._get(`/cvk/${this.userGuid}/${tkn}`);
 
-    const res = await this._get(`/cvk/${this.userGuid}/${tkn}`);
-    return fromBase64(res.text);
+        return fromBase64(res.text);
+      } catch (error) {
+        if (error.status !== 408 || i > 0)
+          throw error;
+
+        token = TranToken.from(error.response.text).sign(key, this.userBuffer)
+      }
+    }
   }
 
   /** @param {Guid} keyId

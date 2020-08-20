@@ -13,7 +13,7 @@ import BN from 'bn.js';
 export default class Num64 {
     /** @param {number|BN} num */
     constructor(num=0) {
-        this.num = typeof num === 'number' ? new BN(num) : num;
+        this.num = getBN(num);
     }
 
     /** @returns {Uint8Array} */
@@ -25,17 +25,17 @@ export default class Num64 {
         return buffer;
     }
 
-    /** @param {Num64} number */
-    add(number) { return new Num64(this.num.add(number.num)); }
+    /** @param {number|Num64} number */
+    add(number) { return new Num64(this.num.add(getBN(number))); }
 
-    /** @param {Num64} number */
-    mul(number) { return new Num64(this.num.mul(number.num)); }
+    /** @param {number|Num64} number */
+    mul(number) { return new Num64(this.num.mul(getBN(number))); }
 
-    /** @param {Num64} number */
-    sub(number) { return new Num64(this.num.sub(number.num)); }
+    /** @param {number|Num64} number */
+    sub(number) { return new Num64(this.num.sub(getBN(number))); }
 
-    /** @param {Num64} number */
-    div(number) { return new Num64(this.num.div(number.num)); }
+    /** @param {number|Num64} number */
+    div(number) { return new Num64(this.num.div(getBN(number))); }
 
     toString() { return this.num.toString(); }
 
@@ -51,4 +51,12 @@ export default class Num64 {
     static seed(data) {
         return Num64.from(Hash.shaBuffer(data).slice(0, 8));
     }
+}
+
+/** @param {number|Num64|BN} num
+ * @returns {BN} */
+function getBN(num) {
+    return typeof num === 'number' ? new BN(num)
+        : num instanceof Num64 ? num.num
+        : num;
 }

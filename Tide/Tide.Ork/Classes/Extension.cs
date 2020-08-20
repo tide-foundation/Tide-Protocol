@@ -8,13 +8,13 @@ namespace Microsoft.Extensions.Logging
 
         public static ActionResult Log(this ILogger logger, ObjectResult result)
         {
-            logger.LogInformation($"{result.StatusCode}: ${result.Value}");
+            logger.LogInformation($"{result.StatusCode}: {result.Value}");
             return result;
         }
 
         public static ActionResult Log(this ILogger logger, ObjectResult result, string message)
         {
-            logger.LogInformation($"{result.StatusCode}: ${message}");
+            logger.LogInformation($"{result.StatusCode}: {message}");
             return result;
         }
 
