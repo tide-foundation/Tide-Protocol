@@ -15,7 +15,7 @@
 
 import { C25519Point, AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
-import Num64 from "../Num64";
+import TranToken from "../TranToken";
 
 export default class DAuthClient extends ClientBase {
   /**
@@ -26,20 +26,18 @@ export default class DAuthClient extends ClientBase {
     super(url, user);
   }
 
-  /** @param {C25519Point} pass */
-  async GetShare(pass) {
+  /** @param {C25519Point} pass
+   *  @returns {Promise<[C25519Point, TranToken]>} */
+  async ApplyPrism(pass) {
     var res = await this._get(`/cmk/prism/${this.userGuid}/${urlEncode(pass.toArray())}`);
-    return C25519Point.from(fromBase64(res.text));
+    return [ C25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
   }
 
-  /**
-   * @param {Num64} ticks
-   * @param {Uint8Array} sign
-   */
-  async signIn(ticks, sign) {
-    var sgn = urlEncode(sign);
+  /** @param {TranToken} token */
+  async signIn(token) {
+    var tkn = urlEncode(token.toArray());
 
-    var res = await this._get(`/cmk/auth/${this.userGuid}/${ticks}/${sgn}`);
+    var res = await this._get(`/cmk/auth/${this.userGuid}/${tkn}`);
     return fromBase64(res.text);
   }
 
@@ -64,15 +62,14 @@ export default class DAuthClient extends ClientBase {
   /**
    * @param {bigInt.BigInteger} prismi
    * @param {AESKey} prismAuthi
-   * @param {Num64} ticks
-   * @param {Uint8Array} sign
+   * @param {TranToken} token
    */
-  async changePass(prismi, prismAuthi, ticks, sign, withCmk = false) {
+  async changePass(prismi, prismAuthi, token, withCmk = false) {
     var prism = urlEncode(prismi);
     var prismAuth = urlEncode(prismAuthi.toString());
-    var sgn = urlEncode(sign);
+    var tkn = urlEncode(token.toArray());
 
-    await this._post(`/cmk/prism/${this.userGuid}/${prism}/${prismAuth}/${ticks}/${sgn}?withCmk=${withCmk}`);
+    await this._post(`/cmk/prism/${this.userGuid}/${prism}/${prismAuth}/${tkn}?withCmk=${withCmk}`);
   }
   
   async Recover() {

@@ -17,7 +17,9 @@ import BigInt from "big-integer";
 import DAuthClient from "./DAuthClient";
 import DAuthShare from "./DAuthShare";
 import { SecretShare, Utils, C25519Point, AESKey } from "cryptide";
-import Num64 from "../Num64";
+import TranToken from "../TranToken";
+import { concat } from "../Helpers";
+import { getArray } from "cryptide/src/bnInput";
 
 export default class DAuthFlow {
   /**
@@ -72,17 +74,12 @@ export default class DAuthFlow {
   /** @param {string} password */
   async logIn(password) {
     try {
-      var prismAuth = await this.getPrismAuth(password);
+      var [ prismAuth, token ] = await this.getPrismAuth(password);
       var prismAuths = this.clients.map((c) => prismAuth.derive(c.clientBuffer));
 
-      var ticks = getTicks();
-      var signs = this.clients.map((c, i) =>
-        prismAuths[i].hash(Buffer.concat([c.userBuffer, Buffer.from(ticks.toArray())]))
-      );
+      var tokens = this.clients.map((c, i) => token.copy().sign(prismAuths[i], c.userBuffer));
+      var ciphers = await Promise.all(this.clients.map((cli, i) => cli.signIn(tokens[i])));
 
-      var ciphers = await Promise.all(
-        this.clients.map((cli, i) => cli.signIn(ticks, signs[i]))
-      );
       var cmks = prismAuths
         .map((auth, i) => auth.decrypt(ciphers[i]))
         .map((shr) => BigInt.fromArray(Array.from(shr), 256, false));
@@ -96,7 +93,8 @@ export default class DAuthFlow {
     }
   }
 
-  /** @param {string} pass */
+  /** @param {string} pass
+   * @returns {Promise<[AESKey, TranToken]>} */
   async getPrismAuth(pass) {
     try {
       var r = random();
@@ -108,14 +106,14 @@ export default class DAuthFlow {
       var lis = ids.map((id) => SecretShare.getLi(id, ids, n));
 
       var gRPrismis = await Promise.all(
-        this.clients.map((cli) => cli.GetShare(gR))
+        this.clients.map((cli) => cli.ApplyPrism(gR))
       );
       var gRPrism = gRPrismis
-        .map((ki, i) => ki.times(lis[i]))
+        .map(([ki], i) => ki.times(lis[i]))
         .reduce((rki, sum) => rki.add(sum));
       var gPrism = gRPrism.times(r.modInv(n));
 
-      return AESKey.seed(gPrism.toArray());
+      return [AESKey.seed(gPrism.toArray()), gRPrismis[0][1]];
     } catch (err) {
       return Promise.reject(err);
     }
@@ -154,7 +152,7 @@ export default class DAuthFlow {
    */
   async changePass(pass, newPass, threshold) {
     try {
-      var prismAuth = await this.getPrismAuth(pass);
+      var [ prismAuth ] = await this.getPrismAuth(pass);
       await this._changePass(prismAuth, newPass, threshold);
     } catch (err) {
       return Promise.reject(err);
@@ -183,7 +181,6 @@ export default class DAuthFlow {
       var prismAuths = this.clients.map((c) => prismAuth.derive(c.clientBuffer));
       var keyAuths = this.clients.map((c) => keyAuth.derive(c.clientBuffer));
 
-      var ticks = getTicks();
       var ids = this.clients.map((c) => c.clientId);
       var [, prisms] = SecretShare.shareFromIds(
         prism,
@@ -191,22 +188,12 @@ export default class DAuthFlow {
         threshold,
         C25519Point.n
       );
-      var signs = this.clients.map((c, i) =>
-        keyAuths[i].hash(
-          Buffer.concat([
-            c.userBuffer,
-            Buffer.from(prisms[i].toArray(256).value),
-            Buffer.from(prismAuths[i].toArray()),
-            Buffer.from(ticks.toArray()),
-          ])
-        )
-      );
 
-      await Promise.all(
-        this.clients.map((cli, i) =>
-          cli.changePass(prisms[i], prismAuths[i], ticks, signs[i], isCmk)
-        )
-      );
+      var tokens = this.clients.map((c, i) => new TranToken().sign(keyAuths[i],
+        concat(c.userBuffer, getArray(prisms[i]), prismAuths[i].toArray())));
+
+      await Promise.all(this.clients.map((cli, i) => 
+        cli.changePass(prisms[i], prismAuths[i], tokens[i], isCmk)));
     } catch (err) {
       return Promise.reject(err);
     }
@@ -215,9 +202,4 @@ export default class DAuthFlow {
 
 function random() {
   return Utils.random(BigInt.one, C25519Point.n.subtract(BigInt.one));
-}
-
-function getTicks() {
-  return new Num64(new Date().getTime()).mul(new Num64(10000))
-    .add(Num64.from("621355968000000000"));
 }

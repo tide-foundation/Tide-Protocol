@@ -24,6 +24,7 @@ export default class TranToken {
      *  @param {Uint8Array} data */
     sign(key, data = null) {
         this.signature = getSignature(key, this.id, this.ticks, data);
+        return this;
     }
 
     /** @param {AESKey} key
@@ -40,6 +41,9 @@ export default class TranToken {
         }
 
         return isValid;
+    }
+    copy() {
+        return TranToken.from(this.toArray())
     }
 
     toString() {

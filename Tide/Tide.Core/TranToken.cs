@@ -7,19 +7,27 @@ using Tide.Encryption.Tools;
 namespace Tide.Core {
     public class TranToken
     {
-        public TranToken() { }
-        private const long _window = TimeSpan.TicksPerSecond * 10;
+        private const long _window = TimeSpan.TicksPerHour;
 
         public ulong Id { get; set; }
         public long Ticks { get; set; }
-        public byte[] Sign { get; set; }
+        public byte[] Signature { get; set; }
 
         public DateTime Time => DateTime.FromBinary(Ticks);
-        
+
         public bool OnTime => Time >= DateTime.UtcNow.AddTicks(-_window)
             && Time <= DateTime.UtcNow.AddTicks(_window);
 
-        public bool Check(AesKey key, byte[] data = null) => Utils.Equals(Sign, GenSign(key, data));
+        public TranToken()
+        {
+            Id = BitConverter.ToUInt64(Guid.NewGuid().ToByteArray().Take(8).ToArray());
+            Ticks = DateTime.UtcNow.Ticks;
+            Signature = new byte[0];
+        }
+
+        public void Sign(AesKey key, byte[] data = null) => Signature = GenSign(key, data);
+
+        public bool Check(AesKey key, byte[] data = null) => Utils.Equals(Signature, GenSign(key, data));
 
         private byte[] GenSign(AesKey key, byte[] data = null) => GenSign(key, Id, Ticks, data);
 
@@ -29,8 +37,16 @@ namespace Tide.Core {
 
         public override string ToString() => Convert.ToBase64String(ToByteArray());
 
-        public byte[] ToByteArray() => BitConverter.GetBytes(Id)
-            .Concat(BitConverter.GetBytes(Ticks)).Concat(Sign).ToArray();
+        public byte[] ToByteArray()
+        {
+            var buffer = new byte[32];
+
+            BitConverter.GetBytes(Id).CopyTo(buffer, 0);
+            BitConverter.GetBytes(Ticks).CopyTo(buffer, 8);
+            Signature.CopyTo(buffer, 16);
+
+            return buffer;
+        }
 
         private static byte[] GenSign(AesKey key, ulong id, long ticks, byte[] data = null) =>
             key.Hash(BitConverter.GetBytes(id)
@@ -40,20 +56,18 @@ namespace Tide.Core {
 
         public static TranToken Generate(AesKey key, byte[] data = null)
         {
-            var id = BitConverter.ToUInt64(Guid.NewGuid().ToByteArray().Take(8).ToArray());
-            var ticks = DateTime.UtcNow.Ticks;
-            var sign = GenSign(key, id, ticks, data);
-
-            return new TranToken { Id = id, Ticks = ticks, Sign = sign };
+            var token = new TranToken();
+            token.Sign(key, data);
+            return token;
         }
 
         public static TranToken Parse(IReadOnlyList<byte> bytes)
         {
             var id = BitConverter.ToUInt64(bytes.Take(8).ToArray());
             var ticks = BitConverter.ToInt64(bytes.Skip(8).Take(8).ToArray());
-            var sign = bytes.Skip(16).ToArray();
+            var signature = bytes.Skip(16).ToArray();
 
-            return new TranToken { Id = id, Ticks = ticks, Sign = sign };
+            return new TranToken { Id = id, Ticks = ticks, Signature = signature };
         }
     }
 }

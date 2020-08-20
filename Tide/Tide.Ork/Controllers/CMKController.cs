@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Web;
@@ -25,6 +26,7 @@ using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
+using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
 
@@ -67,7 +69,7 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("prism/{uid}/{pass}")]
-        public async Task<ActionResult<string>> Apply([FromRoute] Guid uid, [FromRoute] string pass)
+        public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string pass)
         {
             var g = C25519Point.From(Convert.FromBase64String(pass.DecodeBase64Url()));
             if (!g.IsValid) return BadRequest();
@@ -77,35 +79,46 @@ namespace Tide.Ork.Controllers
             var gs = g * s;
 
             _logger.LogInformation($"Login attempt for {uid}", uid, pass);
-            return Ok(Convert.ToBase64String(gs.ToByteArray()));
+            return new ApplyResponse
+            {
+                Prism = gs.ToByteArray(),
+                Token = new TranToken().ToByteArray()
+            };
         }
 
         //TODO: Add throttling by ip and account separate
-        [HttpGet("auth/{uid}/{ticks}/{sign}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] long ticks, [FromRoute] string sign)
+        [HttpGet("auth/{uid}/{token}")]
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string token)
         {
-            var account = await _manager.GetById(uid);
-            if (account == null) return BadRequest("That user does not exist.");
-            if (!VerifyChallenge.Check(account.PrismiAuth, FromBase64(sign), ticks, uid.ToByteArray(), BitConverter.GetBytes(ticks)))
-            {
-                _logger.LogInformation($"Unsuccessful login for {uid}", uid, ticks, sign);
-                return BadRequest();
-            }
+            var tran = TranToken.Parse(FromBase64(token));
 
-            _logger.LogInformation($"Successful login for {uid}", uid, ticks, sign);
+            var account = await _manager.GetById(uid);
+            if (account == null || !tran.Check(account.PrismiAuth, uid.ToByteArray()))
+                return _logger.Log(Unauthorized($"Invalid account or signature"),
+                    $"Unsuccessful login for {uid} with {token}");
+            
+            if (!tran.OnTime)
+                return _logger.Log(StatusCode(418, new TranToken().ToString()), $"Expired token: {token}");
+
+            _logger.LogInformation($"Successful login for {uid}");
             return Ok(account.PrismiAuth.EncryptStr(account.Cmki.ToByteArray(true, true)));
         }
 
-        [HttpPost("prism/{uid}/{prism}/{prismAuth}/{ticks}/{sign}")]
-        public async Task<ActionResult> ChangePrism([FromRoute] Guid uid, [FromRoute] string prism, [FromRoute] string prismAuth, [FromRoute] long ticks, [FromRoute] string sign, [FromQuery] bool withCmk = false)
+        [HttpPost("prism/{uid}/{prism}/{prismAuth}/{token}")]
+        public async Task<ActionResult> ChangePrism([FromRoute] Guid uid, [FromRoute] string prism, [FromRoute] string prismAuth, [FromRoute] string token, [FromQuery] bool withCmk = false)
         {
+            var tran = TranToken.Parse(FromBase64(token));
+            var toCheck = uid.ToByteArray().Concat(FromBase64(prism)).Concat(FromBase64(prismAuth)).ToArray();
+
             var account = await _manager.GetById(uid);
+            if (account == null)
+                return _logger.Log(Unauthorized($"Unsuccessful change password for {uid}"),
+                    $"Unsuccessful change password for {uid}. Account was not found");
+
             var authKey = withCmk ? account.CmkiAuth : account.PrismiAuth;
-            if (!VerifyChallenge.Check(authKey, FromBase64(sign), ticks, uid.ToByteArray(), FromBase64(prism), FromBase64(prismAuth), BitConverter.GetBytes(ticks)))
-            {
-                _logger.LogInformation($"Unsuccessful change password for {uid}", uid, prism, prismAuth, ticks, sign);
-                return BadRequest();
-            }
+            if (!tran.Check(authKey, toCheck))
+                return _logger.Log(Unauthorized($"Unsuccessful change password for {uid}"),
+                    $"Unsuccessful change password for {uid} with {token}");
 
             _logger.LogInformation($"Change password for {uid}", uid);
 
