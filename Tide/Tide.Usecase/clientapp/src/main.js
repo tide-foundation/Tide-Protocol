@@ -2,7 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import store from "./store";
 import "./assets/css/main.scss";
-import Tide from "tide-js";
+// import Tide from "tide-js";
 import config from "./assets/js/config";
 import helper from "./assets/js/tide-helper";
 import axios from "axios";

@@ -90,7 +90,7 @@
               </div>
             </div>Manual DNS Selection
           </div>
-          <button :class="{ disabled: dnsOrk.length == 0 }" @click="initializeTide" class="gradiant-button">
+          <button :class="{ disabled: dnsOrk.length == 0 }" @click="step++" class="gradiant-button">
             CONTINUE &nbsp;&nbsp;
             <i class="fa fa-arrow-right"></i>
           </button>
@@ -215,14 +215,17 @@ export default {
             newPasswordScore: 0,
             advancedSecurity: false,
             manualDns: false,
-            vendorProvidedOrk: ["https://ork-0.azurewebsites.net", "https://ork-4.azurewebsites.net"],
+            vendorProvidedOrk: ["https://ork-0.azurewebsites.net", "https://ork-1.azurewebsites.net"],
             user: {
-                email: `${Math.floor(Math.random() * 1000000)}@gmail.com`,
-                password: "mLwRGT7uY6tbsoB41",
-                confirm: "mLwRGT7uY6tbsoB41"
                 // email: `${Math.floor(Math.random() * 1000000)}@gmail.com`,
+                // password: "mLwRGT7uY6tbsoB41",
+                // confirm: "mLwRGT7uY6tbsoB41"
+                // email: `matt@gmail.com`,
                 // password: "Ff09&QcBWEXk",
-                // confirm: "Ff09&QcBWEXk",
+                // confirm: "Ff09&QcBWEXk"
+                email: ``,
+                password: "",
+                confirm: ""
             },
             frags: {
                 frag1: "",
@@ -253,29 +256,32 @@ export default {
         };
     },
     async created() {
-        var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
-        var vendorUrl = "https://tidevendor.azurewebsites.net/";
+        var orks = [];
+        for (let i = 0; i < 10; i++) {
+            orks.push({
+                id: i,
+                url: `https://ork-${i}.azurewebsites.net`,
+                cmk: false,
+                cvk: false
+            });
+        }
 
-        // var orkUrls = [...Array(3)].map((_, i) => "http://localhost:500" + (i + 1));
-        // var vendorUrl = "http://127.0.0.1:6001";
+        const shuffled = orks.sort(() => 0.5 - Math.random());
+        for (let i = 0; i < 3; i++) {
+            shuffled[i].cmk = true;
+        }
+        for (let i = 3; i < 7; i++) {
+            shuffled[i].cvk = true;
+        }
+        this.orks = orks;
 
-        var user = "admin";
-        var pass = "123456";
-        var email = "tmp@tide.org";
-
-        var tide = new Tide("VendorId", vendorUrl, orkUrls, "publickey");
-
-        var signUp = await tide.registerV2(user, pass, email, orkUrls);
-        console.log(signUp);
-        //
-        var login = await tide.loginV2(user, pass, orkUrls);
-        console.log(login);
-        console.log("it worked.");
         this.$bus.$on("show-auth", s => {
             this.loginMode = "Login";
             this.step = 0;
             this.show = s;
         });
+        var urls = this.orks.map(o => o.url);
+        this.tide = new Tide("VendorId", "https://tidevendor.azurewebsites.net/", urls, "publickey");
         this.autoSelectDnsOrk();
     },
     watch: {
@@ -333,32 +339,12 @@ export default {
                 this.step = 1;
             } else this.register();
         },
-        async initializeTide() {
-            this.$loading(true, "Initializing Tide...");
-            this.tide = new Tide("VendorId", "https://tidevendor.azurewebsites.net/tide/v1", [this.dnsOrk]);
-            await this.tide.initialize();
-
-            var orks = this.tide.orks.slice();
-            orks.forEach(ork => {
-                ork.cmk = false;
-                ork.cvk = false;
-            });
-
-            const shuffled = orks.sort(() => 0.5 - Math.random());
-            for (let i = 0; i < 3; i++) {
-                shuffled[i].cmk = true;
-            }
-            for (let i = 3; i < 7; i++) {
-                shuffled[i].cvk = true;
-            }
-            this.orks = orks;
-
-            this.step++;
-            this.$loading(false);
-        },
         toggledOrk(ork, key) {
             ork[key] = !ork[key];
             return ork;
+        },
+        getTemporaryOrkList() {
+            return this.orks.filter(o => o.id < 3).map(o => o.url);
         },
         register() {
             if (this.user.password.length < 4) return (this.error = "Password requires at least 4 characters.");
@@ -368,10 +354,7 @@ export default {
             // Artificial wait to allow loading overlay to react
             setTimeout(async () => {
                 try {
-                    var orkIds = this.orks.filter(o => o.cmk).map(n => n.id);
-                    // var orkIds = ["ork-0", "ork-1", "ork-2", "ork-3", "ork-4", "ork-5"];
-                    orkIds = ["ork-9", "ork-4", "ork-1", "ork-7"];
-                    var signUp = await this.tide.register(this.user.email, this.user.password, this.user.email, orkIds);
+                    var signUp = await this.tide.registerV2(this.user.email, this.user.password, this.user.email, this.getTemporaryOrkList());
 
                     const registerTideResult = {
                         privateKey: "5J9mJizKfGrFdnSZNswomzTeoVoLi3649YdrHGwT3EQTCTPLf3Z",
@@ -423,8 +406,8 @@ export default {
             // Artificial wait to allow loading overlay to react
             setTimeout(async () => {
                 try {
-                    var loginResult = await this.$tide.login(this.user.email, this.user.password);
-                    console.log(loginResult.key);
+                    var loginResult = await this.tide.loginV2(this.user.email, this.user.password, this.getTemporaryOrkList());
+
                     this.$loading(true, "Gathering Vendor account...");
 
                     var user = {

@@ -24,7 +24,7 @@ import KeyClientSet from "./keyClientSet";
 import KeyStore from "../keyStore";
 import Rule from "../rule";
 import Cipher from "../Cipher";
-import Guid from "../guid";
+import Guid from "../Guid";
 
 export default class DAuthV2Flow {
   /** @param {string} user */
@@ -48,11 +48,10 @@ export default class DAuthV2Flow {
 
     /** @type {Guid} */
     this.vuid = null;
-    
+
     this.userid = IdGenerator.seed(this.user).guid;
 
-    if (newCvk)
-      this.generateCvk();    
+    if (newCvk) this.generateCvk();
   }
 
   generateCvk() {
@@ -62,7 +61,7 @@ export default class DAuthV2Flow {
 
   /** @param {AESKey} key */
   _setCmk(key) {
-    this.cmkAuth = key
+    this.cmkAuth = key;
     this.vuid = IdGenerator.seed(this.user, key).guid;
   }
 
@@ -73,8 +72,7 @@ export default class DAuthV2Flow {
    */
   async signUp(password, email, threshold) {
     try {
-      if (this.cmk === null)
-        this.generateCvk();
+      if (this.cmk === null) this.generateCvk();
 
       const cvk = C25519Key.generate();
 
@@ -99,7 +97,7 @@ export default class DAuthV2Flow {
 
       // register cvk
       await flowCvk.signUp(this.cmkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
-      
+
       // allow vendor to partial decrypt
       const tokenTag = Num64.seed("token");
       const allowTokenToVendor = Rule.allow(this.vuid, tokenTag, vendorPubStore);
@@ -113,10 +111,9 @@ export default class DAuthV2Flow {
       //test dauth and dcrypt
       const vuidAuthTag = await this.logIn(password);
       await vendorCln.signin(this.vuid, vuidAuthTag);
-      
+
       const dcryptOk = await vendorCln.testCipher(this.vuid, vendorToken, cipher);
-      if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString())
-        return Promise.reject(new Error("Error in the verification workflow"));
+      if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 
       return vuidAuth;
     } catch (err) {
@@ -183,11 +180,9 @@ export default class DAuthV2Flow {
   _getCvkFlow() {
     if (this.cvkUrls === null || this.cvkUrls.length === 0) throw new Error("cvkUrls must not be empty");
 
-    if (this.vuid === null)
-      throw new Error("vuid must not be empty");
+    if (this.vuid === null) throw new Error("vuid must not be empty");
 
-    if (this._cvkFlow === undefined)
-      this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid);
+    if (this._cvkFlow === undefined) this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid);
 
     return this._cvkFlow;
   }
