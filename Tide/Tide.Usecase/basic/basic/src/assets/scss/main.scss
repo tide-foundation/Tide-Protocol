@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+
+$input-height:23px;
+
+html,body{
+    font-family: 'Montserrat', sans-serif;
+}
+form{
+    width: 100%;
+    text-align:center;
+
+    .form-group{
+        width: 100%;
+        label{
+            text-align: left;
+            display: block;
+        }
+        input{
+            margin-bottom: 7px;
+            height: $input-height;
+            width: 100%;
+            padding-left: 5px;
+        }
+
+        button{
+            width: 100%;
+            height: $input-height;
+        }
+    }
+}
+
+.link{
+    color: rgb(0, 132, 255);
+    cursor: pointer;
+    &:hover{
+        color: rgb(255, 123, 0);
+    }
+}

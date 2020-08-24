@@ -22,8 +22,11 @@ var pass = "123456";
 var newPass = "1234567";
 var email = "tmp@tide.org";
 
-var orkUrls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
-var vendorUrl = "http://127.0.0.1:6001";
+// var orkUrls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
+// var vendorUrl = "http://127.0.0.1:6001";
+
+var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
+var vendorUrl = "https://tidevendor.azurewebsites.net/";
 
 (async () => {
   await signUp();

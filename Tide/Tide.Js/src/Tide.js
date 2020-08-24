@@ -191,6 +191,11 @@ export default class {
     flow.Recover(username);
   }
 
+  async recoverV2(username, orks) {
+    var flow = new DAuthFlow(orks, username);
+    flow.Recover(username);
+  }
+
   /**
    * Login to a previously created Tide account. The account must be fully enabled by the vendor before use.
    *
@@ -209,6 +214,18 @@ export default class {
         var flow = new DAuthFlow(urls, username);
 
         return resolve(await flow.Reconstruct(shares, newPass, urls.length));
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  reconstructV2(username, shares, newPass, orks) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        var flow = new DAuthFlow(orks, username);
+
+        return resolve(await flow.Reconstruct(shares, newPass, orks.length));
       } catch (error) {
         return reject(error);
       }
