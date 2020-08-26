@@ -44,9 +44,10 @@ export default class DAuthFlow {
       var prismAuth = AESKey.seed(g.times(prism).toArray());
       var cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
 
-      var ids = this.clients.map((c) => c.clientId);
-      var prismAuths = this.clients.map((c) => prismAuth.derive(c.clientBuffer));
-      var cmkAuths = this.clients.map((c) => cmkAuth.derive(c.clientBuffer));
+      var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
+      var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
+      var prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
+      var cmkAuths = idBuffers.map(buff => cmkAuth.derive(buff));
       var [, cmks] = SecretShare.shareFromIds(
         cmk,
         ids,
@@ -75,7 +76,8 @@ export default class DAuthFlow {
   async logIn(password) {
     try {
       var [ prismAuth, token ] = await this.getPrismAuth(password);
-      var prismAuths = this.clients.map((c) => prismAuth.derive(c.clientBuffer));
+      var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
+      var prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
 
       var tokens = this.clients.map((c, i) => token.copy().sign(prismAuths[i], c.userBuffer));
       var ciphers = await Promise.all(this.clients.map((cli, i) => cli.signIn(tokens[i])));
@@ -84,7 +86,7 @@ export default class DAuthFlow {
         .map((auth, i) => auth.decrypt(ciphers[i]))
         .map((shr) => BigInt.fromArray(Array.from(shr), 256, false));
 
-      var ids = this.clients.map((c) => c.clientId);
+      var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
       var cmk = SecretShare.interpolate(ids, cmks, C25519Point.n);
 
       return AESKey.seed(Buffer.from(cmk.toArray(256).value));
@@ -102,7 +104,7 @@ export default class DAuthFlow {
       var g = C25519Point.fromString(pass);
       var gR = g.multiply(r);
 
-      var ids = this.clients.map((c) => c.clientId);
+      var ids = await Promise.all(this.clients.map(c => c.getClientId()));
       var lis = ids.map((id) => SecretShare.getLi(id, ids, n));
 
       var gRPrismis = await Promise.all(
@@ -178,10 +180,12 @@ export default class DAuthFlow {
       var prism = random();
       var g = C25519Point.fromString(pass);
       var prismAuth = AESKey.seed(g.times(prism).toArray());
-      var prismAuths = this.clients.map((c) => prismAuth.derive(c.clientBuffer));
-      var keyAuths = this.clients.map((c) => keyAuth.derive(c.clientBuffer));
 
-      var ids = this.clients.map((c) => c.clientId);
+      var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
+      var prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
+      var keyAuths = idBuffers.map(buff => keyAuth.derive(buff));
+
+      var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
       var [, prisms] = SecretShare.shareFromIds(
         prism,
         ids,

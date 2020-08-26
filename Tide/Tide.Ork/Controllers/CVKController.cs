@@ -24,6 +24,7 @@ using Tide.Core;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
+using Tide.Ork.Classes;
 using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
 
@@ -37,15 +38,16 @@ namespace Tide.Ork.Controllers
         private readonly ICvkManager _managerCvk;
         private readonly IRuleManager _ruleManager;
         private readonly IKeyIdManager _keyIdManager;
+        private readonly OrkConfig _config;
 
-        private IdGenerator IdGen => IdGenerator.Seed(new Uri(Request.GetDisplayUrl()));
 
-        public CVKController(IKeyManagerFactory factory, ILogger<CVKController> logger)
+        public CVKController(IKeyManagerFactory factory, ILogger<CVKController> logger, OrkConfig config)
         {
             _managerCvk = factory.BuildManagerCvk();
             _ruleManager = factory.BuildRuleManager();
             _keyIdManager = factory.BuildKeyIdManager();
             _logger = logger;
+            _config = config;
         }
 
         //TODO: there is not verification if the account already exists
@@ -65,7 +67,7 @@ namespace Tide.Ork.Controllers
             if (signer == null)
                 return BadRequest("Signer's key must be defined");
 
-            if (!signer.Key.Verify(IdGen.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
+            if (!signer.Key.Verify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
                 return BadRequest("Signature is not valid ");
 
             _logger.LogInformation($"New cvk for {vuid} with share {data[1]}", vuid, data[0]);

@@ -14,16 +14,29 @@ namespace Tide.VendorSdk.Classes
 {
     public class CvkClient
     {
-        private readonly IdGenerator _idGen;
+        private IdGenerator _idGen;
         private readonly HttpClient _client;
-
-        public BigInteger Id { get => _idGen.Id; }
-        public Guid Guid { get => _idGen.Guid; }
 
         public CvkClient(Uri uri)
         {
-            _idGen = IdGenerator.Seed(uri);
+            _idGen = null;
             _client = new HttpClient { BaseAddress = uri };
+        }
+
+        public async Task<BigInteger> GetId()
+        {
+            if (_idGen == null)
+                await SetIdGen();
+            
+            return _idGen.Id;
+        }
+
+        public async Task<Guid> GetGuid()
+        {
+            if (_idGen == null)
+                await SetIdGen();
+
+            return _idGen.Guid;
         }
 
         public async Task Add(Guid viud, BigInteger cvki, AesKey cvkiAuth, C25519Key cvkPub)
@@ -39,6 +52,17 @@ namespace Tide.VendorSdk.Classes
 
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new HttpRequestException(response.RequestMessage.ToString());
+        }
+
+        public async Task<C25519Key> GetPublic()
+        {
+            var response = await _client.GetAsync("api/public");
+
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new HttpRequestException(response.RequestMessage.ToString());
+
+            var keyText = await response.Content.ReadAsStringAsync();
+            return C25519Key.Parse(Convert.FromBase64String(keyText));
         }
 
         public async Task<(byte[] Token, C25519Cipher Challenge)> Challenge(Guid viud, Guid keyId)
@@ -64,6 +88,12 @@ namespace Tide.VendorSdk.Classes
                 throw new HttpRequestException(response.RequestMessage.ToString());
             
             return Convert.FromBase64String(await response.Content.ReadAsStringAsync());
+        }
+
+        private async Task SetIdGen()
+        {
+            var key = await GetPublic();
+            _idGen = IdGenerator.Seed(key.ToByteArray());
         }
 
         static string ToBase64Url(byte[] data)

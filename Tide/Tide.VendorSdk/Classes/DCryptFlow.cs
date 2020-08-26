@@ -25,10 +25,11 @@ namespace Tide.VendorSdk.Classes
         public async Task<C25519Key> SignUp(AesKey cmkAuth, int threshold)
         {
             var cvk = new C25519Key();
-            var ids = _clients.Select(cln => cln.Id).ToList();
+            var ids = await Task.WhenAll(_clients.Select(cln => cln.GetId()));
+            var guids = await Task.WhenAll(_clients.Select(cln => cln.GetGuid()));
 
             var cvks = cvk.Share(threshold, ids, true);
-            var cvkAuths = _clients.Select(cln => cln.Guid.ToByteArray().Concat(VuId.ToByteArray()))
+            var cvkAuths = guids.Select(guid => guid.ToByteArray().Concat(VuId.ToByteArray()))
                 .Select(buff => cmkAuth.Derive(buff.ToArray())).ToList();
 
             await Task.WhenAll(_clients.Select((cli, i) =>
@@ -54,7 +55,7 @@ namespace Tide.VendorSdk.Classes
             var partials = ciphers.Select((cph, i) => C25519Point.From(sessionKeys[i].Decrypt(cph)))
                 .Select(pnt => new C25519Cipher(pnt, ciph.C2)).ToList();
 
-            var ids = _clients.Select(cln => cln.Id);
+            var ids = await Task.WhenAll(_clients.Select(cln => cln.GetId()));
 
             return C25519Cipher.DecryptShares(partials, ids);
         }

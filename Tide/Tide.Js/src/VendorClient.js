@@ -21,20 +21,28 @@ import { urlEncode } from "./dauth/ClientBase";
 import TranToken from "./TranToken";
 
 export default class VendorClient {
-  get id() {
+  async getId() {
+    if (!this._idGen)
+      await this._setIdGen();
+
     return this._idGen.id;
   }
 
-  get guid() {
+  async getGuid() {
+    if (!this._idGen)
+      await this._setIdGen();
+
     return this._idGen.guid;
   }
+
 
   /** @param {string|URL} url */
   constructor(url) {
     const baseUrl = typeof url === "string" ? new URL(url) : url;
     this.url = baseUrl.origin + "/tide/vendor";
-    this._idGen = IdGenerator.seed(baseUrl);
     this.bearer = "";
+    /** @type {IdGenerator} */
+    this._idGen = null;
   }
 
   /** @returns {Promise<{ orkUrls: string[]; pubKey: C25519Key; }>}   */
@@ -91,5 +99,10 @@ export default class VendorClient {
     } catch {
       return false;
     }
+  }
+
+  async _setIdGen() {
+    const { pubKey } = await this.configuration();
+    this._idGen = IdGenerator.seed(pubKey.toArray());
   }
 }

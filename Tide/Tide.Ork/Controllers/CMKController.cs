@@ -18,7 +18,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Web;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tide.Core;
@@ -28,7 +27,6 @@ using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
-using Tide.VendorSdk.Classes;
 
 namespace Tide.Ork.Controllers
 {
@@ -39,14 +37,14 @@ namespace Tide.Ork.Controllers
         private readonly IEmailClient _mail;
         private readonly ILogger _logger;
         private readonly ICmkManager _manager;
+        private readonly OrkConfig _config;
 
-        private IdGenerator IdGen => IdGenerator.Seed(new Uri(Request.GetDisplayUrl()));
-
-        public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger)
+        public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger, OrkConfig config)
         {
             _manager = factory.BuildCmkManager();
             _mail = mail;
             _logger = logger;
+            _config = config;
         }
 
         //TODO: Move secrets out of the url
@@ -135,7 +133,7 @@ namespace Tide.Ork.Controllers
         public async Task<ActionResult> Recover([FromRoute] Guid uid)
         {
             var account = await _manager.GetById(uid);
-            var share = new OrkShare(IdGen.Id, account.Cmki).ToString();
+            var share = new OrkShare(_config.Id, account.Cmki).ToString();
             var msg = $"You have requested to recover the CMK. Introduce the code [{share}] into tide wallet.";
 
             _mail.SendEmail(uid.ToString(), account.Email, "Key Recovery", msg);
@@ -143,7 +141,6 @@ namespace Tide.Ork.Controllers
 
             return Ok();
         }
-
 
         private byte[] FromBase64(string input)
         {

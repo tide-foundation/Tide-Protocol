@@ -42,10 +42,11 @@ export default class DCryptFlow {
       if (!signatures && signatures.length != this.clients.length)
         throw new Error("Signatures are required");
 
-      const ids = this.clients.map((c) => c.clientId);
+      const ids = await Promise.all(this.clients.map((c) => c.getClientId()));
 
       const cvks = cvk.share(threshold, ids, true);
-      const cvkAuths = this.clients.map((c) => concat(c.clientBuffer, this.user.toArray())).map((buff) => cmkAuth.derive(buff));
+      var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
+      const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
 
       await Promise.all(this.clients.map((cli, i) => 
         cli.register(cvk.public(), cvks[i].x, cvkAuths[i], signedKeyId, signatures[i])));
@@ -58,13 +59,14 @@ export default class DCryptFlow {
 
   /** @param {AESKey} cmkAuth */
   async getKey(cmkAuth) {
-    const cvkAuths = this.clients.map((c) => concat(c.clientBuffer, this.user.toArray())).map((buff) => cmkAuth.derive(buff));
+    var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
+    const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
 
     const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(cvkAuths[i])));
 
     var cvks = cvkAuths.map((auth, i) => auth.decrypt(cipherCvks[i])).map((shr) => BnInput.getBig(shr));
 
-    var ids = this.clients.map((c) => c.clientId);
+    var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
     var cvk = SecretShare.interpolate(ids, cvks, C25519Point.n);
 
     return C25519Key.private(cvk);
@@ -88,7 +90,7 @@ export default class DCryptFlow {
       const ciph = Cipher.cipherFromAsymmetric(asymmetric);
       const partials = ciphers.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph))).map((pnt) => new C25519Cipher(pnt, ciph.c2));
 
-      const ids = this.clients.map((c) => c.clientId);
+      const ids = await Promise.all(this.clients.map((c) => c.getClientId()));
       return C25519Cipher.decryptShares(partials, ids);
     } catch (err) {
       return Promise.reject(err);

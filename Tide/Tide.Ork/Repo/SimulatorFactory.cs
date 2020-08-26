@@ -10,7 +10,7 @@ namespace Tide.Ork.Repo {
         private readonly string _orkId;
 
         public SimulatorFactory(Settings settings) {
-            _key = AesKey.Parse(settings.Instance.SecretKey);
+            _key = settings.Instance.GetSecretKey();
             _config = settings.Endpoints.Simulator;
             _orkId = settings.Instance.Username;
         }

@@ -1,4 +1,8 @@
-﻿namespace Tide.Ork.Models {
+﻿using System;
+using Tide.Encryption.AesMAC;
+using Tide.Encryption.Ecc;
+
+namespace Tide.Ork.Models {
     public class Settings
     {
         public Instance Instance { get; set; }
@@ -8,8 +12,12 @@
 
     public class Instance
     {
+        public string PrivateKey { get; set; }
         public string SecretKey { get; set; }
         public string Username { get; set; }
+
+        public C25519Key GetPrivateKey() => C25519Key.Parse(Convert.FromBase64String(PrivateKey));
+        public AesKey GetSecretKey() => AesKey.Parse(SecretKey);
     }
 
     public class Endpoints

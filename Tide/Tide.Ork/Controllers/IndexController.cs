@@ -14,23 +14,24 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Tide.VendorSdk.Classes;
+using Microsoft.AspNetCore.Mvc;
+using Tide.Encryption.Tools;
+using Tide.Ork.Classes;
 
-namespace Tide.VendorSdk.Models
+namespace Tide.Ork.Controllers
 {
-    public class SignupRequest
+    [ApiController]
+    [Route("api")]
+    public class IndexController : ControllerBase
     {
-        public List<string> OrkUrls { get; set; }
-        public byte[] Auth { get; set; }
+        private readonly OrkConfig _config;
 
-        public Task<Guid[]> GetUrlIds() {
-            if (OrkUrls == null || OrkUrls.Count == 0)
-                return null;
-
-            return Task.WhenAll(OrkUrls.Select(url => new CvkClient(new Uri(url))).Select(cli => cli.GetGuid()));
+        public IndexController(OrkConfig config)
+        {
+            _config = config;
         }
+ 
+       [HttpGet("public")]
+        public ActionResult<string> GetPublic() => _config.PrivateKey.GetPublic().ToString();
     }
 }

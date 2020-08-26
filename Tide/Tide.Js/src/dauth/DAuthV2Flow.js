@@ -89,7 +89,8 @@ export default class DAuthV2Flow {
       await keyCln.setOrUpdate(vendorPubStore);
 
       //register vendor account
-      const vuidAuth = AESKey.seed(cvk.toArray()).derive(vendorCln.guid.toArray());
+      const bufferVid = IdGenerator.seed(pubKey.toArray()).buffer;
+      const vuidAuth = AESKey.seed(cvk.toArray()).derive(bufferVid);
       const [vendorToken, signatures] = await vendorCln.signup(this.vuid, vuidAuth, this.cvkUrls);
 
       // register cmk
@@ -131,7 +132,8 @@ export default class DAuthV2Flow {
       const cvkTag = await flowCvk.getKey(this.cmkAuth);
 
       const vendorCln = this._getVendorClient();
-      const vuidAuth = AESKey.seed(cvkTag.toArray()).derive(vendorCln.guid.toArray());
+      const bufferVid = (await vendorCln.getGuid()).toArray();
+      const vuidAuth = AESKey.seed(cvkTag.toArray()).derive(bufferVid);
 
       return vuidAuth;
     } catch (err) {

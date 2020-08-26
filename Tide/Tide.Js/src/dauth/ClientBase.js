@@ -16,6 +16,7 @@
 import superagent from "superagent";
 import IdGenerator from "../IdGenerator";
 import Guid from "../Guid";
+import { C25519Key } from "cryptide";
 
 export default class ClientBase {
   /**
@@ -26,20 +27,9 @@ export default class ClientBase {
     const baseUrl = typeof url === "string" ? new URL(url) : url;
 
     this.url = baseUrl.origin + "/api";
-    this._clientId = IdGenerator.seed(baseUrl);
+    /** @type {IdGenerator} */
+    this._clientId = null;
     this._userId = typeof user === "string" ? IdGenerator.seed(user) : new IdGenerator(user);
-  }
-
-  get clientId() {
-    return this._clientId.id;
-  }
-
-  get clientGuid() {
-    return this._clientId.guid;
-  }
-
-  get clientBuffer() {
-    return this._clientId.buffer;
   }
 
   get userId() {
@@ -56,6 +46,31 @@ export default class ClientBase {
 
   get userUrl() {
     return urlEncode(this.userBuffer);
+  }
+
+  async getClientId() {
+    if (!this._clientId)
+      await this._setClientId();
+
+    return this._clientId.id;
+  }
+
+  async getClientBuffer() {
+    if (!this._clientId)
+      await this._setClientId();
+
+    return this._clientId.buffer;
+  }
+
+  /** @returns {Promise<C25519Key>} */
+  async getPublic() {
+    var res = await this._get("/public");
+    return C25519Key.from(res.text);
+  }
+
+  async _setClientId() {
+    const key = await this.getPublic();
+    this._clientId = IdGenerator.seed(key.toArray());
   }
 
   /** @param {string} path

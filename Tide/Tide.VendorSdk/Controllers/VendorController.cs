@@ -58,8 +58,9 @@ namespace Tide.VendorSdk.Controllers {
         public async Task<ActionResult<SignupRsponse>> SignUp([FromRoute] Guid vuid, [FromBody] SignupRequest data)
         {
             var authKey = AesKey.Parse(data.Auth);
+            var guids = await data.GetUrlIds();
             
-            var signatures = data.GetUrlIds().Select(orkId => orkId.ToByteArray().Concat(vuid.ToByteArray()))
+            var signatures = guids.Select(orkId => orkId.ToByteArray().Concat(vuid.ToByteArray()))
                 .Select(msg => Config.PrivateKey.Sign(msg.ToArray())).ToList();
             
             await Repo.CreateUser(vuid, authKey, data.OrkUrls);
