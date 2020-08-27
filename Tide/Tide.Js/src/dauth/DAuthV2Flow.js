@@ -69,6 +69,7 @@ export default class DAuthV2Flow {
    * @param {string} password
    * @param {string} email
    * @param {number} threshold
+   * @returns {Promise<{ vuid: Guid; cvk: C25519Key; auth: AESKey; }>}
    */
   async signUp(password, email, threshold) {
     try {
@@ -110,13 +111,13 @@ export default class DAuthV2Flow {
       const cipher = Cipher.encrypt(hashToken, tokenTag, cvk);
 
       //test dauth and dcrypt
-      const vuidAuthTag = await this.logIn(password);
+      const { auth: vuidAuthTag } = await this.logIn(password);
       await vendorCln.signin(this.vuid, vuidAuthTag);
 
       const dcryptOk = await vendorCln.testCipher(this.vuid, vendorToken, cipher);
       if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 
-      return vuidAuth;
+      return { vuid: this.vuid, cvk, auth: vuidAuth};
     } catch (err) {
       return Promise.reject(err);
     }
@@ -129,13 +130,13 @@ export default class DAuthV2Flow {
       this._setCmk(await flowCmk.logIn(password));
 
       const flowCvk = this._getCvkFlow();
-      const cvkTag = await flowCvk.getKey(this.cmkAuth);
+      const cvk = await flowCvk.getKey(this.cmkAuth);
 
       const vendorCln = this._getVendorClient();
       const bufferVid = (await vendorCln.getGuid()).toArray();
-      const vuidAuth = AESKey.seed(cvkTag.toArray()).derive(bufferVid);
+      const vuidAuth = AESKey.seed(cvk.toArray()).derive(bufferVid);
 
-      return vuidAuth;
+      return { vuid: this.vuid, cvk, auth: vuidAuth };
     } catch (err) {
       return Promise.reject(err);
     }

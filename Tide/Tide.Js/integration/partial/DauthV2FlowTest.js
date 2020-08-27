@@ -39,19 +39,19 @@ async function signUp() {
     flow.cvkUrls = orkUrls;
     flow.vendorUrl = vendorUrl;
 
-    var authKey0 = await flow.signUp(pass, email, threshold);
+    var { auth: auth0 } = await flow.signUp(pass, email, threshold);
 
     flow = new DAuthV2Flow(user);
     flow.cmkUrls = orkUrls;
     flow.cvkUrls = orkUrls;
     flow.vendorUrl = vendorUrl;
 
-    var authKey1 = await flow.logIn(pass);
-    assert.equal(authKey0.toString(), authKey1.toString());
+    var { auth: auth1 } = await flow.logIn(pass);
+    assert.equal(auth0.toString(), auth1.toString());
 
     await flow.changePass(pass, newPass, threshold);
-    var authKey2 = await flow.logIn(newPass);
-    assert.equal(authKey0.toString(), authKey2.toString());
+    var {auth: auth2} = await flow.logIn(newPass);
+    assert.equal(auth0.toString(), auth2.toString());
 
     console.log(`all good for vuid ${flow.vuid}`);
   } catch (error) {
