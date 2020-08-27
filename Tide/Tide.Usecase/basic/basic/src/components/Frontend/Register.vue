@@ -11,6 +11,14 @@
         <input type="password" id="password" v-model="user.password" />
       </div>
       <div class="form-group">
+        <label for="field1">Field 1</label>
+        <input type="text" id="field1" v-model="user.field1" />
+      </div>
+      <div class="form-group">
+        <label for="field2">Field 2</label>
+        <input type="text" id="field2" v-model="user.field2" />
+      </div>
+      <div class="form-group">
         <button type="submit">REGISTER</button>
       </div>
       <p>OR</p>
@@ -20,12 +28,15 @@
 </template>
 
 <script>
+import request from "superagent";
 export default {
     data() {
         return {
             user: {
                 email: "thrakmar@gmail.com",
                 password: "password",
+                field1: "My Field 1",
+                field2: "Test field 2 🦄 🐑 🦚",
             },
         };
     },
@@ -33,8 +44,17 @@ export default {
         async register() {
             try {
                 this.$loading(true, "Registering...");
-                var user = await this.$tide.registerV2(this.user.email, this.user.password, this.user.email, this.$store.getters.tempOrksToUse);
-                this.$parent.setUser(user);
+                var signUpResult = await this.$tide.registerV2(this.user.email, this.user.password, this.user.email, this.$store.getters.tempOrksToUse);
+
+                var userData = {
+                    vuid: signUpResult.vuid.toString(),
+                    field1: this.$tide.encrypt(this.user.field1, "field1"),
+                    field2: this.$tide.encrypt(this.user.field2, "field2"),
+                };
+
+                await request.post(`${this.$store.getters.vendorUrl}/account`).send(userData);
+
+                this.$parent.setUser(signUpResult);
             } catch (error) {
                 this.$bus.$emit("show-status", error);
             } finally {

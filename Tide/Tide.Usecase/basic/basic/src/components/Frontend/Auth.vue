@@ -1,6 +1,6 @@
 <template>
   <div id="auth">
-    <div id="content">
+    <div class="content">
       <Login v-if="mode == 'Login'"></Login>
       <Register v-else-if="mode == 'Register'"></Register>
       <Forgot v-else-if="mode == 'Forgot'"></Forgot>
@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import Forgot from "@/components/Forgot.vue";
-import Register from "@/components/Register.vue";
-import Login from "@/components/Login.vue";
+import Forgot from "./Forgot.vue";
+import Register from "./Register.vue";
+import Login from "./Login.vue";
 export default {
     components: {
         Login,
@@ -44,19 +44,5 @@ export default {
 
 <style lang="scss" scoped>
 #auth {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    #content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        width: 98%;
-        max-width: 400px;
-    }
 }
 </style>

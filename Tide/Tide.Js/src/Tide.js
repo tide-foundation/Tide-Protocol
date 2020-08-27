@@ -2,9 +2,13 @@ import DAuthFlow from "./dauth/DAuthFlow";
 import IdGenerator from "./IdGenerator";
 import request from "superagent";
 import { encodeBase64Url } from "./Helpers";
-import { AESKey } from "cryptide";
+import { AESKey, C25519Key } from "cryptide";
 import DAuthV2Flow from "../src/dauth/DAuthV2Flow";
-
+import KeyStore from "./keyStore";
+import Cipher from "./Cipher";
+import Num64 from "./Num64";
+import Rule from "./rule";
+import RuleClientSet from "./dauth/RuleClientSet";
 /**
  * A client-side library to interface with the Tide scosystem.
  * @class
@@ -17,14 +21,16 @@ export default class {
    * @param {String} vendorId - Your designated VendorId in which you will operate
    * @param {String} serverUrl - The endpoint of your backend Tide server
    * @param {Array} homeOrks - The suggested initial point of contacts. At least 1 is required.
+   * @param {String} publicKey - The vendor backend public key.
    *
    */
 
-  constructor(vendorId, serverUrl, homeOrks, publicKey = "") {
+  constructor(vendorId, serverUrl, homeOrks, publicKey = "", mandatoryTags = []) {
     this.vendorId = vendorId;
     this.serverUrl = serverUrl;
     this.homeOrks = homeOrks;
-    this.publicKey = publicKey;
+    this.vendorStore = new KeyStore(C25519Key.from(publicKey));
+    this.mandatoryTags = mandatoryTags;
   }
 
   /**
@@ -114,9 +120,14 @@ export default class {
         flow.cvkUrls = orks;
         flow.vendorUrl = this.serverUrl;
 
-        var authKey0 = await flow.signUp(password, email, 3);
+        var { vuid, cvk } = await flow.signUp(password, email, orks.length);
+        this.vuid = vuid;
+        this.cvk = cvk;
+        this.cvkUrls = orks;
 
-        resolve({ key: authKey0 });
+        if (this.mandatoryTags.length > 0) await this.allowTags(this.mandatoryTags);
+
+        resolve({ vuid: vuid });
       } catch (error) {
         reject(error);
         // await get(`${this.serverUrl}/RollbackUser/${userId}/`);
@@ -132,15 +143,21 @@ export default class {
         flow.cmkUrls = orks;
         flow.cvkUrls = orks;
         flow.vendorUrl = this.serverUrl;
-        //  var flow = getDauthFlowV2(username, this.serverUrl, orks);
 
         var authKey1 = await flow.logIn(password);
+        this.cvkUrls = orks;
 
         return resolve({ key: authKey1 });
       } catch (error) {
         return reject(error);
       }
     });
+  }
+
+  /** @param tagArray {string[]} */
+  async allowTags(tagArray) {
+    const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
+    await Promise.all(tagArray.map((tag) => Rule.allow(this.vuid, Num64.seed(tag), this.vendorStore)).map(async (rule) => await ruleCln.setOrUpdate(rule)));
   }
 
   /**
@@ -156,12 +173,13 @@ export default class {
    * This action requires a logged in user.
    *
    * @param {String} msg - The string you wish to encrypt using the user keys
+   * @param {String} tag - The string you wish to encrypt using the user keys
    *
    * @returns {String} - The encrypted payload
    */
-  encrypt(msg) {
-    if (this.key == null) throw "You must be logged in to encrypt";
-    return this.key.encryptStr(msg);
+  encrypt(msg, tag) {
+    if (this.cvk == null) throw "You must be logged in to encrypt";
+    return Cipher.encrypt(msg, Num64.seed(tag), this.cvk).toString("base64");
   }
 
   /**
@@ -174,8 +192,10 @@ export default class {
    * @returns {String} - The plain text message
    */
   decrypt(cipher) {
-    if (this.key == null) throw "You must be logged in to decrypt";
-    return this.key.decryptStr(cipher);
+    if (this.cvk == null) throw "You must be logged in to decrypt";
+
+    var buffer = Buffer.from(cipher, "base64");
+    return Cipher.decrypt(buffer, this.cvk);
   }
 
   /**

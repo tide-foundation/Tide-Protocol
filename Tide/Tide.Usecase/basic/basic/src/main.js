@@ -7,11 +7,13 @@ import "../src/assets/scss/main.scss";
 
 Vue.config.productionTip = false;
 Vue.prototype.$bus = new Vue();
+
 Vue.prototype.$tide = new Tide(
   "VendorId",
-  "https://tidevendor.azurewebsites.net/",
+  store.getters.vendorUrl,
   store.getters.orks.map((o) => o.url),
-  "publickey"
+  "publickey",
+  ["field1", "field2"]
 );
 
 Vue.prototype.$loading = (a, m) =>

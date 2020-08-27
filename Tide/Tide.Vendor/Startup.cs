@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Tide.Vendor.Models;
 using Tide.VendorSdk.Classes;
 
 namespace Tide.Vendor
@@ -28,6 +29,8 @@ namespace Tide.Vendor
         {
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
+
+            services.AddSingleton<VendorDbContext>();
 
             services.AddSingleton<IVendorRepo, VendorRepo>();
             services.AddTideEndpoint(settings.Keys.CreateVendorConfig());

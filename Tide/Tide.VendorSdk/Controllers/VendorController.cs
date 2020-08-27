@@ -78,7 +78,7 @@ namespace Tide.VendorSdk.Controllers {
         {
             var tran = TranToken.Parse(FromBase64(token));
             var cipher = FromBase64(ciphertext);
-            var plain = await Decript(vuid, cipher);
+            var plain = await Decrypt(vuid, cipher);
 
             if (!tran.Check(Config.SecretKey, vuid.ToByteArray())) {
                 await Repo.RollbackUser(vuid);
@@ -110,7 +110,7 @@ namespace Tide.VendorSdk.Controllers {
             return GenerateToken(vuid);
         }
 
-        private async Task<byte[]> Decript(Guid vuid, byte[] cipher)
+        private async Task<byte[]> Decrypt(Guid vuid, byte[] cipher)
         {
             var uris = (await Repo.GetListOrks(vuid)).Select(url => new Uri(url)).ToList();
             var flow = new DCryptFlow(vuid, uris);

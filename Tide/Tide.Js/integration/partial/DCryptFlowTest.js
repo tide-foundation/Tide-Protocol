@@ -27,7 +27,7 @@ var threshold = 3;
 var user = "admin";
 var cmkAuth = AESKey.from("AhATyXYow4qdCw7nFGVFu87JICzd7w9PbzAyp7M4r6PiHS7h0RTUNSP5XmcOVUmsvPKe");
 var urls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
-//var urls = [...Array(threshold)].map((_, i) => `https://raziel-ork-${i + 1}.azurewebsites.net`);
+//var urls = [...Array(10)].map((_, i) => `https://ork-${i}.azurewebsites.net/`);
 
 const userId = IdGenerator.seed(user, cmkAuth).guid;
 const flow = new DCryptFlow(urls, userId);
