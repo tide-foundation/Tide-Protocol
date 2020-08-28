@@ -12,6 +12,11 @@ namespace Tide.Ork.Repo {
         {
         }
 
+        public Task ConfirmAll(Guid ownerId)
+        {
+            throw new NotImplementedException();
+        }
+
         //TODO: Ask Matt for help
         public Task<List<RuleVault>> GetSetBy(Guid ownerId)
         {

@@ -20,14 +20,10 @@ using Tide.Core;
 
 namespace Tide.Ork.Repo
 {
-    public interface IRuleManager
+    public interface IRuleManager : IManager<RuleVault>
     {
-        Task<bool> Exist(Guid id);
-        Task<RuleVault> GetById(Guid id);
-        Task<List<RuleVault>> GetAll();
-        Task<TideResponse> SetOrUpdate(RuleVault entity);
-        Task Delete(Guid id);
         Task<List<RuleVault>> GetSetBy(Guid ownerId);
         Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId);
+        Task ConfirmAll(Guid ownerId);
     }
 }

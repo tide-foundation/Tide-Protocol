@@ -8,7 +8,7 @@ using Tide.Encryption;
 
 namespace Tide.Ork.Repo
 {
-    public class MemoryManagerBase<T> where T : SerializableByteBase<T>, IGuid, new()
+    public class MemoryManagerBase<T> : IManager<T> where T : SerializableByteBase<T>, IGuid, new()
     {
         protected readonly ConcurrentDictionary<Guid, string> _items;
 

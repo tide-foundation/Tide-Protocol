@@ -96,4 +96,8 @@ export default class DCryptFlow {
       return Promise.reject(err);
     }
   }
+
+  confirm() {
+    return Promise.all(this.clients.map(c => c.confirm()));
+  }
 }

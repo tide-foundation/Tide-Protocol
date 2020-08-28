@@ -170,6 +170,10 @@ export default class DAuthFlow {
     return this._changePass(cmkAuth, pass, threshold, true);
   }
 
+  confirm() {
+    return Promise.all(this.clients.map(c => c.confirm()));
+  }
+
   /**
    * @param {AESKey} keyAuth
    * @param {string} pass

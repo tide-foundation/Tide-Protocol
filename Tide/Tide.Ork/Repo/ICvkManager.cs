@@ -15,19 +15,13 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tide.Core;
 
 namespace Tide.Ork.Repo
 {
-    public interface ICvkManager
+    public interface ICvkManager : IManager<CvkVault>
     {
-        Task<bool> Exist(Guid id);
-        Task<CvkVault> GetById(Guid id);
-        Task<List<CvkVault>> GetAll();
-        Task<TideResponse> SetOrUpdate(CvkVault entity);
-        Task Delete(Guid id);
         Task Confirm(Guid id);
         Task Rollback(Guid id);
     }

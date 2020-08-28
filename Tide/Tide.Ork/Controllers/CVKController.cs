@@ -147,6 +147,15 @@ namespace Tide.Ork.Controllers
             return Ok(Convert.ToBase64String(cipher));
         }
 
+        [HttpPost("{vuid}")]
+        public async Task<ActionResult> Confirm([FromRoute] Guid vuid)
+        {
+            await _managerCvk.Confirm(vuid);
+            await _ruleManager.ConfirmAll(vuid);
+            _logger.LogInformation($"Confimed vuid {vuid}", vuid);
+            return Ok();
+        }
+ 
         private byte[] FromBase64(string input)
         {
             return Convert.FromBase64String(input.DecodeBase64Url());

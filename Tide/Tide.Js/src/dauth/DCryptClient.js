@@ -83,4 +83,8 @@ export default class DCryptClient extends ClientBase {
     var res = await this._get(`/cvk/plaintext/${this.userGuid}/${keyId}/${cipher}/${tkn}/${sgn}`);
     return fromBase64(res.text);
   }
+
+  async confirm() {
+    await this._post(`/cvk/${this.userGuid}`);
+  }
 }

@@ -8,8 +8,13 @@ namespace Tide.Ork.Repo
 {
     public class MemoryRuleManager : MemoryManagerBase<RuleVault>, IRuleManager
     {
-        public Guid MaxID => Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff");
-        
+        public static Guid MaxID => Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff");
+
+        public Task ConfirmAll(Guid ownerId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId)
         {
             return Task.FromResult(GetEnumerable().Where(rule => rule.OwnerId == ownerId

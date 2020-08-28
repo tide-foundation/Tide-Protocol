@@ -14,20 +14,14 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using Tide.Core;
 
 namespace Tide.Ork.Repo
 {
-    public interface ICmkManager
+    public interface ICmkManager : IManager<CmkVault>
     {
-        Task<bool> Exist(Guid id);
-        Task<CmkVault> GetById(Guid id);
-        Task<List<CmkVault>> GetAll();
-        Task<TideResponse> SetOrUpdate(CmkVault entity);
-        Task Delete(Guid id);
         Task<BigInteger> GetPrism(Guid user);
         Task Confirm(Guid id);
         Task Rollback(Guid id);

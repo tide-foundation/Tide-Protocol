@@ -75,4 +75,8 @@ export default class DAuthClient extends ClientBase {
   async Recover() {
     await this._get(`/cmk/mail/${this.userGuid}`);
   }
+
+  async confirm() {
+    await this._post(`/cmk/${this.userGuid}`);
+  }
 }

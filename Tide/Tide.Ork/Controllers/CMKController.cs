@@ -142,6 +142,14 @@ namespace Tide.Ork.Controllers
             return Ok();
         }
 
+        [HttpPost("{uid}")]
+        public async Task<ActionResult> Confirm([FromRoute] Guid uid)
+        {
+            await _manager.Confirm(uid);
+            _logger.LogInformation($"Confimed user {uid}", uid);
+            return Ok();
+        }
+
         private byte[] FromBase64(string input)
         {
             return Convert.FromBase64String(input.DecodeBase64Url());

@@ -116,6 +116,8 @@ export default class DAuthV2Flow {
 
       const dcryptOk = await vendorCln.testCipher(this.vuid, vendorToken, cipher);
       if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
+      
+      await Promise.all([flowCmk.confirm(), flowCvk.confirm()]);
 
       return { vuid: this.vuid, cvk, auth: vuidAuth};
     } catch (err) {
