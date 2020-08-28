@@ -24,6 +24,5 @@ namespace Tide.Ork.Repo
     {
         Task<BigInteger> GetPrism(Guid user);
         Task Confirm(Guid id);
-        Task Rollback(Guid id);
     }
 }

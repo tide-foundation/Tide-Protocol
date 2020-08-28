@@ -17,14 +17,6 @@ namespace Tide.Ork.Repo {
             return user != null ? user.Prismi : BigInteger.Zero;
         }
 
-        public Task Confirm(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Rollback(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+        public Task Confirm(Guid id) => throw new NotImplementedException("Do not invoke confirm in simulator manager");
     }
 }

@@ -63,13 +63,6 @@ namespace Tide.Ork.Repo
             return Cache.Get<T>(id) ?? await Manager.GetById(id);
         }
 
-        public Task Rollback(Guid id)
-        {
-            if (Cache.Get(id) != null) Cache.Remove(id);
-            
-            return Task.CompletedTask;
-        }
-
         protected IEnumerable<T> GetEnumerable()
         {
             foreach (var id in GetGuids())

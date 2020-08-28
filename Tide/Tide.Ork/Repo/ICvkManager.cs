@@ -23,6 +23,5 @@ namespace Tide.Ork.Repo
     public interface ICvkManager : IManager<CvkVault>
     {
         Task Confirm(Guid id);
-        Task Rollback(Guid id);
     }
 }
