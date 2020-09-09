@@ -4,9 +4,7 @@
 
 <script>
 export default {
-  created() {
-    this.$authAction();
-  }
+    created() {}
 };
 </script>
 

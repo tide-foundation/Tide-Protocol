@@ -14,12 +14,6 @@
           <span :class="{ 'nav-current-menu-item': menu == 'apply' }" @click="
               $bus.$emit('update-menu', { name: 'Apply', route: '/apply' })
             ">Apply</span>
-          <span :class="{ 'nav-current-menu-item': menu == 'dashboard' }" @click="
-              $bus.$emit('update-menu', {
-                name: 'Dashboard',
-                route: '/dashboard'
-              })
-            ">Dashboard</span>
         </section>
       </div>
       <div class="mobile-header-nav">
@@ -107,19 +101,6 @@
                       })
                     ">
                     <i class="fa fa-user"></i>Profile
-                  </a>
-                </li>
-                <li v-if="$store.getters.user != null">
-                  <a :class="{
-                      'active-user-nav-item':
-                        $router.currentRoute.name == 'dashboard'
-                    }" :style="{ 'color:orange': menu == 'dashboard' }" class="pointer" @click="
-                      $bus.$emit('update-menu', {
-                        name: 'Dashboard',
-                        route: '/dashboard'
-                      })
-                    ">
-                    <i class="fa fa-user"></i>Dashboard
                   </a>
                 </li>
 

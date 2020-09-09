@@ -7,6 +7,7 @@ namespace Tide.Vendor {
     public class Settings
     {
         public AdminKeys Keys { get; set; }
+        public string BearerKey { get; set; }
     }
 
     public class AdminKeys

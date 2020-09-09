@@ -1,33 +1,18 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Tide.Core;
-using Tide.Encryption.AesMAC;
-using Tide.VendorSdk.Classes;
+﻿
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Tide.Vendor.Models
 {
-    public class VendorDbContext
+    public class VendorDbContext : DbContext
     {
-        private readonly ConcurrentDictionary<Guid, ApplicationUser> _items;
-
-        public VendorDbContext()
+        public VendorDbContext(DbContextOptions<VendorDbContext> options)
+            : base(options)
         {
-            _items = new ConcurrentDictionary<Guid, ApplicationUser>();
         }
 
-        public bool CreateApplicationUser(ApplicationUser user) {
-            _items[user.Vuid] = user;
 
-            return true;
-        }
-
-        public ApplicationUser GetAccount(Guid vuid) {
-            if (!_items.ContainsKey(vuid))return null;
-
-            return _items[vuid];
-        }
+        public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<RentalApplication> Applications { get; set; }
     }
 }

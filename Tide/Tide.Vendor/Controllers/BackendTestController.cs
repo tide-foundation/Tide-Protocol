@@ -26,7 +26,7 @@ namespace Tide.Vendor.Controllers
 
         [HttpGet("{vuid}/{decrypt}")]
         public ActionResult<ApplicationUser> PartiallyDecryptAccount([FromRoute] Guid vuid,bool decrypt) {
-            var user = _context.GetAccount(vuid);
+            var user = _context.Users.First(u=>u.Id == vuid.ToString());
             if (user == null) return null;
 
             if (decrypt) {

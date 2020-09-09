@@ -1,28 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Tide.Encryption.Ecc;
 using Tide.Vendor.Models;
 using Tide.VendorSdk.Classes;
 
 namespace Tide.Vendor.Controllers
 {
+  
     [ApiController]
     [Route("[controller]")]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseController
     {
-        private readonly VendorDbContext _context;
 
-        public AccountController(VendorDbContext context)
-        {
-            _context = context;
+        private readonly Settings _settings;
+
+        public AccountController(VendorDbContext context,Settings settings) : base(context) {
+            _settings = settings;
         }
 
-
+      
         [HttpPost]
-        public ActionResult<object> CreateAccount([FromBody] ApplicationUser user) {
-            return _context.CreateApplicationUser(user);
+        public ActionResult CreateAccount([FromBody] ApplicationUser user) {
+            Context.Add(user);
+            Context.SaveChanges();
+
+            return Ok(GenerateToken(user.Id)); // TODO: Encrypt this with the cvk pub
+        }
+
+        [HttpGet("{vuid}")]
+        public ActionResult Login([FromRoute]string vuid) {
+            return Ok(GenerateToken(vuid)); // TODO: Encrypt this with the cvk pub
+        }
+
+        private string GenerateToken(string vuid)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_settings.BearerKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] {
+                    new Claim(ClaimTypes.Name, vuid)
+                }),
+                Expires = DateTime.UtcNow.AddDays(15),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
     }

@@ -34,14 +34,15 @@ async function main() {
     var signUpResult = await tide.registerV2(user, pass, email, orkUrls);
 
     var userData = {
-      vuid: signUpResult.vuid.toString(),
+      id: signUpResult.vuid.toString(),
+      cvkPub: signUpResult.publicKey,
       field1: tide.encrypt("My Field 1", "field1"),
       field2: tide.encrypt("My Field 2", "field2"),
     };
 
     await request.post(`${vendorUrl}/account`).send(userData);
 
-    var partialDecrypt = await request.get(`${vendorUrl}/BackendTest/${userData.vuid}/true`);
+    var partialDecrypt = await request.get(`${vendorUrl}/BackendTest/${userData.id}/true`);
     console.log(partialDecrypt.body);
 
     var login = await tide.loginV2(user, pass, orkUrls);

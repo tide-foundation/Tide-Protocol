@@ -127,7 +127,7 @@ export default class {
 
         if (this.mandatoryTags.length > 0) await this.allowTags(this.mandatoryTags);
 
-        resolve({ vuid: vuid });
+        resolve({ vuid: vuid, publicKey: this.cvk.public().toString() });
       } catch (error) {
         reject(error);
         // await get(`${this.serverUrl}/RollbackUser/${userId}/`);
@@ -144,10 +144,12 @@ export default class {
         flow.cvkUrls = orks;
         flow.vendorUrl = this.serverUrl;
 
-        var authKey1 = await flow.logIn(password);
+        var { vuid, cvk } = await flow.logIn(password);
         this.cvkUrls = orks;
+        this.vuid = vuid;
+        this.cvk = cvk;
 
-        return resolve({ key: authKey1 });
+        return resolve({ vuid: vuid, publicKey: this.cvk.public().toString() });
       } catch (error) {
         return reject(error);
       }

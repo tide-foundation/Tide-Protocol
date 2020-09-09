@@ -72,10 +72,11 @@ namespace Tide.VendorSdk.Controllers {
             };
         }
 
-        [Authorize]
+        // [Authorize]
         [HttpGet("testcipher/{vuid}/{token}/{ciphertext}")]
         public async Task<ActionResult> TestCipher([FromRoute] Guid vuid, [FromRoute] string token, [FromRoute] string ciphertext)
         {
+           
             var tran = TranToken.Parse(FromBase64(token));
             var cipher = FromBase64(ciphertext);
             var plain = await Decrypt(vuid, cipher);

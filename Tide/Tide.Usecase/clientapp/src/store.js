@@ -8,13 +8,11 @@ export default new Vuex.Store({
   state: {
     loading: {
       active: false,
-      text: "Loading..."
+      text: "Loading...",
     },
     error: "Blockchain account failed to be created",
-    locked: false,
-    tideEngaged: false,
-    tideProcessing: false,
     user: null,
+    application: null,
     details: null,
     classified: null,
     network: null,
@@ -22,9 +20,7 @@ export default new Vuex.Store({
     dealHistory: [],
     tide: 0,
     route: "",
-    clickedTide: false,
     delegatedTrustee: false,
-    disabledFields: []
   },
   mutations: {
     updateLoading(state, data) {
@@ -33,15 +29,12 @@ export default new Vuex.Store({
     updateError(state, data) {
       state.error = data;
     },
-    updateLocked(state, data) {
-      state.locked = data;
-    },
-    updatedisabledFields(state, data) {
-      state.disabledFields = data;
-    },
     storeUser(state, data) {
       state.user = data;
       state.trustee = data.trustee;
+    },
+    storeApplication(state, data) {
+      state.application = data;
     },
     logout(state) {
       state.user = null;
@@ -52,16 +45,16 @@ export default new Vuex.Store({
       state.details = data;
     },
     addDeals(state, data) {
-      data.forEach(d => state.deals.push(d));
+      data.forEach((d) => state.deals.push(d));
     },
     addDealToHistory(state, data) {
-      data.forEach(d => state.dealHistory.push(d));
+      data.forEach((d) => state.dealHistory.push(d));
     },
     removeDeals(state, data) {
-      state.deals = state.deals.filter(d => !data.includes(d.id));
+      state.deals = state.deals.filter((d) => !data.includes(d.id));
     },
     acceptDeal(state, data) {
-      state.deals.forEach(d => {
+      state.deals.forEach((d) => {
         if (d.id == data.id) {
           d.accepted = true;
           state.user.tide += d.value;
@@ -70,7 +63,7 @@ export default new Vuex.Store({
     },
     autoAcceptDeal(state) {
       var done = false;
-      state.deals.forEach(d => {
+      state.deals.forEach((d) => {
         if (done) return;
         d.accepted = true;
         state.user.tide += d.value;
@@ -80,47 +73,35 @@ export default new Vuex.Store({
     updateTide(state, data) {
       state.user.tide = data;
     },
-    updateTideEngaged(state, data) {
-      state.tideEngaged = data;
-    },
-    updateTideProcessing(state, data) {
-      state.tideProcessing = data;
-    },
     updateRoute(state, data) {
       state.route = data;
     },
-    updateClickedTide(state, data) {
-      state.clickedTide = data;
-    },
+
     updateTrustee(state, data) {
       state.user.trustee = data;
-    }
+    },
   },
   getters: {
-    loading: state => state.loading,
-    locked: state => state.locked,
-    user: state => state.user,
-    details: state => state.details,
-    error: state => state.error,
-    network: state => state.network,
-    deals: state => state.deals,
-    dealHistory: state => state.dealHistory,
-    random: state => state.random,
-    tideEngaged: state => state.tideEngaged,
-    tideProcessing: state => state.tideProcessing,
-    route: state => state.route,
-    clickedTide: state => state.clickedTide,
-    disabledFields: state => state.disabledFields
+    loading: (state) => state.loading,
+    user: (state) => state.user,
+    application: (state) => state.application,
+    details: (state) => state.details,
+    error: (state) => state.error,
+    network: (state) => state.network,
+    deals: (state) => state.deals,
+    dealHistory: (state) => state.dealHistory,
+    random: (state) => state.random,
+    route: (state) => state.route,
   },
   actions: {
     getDeals(context, add) {
       try {
         // Remove accepted deals and add to history
-        const dealsToRemove = context.getters.deals.filter(d => d.accepted);
+        const dealsToRemove = context.getters.deals.filter((d) => d.accepted);
         context.commit("addDealToHistory", dealsToRemove);
         context.commit(
           "removeDeals",
-          dealsToRemove.map(d => d.id)
+          dealsToRemove.map((d) => d.id)
         );
 
         // Add new deals
@@ -130,6 +111,6 @@ export default new Vuex.Store({
       } catch (thrownError) {
         console.log(thrownError);
       }
-    }
-  }
+    },
+  },
 });
