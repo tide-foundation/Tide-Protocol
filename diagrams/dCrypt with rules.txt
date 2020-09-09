@@ -1,0 +1,62 @@
+title dCrypt with rules
+
+Vendor - Orks challenge(keyId)
+Orks-Blockchain getKey(keyId)
+Blockchain -- Orks pubKey
+
+note over Orks
+    sessionId = random
+    time = ticks(now)
+    sessionKey = hmac(sessionId, adminKey)
+    tokenSign = hmac(sessionIdtime, adminKey)
+    token = sessionIdtimetokenSign
+    cipherKey = encrypt(sessionKey, pubKey)
+end note
+
+Orks -- Vendor token, cipherKey
+
+note over Vendor
+sessionKey = decrypt(cipherKey, secretKey)
+check = hmac(cipherData, sessionKey)
+end note
+
+Vendor - Orks decrypt(vuid, keyId, cipherData, check, token)
+
+note over Orks
+    sessionKey = hmac(sessionId, adminKey)
+    checkTag = hmac(cipherData, sessionKey)
+    isCheck = check == checkTag
+    
+    isOnTime = (time + 60sg) = ticks(now)
+    
+    tokenSignTag = hmac(sessionIdtime, adminKey)
+    isSign = tokenSign == tokenSignTag
+end note
+
+alt isCheck && isOnTime && isSign
+    Orks-Blockchain getRules(vuid, cipherData.tag, keyId)
+    Blockchain--Orks rules
+    Orks-Blockchain getAccount(vuid)
+    Blockchain--Orks CMKPub, CVKi
+    
+note over Orks
+    isWithoutChange = cipherData.valid(CMKPub)
+    noDeny = !rules.any(rule = rule.eval() && rule.isDeny())
+    doesAllow = rules.any(rule = rule.eval() && rule.isAllow())
+end note 
+
+alt isWithoutChange && noDeny && doesAllow
+note over Orks
+    partial = cipherData.partialDecrypt(CVKi)
+    partialCipher = encrypt(partial, sessionKey)
+end note
+
+    Orks -- Vendor partialCipher
+
+end
+end
+
+note over Vendor
+    partial = decrypt(partialCipher, sessionKey)
+    plainData = reconstruct(partial)
+end note
