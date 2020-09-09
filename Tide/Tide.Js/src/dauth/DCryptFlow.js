@@ -14,7 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import DCryptClient from "./DCryptClient";
-import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare } from "cryptide";
+import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare, AesSherableKey } from "cryptide";
 import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
 import Guid from "../Guid";
@@ -91,7 +91,15 @@ export default class DCryptFlow {
       const partials = ciphers.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph))).map((pnt) => new C25519Cipher(pnt, ciph.c2));
 
       const ids = await Promise.all(this.clients.map((c) => c.getClientId()));
-      return C25519Cipher.decryptShares(partials, ids);
+      const plain = C25519Cipher.decryptShares(partials, ids);
+
+      var symmetric = Cipher.symmetric(cipher);
+      if (symmetric.length == 0) {
+        return C25519Cipher.unpad(plain);
+      }
+
+      const symmetricKey = AesSherableKey.from(plain);
+      return symmetricKey.decrypt(symmetric);
     } catch (err) {
       return Promise.reject(err);
     }

@@ -106,6 +106,14 @@ export default class Cipher {
   }
 
   /** @param {Uint8Array} data */
+  static symmetric(data) {
+    let step = headEnd(data);
+    step += asymmetricSize()
+    
+    return data.slice(step);
+  }
+
+  /** @param {Uint8Array} data */
   static cipherFromAsymmetric(data) {
     return C25519Cipher.from(data.slice(0, 32 * 3));
   }

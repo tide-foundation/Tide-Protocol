@@ -41,23 +41,25 @@ const keyCln = new KeyClientSet(urls);
 async function main() {
   try {
     var vendorKey = C25519Key.fromString("DeXSP3DBdA2mlgkxGEWxq7lIJO6gyd0pUcqM3c71TLAAQbUNuNbGAR7dM9Pc2083PQ8JxydPhGNM8M37eVnOZUI9eL2HtqSbhEo3wYVnflW0xNvlUs8YMaBuK0yydCHK");
-    var secret = new AesSherableKey();
+    //var secret = new AesSherableKey().toArray();
+    var secret = Buffer.from("😀😀😀 this is large!!!! wuju !!!! 😀😀😀");
 
     const tag = Num64.seed("key");
     const keyStore = new KeyStore(vendorKey.public());
     const rule = Rule.allow(userId, tag, keyStore);
 
-    var cvkPromise = flow.signUp(cmkAuth, threshold);
-    await Promise.all([cvkPromise, keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule)]);
+    await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule)]);
 
-    var cvk = await cvkPromise;
-    var cipher = Cipher.encrypt(secret.toArray(), tag, cvk);
+    var ids = await Promise.all(flow.clients.map(cln => cln.getClientBuffer()));
+    var signatures = ids.map(id => vendorKey.sign(Buffer.concat([id, userId.toArray()])))
+    
+    var cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
+    var cipher = Cipher.encrypt(secret, tag, cvk);
 
     var plain = await flow.decrypt(cipher, vendorKey);
-    var secretTag = AesSherableKey.from(plain);
 
     console.log(secret.toString());
-    console.log(secretTag.toString());
+    console.log(plain.toString());
   } catch (error) {
     console.log(error);
   }

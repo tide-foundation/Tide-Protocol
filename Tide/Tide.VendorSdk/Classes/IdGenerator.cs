@@ -13,6 +13,8 @@ namespace Tide.VendorSdk.Classes
 
         public BigInteger Id { get => new BigInteger(ToByteArray(), true, true); }
 
+        public ulong Long { get => BitConverter.ToUInt64(ToByteArray().Take(8).ToArray()); }
+
         public IdGenerator(Guid guid)
         {
             Guid = guid;

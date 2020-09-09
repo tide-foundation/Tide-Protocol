@@ -39,19 +39,20 @@ namespace Tide.VendorSdk.Classes
             return _idGen.Guid;
         }
 
-        public async Task Add(Guid viud, BigInteger cvki, AesKey cvkiAuth, C25519Key cvkPub)
+        public async Task Add(Guid viud, BigInteger cvki, AesKey cvkiAuth, C25519Key cvkPub, Guid keyId, byte[] signature)
         {
             var payload = JsonSerializer.Serialize(new[] {
                 cvkPub.ToByteArray(),
                 cvki.ToByteArray(true, true),
                 cvkiAuth.ToByteArray(),
+                signature,
             });
 
             var body = new StringContent(payload, Encoding.UTF8, "application/json");
-            var response = await _client.PutAsync($"api/cvk/{viud}", body);
+            var response = await _client.PutAsync($"api/cvk/{viud}/{keyId}", body);
 
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new HttpRequestException(response.RequestMessage.ToString());
+                throw new HttpRequestException(response.ToString());
         }
 
         public async Task<C25519Key> GetPublic()
@@ -59,7 +60,7 @@ namespace Tide.VendorSdk.Classes
             var response = await _client.GetAsync("api/public");
 
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new HttpRequestException(response.RequestMessage.ToString());
+                throw new HttpRequestException(response.ToString());
 
             var keyText = await response.Content.ReadAsStringAsync();
             return C25519Key.Parse(Convert.FromBase64String(keyText));
@@ -70,7 +71,7 @@ namespace Tide.VendorSdk.Classes
             var response = await _client.GetAsync($"api/cvk/challenge/{viud}/{keyId}");
 
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new HttpRequestException(response.RequestMessage.ToString());
+                throw new HttpRequestException(response.ToString());
 
             var res = JsonSerializer.Deserialize<Dictionary<string, byte[]>>(await response.Content.ReadAsStringAsync());
             return (res["token"], C25519Cipher.Parse(res["challenge"]));
@@ -85,7 +86,7 @@ namespace Tide.VendorSdk.Classes
             var response = await _client.GetAsync($"api/cvk/plaintext/{viud}/{keyId}/{dta}/{tkn}/{sgn}");
 
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new HttpRequestException(response.RequestMessage.ToString());
+                throw new HttpRequestException(response.ToString());
             
             return Convert.FromBase64String(await response.Content.ReadAsStringAsync());
         }

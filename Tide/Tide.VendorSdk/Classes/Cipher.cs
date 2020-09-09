@@ -80,13 +80,21 @@ namespace Tide.VendorSdk.Classes {
                 return UnPad32(asymmetricPlain);
 
             var symmetricKey = AesSherableKey.Parse(asymmetricPlain);
-            return symmetricKey.Decrypt(data.Skip(step).ToArray()); ;
+            return symmetricKey.Decrypt(data.Skip(step).ToArray());
         }
 
         public static byte[] Asymmetric(byte[] data)
         {
             var step = HeadEnd(data);
             return data.Skip(step).Take(AsymmetricSize).ToArray();
+        }
+
+        public static byte[] Symmetric(byte[] data)
+        {
+            var step = HeadEnd(data);
+            step += AsymmetricSize;
+            
+            return data.Skip(step).ToArray();
         }
 
         public static C25519Cipher CipherFromAsymmetric(byte [] data)
