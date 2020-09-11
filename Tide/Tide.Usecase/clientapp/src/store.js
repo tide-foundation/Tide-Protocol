@@ -84,7 +84,6 @@ export default new Vuex.Store({
   getters: {
     loading: (state) => state.loading,
     user: (state) => state.user,
-    application: (state) => state.application,
     details: (state) => state.details,
     error: (state) => state.error,
     network: (state) => state.network,

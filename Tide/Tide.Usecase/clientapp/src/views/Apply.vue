@@ -107,6 +107,9 @@ export default {
             glow: false
         };
     },
+    created() {
+        this.$loading(false, "");
+    },
     watch: {
         "details.firstName": function(newVal) {
             if (this.$store.getters.tideProcessing) return;

@@ -14,7 +14,6 @@ namespace Tide.Vendor.Controllers
     [Route("[controller]")]
     public class ApplicationController : BaseController
     {
-
         public ApplicationController(VendorDbContext context) : base(context) {
 
         }
@@ -26,7 +25,6 @@ namespace Tide.Vendor.Controllers
 
             return new TideResponse(true,application,null);
         }
-
 
         [HttpPost]
         public ActionResult SendApplication([FromBody] RentalApplication application)
@@ -41,8 +39,6 @@ namespace Tide.Vendor.Controllers
             catch (Exception e) {
                 return BadRequest(e);
             }
-        
         }
-
     }
 }

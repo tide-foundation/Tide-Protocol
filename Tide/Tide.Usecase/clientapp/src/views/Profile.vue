@@ -1,7 +1,7 @@
 <template>
   <section>
     <pageHead>Your profile</pageHead>
-    <div id="content-wrapper" class="site-content-wrapper site-pages">
+    <div id="content-wrapper" class="site-content-wrapper site-pages" v-if="fetched">
       <div id="content" class="site-content layout-boxed">
         <div class="container">
           <form>
@@ -87,14 +87,26 @@ export default {
     },
     data() {
         return {
+            fetched: false,
             encrypted: true,
             details: this.$config.scaffoldDetails
         };
     },
     async created() {
-        this.$loading(true, "Fetching details");
-        this.details = (await this.$http.get(`http://127.0.0.1:6001/application`)).data.content;
-        this.$loading(false, "");
+        try {
+            this.fetched = false;
+            this.$loading(true, "Fetching details");
+            var data = (await this.$http.get(`http://127.0.0.1:6001/application`)).data;
+            if (!data.success) {
+                this.$bus.$emit("show-message", "You must apply for a property before viewing your profile.");
+                return this.$router.push("/apply");
+            }
+            this.details = data.content;
+            this.fetched = true;
+            this.$loading(false, "");
+        } catch (error) {
+            console.log(error);
+        }
     },
     methods: {
         toggleEncrypted() {

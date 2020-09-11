@@ -226,7 +226,7 @@ export default {
                     route: "/"
                 });
             } else {
-                this.$bus.$emit("show-auth", true);
+                this.$router.push("/auth");
             }
         }
     }

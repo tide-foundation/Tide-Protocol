@@ -32,7 +32,9 @@ namespace Tide.Vendor.Controllers
             Context.Add(user);
             Context.SaveChanges();
 
-            return Ok(GenerateToken(user.Id)); // TODO: Encrypt this with the cvk pub
+            return Ok(GenerateToken(user.Id));
+            //var msg = Encoding.ASCII.GetBytes(GenerateToken(user.Id));
+            //return Ok(C25519Key.Parse(user.CvkPub).Encrypt(msg));
         }
 
         [HttpGet("{vuid}")]
@@ -55,6 +57,5 @@ namespace Tide.Vendor.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
     }
 }
