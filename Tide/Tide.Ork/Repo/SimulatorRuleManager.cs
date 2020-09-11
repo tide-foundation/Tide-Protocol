@@ -8,6 +8,7 @@ using Tide.Ork.Classes;
 
 namespace Tide.Ork.Repo {
     public class SimulatorRuleManager : SimulatorManagerBase<RuleVault>, IRuleManager {
+        protected override string TableName => "rules";
         public static Guid MaxID => Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff");
 
         public SimulatorRuleManager(string orkId, SimulatorClient client, AesKey key) : base(orkId, client, key)

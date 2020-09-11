@@ -27,15 +27,8 @@ namespace Tide.Ork {
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
             services.AddTransient<IEmailClient, MailKitClient>();
-            services.AddTransient<IKeyManagerFactory, MemoryFactory>();
+            services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
             services.AddTransient<OrkConfig>();
-
-            // TODO: GET JOSE TO HELP INITIALIZING THIS INSIDE FACTORY
-            services.AddSingleton(new SimulatorClient(settings.Endpoints.Simulator.Api, settings.Instance.Username, settings.Endpoints.Simulator.Password));
-
-
-
-          
         }
 
 
