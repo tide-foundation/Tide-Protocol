@@ -26,8 +26,17 @@ namespace Tide.Ork.Classes {
 
         public async Task<T> Get<T>(string contract, string table, string scope, string index)
         {
-            var response = await _client.GetAsync($"Simulator/{contract}/{table}/{scope}{(string.IsNullOrEmpty(index) ? "" : $"/{index}")}");
+            var response = await _client.GetAsync(GeneratePath(contract, table, scope, index));
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
+        }
+
+        public async Task<bool> Delete(string contract, string table, string scope, string index)
+        {
+            return (await _client.DeleteAsync(GeneratePath(contract,table,scope,index))).IsSuccessStatusCode;
+        }
+
+        private string GeneratePath(string contract, string table, string scope, string index) {
+            return $"Simulator/{contract}/{table}/{scope}{(string.IsNullOrEmpty(index) ? "" : $"/{index}")}";
         }
     }
 }

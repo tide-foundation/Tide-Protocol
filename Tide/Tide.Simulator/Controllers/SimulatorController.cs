@@ -24,8 +24,6 @@ namespace Tide.Simulator.Controllers {
         public SimulatorController(IBlockLayer blockchain)
         {
             _blockchain = blockchain;
-
-
         }
 
         [HttpGet("{contract}/{table}/{scope}")]
@@ -44,6 +42,15 @@ namespace Tide.Simulator.Controllers {
         {
             lock (WriteLock) {
                 return Ok(_blockchain.Write(payload));
+            }
+        }
+
+        [HttpDelete("{contract}/{table}/{scope}/{index}")]
+        public IActionResult Delete([FromRoute] string contract, string table, string scope, string index)
+        {
+            lock (WriteLock)
+            {
+                return Ok(_blockchain.SetStale(contract, table, scope, index));
             }
         }
 
