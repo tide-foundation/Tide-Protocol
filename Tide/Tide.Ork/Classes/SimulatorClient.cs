@@ -2,53 +2,32 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using System.Web;
 using Tide.Core;
 using Newtonsoft.Json;
 
 namespace Tide.Ork.Classes {
     public class SimulatorClient {
-        private readonly AuthenticationRequest _authRequest;
         private readonly HttpClient _client;
 
         public SimulatorClient(string url, string orkId, string password) {
-            _authRequest = new AuthenticationRequest(orkId, password);
             _client = new HttpClient {BaseAddress = new Uri(url)};
-            _client.DefaultRequestHeaders.Add("OrkId", orkId);
         }
 
-        public async Task<TideResponse> PostVault(string ork, string username, string payload) {
-           // if (!await IsAuthenticated()) return;
-
-            var stringContent = new StringContent($"\"{payload}\"", Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync($"Simulator/Vault/{ork}/{username}", stringContent);
-            return JsonConvert.DeserializeObject<TideResponse>(await response.Content.ReadAsStringAsync());
+        public async Task<bool> Post(string contract, string table, string scope, string index, object payload) {
+            var blockData = new BlockData(contract, table, scope, index, JsonConvert.SerializeObject(payload));
+            var stringContent = new StringContent(JsonConvert.SerializeObject(blockData), Encoding.UTF8, "application/json");
+            var response = (await _client.PostAsync("Simulator", stringContent));
+            
+            return response.IsSuccessStatusCode;
         }
 
-        public async Task<TideResponse> GetData(string path)
+        public async Task<T> Get<T>(string contract, string table, string scope, string index)
         {
-            var response = await _client.GetAsync(path);
-            return JsonConvert.DeserializeObject<TideResponse>(await response.Content.ReadAsStringAsync());
-        }
-
-        private async Task<bool> IsAuthenticated() {
-            if (_client.DefaultRequestHeaders.Authorization == null) {
-                var authResponse = await GetAuthResponse("Login");
-                if (!authResponse.Success) {
-                    if (authResponse.Error == "Invalid Username") authResponse = await GetAuthResponse("Register");
-                    else return false;
-                }
-
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authResponse.Token);
-            }
-
-            return true;
-
-            async Task<AuthenticationResponse> GetAuthResponse(string path) {
-                var r = await _client.PostAsync($"Authentication/{path}", new StringContent(JsonConvert.SerializeObject(_authRequest), Encoding.UTF8, "application/json"));
-                var j = await r.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<AuthenticationResponse>(j);
-            }
+            var response = await _client.GetAsync($"Simulator/{contract}/{table}/{scope}{(string.IsNullOrEmpty(index) ? "" : $"/{index}")}");
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
         }
     }
 }

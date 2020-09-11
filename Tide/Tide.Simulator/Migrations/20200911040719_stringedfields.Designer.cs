@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tide.Simulator;
 
 namespace Tide.Simulator.Migrations
 {
     [DbContext(typeof(BlockchainContext))]
-    partial class BlockchainContextModelSnapshot : ModelSnapshot
+    [Migration("20200911040719_stringedfields")]
+    partial class stringedfields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -32,10 +32,11 @@ namespace Tide.Ork.Controllers
 
         [HttpGet("/GetOrks/{amount}")]
         public TideResponse GetOrks([FromRoute] int amount) {
-            var response = _client.GetData($"Simulator/getorks").Result;
-            var stringList = JsonConvert.DeserializeObject<List<string>>((string)response.Content) ;
-            response.Content = stringList.Select(JsonConvert.DeserializeObject<Core.OrkNode>).Take(amount);
-            return response;
+            return null;
+            //var response = _client.GetData($"Simulator/getorks").Result;
+            //var stringList = JsonConvert.DeserializeObject<List<string>>((string)response.Content) ;
+            //response.Content = stringList.Select(JsonConvert.DeserializeObject<Core.OrkNode>).Take(amount);
+            //return response;
         }
     }
 }

@@ -36,15 +36,12 @@ namespace Tide.Ork.Repo {
         }
 
         public async Task<T> GetById(Guid id) {
-            var response = await _client.GetData($"Simulator/Vault/{_orkId}/{id}");
-            if (!response.Success) return null;
-
-            return SerializableByteBase<T>.Parse(_key.Decrypt((string)response.Content));
+      
+            return null; //SerializableByteBase<T>.Parse(_key.Decrypt((string)response.Content));
         }
 
-        public async Task<TideResponse> SetOrUpdate(T entity)
-        {
-            return await _client.PostVault(_orkId, entity.Id.ToString(), _key.EncryptStr(entity));
+        public async Task<TideResponse> SetOrUpdate(T entity) {
+            return null;
         }
     }
 }

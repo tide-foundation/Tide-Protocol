@@ -33,7 +33,7 @@ namespace Tide.Simulator.Classes {
         /// </param>
         /// <param name="index">The primary index for the data under the selected scope.</param>
         /// <returns>Serialized object</returns>
-        string Read(Contract contract, Table table, string scope, string index);
+        string Read(string contract, string table, string scope, string index);
 
 
 
@@ -45,7 +45,7 @@ namespace Tide.Simulator.Classes {
         /// <param name="table">The table you want to read from.</param>
         /// <param name="scope">The scope you want to read from.</param>
         /// <returns>A list of serialized objects</returns>
-        List<string> Read(Contract contract, Table table, string scope);
+        List<string> Read(string contract, string table, string scope);
 
 
         /// <summary>
@@ -56,11 +56,11 @@ namespace Tide.Simulator.Classes {
         /// <param name="scope">The contract you want to delete from.</param>
         /// <param name="index">The index you want to delete from.</param>
         /// <returns></returns>
-        bool SetStale(Contract contract, Table table, string scope, string index);
+        bool SetStale(string contract, string table, string scope, string index);
 
         /// <summary>
         ///     The same as 'Read', but will pull the full historical data of the item.
         /// </summary>
-        List<BlockData> ReadHistoric(Contract contract, Table table, string scope, string index);
+        List<BlockData> ReadHistoric(string contract, string table, string scope, string index);
     }
 }

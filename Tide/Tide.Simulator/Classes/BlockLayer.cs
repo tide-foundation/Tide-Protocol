@@ -70,8 +70,7 @@ namespace Tide.Simulator.Classes {
             return Write(new List<BlockData>() { blockData });
         }
 
-        public string Read(Contract contract, Table table, string scope, string index)
-        {
+        public string Read(string contract, string table, string scope, string index) {
             var currentData = _context.Data.FirstOrDefault(d =>
                 d.Index == index &&
                 d.Contract == contract &&
@@ -82,7 +81,7 @@ namespace Tide.Simulator.Classes {
             return currentData?.Data;
         }
 
-        public List<string> Read(Contract contract, Table table, string scope) {
+        public List<string> Read(string contract, string table, string scope) {
             return _context.Data.Where(d =>
                 d.Contract == contract &&
                 d.Table == table &&
@@ -90,7 +89,7 @@ namespace Tide.Simulator.Classes {
                 !d.Stale).Select(d => d.Data).ToList();
         }
 
-        public bool SetStale(Contract contract, Table table, string scope, string index)
+        public bool SetStale(string contract, string table, string scope, string index)
         {
             var currentData = _context.Data.FirstOrDefault(d =>
                 d.Index == index &&
@@ -106,7 +105,7 @@ namespace Tide.Simulator.Classes {
             return true;
         }
 
-        public List<BlockData> ReadHistoric(Contract contract, Table table, string scope, string index)
+        public List<BlockData> ReadHistoric(string contract, string table, string scope, string index)
         {
             return _context.Data.Where(d =>
                 d.Index == index &&
