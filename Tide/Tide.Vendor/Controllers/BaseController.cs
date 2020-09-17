@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tide.Core;
 using Tide.Vendor.Models;
+using User = Tide.Vendor.Models.User;
 
 namespace Tide.Vendor.Controllers
 {
@@ -16,10 +17,10 @@ namespace Tide.Vendor.Controllers
         {
             Context = context;
         }
-        private ApplicationUser _user;
-        protected new ApplicationUser User
+        private User _user;
+        protected new User User
         {
-            get { return _user ??= Context.Users.FirstOrDefault(u => u.Id == HttpContext.User.Identity.Name); }
+            get { return _user ??= Context.Users.Include(u=>u.RentalApplications).FirstOrDefault(u => u.Id == HttpContext.User.Identity.Name); }
             set => _user = value;
         }
     }

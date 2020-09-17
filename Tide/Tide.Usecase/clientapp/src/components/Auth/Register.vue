@@ -155,6 +155,8 @@ export default {
     created() {
         this.autoSelectDnsOrk();
         this.orks = this.$orks;
+
+        console.log(this.$parent.getTemporaryOrkList());
     },
     computed: {
         passwordsValid: function() {

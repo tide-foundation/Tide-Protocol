@@ -12,7 +12,7 @@ namespace Tide.Vendor.Models
         }
 
 
-        public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<RentalApplication> Applications { get; set; }
     }
 }

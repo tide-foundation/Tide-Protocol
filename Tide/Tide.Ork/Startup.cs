@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Tide.Core;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
@@ -36,8 +37,8 @@ namespace Tide.Ork {
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            else
-                app.UseHsts();
+            //else
+            //    app.UseHsts();
 
             app.UseDeveloperExceptionPage(); // TODO: Remove for production
 

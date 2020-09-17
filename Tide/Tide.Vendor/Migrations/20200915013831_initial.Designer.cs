@@ -10,8 +10,8 @@ using Tide.Vendor.Models;
 namespace Tide.Vendor.Migrations
 {
     [DbContext(typeof(VendorDbContext))]
-    [Migration("20200909035635_initial2")]
-    partial class initial2
+    [Migration("20200915013831_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,37 +21,12 @@ namespace Tide.Vendor.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Tide.Vendor.Models.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CvkPub")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Field1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Field2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("Tide.Vendor.Models.RentalApplication", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreditCardOutstanding")
                         .HasColumnType("nvarchar(max)");
@@ -132,20 +107,39 @@ namespace Tide.Vendor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Applications");
                 });
 
+            modelBuilder.Entity("Tide.Vendor.Models.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CvkPub")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Field1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Field2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("Tide.Vendor.Models.RentalApplication", b =>
                 {
-                    b.HasOne("Tide.Vendor.Models.ApplicationUser", null)
-                        .WithMany("Applications")
-                        .HasForeignKey("ApplicationUserId");
+                    b.HasOne("Tide.Vendor.Models.User", null)
+                        .WithMany("RentalApplications")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

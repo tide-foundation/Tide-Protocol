@@ -164,10 +164,10 @@ export default {
                     try {
                         var encryptedObject = {};
                         for (const property in this.details) {
-                            encryptedObject[property] = this.$tide.encrypt(this.details[property], "field1");
+                            encryptedObject[property] = this.$tide.encrypt(this.details[property], "mandatory");
                         }
 
-                        var result = (await this.$http.post(`http://127.0.0.1:6001/application`, encryptedObject)).data;
+                        var result = (await this.$http.post(`${this.$tide.serverUrl}/application`, encryptedObject)).data;
 
                         this.submitting = false;
                         this.$bus.$emit("show-message", "Your application has been submitted successfully");

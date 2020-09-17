@@ -96,7 +96,7 @@ export default {
         try {
             this.fetched = false;
             this.$loading(true, "Fetching details");
-            var data = (await this.$http.get(`http://127.0.0.1:6001/application`)).data;
+            var data = (await this.$http.get(`${this.$tide.serverUrl}/application`)).data;
             if (!data.success) {
                 this.$bus.$emit("show-message", "You must apply for a property before viewing your profile.");
                 return this.$router.push("/apply");

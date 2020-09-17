@@ -26,8 +26,8 @@ import IdGenerator from "../../src/IdGenerator";
 var threshold = 3;
 var user = "admin";
 var cmkAuth = AESKey.from("AhATyXYow4qdCw7nFGVFu87JICzd7w9PbzAyp7M4r6PiHS7h0RTUNSP5XmcOVUmsvPKe");
-var urls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
-//var urls = [...Array(10)].map((_, i) => `https://ork-${i}.azurewebsites.net/`);
+//var urls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
+var urls = [...Array(10)].map((_, i) => `https://ork-${i}.azurewebsites.net/`);
 
 const userId = IdGenerator.seed(user, cmkAuth).guid;
 const flow = new DCryptFlow(urls, userId);
@@ -50,9 +50,9 @@ async function main() {
 
     await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule)]);
 
-    var ids = await Promise.all(flow.clients.map(cln => cln.getClientBuffer()));
-    var signatures = ids.map(id => vendorKey.sign(Buffer.concat([id, userId.toArray()])))
-    
+    var ids = await Promise.all(flow.clients.map((cln) => cln.getClientBuffer()));
+    var signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
+
     var cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
     var cipher = Cipher.encrypt(secret, tag, cvk);
 

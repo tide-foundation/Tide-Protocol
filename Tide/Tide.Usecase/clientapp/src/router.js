@@ -7,7 +7,9 @@ import Thanks from "./views/Thanks.vue";
 import NotReal from "./views/NotReal.vue";
 import Apply from "./views/Apply.vue";
 import Auth from "./views/Auth.vue";
+import Dashboard from "./views/Dashboard.vue";
 import Profile from "./views/Profile.vue";
+import VendorBackend from "./views/VendorBackend.vue";
 
 import Revert from "./views/Revert.vue";
 import Store from "./store";
@@ -53,7 +55,12 @@ var router = new Router({
           component: Profile,
           meta: ["auth"],
         },
-
+        {
+          path: "/dashboard",
+          name: "dashboard",
+          component: Dashboard,
+          meta: [],
+        },
         {
           path: "/not-real",
           name: "notreal",
@@ -73,6 +80,12 @@ var router = new Router({
       path: "/auth",
       name: "Auth",
       component: Auth,
+      meta: [],
+    },
+    {
+      path: "/vendorBackend",
+      name: "VendorBackend",
+      component: VendorBackend,
       meta: [],
     },
   ],

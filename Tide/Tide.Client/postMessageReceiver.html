@@ -1,0 +1,43 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>postMessage Test ~ Receiver</title>
+</head>
+<body>
+<p><b>This iframe is located on <span id="domain">&nbsp;</span>.</p>
+<!-- <a href="http://gravellewebdesign.com" target="_blank">gravellewebdesign.com</b></a> -->
+<div id="msg">&nbsp;</div>
+
+<form id="form">
+    <input type="text" id="msg" placeholder="Type message to send"/>
+    <input id="send_msg" type="button" value="Send message to parent page" />
+</form>
+
+<!-- <p><button id="send_msg">Send iframe height to the parent window in order to resize to fit the content</button></p> -->
+
+<script>
+   window.setTimeout(()=>{
+
+var ORIGIN = 'https://www.ryanshaw.com.au';
+
+document.getElementById('domain').innerText = location.protocol + '//' + location.host;
+
+function listener(event){
+  console.log(event)
+}
+
+addEventListener("message", (event)=>{
+  console.log(event);
+}, true);
+
+//send a message to the parent page...
+document.getElementById('send_msg').addEventListener('click', function(e) {
+  window.parent.postMessage(document.getElementById("msg").value, 
+                           ORIGIN);
+}, false);
+  }, 300);
+
+</script>
+
+</body>
+</html>

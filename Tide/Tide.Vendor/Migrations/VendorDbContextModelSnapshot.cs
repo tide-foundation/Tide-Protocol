@@ -19,25 +19,6 @@ namespace Tide.Vendor.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Tide.Vendor.Models.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CvkPub")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Field1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Field2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("Tide.Vendor.Models.RentalApplication", b =>
                 {
                     b.Property<int>("Id")
@@ -124,11 +105,39 @@ namespace Tide.Vendor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Applications");
+                });
+
+            modelBuilder.Entity("Tide.Vendor.Models.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CvkPub")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Field1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Field2")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Applications");
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Tide.Vendor.Models.RentalApplication", b =>
+                {
+                    b.HasOne("Tide.Vendor.Models.User", null)
+                        .WithMany("RentalApplications")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

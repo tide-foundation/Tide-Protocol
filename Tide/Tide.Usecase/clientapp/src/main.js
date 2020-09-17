@@ -36,7 +36,7 @@ Vue.config.productionTip = false;
   Vue.prototype.$orks = orks;
 
   var urls = Vue.prototype.$orks.map((o) => o.url);
-  Vue.prototype.$tide = new Tide("VendorId", vendorUrl, urls, "publickey");
+  Vue.prototype.$tide = new Tide("VendorId", vendorUrl, urls, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANvjzMxmyjGxse3fwkqajZxhf088eQRgS4l9wKsnm+A2+HRLt/4n6lA0cO6pmBqB9Le72HFSQ1s9cjv6HF3O2m", ["mandatory"]);
 }
 
 Vue.prototype.$loading = (a, m) =>
@@ -48,6 +48,8 @@ Vue.prototype.$config = config;
 Vue.prototype.$bus = new Vue();
 Vue.prototype.$helper = new helper();
 Vue.prototype.$http = axios;
+
+Vue.use(require("vue-moment"));
 
 new Vue({
   router,

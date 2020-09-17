@@ -37,8 +37,8 @@ export default class {
    * Initialize Tide.
    */
   async initialize() {
-    var discoveryOrk = await selectDiscoveryOrk(this.homeOrks);
-    this.orks = await get(`${discoveryOrk}/getorks/10`);
+    // var discoveryOrk = await selectDiscoveryOrk(this.homeOrks);
+    // this.orks = await get(`${discoveryOrk}/getorks/10`);
   }
 
   /**

@@ -5,6 +5,10 @@ html {
 
 button {
   border-radius: 2px;
+  border: 1px solid gray;
+  &:disabled {
+    opacity: 0.3;
+  }
 }
 
 .tide-logo {

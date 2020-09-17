@@ -28,7 +28,7 @@ namespace Tide.Vendor.Controllers
 
       
         [HttpPost]
-        public ActionResult CreateAccount([FromBody] ApplicationUser user) {
+        public ActionResult CreateAccount([FromBody] User user) {
             Context.Add(user);
             Context.SaveChanges();
 

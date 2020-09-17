@@ -9,10 +9,29 @@
   <body>
     <div class="layout center">
       <div class="center col">
-        <a href="./DAuth.html" class="button mb-2">dAuth Test</a>
-        <a href="https://google.com" class="button">Future Test</a>
+        <div id="inject-here">
+          injection box
+
+          <a id="l" href="#">Click to send message to parent</a>
+        </div>
       </div>
     </div>
-    <script src="./src/main.js"></script>
+
+    <script>
+      var link = document.getElementById("l");
+
+      link.addEventListener("click", () => {
+        console.log(window.opener);
+        var targetWindow = window.opener;
+        targetWindow.postMessage("hello there!", "http://example.com");
+        console.log("message sent from within iframe");
+      });
+    </script>
+
+    <style>
+      #inject-here {
+        background-color: red;
+      }
+    </style>
   </body>
 </html>

@@ -1,0 +1,180 @@
+<template>
+  <div class="rule">
+    <h3>{{rule.id}} - {{rule.name}}</h3>
+    <div id="info-bar">
+      <div class="input-g">
+        <label for>State</label>
+        <button>{{rule.state}}</button>
+      </div>
+      <div class="input-g">
+        <label for>Destination</label>
+        <button>{{rule.destination}}</button>
+      </div>
+      <div class="input-g">
+        <label for>Expiration</label>
+        <button>{{ rule.expiration | moment("D / MM / YYYY")}}</button>
+      </div>
+      <div class="input-g">
+        <label for>Tag</label>
+        <button>{{rule.tag}}</button>
+      </div>
+      <div class="input-g">
+        <label for>Action</label>
+        <button>{{rule.action}}</button>
+      </div>
+      <div class="input-g">
+        <label for>Automation</label>
+        <button>{{rule.automation}}</button>
+      </div>
+    </div>
+    <span>Conditions</span>
+    <div id="conditions">
+      <button id="group-btn" v-if="!canUngroup" :disabled="rule.conditions.filter(c=>c.selected).length < 2 || !canGroup" @click="groupSelected(1)">Group Selected</button>
+      <button id="group-btn" v-if="canUngroup" @click="groupSelected(-1)">Ungroup Selected</button>
+      <!-- <div class="level" v-for="(levelGroup,i) in sortedLevelGroups" :key="i" :class="[`g-l-${levelGroup.level}`]">
+        <Condition v-for="condition in levelGroup.conditions" :key="condition.id" :condition="condition"></Condition>
+      </div>-->
+      <!-- <Condition v-for="condition in sortedIndexList" :key="condition.id" :condition="condition"></Condition>
+      <div v-for="(g,i) in layeredGroups" :key="i"></div>-->
+
+      <Condition v-for="condition in sortedIndexList" :key="condition.id" :condition="condition"></Condition>
+    </div>
+  </div>
+</template>
+
+<script>
+import Condition from "./Condition.vue";
+export default {
+    props: ["rule"],
+    components: { Condition },
+    data: function() {
+        return {};
+    },
+    computed: {
+        sortedIndexList: function() {
+            return this.rule.conditions.sort((a, b) => a.index - b.index);
+        },
+        selectedConditions: function() {
+            return this.sortedIndexList.filter(c => c.selected);
+        },
+        canGroup: function() {
+            // Minimum count
+            if (this.selectedConditions.length < 2) return false;
+
+            // Ensure no intersection
+            var ends = this.getGroupEnds();
+            if (ends.start.level != ends.end.level) return false;
+
+            // Ensure no gaps
+            const uniqueIndexes = [...new Set(this.selectedConditions.map(c => c.index))];
+            for (let i = 0; i < uniqueIndexes.length; i++) {
+                if (i == uniqueIndexes.length - 1) return true;
+                if (uniqueIndexes[i] + 1 != uniqueIndexes[i + 1]) return false;
+            }
+        },
+        canUngroup: function() {
+            if (!this.canGroup) return false; // Check if can group for the gaps and intersections.
+
+            if (this.selectedConditions[0].level == 0) return false; // If we're on level 0, we can't ungroup
+
+            // Ensure the whole level group is selected
+            var ends = this.getGroupEnds();
+            if (ends.start.index != 0 && this.sortedIndexList[ends.start.index - 1].level == ends.start.level) return false;
+            if (ends.end.index != this.sortedIndexList[this.sortedIndexList.length - 1].index && this.sortedIndexList[ends.end.index + 1].level == ends.end.level) return false;
+
+            return true;
+        }
+    },
+    methods: {
+        getGroupEnds() {
+            return { start: this.selectedConditions[0], end: this.selectedConditions[this.selectedConditions.length - 1] };
+        },
+        groupSelected(by) {
+            // Find the start and end conditions
+            var ends = this.getGroupEnds();
+
+            // Add a level to everything in between
+            var innerConditions = this.sortedIndexList.filter(c => c.index >= ends.start.index && c.index <= ends.end.index).forEach(c => (c.level += by));
+            this.sortedIndexList.filter(c => c.selected).forEach(c => (c.selected = false));
+        },
+        insertNewLine(index) {
+            var currentCondition = this.sortedIndexList[index];
+            // Move current lines up index
+            for (let i = 0; i < this.rule.conditions.length; i++) {
+                if (i >= index) {
+                    this.rule.conditions[i].index++;
+                }
+            }
+            // insert new line at index
+            this.rule.conditions.push({
+                id: this.$helper.generateUniqueId(),
+                index: index,
+                selected: false,
+                union: "",
+                field: "",
+                operator: "",
+                value: "",
+                level: currentCondition.level
+            });
+        },
+        removeLineAtIndex(index) {
+            // Remove the line
+            this.rule.conditions = this.rule.conditions.filter(c => c.index != index);
+
+            // Fix the remaining indexes
+            for (let i = 0; i < this.sortedIndexList.length; i++) {
+                this.sortedIndexList[i].index = i;
+            }
+        }
+    }
+};
+</script>
+
+<style lang="scss" scoped>
+.rule {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+        display: block;
+    }
+    #info-bar {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        padding: 0 10px 20px 10px;
+        flex-wrap: wrap;
+        background-color: rgb(243, 243, 243);
+
+        .input-g {
+            margin-top: 20px;
+            width: 33%;
+            label {
+                display: block;
+            }
+            button {
+                width: 120px;
+            }
+        }
+    }
+
+    span {
+        margin-top: 10px;
+    }
+
+    #conditions {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+
+        #group-btn {
+            margin-bottom: 10px;
+        }
+
+        .level {
+        }
+    }
+}
+</style>

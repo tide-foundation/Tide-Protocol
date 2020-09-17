@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tide.Vendor.Migrations
 {
-    public partial class iniital : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,6 @@ namespace Tide.Vendor.Migrations
                     Id = table.Column<string>(nullable: false),
                     Field1 = table.Column<string>(nullable: true),
                     Field2 = table.Column<string>(nullable: true),
-                    Token = table.Column<string>(nullable: true),
                     CvkPub = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

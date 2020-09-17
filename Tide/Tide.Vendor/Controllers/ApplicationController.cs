@@ -31,8 +31,8 @@ namespace Tide.Vendor.Controllers
         {
             try {
                 application.DateSubmitted = DateTimeOffset.Now;
-                application.UserId = User.Id;
-                Context.Add(application);
+                User.RentalApplications.Add(application);
+                Context.Update(User);
                 Context.SaveChanges();
                 return Ok();
             }
