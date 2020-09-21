@@ -4,10 +4,13 @@
       {{condition.index}}
       {{condition.level}}
       <span class="group-indicator">
-        <div v-if="condition.level > 0" class="level-1">&nbsp;</div>
-        <div v-if="condition.level > 1" class="level-2">&nbsp;</div>
-        <div v-if="condition.level > 2" class="level-3">&nbsp;</div>
-        <div v-if="condition.level > 3" class="level-4">&nbsp;</div>
+        <span v-for="i in 3" :key="i">
+          <div v-if="condition.level > i-1" :class="[`level-${i}`,
+            condition.isStart && condition.startBorderLevel == condition.level ? 'is-start' : '',
+            condition.isEnd && condition.endBorderLevel == condition.level ? 'is-end' : '']"></div>
+        </span>
+
+        <i class="group-icon fa fa-times" :class="[`level-${condition.level}`]" v-if="condition.isStart"></i>
       </span>
       <!-- <div :style="{'width':`${condition.level *20}px`}">&nbsp;</div> -->
       <button @click="$parent.insertNewLine(condition.index)">+</button>
@@ -68,19 +71,6 @@ export default {
     align-items: center;
     height: 38px;
 
-    // &.g-l-0 {
-    //     background: white;
-    // }
-    // &.g-l-1 {
-    //     background: #fbf2ec;
-    // }
-    // &.g-l-2 {
-    //     background: #ffe0e0;
-    // }
-    // &.g-l-3 {
-    //     background: #ffd2d2;
-    // }
-
     .condition-content {
         width: 100%;
         display: flex;
@@ -92,26 +82,17 @@ export default {
             position: relative;
             display: flex;
             flex-direction: row;
-            div {
+            width: 10px;
+            .group-icon {
                 position: absolute;
-
-                height: 38px !important;
-                margin-top: -19px;
-
-                background: red;
-                border: 1px solid black;
-                border-right: 0px;
-
-                &.level-1 {
-                    width: 20px;
-                    background: #fbf2ec;
-                    transform: translate(-10px, 0);
-                }
+                z-index: 999;
+                top: -18px;
+                left: -8px;
+                font-size: 10px;
+                color: rgb(207, 44, 44);
 
                 &.level-2 {
-                    width: 13.33px;
-                    background: #ffe0e0;
-                    transform: translate(-5px, 0);
+                    left: 2px;
                 }
 
                 &.level-3 {
@@ -119,11 +100,42 @@ export default {
                     background: #ffc4c4;
                     transform: translate(0px, 0);
                 }
+            }
 
-                &.level-4 {
-                    width: 3px;
-                    background: #ffa3a3;
-                    transform: translate(5px, 0);
+            div {
+                position: absolute;
+
+                height: 38px !important;
+                margin-top: -19px;
+
+                background: red;
+                border-left: 1px solid black;
+                border-right: 0px;
+
+                &.is-start {
+                    border-top: 1px solid black;
+                }
+
+                &.is-end {
+                    border-bottom: 1px solid black;
+                }
+
+                &.level-1 {
+                    width: 30px;
+                    background: #fbf2ec;
+                    transform: translate(-10px, 0);
+                }
+
+                &.level-2 {
+                    width: 20px;
+                    background: #ffe0e0;
+                    transform: translate(0px, 0);
+                }
+
+                &.level-3 {
+                    width: 10px;
+                    background: #ffc4c4;
+                    transform: translate(0px, 0);
                 }
             }
         }

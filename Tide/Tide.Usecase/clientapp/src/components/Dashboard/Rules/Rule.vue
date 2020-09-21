@@ -29,7 +29,7 @@
     </div>
     <span>Conditions</span>
     <div id="conditions">
-      <button id="group-btn" v-if="!canUngroup" :disabled="rule.conditions.filter(c=>c.selected).length < 2 || !canGroup" @click="groupSelected(1)">Group Selected</button>
+      <button id="group-btn" v-if="!canUngroup" :disabled="rule.conditions.filter(c=>c.selected).length < 2 || !canGroup" @click="groupSelected(1)">Group Selected {{errorMsg}}</button>
       <button id="group-btn" v-if="canUngroup" @click="groupSelected(-1)">Ungroup Selected</button>
       <!-- <div class="level" v-for="(levelGroup,i) in sortedLevelGroups" :key="i" :class="[`g-l-${levelGroup.level}`]">
         <Condition v-for="condition in levelGroup.conditions" :key="condition.id" :condition="condition"></Condition>
@@ -48,7 +48,7 @@ export default {
     props: ["rule"],
     components: { Condition },
     data: function() {
-        return {};
+        return { errorMsg: "" };
     },
     computed: {
         sortedIndexList: function() {
@@ -60,12 +60,19 @@ export default {
         canGroup: function() {
             // Minimum count
             if (this.selectedConditions.length < 2) return false;
+            // this.error("Minimum of 2 conditions required");
 
-            // Ensure no intersection
+            // Ensure no intersection (start/end different levels)
             var ends = this.getGroupEnds();
             if (ends.start.level != ends.end.level) return false;
 
-            // Ensure no gaps
+            // Ensure no jumping between two groups with a gap
+            for (let i = ends.start.index; i < ends.end.index + 1; i++) {
+                const condition = this.sortedIndexList[i];
+                if (condition.level != ends.start.level) return false;
+            }
+
+            // Ensure no gaps in selected
             const uniqueIndexes = [...new Set(this.selectedConditions.map(c => c.index))];
             for (let i = 0; i < uniqueIndexes.length; i++) {
                 if (i == uniqueIndexes.length - 1) return true;
@@ -86,6 +93,10 @@ export default {
         }
     },
     methods: {
+        error(msg) {
+            this.error = msg;
+            return false;
+        },
         getGroupEnds() {
             return { start: this.selectedConditions[0], end: this.selectedConditions[this.selectedConditions.length - 1] };
         },
@@ -96,6 +107,11 @@ export default {
             // Add a level to everything in between
             var innerConditions = this.sortedIndexList.filter(c => c.index >= ends.start.index && c.index <= ends.end.index).forEach(c => (c.level += by));
             this.sortedIndexList.filter(c => c.selected).forEach(c => (c.selected = false));
+            ends.start.isStart = by == 1;
+            ends.start.startBorderLevel = ends.start.level;
+            ends.end.isEnd = by == 1;
+            ends.end.endBorderLevel = ends.end.level;
+            console.log(ends.end.isEnd);
         },
         insertNewLine(index) {
             var currentCondition = this.sortedIndexList[index];
