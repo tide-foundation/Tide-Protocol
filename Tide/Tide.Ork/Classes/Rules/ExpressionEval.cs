@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 namespace Tide.Ork.Classes.Rules
@@ -14,10 +15,10 @@ namespace Tide.Ork.Classes.Rules
             this.query = query;
         }
 
-        public string Eval()
+        public Expression<Func<bool>> Eval()
         {
             var rx = new Regex(@"[()]|[^\s()]+", RegexOptions.Compiled | RegexOptions.Multiline);
-            var tokens = LoopRel(rx.Matches(query).Select(itm => itm.Value), MapOper).ToList();
+            var tokens = LoopRel(rx.Matches(query).Select(itm => itm.Value), MapRel).ToList();
             
             var i = 0;
             while (tokens.Count > 1)
@@ -25,16 +26,15 @@ namespace Tide.Ork.Classes.Rules
                 if (tokens.Count < 3)
                     throw new Exception("Unsupported rule expression format");
 
-                if (tokens[i] == "(") {
+                if (tokens[i].Equals("(")) {
                     i++;
                     continue;
                 }
-                else if (tokens[i + 2] == "(") {
+                else if (tokens[i + 2].Equals("(")) {
                     i += 3;
                     continue;
                 }
-                else if (i > 0 && tokens[i-1] == "(" && tokens[i+1] == ")") {
-                    tokens[i] = $"({tokens[i]})";
+                else if (i > 0 && tokens[i-1].Equals("(") && tokens[i+1].Equals(")")) {
                     tokens.RemoveAt(i + 1);
                     tokens.RemoveAt(i - 1);
 
@@ -45,18 +45,14 @@ namespace Tide.Ork.Classes.Rules
                     continue;
                 }
 
-                tokens[i] = $"{tokens[i]} {tokens[i+1]} {tokens[i+2]}";
+                tokens[i] = MapLog(tokens[i] as Expression, tokens[i+1], tokens[i+2] as Expression);
                 tokens.RemoveRange(i + 1, 2);
             }
 
-            return tokens.FirstOrDefault();
+            return Expression.Lambda<Func<bool>>(tokens.Select(itm => itm as Expression).FirstOrDefault());
         }
 
-        private string MapOper(string left, string oper, string right) {
-            return $"{left} {oper} {right}";
-        }
-
-        private IEnumerable<string> LoopRel(IEnumerable<string> tokens, Func<string, string, string, string> map) {
+        private IEnumerable<object> LoopRel(IEnumerable<string> tokens, Func<string, string, string, object> map) {
             var enume = tokens.GetEnumerator();
             
             var window = new List<string>(3);
@@ -66,7 +62,7 @@ namespace Tide.Ork.Classes.Rules
             {
                 while (window.Count < 3 && (anyMore = enume.MoveNext()))
                 {
-                    if (IsGroup(enume.Current) || IsLogOper(enume.Current))
+                    if (IsGroup(enume.Current) || OperChecker.IsLogOper(enume.Current))
                     {
                         if (window.Count != 0)
                             throw new Exception("Invalid logic expression");
@@ -94,10 +90,26 @@ namespace Tide.Ork.Classes.Rules
             }
         }
 
+        private object MapRel(string left, string oper, string right)
+        {
+            //TODO: Check the expression on the right
+            if (!OperChecker.IsRelOper(oper) || !Check.IsProp(left))
+                throw new Exception("Invalid relational operation");
+
+            var leftNode = PropChecker.GetNode(left);
+            var rightNode = Check.GetNode(right);
+            
+            return OperChecker.GetRelationalNode(leftNode, oper, rightNode);
+        }
+
+        private object MapLog(Expression left, object oper, Expression right)
+        {
+            if (left == null || left.Type != typeof(Boolean) || right == null || right.Type != typeof(Boolean))
+                throw new Exception("Invalid logic operation");
+
+            return OperChecker.GetLogicalNode(left, oper, right);
+        }
+
         private bool IsGroup(string token) => token == "(" || token == ")";
-
-        private bool IsRelOper(string token) => Regex.IsMatch(token, @"^(==|!=|>=|>|<=|<|in)$");
-
-        private bool IsLogOper(string token) => Regex.IsMatch(token, @"^(&&|&|\|\||\||\^)$");
     }
 }
