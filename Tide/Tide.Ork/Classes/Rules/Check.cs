@@ -1,13 +1,30 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
 namespace Tide.Ork.Classes.Rules
 {
     public class Check
     {
+        public static Expression GetNode(string token) {
+            object constant = IsBool(token) ? Cast<bool>(token, bool.TryParse)
+                : IsInt(token) ? Cast<int>(token, int.TryParse)
+                : IsFloat(token) ? Cast<float>(token, float.TryParse)
+                : IsChar(token) ? Cast<char>(token, char.TryParse)
+                : IsProp(token) ? PropChecker.GetProp(token)
+                : GetString(token);
+            
+            if (constant == null)
+                throw new Exception($"Invalid constant value {token}");
+
+            return ConstantExpression.Constant(constant);
+        }
+
+        public static string GetString(string value) => 
+            new Regex(@"^(?:""(.*)"")").Matches(value)
+            .Select(tkn => tkn.Groups[1].Value).FirstOrDefault();
+
         public static bool IsBool(string value) => Is<bool>(value, bool.TryParse);
 
         public static bool IsInt(string value) => Is<int>(value, int.TryParse);
@@ -20,6 +37,17 @@ namespace Tide.Ork.Classes.Rules
         
         private delegate bool TryParseHandler<T>(string value, out T result);
 
+        private static T Cast<T>(string value, TryParseHandler<T> handler) {
+            if (string.IsNullOrEmpty(value))
+                return default(T);
+
+            T result;
+            if (handler(value, out result))
+                return result;
+
+            return default(T);
+        }
+
         private static bool Is<T>(string value, TryParseHandler<T> handler) where T : struct
         {
             if (string.IsNullOrEmpty(value))
@@ -29,37 +57,5 @@ namespace Tide.Ork.Classes.Rules
             return handler(value, out result);
         }
     }
-
-    public class PropChecker
-    {
-        public static bool IsProp(string value) =>
-            string.IsNullOrEmpty(GetPropFormat(value).@class);
-
-        public static object GetProp(string token)
-        {
-            var (className, prop) = GetPropFormat(token);
-            if (className == null)
-                return null;
-
-            return Allowed().Where(type => type.Name == className)
-                .Select(prp => GetValue(prp, prop)).FirstOrDefault();
-        }
-
-        private static IEnumerable<Type> Allowed()
-        {
-            yield return typeof(DateTime);
-            yield return typeof(Environment);
-        }
-
-        private static (string @class, string prop) GetPropFormat(string value)
-        {
-            var rx = new Regex(@"([^\s]+)\.([^\.\s]+)");
-            return rx.Matches(value).Select(tkn =>
-                (tkn.Groups[1].Value, tkn.Groups[2].Value)).FirstOrDefault();
-        }
-
-        private static object GetValue(Type type, string prop) =>
-            type.GetProperty(prop, BindingFlags.Public | BindingFlags.Static)?
-                .GetValue(null, null);
-    }
+   
 }

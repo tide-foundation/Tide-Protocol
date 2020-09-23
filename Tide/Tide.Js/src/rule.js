@@ -41,8 +41,8 @@ export default class Rule {
    * @param {Num64} tag
    * @param {KeyStore} key
    */
-  static allow(ownerId, tag, key) {
-    return defaultRule(ownerId, tag, key, "allow");
+  static allow(ownerId, tag, key, condition = "true") {
+    return defaultRule(ownerId, tag, key, "allow", condition);
   }
 
   /**
@@ -50,8 +50,8 @@ export default class Rule {
    * @param {Num64} tag
    * @param {KeyStore} key
    */
-  static deny(ownerId, tag, key) {
-    return defaultRule(ownerId, tag, key, "deny");
+  static deny(ownerId, tag, key, condition = "true") {
+    return defaultRule(ownerId, tag, key, "deny", condition);
   }
 
   /** @param {{ ruleId: string; ownerId: string; tag: number; keyId: string; condition: string; action: string; }} data */
@@ -73,15 +73,16 @@ export default class Rule {
  * @param {Num64} tag
  * @param {KeyStore} key
  * @param {'allow' | 'deny'} action
+ * @param {string} condition
  */
-function defaultRule(ownerId, tag, key, action) {
+function defaultRule(ownerId, tag, key, action, condition) {
   const rl = new Rule();
 
   rl.ruleId = new Guid();
   rl.ownerId = ownerId;
   rl.tag = tag;
   rl.keyId = key.keyId;
-  rl.condition = "true";
+  rl.condition = condition;
   rl.action = action;
 
   return rl;
