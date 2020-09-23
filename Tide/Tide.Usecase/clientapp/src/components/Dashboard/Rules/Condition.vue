@@ -41,6 +41,7 @@ export default {
             levelColors: ["#ffffff", "#fdffda", "#edf29d", "#d4db55"],
             operators: ["=", ">", "<", ">=", "<=", "Contains", "Does Not Contain"],
             values: {
+                Date: ["Tech", "Hospitality", "Charity", "Health"],
                 "Vendor Industry": ["Tech", "Hospitality", "Charity", "Health"],
                 Ethnicity: ["Asian", "Indian", "Black", "Hispanic", "White"],
                 Location: ["Africa", "Asia", "The Caribbean", "America", "Europe", "Oceania"],

@@ -225,3 +225,13 @@ body::-webkit-scrollbar-thumb {
 .f-w {
   width: 100%;
 }
+
+.mt-2 {
+  margin-top: 20px;
+}
+
+.space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

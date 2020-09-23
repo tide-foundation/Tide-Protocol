@@ -3,7 +3,7 @@ import request from "superagent";
 import Cipher from "../../src/Cipher";
 //import "../../dist/tide";
 
-var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net/`);
+var orkUrls = [...Array(13)].map((_, i) => `https://ork-${i}.azurewebsites.net/`);
 var vendorUrl = "https://tidevendor.azurewebsites.net/";
 
 // var orkUrls = [...Array(3)].map((_, i) => "http://localhost:500" + (i + 1));
@@ -45,8 +45,8 @@ async function main() {
 
     await request.post(`${vendorUrl}/account`).send(userData);
 
-    var partialDecrypt = await request.get(`${vendorUrl}/BackendTest/${userData.id}/true`);
-    console.log(partialDecrypt.body);
+    // var partialDecrypt = await request.get(`${vendorUrl}/BackendTest/${userData.id}/true`);
+    // console.log(partialDecrypt.body);
 
     var login = await tide.loginV2(user, pass, orkUrls);
     console.log("Done login");

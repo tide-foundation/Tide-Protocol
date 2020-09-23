@@ -16,7 +16,7 @@ Vue.config.productionTip = false;
   //var vendorUrl = "http://127.0.0.1:6001";
 
   var orks = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     orks.push({
       id: i,
       url: `https://ork-${i}.azurewebsites.net`,

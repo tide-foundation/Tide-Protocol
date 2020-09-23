@@ -29,15 +29,14 @@
     </div>
     <span>Conditions</span>
     <div id="conditions">
-      <button id="group-btn" v-if="!canUngroup" :disabled="rule.conditions.filter(c=>c.selected).length < 2 || !canGroup" @click="groupSelected(1)">Group Selected {{errorMsg}}</button>
+      <button id="group-btn" v-if="!canUngroup" :disabled="rule.conditions.filter(c=>c.selected).length < 2 || !canGroup" @click="groupSelected(1)">Group Selected {{errorMsg != null ? `(${errorMsg})` : '' }}</button>
       <button id="group-btn" v-if="canUngroup" @click="groupSelected(-1)">Ungroup Selected</button>
-      <!-- <div class="level" v-for="(levelGroup,i) in sortedLevelGroups" :key="i" :class="[`g-l-${levelGroup.level}`]">
-        <Condition v-for="condition in levelGroup.conditions" :key="condition.id" :condition="condition"></Condition>
-      </div>-->
-      <!-- <Condition v-for="condition in sortedIndexList" :key="condition.id" :condition="condition"></Condition>
-      <div v-for="(g,i) in layeredGroups" :key="i"></div>-->
-
       <Condition v-for="condition in sortedIndexList" :key="condition.id" :condition="condition"></Condition>
+
+      <div class="mt-2 space-between">
+        <button @click="newCondition">NEW CONDITION</button>
+        <button @click="saveRule">SAVE RULE</button>
+      </div>
     </div>
   </div>
 </template>
@@ -58,25 +57,31 @@ export default {
             return this.sortedIndexList.filter(c => c.selected);
         },
         canGroup: function() {
+            var base = this;
+            this.errorMsg = null;
+            function error(err) {
+                base.errorMsg = err;
+                return false;
+            }
+
             // Minimum count
-            if (this.selectedConditions.length < 2) return false;
-            // this.error("Minimum of 2 conditions required");
+            if (this.selectedConditions.length < 2) return error("Minimum of 2 conditions required");
 
             // Ensure no intersection (start/end different levels)
             var ends = this.getGroupEnds();
-            if (ends.start.level != ends.end.level) return false;
+            if (ends.start.level != ends.end.level) return error("Cannot interest groups");
 
             // Ensure no jumping between two groups with a gap
             for (let i = ends.start.index; i < ends.end.index + 1; i++) {
                 const condition = this.sortedIndexList[i];
-                if (condition.level != ends.start.level) return false;
+                if (condition.level != ends.start.level) return error("Group ends must reside within a single group");
             }
 
             // Ensure no gaps in selected
             const uniqueIndexes = [...new Set(this.selectedConditions.map(c => c.index))];
             for (let i = 0; i < uniqueIndexes.length; i++) {
                 if (i == uniqueIndexes.length - 1) return true;
-                if (uniqueIndexes[i] + 1 != uniqueIndexes[i + 1]) return false;
+                if (uniqueIndexes[i] + 1 != uniqueIndexes[i + 1]) return error("Groups cannot have gaps");
             }
         },
         canUngroup: function() {
@@ -93,6 +98,9 @@ export default {
         }
     },
     methods: {
+        newCondition() {
+            this.createLineAtIndex(Math.max(...this.rule.conditions.map(o => o.index), 0) + 1, 0);
+        },
         error(msg) {
             this.error = msg;
             return false;
@@ -122,6 +130,9 @@ export default {
                 }
             }
             // insert new line at index
+            this.createLineAtIndex(index, currentCondition.level);
+        },
+        createLineAtIndex(index, level) {
             this.rule.conditions.push({
                 id: this.$helper.generateUniqueId(),
                 index: index,
@@ -130,7 +141,7 @@ export default {
                 field: "",
                 operator: "",
                 value: "",
-                level: currentCondition.level
+                level: level
             });
         },
         removeLineAtIndex(index) {
@@ -140,6 +151,18 @@ export default {
             // Fix the remaining indexes
             for (let i = 0; i < this.sortedIndexList.length; i++) {
                 this.sortedIndexList[i].index = i;
+            }
+        },
+        async saveRule() {
+            this.$loading(true, "Creating Tide account...");
+            try {
+                var result = await this.$tide.allowTags([this.rule]);
+                this.$bus.$emit("show-message", "Rule updated successfully");
+            } catch (thrownError) {
+                console.log(thrownError);
+                this.$bus.$emit("show-error", "Failed saving rule... :'(");
+            } finally {
+                this.$loading(false, "");
             }
         }
     }

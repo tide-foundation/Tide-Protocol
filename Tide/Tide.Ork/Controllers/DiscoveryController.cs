@@ -15,11 +15,9 @@ namespace Tide.Ork.Controllers
     public class DiscoveryController : ControllerBase
     {
         private readonly Settings _settings;
-        private readonly SimulatorClient _client;
 
-        public DiscoveryController(Settings settings,SimulatorClient client) {
+        public DiscoveryController(Settings settings) {
             _settings = settings;
-            _client = client;
         }
 
         [HttpGet("/discover")]

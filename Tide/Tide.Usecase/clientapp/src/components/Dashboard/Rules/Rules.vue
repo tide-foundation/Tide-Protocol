@@ -2,7 +2,10 @@
   <div id="rules">
     <div id="rules-topbar">
       <div v-if="selectedRule != null">
-        <button @click="$parent.selectedRule = null">BACK TO RULES</button>
+        <button @click="selectedRule = null">BACK TO RULES</button>
+      </div>
+      <div v-if="selectedRule == null">
+        <button @click="newRule">NEW RULE</button>
       </div>
     </div>
     <RuleList v-if="selectedRule == null" :rules="rules"></RuleList>
@@ -26,6 +29,19 @@ export default {
         this.seedRules();
     },
     methods: {
+        newRule() {
+            this.rules.push({
+                id: this.$helper.generateUniqueId(),
+                name: "My new rule",
+                tag: "Address",
+                destination: "Vendor",
+                action: "Allow",
+                automation: true,
+                state: "Active",
+                expiration: new Date(),
+                conditions: []
+            });
+        },
         seedRules() {
             this.rules = [
                 {
