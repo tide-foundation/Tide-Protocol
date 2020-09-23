@@ -41,8 +41,9 @@ namespace Tide.Ork.Classes.Rules
         private static IEnumerable<Type> Allowed()
         {
             yield return typeof(DateTime);
+            yield return typeof(DateInfo);
             yield return typeof(Environment);
-            yield return typeof(ContextInfo); 
+            yield return typeof(ContextInfo);
         }
 
         private static (string ClassName, string PropName) GetPropFormat(string value)

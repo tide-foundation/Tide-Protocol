@@ -12,6 +12,7 @@ namespace Tide.Ork.Classes.Rules
                 : IsInt(token) ? Cast<int>(token, int.TryParse)
                 : IsFloat(token) ? Cast<float>(token, float.TryParse)
                 : IsChar(token) ? Cast<char>(token, char.TryParse)
+                : IsDate(token) ? Cast<DateTime>(token, DateTime.TryParse)
                 : IsProp(token) ? PropChecker.GetProp(token)
                 : GetString(token);
             
@@ -32,6 +33,8 @@ namespace Tide.Ork.Classes.Rules
         public static bool IsFloat(string value) => Is<float>(value, float.TryParse);
 
         public static bool IsChar(string value) => Is<char>(value, char.TryParse);
+
+        public static bool IsDate(string value) => Is<DateTime>(value, DateTime.TryParse);
 
         public static bool IsProp(string value) => PropChecker.IsProp(value);
         

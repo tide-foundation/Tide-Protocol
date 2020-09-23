@@ -2,21 +2,68 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using Tide.Core;
 
 namespace Tide.Ork.Classes.Rules
 {
-    public class ExpressionEval
+    public class RuleConditionEval
     {
         private readonly string query;
 
-        public ExpressionEval(string query)
+        public RuleConditionEval(string query)
         {
             this.query = query;
         }
 
+        public RuleConditionEval(List<RuleCondition> conditions)
+        {
+            this.query = GetQuery(conditions);
+        }
+
+        public RuleConditionEval(RuleVault rule)
+        {
+            if (string.IsNullOrWhiteSpace(rule.Condition))
+                this.query = "false";
+            else if (rule.Condition.ToLower() == "true" || rule.Condition.ToLower() == "false")
+                this.query = rule.Condition;
+            else
+                this.query = GetQuery(JsonSerializer.Deserialize<List<RuleCondition>>(rule.Condition, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
+        }
+
+        private static string GetQuery(List<RuleCondition> conditions)
+        {
+            var str = new StringBuilder();
+            var level = 0;
+            foreach (var item in conditions)
+            {
+                var diff = item.Level - level;
+                if (diff < 0)
+                    Enumerable.Range(0, Math.Abs(diff)).ToList().ForEach(i => str.Append(')'));
+
+                if (item.HashUnion)
+                    str.Append(" ").Append(item.Union);
+
+                if (diff > 0)
+                    Enumerable.Range(0, diff).ToList().ForEach(i => str.Append('('));
+
+                str.Append(" ").Append(item.Field).Append(" ").Append(item.Operator).Append(" ").Append(item.Value);
+
+                level += diff;
+            }
+
+            return str.ToString();
+        }
+
+        public bool Run() => Eval().Compile()();
+
         public Expression<Func<bool>> Eval()
         {
+            if (query == "true" || query == "false")
+                return () => query == "true";
+            
             var rx = new Regex(@"[()]|[^\s()]+", RegexOptions.Compiled | RegexOptions.Multiline);
             var tokens = LoopRel(rx.Matches(query).Select(itm => itm.Value), MapRel).ToList();
             

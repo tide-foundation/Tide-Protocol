@@ -21,8 +21,6 @@ namespace Tide.Core
             Condition = string.Empty;
         }
 
-        public bool Apply() => !string.IsNullOrEmpty(Condition) && Condition.Trim().ToLower() == "true";
-
         protected override IEnumerable<byte[]> GetItems()
         {
             yield return RuleId.ToByteArray();

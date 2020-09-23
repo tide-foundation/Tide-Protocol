@@ -128,11 +128,9 @@ namespace Tide.Ork.Controllers
 
             var tag = Cipher.GetTag(dataBuffer);
             var rules = await _ruleManager.GetSetBy(account.VuId, tag, keyPub.Id);
-            if (!rules.Any(rule => rule.Apply() && rule.Action == RuleAction.Allow))
-                return Deny(msgErr);
+            if (!rules.Any(rule => new RuleConditionEval(rule).Run() && rule.Action == RuleAction.Allow))
 
-            if (rules.Any(rule => rule.Apply() && rule.Action == RuleAction.Deny))
-                return Deny(msgErr);
+            if (rules.Any(rule => new RuleConditionEval(rule).Run() && rule.Action == RuleAction.Deny))
 
             var bufferSign = Convert.FromBase64String(sign.DecodeBase64Url());
             var sessionKey = tran.GenKey(account.CvkiAuth);
