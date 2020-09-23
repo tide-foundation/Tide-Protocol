@@ -25,6 +25,7 @@ using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
+using Tide.Ork.Classes.Rules;
 using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
 
