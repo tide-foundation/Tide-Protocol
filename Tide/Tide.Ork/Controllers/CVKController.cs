@@ -25,6 +25,7 @@ using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
+using Tide.Ork.Classes.Rules;
 using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
 
@@ -129,8 +130,10 @@ namespace Tide.Ork.Controllers
             var tag = Cipher.GetTag(dataBuffer);
             var rules = await _ruleManager.GetSetBy(account.VuId, tag, keyPub.Id);
             if (!rules.Any(rule => new RuleConditionEval(rule).Run() && rule.Action == RuleAction.Allow))
+                return Deny(msgErr);
 
             if (rules.Any(rule => new RuleConditionEval(rule).Run() && rule.Action == RuleAction.Deny))
+                return Deny(msgErr);
 
             var bufferSign = Convert.FromBase64String(sign.DecodeBase64Url());
             var sessionKey = tran.GenKey(account.CvkiAuth);
