@@ -14,6 +14,8 @@ namespace Tide.Ork.Repo {
         protected readonly AesKey _key;
         protected readonly string _orkId;
 
+        protected virtual bool IsEncrypted => true;
+
         protected abstract string TableName { get; }
         
         public SimulatorManagerBase(string orkId, SimulatorClient client, AesKey key) {
@@ -29,13 +31,7 @@ namespace Tide.Ork.Repo {
         public async Task<List<T>> GetAll()
         {
             var response = await _client.Get<List<string>>("Simulator", TableName, _orkId, null);
-            return response.Select(itm => SerializableByteBase<T>.Parse(_key.Decrypt(itm.Replace("\"", "")))).ToList();
-        }
-
-        //TODO: Ask Matt for help
-        public Task Delete(Guid id)
-        {
-            throw new NotImplementedException();
+            return response.Select(Map).ToList();
         }
 
         public async Task<T> GetById(Guid id) {
@@ -43,13 +39,20 @@ namespace Tide.Ork.Repo {
             if (string.IsNullOrEmpty(response))
                 return null;
 
-            return SerializableByteBase<T>.Parse(_key.Decrypt(response));
+            return Map(response);
         }
 
         public async Task<TideResponse> SetOrUpdate(T entity)
         {
-            var ok = await _client.Post("Simulator", TableName, _orkId, entity.Id.ToString(), _key.EncryptStr(entity));
+            var ok = await _client.Post("Simulator", TableName, _orkId, entity.Id.ToString(), Map(entity));
             return new TideResponse() { Success = ok };
         }
+
+        public Task Delete(Guid id) => throw new NotImplementedException();
+
+        private T Map(string data) => !IsEncrypted ? SerializableByteBase<T>.Parse(data.Replace("\"", ""))
+            : SerializableByteBase<T>.Parse(_key.Decrypt(data.Replace("\"", "")));
+
+        private string Map(T entity) => !IsEncrypted ? entity.ToString() : _key.EncryptStr(entity);
     }
 }
