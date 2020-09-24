@@ -19,6 +19,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Tide.Ork.Classes.Rules;
 using Tide.Ork.DTOs;
 using Tide.Ork.Repo;
 
@@ -53,11 +54,16 @@ namespace Tide.Ork.Controllers {
         [HttpPost]
         public async Task<ActionResult> SetOrUpdate([FromBody] RuleVaultDTO rule)
         {
-            var result = await _manager.SetOrUpdate(rule);
+            try {
+                new RuleConditionEval(rule).Eval().Compile();
 
-            _logger.LogInformation($"Rule added from user {rule.OwnerId} with tag {rule.Tag} for key {rule.KeyId}");
-
-            return result.Success ? Ok() : BadRequest() as ActionResult;
+                var result = await _manager.SetOrUpdate(rule);
+                _logger.LogInformation($"Rule added from user {rule.OwnerId} with tag {rule.Tag} for key {rule.KeyId}");
+                return result.Success ? Ok() : BadRequest() as ActionResult;
+            }catch{
+                _logger.LogError($"Invalid rule condition for user {rule.OwnerId}: {rule.Condition}");
+                return BadRequest("Invalid rule condition");
+            }
         }
 
         [HttpDelete("{ruleId}")]

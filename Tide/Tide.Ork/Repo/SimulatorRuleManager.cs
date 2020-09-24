@@ -11,6 +11,8 @@ namespace Tide.Ork.Repo {
         protected override string TableName => "rules";
         public static Guid MaxID => Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff");
 
+        protected override bool IsEncrypted => false;
+
         public SimulatorRuleManager(string orkId, SimulatorClient client, AesKey key) : base(orkId, client, key)
         {
         }
