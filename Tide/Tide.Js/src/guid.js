@@ -37,7 +37,15 @@ export default class Guid {
 
     /** @param {Uint8Array|string} data */
     static from(data) {
-        return new Guid(typeof data === 'string' ? Buffer.from(data, 'hex') : data);
+        if (!(typeof data === 'string'))
+            return new Guid(data);
+        
+        const segments = data.split('-').map(slc => Buffer.from(slc, 'hex'));
+        segments[0].swap32();
+        segments[1].swap16();
+        segments[2].swap16();
+
+        return new Guid(Buffer.concat(segments));
     }
 
     /** @param {Uint8Array|string} data */
