@@ -159,8 +159,35 @@ export default class {
   /** @param tagArray {string[]} */
   async allowTags(tagArray) {
     const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
-    await Promise.all(tagArray.map((tag) => Rule.allow(this.vuid, Num64.seed(tag), this.vendorStore)).map(async (rule) => await ruleCln.setOrUpdate(rule)));
+    await Promise.all(tagArray.map((tag) => Rule.allow(this.vuid, Num64.seed(tag.name), this.vendorStore, tag.condition)).map(async (rule) => await ruleCln.setOrUpdate(rule)));
   }
+
+  /** @param {Rule} rule */
+  async updateRule(rule) {
+    const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
+    await ruleCln.setOrUpdate(rule);
+  }
+
+  /** @param {Rule} rule */
+  async updateCondition(ruleId, newCondition) {
+    const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
+
+    var rule = await ruleCln.getById(ruleId);
+    rule.condition = newCondition;
+
+    await ruleCln.setOrUpdate(rule);
+  }
+
+  async getRules() {
+    const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
+    return await ruleCln.getSet();
+  }
+
+  // /** @param tagArray {any[]} */
+  // async allowTags(tagArray) {
+  //   const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
+  //   await Promise.all(tagArray.map((tag) => Rule.allow(this.vuid, Num64.seed(tag.name), this.vendorStore, JSON.stringify(tag.condition))).map(async (rule) => await ruleCln.setOrUpdate(rule)));
+  // }
 
   /**
    * Strips all local user data from the browser.
