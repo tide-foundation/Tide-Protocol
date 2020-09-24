@@ -41,18 +41,19 @@ namespace Tide.Ork.Classes.Rules
             {
                 var diff = item.Level - level;
                 if (diff < 0)
-                    Enumerable.Range(0, Math.Abs(diff)).ToList().ForEach(i => str.Append(')'));
+                    Enumerable.Range(0, Math.Abs(diff)).ToList().ForEach(i => str.Append(" )"));
 
                 if (item.HashUnion)
                     str.Append(" ").Append(item.Union);
 
                 if (diff > 0)
-                    Enumerable.Range(0, diff).ToList().ForEach(i => str.Append('('));
+                    Enumerable.Range(0, diff).ToList().ForEach(i => str.Append(" ("));
 
                 str.Append(" ").Append(item.Field).Append(" ").Append(item.Operator).Append(" ").Append(item.Value);
 
                 level += diff;
             }
+            Enumerable.Range(0, level).ToList().ForEach(i => str.Append(" )"));
 
             return str.ToString();
         }
@@ -77,7 +78,7 @@ namespace Tide.Ork.Classes.Rules
                     i++;
                     continue;
                 }
-                else if (tokens[i + 2].Equals("(")) {
+                else if (i + 2 < tokens.Count && tokens[i + 2].Equals("(")) {
                     i += 3;
                     continue;
                 }
