@@ -37,9 +37,10 @@ async function main() {
 
     await request.post(`${vendorUrl}/account`).send(userData);
 
-    var rules = (await tide.getRules())[0];
+    var rules = await tide.getRules();
+    console.log(rules);
     var ruleToEdit = rules[0];
-    //ruleToEdit.condition = `[{"field":"DateInfo.Day","operator":"==","value":1,"level":0},{"union":"&&","field":"DateInfo.Today","operator":">","value":"21/01/2036","level":0}]`;
+    ruleToEdit.condition = `[{"field":"DateInfo.Day","operator":"==","value":1,"level":0},{"union":"&&","field":"DateInfo.Today","operator":">","value":"21/01/2036","level":0}]`;
     await tide.updateRule(ruleToEdit);
 
     var login = await tide.loginV2(user, pass, orkUrls);

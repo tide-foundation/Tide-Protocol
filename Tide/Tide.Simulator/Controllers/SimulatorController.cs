@@ -34,11 +34,21 @@ namespace Tide.Simulator.Controllers {
 
         [HttpGet("{contract}/{table}/{scope}/{index}")]
         public IActionResult Get([FromRoute] string contract, string table, string scope, string index) {
+
+            var tran =_blockchain.Read(contract, table, scope, index);
+          
+
             return Ok(_blockchain.Read(contract, table, scope, index));
         }
 
+        [HttpGet("{contract}/{table}/{scope}/{column}/{value}")]
+        public IActionResult Get([FromRoute] string contract, string table, string scope, string column,string value)
+        {
+            return Ok(_blockchain.Read(contract, table, scope, new KeyValuePair<string, string>(column,value)));
+        }
+
         [HttpPost]
-        public IActionResult Post([FromBody] BlockData payload)
+        public IActionResult Post([FromBody] Transaction payload)
         {
             lock (WriteLock) {
                 return Ok(_blockchain.Write(payload));
@@ -68,14 +78,14 @@ namespace Tide.Simulator.Controllers {
 
         //        desiredOrk.Confirmed = true;
 
-        //        var transactions = new List<BlockData> {
-        //            new BlockData(Contract.Authentication, Table.Vault, ork, username, payload),
-        //            new BlockData(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
+        //        var transactions = new List<Transaction> {
+        //            new Transaction(Contract.Authentication, Table.Vault, ork, username, payload),
+        //            new Transaction(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
         //        };
 
-        //        //var transactions = new List<BlockData> {
-        //        //    new BlockData(Contract.Authentication, Table.Vault, orkNode, username, payload),
-        //        //   // new BlockData(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
+        //        //var transactions = new List<Transaction> {
+        //        //    new Transaction(Contract.Authentication, Table.Vault, orkNode, username, payload),
+        //        //   // new Transaction(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
         //        //};
 
         //        //if (HttpContext.User.Identity.Name != orkNode) return Unauthorized("You do not have write privileges to that scope.");
@@ -165,14 +175,14 @@ namespace Tide.Simulator.Controllers {
 
         //        desiredOrk.Confirmed = true;
 
-        //        var transactions = new List<BlockData> {
-        //            new BlockData(Contract.Authentication, Table.Vault, ork, username, payload),
-        //            new BlockData(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
+        //        var transactions = new List<Transaction> {
+        //            new Transaction(Contract.Authentication, Table.Vault, ork, username, payload),
+        //            new Transaction(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
         //        };
 
-        //        //var transactions = new List<BlockData> {
-        //        //    new BlockData(Contract.Authentication, Table.Vault, orkNode, username, payload),
-        //        //   // new BlockData(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
+        //        //var transactions = new List<Transaction> {
+        //        //    new Transaction(Contract.Authentication, Table.Vault, orkNode, username, payload),
+        //        //   // new Transaction(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user))
         //        //};
 
         //        //if (HttpContext.User.Identity.Name != orkNode) return Unauthorized("You do not have write privileges to that scope.");
@@ -191,7 +201,7 @@ namespace Tide.Simulator.Controllers {
         //    var currentOrk = _blockchain.Read(Contract.Authentication, Table.Orks, Contract.Authentication.ToString(), orkNode.Id);
         //    if (currentOrk != null) return Conflict();
 
-        //    var transaction = new BlockData(Contract.Authentication, Table.Orks, Contract.Authentication.ToString(),orkNode.Id, JsonConvert.SerializeObject(orkNode));
+        //    var transaction = new Transaction(Contract.Authentication, Table.Orks, Contract.Authentication.ToString(),orkNode.Id, JsonConvert.SerializeObject(orkNode));
 
         //    return _blockchain.Write(transaction) ? Ok() : StatusCode(500);
         //}
@@ -222,7 +232,7 @@ namespace Tide.Simulator.Controllers {
 
         //private bool SetUser(string username, User user)
         //{
-        //    return _blockchain.Write(new BlockData(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user)));
+        //    return _blockchain.Write(new Transaction(Contract.Authentication, Table.Users, Contract.Authentication.ToString(), username, JsonConvert.SerializeObject(user)));
         //}
 
         //#endregion

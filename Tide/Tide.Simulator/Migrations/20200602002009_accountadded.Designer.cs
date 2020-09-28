@@ -45,7 +45,7 @@ namespace Tide.Simulator.Migrations
                     b.ToTable("Account");
                 });
 
-            modelBuilder.Entity("Tide.Simulator.Models.BlockData", b =>
+            modelBuilder.Entity("Tide.Simulator.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

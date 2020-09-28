@@ -18,8 +18,8 @@ namespace Tide.Simulator.Classes {
         /// <param name="index">The primary index for the data under the selected scope.</param>
         /// <param name="data">The payload you wish to save to the blockchain.</param>
         /// <returns>True if the write was successful</returns>
-        bool Write(BlockData block);
-        bool Write(List<BlockData> blocks);
+        bool Write(Transaction block);
+        bool Write(List<Transaction> blocks);
 
         /// <summary>
         ///     Read the newest version of this data block from the 'Blockchain'.
@@ -33,7 +33,7 @@ namespace Tide.Simulator.Classes {
         /// </param>
         /// <param name="index">The primary index for the data under the selected scope.</param>
         /// <returns>Serialized object</returns>
-        string Read(string contract, string table, string scope, string index);
+        Transaction Read(string contract, string table, string scope, string index);
 
 
 
@@ -45,7 +45,18 @@ namespace Tide.Simulator.Classes {
         /// <param name="table">The table you want to read from.</param>
         /// <param name="scope">The scope you want to read from.</param>
         /// <returns>A list of serialized objects</returns>
-        List<string> Read(string contract, string table, string scope);
+        List<Transaction> Read(string contract, string table, string scope);
+
+        /// <summary>
+        ///     Read all the non-stale data in a scope
+        /// </summary>
+        /// <typeparam name="T">The Type you want to deserialize to.</typeparam>
+        /// <param name="contract">The contract you want to read from.</param>
+        /// <param name="table">The table you want to read from.</param>
+        /// <param name="scope">The scope you want to read from.</param>
+        /// <param name="index">Column and value of the object(s) you wish to return.</param>
+        /// <returns>A list of serialized objects</returns>
+        List<Transaction> Read(string contract, string table, string scope, KeyValuePair<string, string> index);
 
 
         /// <summary>
@@ -61,6 +72,6 @@ namespace Tide.Simulator.Classes {
         /// <summary>
         ///     The same as 'Read', but will pull the full historical data of the item.
         /// </summary>
-        List<BlockData> ReadHistoric(string contract, string table, string scope, string index);
+        List<Transaction> ReadHistoric(string contract, string table, string scope, string index);
     }
 }

@@ -102,6 +102,17 @@
                     ">
                     <i class="fa fa-user"></i>Profile
                   </a>
+                  <a :class="{
+                      'active-user-nav-item':
+                        $router.currentRoute.name == 'dashboard'
+                    }" :style="{ 'color:orange': menu == 'dashboard' }" class="pointer" @click="
+                      $bus.$emit('update-menu', {
+                        name: 'Dashboard',
+                        route: '/dashboard'
+                      })
+                    ">
+                    <i class="fa fa-user"></i>Dashboard
+                  </a>
                 </li>
 
                 <li>

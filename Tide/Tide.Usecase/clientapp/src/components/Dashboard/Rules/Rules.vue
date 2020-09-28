@@ -2,7 +2,7 @@
   <div id="rules">
     <div id="rules-topbar">
       <div v-if="selectedRule != null">
-        <button @click="selectedRule = null">BACK TO RULES</button>
+        <button @click="deselectRule">BACK TO RULES</button>
       </div>
       <div v-if="selectedRule == null">
         <button @click="newRule">NEW RULE</button>
@@ -26,9 +26,36 @@ export default {
         };
     },
     created() {
-        this.seedRules();
+        this.fetch();
     },
     methods: {
+        async fetch() {
+            this.$loading(true, "Fetching rules...");
+            try {
+                var rules = await this.$tide.getRules();
+                console.log(rules);
+                rules.forEach(rule => {
+                    rule.condition = JSON.parse(rule.condition);
+                    if (typeof rule.condition == "object") {
+                        for (let i = 0; i < rule.condition.length; i++) {
+                            const condition = rule.condition[i];
+                            condition.index = i;
+                            condition.selected = false;
+                        }
+                    }
+                });
+                this.rules = rules;
+            } catch (thrownError) {
+                console.log(thrownError);
+                this.$bus.$emit("show-error", "Failed saving rule... :'(");
+            } finally {
+                this.$loading(false, "");
+            }
+        },
+        deselectRule() {
+            this.selectedRule = null;
+            this.fetch();
+        },
         newRule() {
             this.rules.push({
                 id: this.$helper.generateUniqueId(),
@@ -54,67 +81,66 @@ export default {
                     state: "Active",
                     expiration: new Date(),
                     conditions: [
-                        {
-                            id: this.$helper.generateUniqueId(),
-                            index: this.seededIndex++,
-                            selected: false,
-                            union: "And",
-                            field: null,
-                            operator: "=",
-                            value: "field2",
-                            level: 0
-                        },
-
-                        {
-                            id: this.$helper.generateUniqueId(),
-                            index: this.seededIndex++,
-                            selected: false,
-                            union: "Or",
-                            field: null,
-                            operator: ">",
-                            value: "field3",
-                            level: 0
-                        },
-                        {
-                            id: this.$helper.generateUniqueId(),
-                            index: this.seededIndex++,
-                            selected: false,
-                            union: "Or",
-                            field: null,
-                            operator: ">",
-                            value: "field3",
-                            level: 0
-                        },
-                        {
-                            id: this.$helper.generateUniqueId(),
-                            index: this.seededIndex++,
-                            selected: false,
-                            union: "And",
-                            field: null,
-                            operator: "=",
-                            value: "field2",
-                            level: 0
-                        },
-                        {
-                            id: this.$helper.generateUniqueId(),
-                            index: this.seededIndex++,
-                            selected: false,
-                            union: "And",
-                            field: null,
-                            operator: "=",
-                            value: "field2",
-                            level: 0
-                        },
-                        {
-                            id: this.$helper.generateUniqueId(),
-                            index: this.seededIndex++,
-                            selected: false,
-                            union: "And",
-                            field: null,
-                            operator: "=",
-                            value: "field2",
-                            level: 0
-                        }
+                        // {
+                        //     id: this.$helper.generateUniqueId(),
+                        //     index: this.seededIndex++,
+                        //     selected: false,
+                        //     union: "And",
+                        //     field: null,
+                        //     operator: "=",
+                        //     value: "field2",
+                        //     level: 0
+                        // },
+                        // {
+                        //     id: this.$helper.generateUniqueId(),
+                        //     index: this.seededIndex++,
+                        //     selected: false,
+                        //     union: "Or",
+                        //     field: null,
+                        //     operator: ">",
+                        //     value: "field3",
+                        //     level: 0
+                        // },
+                        // {
+                        //     id: this.$helper.generateUniqueId(),
+                        //     index: this.seededIndex++,
+                        //     selected: false,
+                        //     union: "Or",
+                        //     field: null,
+                        //     operator: ">",
+                        //     value: "field3",
+                        //     level: 0
+                        // },
+                        // {
+                        //     id: this.$helper.generateUniqueId(),
+                        //     index: this.seededIndex++,
+                        //     selected: false,
+                        //     union: "And",
+                        //     field: null,
+                        //     operator: "=",
+                        //     value: "field2",
+                        //     level: 0
+                        // },
+                        // {
+                        //     id: this.$helper.generateUniqueId(),
+                        //     index: this.seededIndex++,
+                        //     selected: false,
+                        //     union: "And",
+                        //     field: null,
+                        //     operator: "=",
+                        //     value: "field2",
+                        //     level: 0
+                        // },
+                        // {
+                        //     id: this.$helper.generateUniqueId(),
+                        //     index: this.seededIndex++,
+                        //     selected: false,
+                        //     union: "And",
+                        //     field: null,
+                        //     operator: "=",
+                        //     value: "field2",
+                        //     level: 0
+                        // }
                     ]
                 }
             ];

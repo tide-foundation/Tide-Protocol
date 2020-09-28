@@ -1,32 +1,42 @@
 <template>
   <div class="condition" :class="[`g-l-${condition.level}`]">
     <div class="condition-content">
-      {{condition.index}}
-      {{condition.level}}
-      <span class="group-indicator">
+      {{ condition.index }}
+      {{ condition.level }}
+      <!-- <span class="group-container">
+        <span v-if="condition.index == 0" class="group" style="height:111px"></span>
+      </span>-->
+
+      <!-- <span class="group-indicator">
         <span v-for="i in 3" :key="i">
-          <div v-if="condition.level > i-1" :class="[`level-${i}`,
-            condition.isStart && condition.startBorderLevel == condition.level ? 'is-start' : '',
-            condition.isEnd && condition.endBorderLevel == condition.level ? 'is-end' : '']"></div>
+          <div v-if="condition.level > i - 1" :class="[
+              `level-${i}`,
+              condition.isStart && condition.startBorderLevel == condition.level
+                ? 'is-start'
+                : '',
+              condition.isEnd && condition.endBorderLevel == condition.level
+                ? 'is-end'
+                : ''
+            ]"></div>
         </span>
 
         <i class="group-icon fa fa-times" :class="[`level-${condition.level}`]" v-if="condition.isStart"></i>
-      </span>
+      </span>-->
       <!-- <div :style="{'width':`${condition.level *20}px`}">&nbsp;</div> -->
       <button @click="$parent.insertNewLine(condition.index)">+</button>
-      <button :class="{'selected' : condition.selected}" @click="condition.selected = !condition.selected">*</button>
-      <select class="union-dropdown" v-model="condition.union" :class="{'invisible':condition.index == 0}">
-        <option value="And">And</option>
-        <option value="Or">Or</option>
+      <button :class="{ selected: condition.selected }" @click="condition.selected = !condition.selected">*</button>
+      <select class="union-dropdown" v-model="condition.union" :class="{ invisible: condition.index == 0 }">
+        <option value="&amp;&amp;">And</option>
+        <option value="||">Or</option>
       </select>
       <select v-model="condition.field">
-        <option v-for="(value, propertyName) in values" :key="propertyName" :value="propertyName">{{propertyName}}</option>
+        <option v-for="(value, propertyName) in values" :key="propertyName" :value="propertyName">{{ propertyName }}</option>
       </select>
       <select v-model="condition.operator">
-        <option v-for="operator in operators" :key="operator" :value="operator">{{operator}}</option>
+        <option v-for="operator in operators" :key="operator" :value="operator">{{ operator }}</option>
       </select>
       <select v-model="condition.value" :disabled="condition.field === null">
-        <option v-for="(value,i) in values[condition.field]" :key="i" :value="value">{{value}}</option>
+        <option v-for="(value, i) in values[condition.field]" :key="i" :value="value">{{ value }}</option>
       </select>
       <button :disabled="$parent.sortedIndexList.length == 1" @click="$parent.removeLineAtIndex(condition.index)">x</button>
     </div>
@@ -36,17 +46,19 @@
 <script>
 export default {
     props: ["condition"],
+
     data: function() {
         return {
             levelColors: ["#ffffff", "#fdffda", "#edf29d", "#d4db55"],
-            operators: ["=", ">", "<", ">=", "<=", "Contains", "Does Not Contain"],
+            operators: ["==", ">", "<", ">=", "<=", "Contains", "Does Not Contain"],
             values: {
-                Date: ["Tech", "Hospitality", "Charity", "Health"],
-                "Vendor Industry": ["Tech", "Hospitality", "Charity", "Health"],
-                Ethnicity: ["Asian", "Indian", "Black", "Hispanic", "White"],
-                Location: ["Africa", "Asia", "The Caribbean", "America", "Europe", "Oceania"],
-                Sex: ["Male", "Female", "Other lol"],
-                Age: ["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100", "100+"]
+                "DateInfo.Day": [...Array(30)].map((_, i) => (i + 1).toString()),
+                "DateInfo.Today": ["21/01/2036", "21/01/2020", "21/01/2019", "21/01/2018", "21/01/2017"]
+                //     "Vendor Industry": ["Tech", "Hospitality", "Charity", "Health"],
+                //     Ethnicity: ["Asian", "Indian", "Black", "Hispanic", "White"],
+                //     Location: ["Africa", "Asia", "The Caribbean", "America", "Europe", "Oceania"],
+                //     Sex: ["Male", "Female", "Other lol"],
+                //     Age: ["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100", "100+"]
             }
         };
     },
@@ -62,15 +74,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$padding: 3px;
+$height: 38px;
 .condition {
     width: 100%;
     margin-top: -1px;
-    padding: 3px;
+    padding: $padding;
     border: 1px solid rgb(223, 223, 223);
     display: flex;
     flex-direction: row;
     align-items: center;
-    height: 38px;
+    height: $height;
+
+    .group-container {
+        position: relative;
+        width: 40px;
+        height: 30px;
+
+        .group {
+            top: -$padding;
+            position: absolute;
+            height: $height;
+            background: #f9ebeb;
+            width: 30px;
+            border: 1px solid rgb(34, 34, 34);
+            border-right: 0px;
+        }
+    }
 
     .condition-content {
         width: 100%;

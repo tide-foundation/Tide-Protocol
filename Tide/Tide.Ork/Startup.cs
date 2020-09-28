@@ -30,6 +30,9 @@ namespace Tide.Ork {
             services.AddTransient<IEmailClient, MailKitClient>();
             services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
             services.AddTransient<OrkConfig>();
+
+
+          
         }
 
 

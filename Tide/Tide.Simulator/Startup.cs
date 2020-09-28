@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Tide.Core;
 using Tide.Simulator.Classes;
 using Tide.Simulator.Models;
 
@@ -39,14 +42,17 @@ namespace Tide.Simulator {
 
             services.AddDbContext<BlockchainContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
             services.AddScoped<IAuthentication, Authentication>();
-            services.AddScoped<IBlockLayer, BlockLayer>();
 
-  
+            // TODO: Ask Jose for help making this a factory implementation
+            services.AddScoped<IBlockLayer, CosmosDbService>();
+
             services.AddSignalR();
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddCors();
         }
+
+   
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime) {
 

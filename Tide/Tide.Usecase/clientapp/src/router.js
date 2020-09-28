@@ -59,7 +59,7 @@ var router = new Router({
           path: "/dashboard",
           name: "dashboard",
           component: Dashboard,
-          meta: [],
+          meta: ["auth"],
         },
         {
           path: "/not-real",

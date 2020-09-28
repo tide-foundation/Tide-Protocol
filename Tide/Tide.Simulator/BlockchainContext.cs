@@ -10,6 +10,6 @@ namespace Tide.Simulator {
 
 
         public DbSet<Account> Account { get; set; }
-        public DbSet<BlockData> Data { get; set; }
+        public DbSet<Transaction> Data { get; set; }
     }
 }

@@ -30,12 +30,12 @@ namespace Tide.Ork.Repo {
 
         public async Task<List<T>> GetAll()
         {
-            var response = await _client.Get<List<string>>("Simulator", TableName, _orkId, null);
+            var response = await _client.Get("Simulator", TableName, _orkId);
             return response.Select(Map).ToList();
         }
 
         public async Task<T> GetById(Guid id) {
-            var response = await _client.Get<string>("Simulator", TableName, _orkId, id.ToString());
+            var response = await _client.Get("Simulator", TableName, _orkId, id.ToString());
             if (string.IsNullOrEmpty(response))
                 return null;
 

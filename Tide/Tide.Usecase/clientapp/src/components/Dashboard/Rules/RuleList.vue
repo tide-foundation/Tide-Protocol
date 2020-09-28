@@ -4,24 +4,26 @@
     <table>
       <tr>
         <th>Rule ID</th>
-        <th>Name</th>
+        <th class="disabled">Name</th>
         <th>Tag</th>
-        <th>Destination</th>
+        <th class="disabled">Destination</th>
         <th>Action</th>
-        <th>Automation</th>
-        <th>State</th>
-        <th>Expiration</th>
+
+        <th class="disabled">State</th>
+        <th class="disabled">Expiration</th>
+        <th>Override</th>
       </tr>
 
       <tr v-for="rule in rules" :key="rule.id" @click="$parent.selectedRule = rule">
-        <td>{{ rule.id }}</td>
+        <td>{{ rule.ruleId }}</td>
         <td>{{ rule.name }}</td>
         <td>{{ rule.tag }}</td>
         <td>{{ rule.destination }}</td>
         <td>{{ rule.action }}</td>
-        <td>{{ rule.automation }}</td>
+
         <td>{{ rule.state }}</td>
         <td>{{ rule.expiration | moment("dddd, MMMM Do YYYY")}}</td>
+        <td>{{ typeof rule.condition == "boolean" }}</td>
       </tr>
     </table>
   </div>
@@ -39,5 +41,10 @@ export default {
 <style lang="scss" scoped>
 #rules-content {
     width: 100%;
+
+    .disabled {
+        color: lightslategray;
+        opacity: 0.3;
+    }
 }
 </style>

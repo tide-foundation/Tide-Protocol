@@ -22,7 +22,7 @@ namespace Tide.Simulator.Controllers
         }
 
         [HttpGet("{contract}/{table}/{scope}/{index}")]
-        public ActionResult<List<BlockData>> GetHistoric([FromRoute] string contract, string table, string scope, string index)
+        public ActionResult<List<Transaction>> GetHistoric([FromRoute] string contract, string table, string scope, string index)
         {
             return _blockchain.ReadHistoric(contract, table, scope, index);
         }

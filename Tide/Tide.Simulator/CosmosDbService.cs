@@ -1,0 +1,95 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
+using Tide.Core;
+using Tide.Simulator.Classes;
+using Tide.Simulator.Models;
+
+namespace Tide.Simulator {
+    public class CosmosDbService : IBlockLayer {
+        private readonly Container _container;
+
+        public CosmosDbService(Settings settings) {
+            var db = settings.CosmosDbSettings.Database;
+            var container = settings.CosmosDbSettings.Container;
+            var client = new CosmosClientBuilder(settings.CosmosDbSettings.Connection)
+                .WithSerializerOptions(new CosmosSerializationOptions {
+                    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                })
+                .Build();
+
+            var database = client.CreateDatabaseIfNotExistsAsync(db).Result;
+            database.Database.CreateContainerIfNotExistsAsync(container, "/location").Wait();
+
+            _container = client.GetContainer(db, container);
+        }
+
+        public bool Write(Transaction block) {
+            return Write(new List<Transaction>() {block});
+        }
+
+        public bool Write(List<Transaction> blocks)
+        {
+            var batch = _container.CreateTransactionalBatch(new PartitionKey(blocks.First().Location));
+            foreach (var transaction in blocks) {
+                batch = CreateStaleBatch(batch, transaction.Location, transaction.Index);
+                batch.CreateItem(transaction);
+            }
+
+            return batch.ExecuteAsync().Result.IsSuccessStatusCode;
+        }
+
+        public List<Transaction> Read(string contract, string table, string scope, KeyValuePair<string,string> index)
+        {
+            var queryDefinition = new QueryDefinition($"select * from c where c.location = '{Transaction.CreateLocation(contract,table,scope)}' AND c.data['{index.Key}'] = '{index.Value}'");
+            var query = _container.GetItemQueryIterator<Transaction>(queryDefinition);
+            var results = new List<Transaction>();
+            while (query.HasMoreResults) results.AddRange(query.ReadNextAsync().Result);
+            return results.ToList();
+        }
+
+        public Transaction Read(string contract, string table, string scope, string index) {
+            return Fetch(contract,table,scope,index);
+        }
+
+        public List<Transaction> Read(string contract, string table, string scope) {
+            return _container.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == Transaction.CreateLocation(contract, table, scope) && !t.Stale).ToList();
+        }
+
+        public bool SetStale(string contract, string table, string scope, string index) {
+            var res = CreateStaleBatch(null, Transaction.CreateLocation(contract, table, scope), index).ExecuteAsync().Result;
+            return res.IsSuccessStatusCode;
+        }
+
+        public List<Transaction> ReadHistoric(string contract, string table, string scope, string index)
+        {
+            return _container.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == Transaction.CreateLocation(contract, table, scope) && t.Index == index).ToList();
+        }
+
+        #region Helpers
+
+        private Transaction Fetch(string contract, string table, string scope, string index) {
+            return Fetch(Transaction.CreateLocation(contract, table, scope), index);
+        }
+
+        private Transaction Fetch(string location, string index) {
+            return _container.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == location && t.Index == index && !t.Stale).AsEnumerable().FirstOrDefault();
+        }
+
+
+        private TransactionalBatch CreateStaleBatch(TransactionalBatch batch, string location, string index) {
+            if(batch == null) batch = _container.CreateTransactionalBatch(new PartitionKey(location));
+            var transaction = Fetch(location, index);
+            if (transaction == null) return batch;
+            transaction.Stale = true;
+
+            return batch.ReplaceItem(transaction.Id, transaction);
+        }
+        #endregion
+
+    }
+}

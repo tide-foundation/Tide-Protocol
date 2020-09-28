@@ -8,6 +8,7 @@ import KeyStore from "./keyStore";
 import Cipher from "./Cipher";
 import Num64 from "./Num64";
 import Rule from "./rule";
+import RuleClient from "./dauth/RuleClient";
 import RuleClientSet from "./dauth/RuleClientSet";
 /**
  * A client-side library to interface with the Tide scosystem.
@@ -170,7 +171,7 @@ export default class {
 
   /** @param {Rule} rule */
   async updateCondition(ruleId, newCondition) {
-    const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
+    const ruleCln = new RuleClient(this.cvkUrls[0], this.vuid);
 
     var rule = await ruleCln.getById(ruleId);
     rule.condition = newCondition;
@@ -179,7 +180,8 @@ export default class {
   }
 
   async getRules() {
-    const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
+    const ruleCln = new RuleClient(this.cvkUrls[0], this.vuid);
+    console.log(ruleCln);
     return await ruleCln.getSet();
   }
 

@@ -7,20 +7,25 @@ import config from "./assets/js/config";
 import helper from "./assets/js/tide-helper";
 import axios from "axios";
 
+import VueLodash from "vue-lodash";
+import lodash from "lodash";
+
+Vue.use(VueLodash, { lodash: lodash });
+
 import router from "./router";
 Vue.config.productionTip = false;
 
 {
   // Init tide
-  var vendorUrl = "https://tidevendor.azurewebsites.net";
-  //var vendorUrl = "http://127.0.0.1:6001";
+  //var vendorUrl = "https://tidevendor.azurewebsites.net";
+  var vendorUrl = "http://127.0.0.1:6001";
 
   var orks = [];
   for (let i = 0; i < 20; i++) {
     orks.push({
       id: i,
-      url: `https://ork-${i}.azurewebsites.net`,
-      // url: `http://localhost:500${i + 1}`,
+      //url: `https://ork-${i}.azurewebsites.net`,
+      url: `http://localhost:500${i + 1}`,
       cmk: false,
       cvk: false,
     });
@@ -36,7 +41,10 @@ Vue.config.productionTip = false;
   Vue.prototype.$orks = orks;
 
   var urls = Vue.prototype.$orks.map((o) => o.url);
-  Vue.prototype.$tide = new Tide("VendorId", vendorUrl, urls, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANvjzMxmyjGxse3fwkqajZxhf088eQRgS4l9wKsnm+A2+HRLt/4n6lA0cO6pmBqB9Le72HFSQ1s9cjv6HF3O2m", ["mandatory"]);
+  Vue.prototype.$tide = new Tide("VendorId", vendorUrl, urls, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANvjzMxmyjGxse3fwkqajZxhf088eQRgS4l9wKsnm+A2+HRLt/4n6lA0cO6pmBqB9Le72HFSQ1s9cjv6HF3O2m", [
+    { name: "mandatory", condition: "true" },
+    { name: "optional", condition: "true" },
+  ]);
 }
 
 Vue.prototype.$loading = (a, m) =>

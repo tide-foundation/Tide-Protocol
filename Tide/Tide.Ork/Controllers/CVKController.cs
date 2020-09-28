@@ -135,6 +135,7 @@ namespace Tide.Ork.Controllers
             if (rules.Any(rule => new RuleConditionEval(rule).Run() && rule.Action == RuleAction.Deny))
                 return Deny(msgErr);
 
+
             var bufferSign = Convert.FromBase64String(sign.DecodeBase64Url());
             var sessionKey = tran.GenKey(account.CvkiAuth);
             if (!Utils.Equals(sessionKey.Hash(dataBuffer), bufferSign)) return Deny(msgErr);
