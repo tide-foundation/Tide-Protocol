@@ -1,0 +1,41 @@
+@startuml ruleClass
+skinparam monochrome true
+
+title Rule Class
+enum "Action" as action
+class "Rule" as rule
+class "Key" as key
+class "AccountCVK" as cvk
+
+rule *- key
+rule *- action
+rule *-- cvk
+key -* cvk
+
+enum action {
+  +allow
+  +deny
+}
+
+class rule {
+  +RuleId: Guid
+  +Owner: AccountCVK
+  +Tag: ulong
+  +Tenant: Key
+  +Condition: string
+  +Action: Action
+}
+
+class key {
+  +keyId: Guid
+  +Public: C25519Key
+}
+
+class cvk {
+  +AccountId: Guid
+  +Public: Key
+  +CVKi: BigInterger
+  +CVkAuth: AesKey
+}
+
+@enduml
