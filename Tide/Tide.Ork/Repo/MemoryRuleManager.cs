@@ -10,7 +10,7 @@ namespace Tide.Ork.Repo
     {
         public static Guid MaxID => Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff");
 
-        public Task ConfirmAll(Guid id) => throw new NotImplementedException("Do not invoke confirm in memory manager");
+        public Task ConfirmAll(Guid id) => Task.CompletedTask; //throw new NotImplementedException("Do not invoke confirm in memory manager");
 
         public Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId)
         {

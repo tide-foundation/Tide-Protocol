@@ -17,7 +17,7 @@ namespace Tide.Ork.Repo {
         {
         }
         
-        public Task ConfirmAll(Guid ownerId) => throw new NotImplementedException("Do not invoke confirm in simulator manager");
+        public Task ConfirmAll(Guid ownerId) => Task.CompletedTask; //throw new NotImplementedException("Do not invoke confirm in simulator manager");
 
         public async Task<List<RuleVault>> GetSetBy(Guid ownerId)
         {

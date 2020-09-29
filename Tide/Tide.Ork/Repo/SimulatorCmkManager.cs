@@ -18,6 +18,6 @@ namespace Tide.Ork.Repo {
             return user != null ? user.Prismi : BigInteger.Zero;
         }
 
-        public Task Confirm(Guid id) => throw new NotImplementedException("Do not invoke confirm in simulator manager");
+        public Task Confirm(Guid id) => Task.CompletedTask; //throw new NotImplementedException("Do not invoke confirm in simulator manager");
     }
 }

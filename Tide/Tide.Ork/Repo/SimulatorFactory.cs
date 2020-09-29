@@ -18,14 +18,14 @@ namespace Tide.Ork.Repo {
             _cache = cache;
         }
 
-        public ICmkManager BuildCmkManager() => new CacheCmkManager(_cache, new SimulatorCmkManager(_orkId, BuildClient(), _key));
+        public ICmkManager BuildCmkManager() => new SimulatorCmkManager(_orkId, BuildClient(), _key); //new CacheCmkManager(_cache, new SimulatorCmkManager(_orkId, BuildClient(), _key));
 
-        public ICvkManager BuildManagerCvk() => new CacheCvkManager(_cache, new SimulatorCvkManager(_orkId, BuildClient(), _key));
+        public ICvkManager BuildManagerCvk() => new SimulatorCvkManager(_orkId, BuildClient(), _key); //new CacheCvkManager(_cache, new SimulatorCvkManager(_orkId, BuildClient(), _key));
 
         public SimulatorClient BuildClient() => new SimulatorClient(_config.Api, _orkId, _config.Password);
 
         public IKeyIdManager BuildKeyIdManager() => new SimulatorKeyIdManager(_orkId, BuildClient(), _key);
 
-        public IRuleManager BuildRuleManager() => new CacheRuleManager(_cache, new SimulatorRuleManager(_orkId, BuildClient(), _key));
+        public IRuleManager BuildRuleManager() => new SimulatorRuleManager(_orkId, BuildClient(), _key); //new CacheRuleManager(_cache, new SimulatorRuleManager(_orkId, BuildClient(), _key));
     }
 }

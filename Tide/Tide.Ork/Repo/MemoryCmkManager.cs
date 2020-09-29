@@ -7,7 +7,7 @@ namespace Tide.Ork.Repo
 {
     public class MemoryCmkManager : MemoryManagerBase<CmkVault>, ICmkManager
     {
-        public Task Confirm(Guid id) => throw new NotImplementedException("Do not invoke confirm in memory manager");
+        public Task Confirm(Guid id) => Task.CompletedTask; //throw new NotImplementedException("Do not invoke confirm in memory manager");
 
         public async Task<BigInteger> GetPrism(Guid user)
         {

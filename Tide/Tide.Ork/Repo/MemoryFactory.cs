@@ -14,12 +14,12 @@ namespace Tide.Ork.Repo {
             _cache = cache;
         }
 
-        public ICmkManager BuildCmkManager() => new CacheCmkManager(_cache, _manager);
+        public ICmkManager BuildCmkManager() => _manager;//new CacheCmkManager(_cache, _manager);
 
-        public ICvkManager BuildManagerCvk() => new CacheCvkManager(_cache, _managerCvk);
+        public ICvkManager BuildManagerCvk() => _managerCvk; //new CacheCvkManager(_cache, _managerCvk);
 
         public IKeyIdManager BuildKeyIdManager() => _keyIdManager;
 
-        public IRuleManager BuildRuleManager() => new CacheRuleManager(_cache, _memoryRuleManager);
+        public IRuleManager BuildRuleManager() => _memoryRuleManager; //new CacheRuleManager(_cache, _memoryRuleManager);
     }
 }
