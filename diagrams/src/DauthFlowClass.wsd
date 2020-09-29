@@ -1,4 +1,4 @@
-@startuml DauthFlowClass
+@startuml dAuthFlowClass
 skinparam monochrome true
 
 title Dauth Flow Class

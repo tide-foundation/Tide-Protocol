@@ -1,0 +1,122 @@
+@startuml dSignUpSequence
+skinparam monochrome true
+
+title dSignUp
+opt Precondition
+note over Consumer
+    username = Consumer username
+    password [private] = Consumer's password
+end note
+note over mORKx
+    orkId, skORKi, pkORKi
+end note
+note over vORKx
+    orkID, skORKi, pkORKi
+end note
+note over Vendor
+    pkCVK
+end note
+end
+
+Consumer->Vendor: SignUpRequest()
+activate Vendor
+
+Vendor-->Consumer: pkVen, List(Orks)
+deactivate Vendor
+
+note over Consumer
+    userId = hash(username)
+    gPass = point(hash(password)) ∈ G
+    CMK = point(random1) ∈ G
+end note
+
+note over Consumer
+    VUID = hash(pkVen * skCMK)
+    cvkAuth = pkVen * skCMK
+    CVK = point(random2) ∈ G
+    vORKi = List(vORK)
+    CVKi = share(skCVK, vORKiId)
+    CVKAuthi = hmac(pkVORKi, cvkAuth)
+    vPacki = ECEnc((VUID; CVKAuthi; CVKi), pkVORKi)
+    vPackSigni = hmac(vPacki, CVKAuthi)
+end note
+
+Consumer->Vendor: SetupKey( VUID , vORKi , vPacki , vPackSigni )
+activate Vendor
+
+note over Vendor
+    Validate vORKi
+    vPackAuthi = ECSign(vPacki, skVen)
+end note 
+Vendor->vORKx: AddKey( vPacki , vPackSigni , vPackAuthi , pkVen)
+activate vORKx
+
+note over vORKx
+    ECValidSign(vPacki,pkVen) ?
+    VUID; CVKAuthi; CVKi = ECDec(vPacki)
+    hmac(vPacki, CVKAuthi) == vPackSigni ?
+    Store(VUID; CVKAuthi; CVKi)
+end note
+
+vORKx-->Vendor: Conf
+deactivate vORKx
+
+Vendor-->Consumer: Conf
+deactivate Vendor
+note over Consumer
+    AuthPRISM = hash(random3)
+    AuthProof = hash(gPass * AuthPRISM)
+    mORKi = List(mORK)
+    CMKi = share(skCMK, mOrkId)
+    AuthPRISMi = share(AuthPRISM, mORKiId)
+    CMKAuthi = hmac(pkMORKi, AuthProof)
+    mPacki = ECEnc((userId ; AuthPRISMi ; CMKAuthi ; CMKi), pkMORKi)
+    mPackSigni = hmac(vPacki, CMKAuthi)
+end note
+Consumer->Vendor: SetupAuth( VUID , mPacki )
+activate Vendor
+
+note over Vendor
+    Validate mPacki (just count)
+    mPackAuthi = hmac(mPacki, mVoucheri)
+end note 
+Vendor-->Consumer: mPackAuthi, mVoucheri
+deactivate Vendor
+Consumer->mORKx: AddAuth( mPacki , mPackSigni , mPackAuthi , mVoucheri)
+activate mORKx
+
+note over mORKx
+    hmac(mPacki,mVoucheri) == mPackAuthi ?
+    userId ; AuthPRISMi ; CMKAuthi ; CMKi = ECDec(mPacki)
+    hmac(mPacki, CMKAuthi) == mPackSigni ?
+    Store(userId ; AuthPRISMi ; CMKAuthi ; CMKi)
+end note 
+mORKx-->Consumer: conf
+deactivate mORKx
+Consumer->mORKx: TestRun
+activate mORKx
+
+mORKx-->Consumer: TestReply
+deactivate mORKx
+Consumer->vORKx: TestRun
+activate vORKx
+
+vORKx-->Consumer: TestReply
+deactivate vORKx
+Consumer->Vendor: Commit
+activate Vendor
+
+Vendor->vORKx: Commit
+activate vORKx
+
+Consumer->mORKx: Commit
+activate mORKx
+
+mORKx-->Consumer: Ack
+deactivate mORKx
+vORKx-->Vendor: Ack
+deactivate vORKx
+Vendor-->Consumer: Ack
+deactivate Vendor
+
+@enduml
