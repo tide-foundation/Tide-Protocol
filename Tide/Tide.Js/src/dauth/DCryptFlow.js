@@ -17,7 +17,7 @@ import DCryptClient from "./DCryptClient";
 import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare, AesSherableKey } from "cryptide";
 import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
-import Guid from "../Guid";
+import Guid from "../guid";
 import { concat } from "../Helpers";
 import TranToken from "../TranToken";
 

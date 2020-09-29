@@ -1,5 +1,5 @@
 import { BnInput, AESKey } from "cryptide";
-import Guid from "./Guid";
+import Guid from "./guid";
 
 export default class IdGenerator {
   /** @param {Guid} guid */

@@ -7,7 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import Guid from "./Guid";
+import Guid from "./guid";
 import Num64 from "./Num64";
 import KeyStore from "./keyStore";
 
@@ -22,7 +22,9 @@ export default class Rule {
     /**@type {Guid}*/
     this.keyId = null;
     this.condition = "";
-    this.action = "Deny";
+    
+  /**@type {'allow' | 'deny'}*/
+    this.action = "deny";
   }
 
   stringify() {
@@ -54,7 +56,7 @@ export default class Rule {
     return defaultRule(ownerId, tag, key, "deny", condition);
   }
 
-  /** @param {{ ruleId: string; ownerId: string; tag: number; keyId: string; condition: string; action: string; }} data */
+  /** @param {{ ruleId: string; ownerId: string; tag: number; keyId: string; condition: string; action: 'allow'|'deny'; }} data */
   static from(data) {
     const rule = new Rule();
     rule.ruleId = Guid.from(data.ruleId);

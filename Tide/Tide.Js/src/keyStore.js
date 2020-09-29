@@ -7,7 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import Guid from "./Guid";
+import Guid from "./guid";
 import { C25519Key, Hash } from "cryptide";
 
 export default class KeyStore {

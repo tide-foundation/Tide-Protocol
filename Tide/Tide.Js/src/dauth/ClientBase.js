@@ -15,7 +15,7 @@
 
 import superagent from "superagent";
 import IdGenerator from "../IdGenerator";
-import Guid from "../Guid";
+import Guid from "../guid";
 import { C25519Key } from "cryptide";
 
 export default class ClientBase {

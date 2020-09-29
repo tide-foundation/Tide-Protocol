@@ -15,7 +15,7 @@
 
 import superagent from "superagent";
 import { C25519Key, AESKey } from "cryptide";
-import Guid from "./Guid";
+import Guid from "./guid";
 import IdGenerator from "./IdGenerator";
 import { urlEncode } from "./dauth/ClientBase";
 import TranToken from "./TranToken";

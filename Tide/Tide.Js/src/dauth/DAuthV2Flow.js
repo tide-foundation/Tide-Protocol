@@ -24,7 +24,7 @@ import KeyClientSet from "./keyClientSet";
 import KeyStore from "../keyStore";
 import Rule from "../rule";
 import Cipher from "../Cipher";
-import Guid from "../Guid";
+import Guid from "../guid";
 
 export default class DAuthV2Flow {
   /** @param {string} user */

@@ -15,7 +15,7 @@
 
 import { AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
-import Guid from "../Guid";
+import Guid from "../guid";
 import TranToken from "../TranToken";
 
 export default class DCryptClient extends ClientBase {
