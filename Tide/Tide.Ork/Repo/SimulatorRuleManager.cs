@@ -9,6 +9,7 @@ using Tide.Ork.Classes;
 namespace Tide.Ork.Repo {
     public class SimulatorRuleManager : SimulatorManagerBase<RuleVault>, IRuleManager {
         protected override string TableName => "rules";
+        protected override string Contract => "Permissions";
         public static Guid MaxID => Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff");
 
         protected override bool IsEncrypted => false;

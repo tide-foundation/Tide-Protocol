@@ -7,6 +7,7 @@ using Tide.Ork.Classes;
 namespace Tide.Ork.Repo {
     public class SimulatorCvkManager : SimulatorManagerBase<CvkVault>, ICvkManager {
         protected override string TableName => "cvks";
+        protected override string Contract => "Authentication";
 
         public SimulatorCvkManager(string orkId, SimulatorClient client, AesKey key) : base(orkId, client, key)
         {

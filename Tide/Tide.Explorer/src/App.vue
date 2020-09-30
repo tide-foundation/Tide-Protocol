@@ -1,34 +1,34 @@
 <template>
-  <div id="app">
-    <button :disabled="selectedBlock == null" @click="back">Back</button>
-    <table v-if="selectedBlock == null">
-      <tr v-show="selectedBlock == null">
-        <th>Date</th>
-        <th>Contract</th>
-        <th>Table</th>
-        <th>Scope</th>
-        <th>Index</th>
-      </tr>
+    <div id="app">
+        <button :disabled="selectedBlock == null" @click="back">Back</button>
+        <table v-if="selectedBlock == null">
+            <tr v-show="selectedBlock == null">
+                <th>Date</th>
+                <th>Contract</th>
+                <th>Table</th>
+                <th>Scope</th>
+                <th>Index</th>
+            </tr>
 
-      <tr v-show="selectedBlock == null" v-for="block in activeBlockList" :key="block.id" @click="clickedRow(block.id)">
-        <td>{{ block.dateCreated | date }}</td>
-        <td>{{ block.contract }}</td>
-        <td>{{ block.table }}</td>
-        <td>{{ block.scope }}</td>
-        <td>{{ block.index }}</td>
-      </tr>
-    </table>
+            <tr v-show="selectedBlock == null" v-for="block in activeBlockList" :key="block.id" @click="clickedRow(block.id)">
+                <td>{{ block.displayDate }}</td>
+                <td>{{ block.contract }}</td>
+                <td>{{ block.table }}</td>
+                <td>{{ block.scope }}</td>
+                <td>{{ block.index }}</td>
+            </tr>
+        </table>
 
-    <table v-if="selectedBlock != null">
-      <tr v-show="selectedBlock != null">
-        <th>Data</th>
-      </tr>
+        <table v-if="selectedBlock != null">
+            <tr v-show="selectedBlock != null">
+                <th>Data</th>
+            </tr>
 
-      <tr v-show="selectedBlock != null" v-for="block in blockHistory" :key="block.id">
-        <td>{{ block.data }}</td>
-      </tr>
-    </table>
-  </div>
+            <tr v-show="selectedBlock != null" v-for="block in blockHistory" :key="block.id">
+                <td>{{ block.data }}</td>
+            </tr>
+        </table>
+    </div>
 </template>
 
 <script>
@@ -59,7 +59,7 @@ export default {
     filters: {
         contractName: (v) => contractNames[v],
         tableName: (v) => tableNames[v],
-        date: (v) => moment(String(v)).format("DD/MM/YYYY hh:mm"),
+        date: (v) => moment(String(v)).fromNow(),
     },
     created() {
         const base = this;
@@ -67,11 +67,13 @@ export default {
 
         this.connection.on("NewBlock", function (block) {
             block.new = true;
-            base.blocks.push(block);
+            base.pushBlock(block);
         });
 
         this.connection.on("Populate", function (blocks) {
-            base.blocks = blocks;
+            blocks.forEach((block) => {
+                base.pushBlock(block);
+            });
         });
 
         this.connection
@@ -82,6 +84,12 @@ export default {
             .catch(function (err) {
                 return console.error(err.toString());
             });
+
+        setInterval(() => {
+            base.blocks.forEach((block) => {
+                base.setDisplayTime(block);
+            });
+        }, 1000);
     },
     methods: {
         clickedRow(blockId) {
@@ -89,6 +97,17 @@ export default {
         },
         back() {
             this.selectedBlock = null;
+        },
+        pushBlock(block) {
+            var split = block.location.split("/");
+            block.contract = split[0];
+            block.table = split[1];
+            block.scope = split[2];
+            this.setDisplayTime(block);
+            this.blocks.push(block);
+        },
+        setDisplayTime(block) {
+            block.displayDate = moment(String(block.dateCreated)).fromNow();
         },
     },
 };

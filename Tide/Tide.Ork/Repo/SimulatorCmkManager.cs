@@ -8,6 +8,7 @@ using Tide.Ork.Classes;
 namespace Tide.Ork.Repo {
     public class SimulatorCmkManager : SimulatorManagerBase<CmkVault>, ICmkManager {
         protected override string TableName => "cmks";
+        protected override string Contract => "Authentication";
 
         public SimulatorCmkManager(string orkId, SimulatorClient client, AesKey key) : base(orkId, client, key)
         {

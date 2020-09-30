@@ -7,15 +7,15 @@ using Microsoft.AspNetCore.SignalR;
 namespace Tide.Simulator.Classes
 {
     public class SimulatorHub : Hub {
-        private BlockchainContext _context;
+        private readonly IBlockLayer _blockchain;
 
-        public SimulatorHub(BlockchainContext context) {
-            _context = context;
+        public SimulatorHub(IBlockLayer blockchain) {
+            _blockchain = blockchain;
         }
 
         public async Task Populate()
         {
-            await Clients.All.SendAsync("Populate", _context.Data.ToList());
+            await Clients.All.SendAsync("Populate", _blockchain.ReadHistoric());
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Tide.Vendor.Controllers
     public class BackendTestController : ControllerBase
     {
         private readonly VendorDbContext _context;
-        private VendorConfig _config;
+        private readonly VendorConfig _config;
         public IVendorRepo Repo { get; set; }
         public BackendTestController(IVendorRepo repo, VendorDbContext context, VendorConfig config)
         {
@@ -29,9 +29,6 @@ namespace Tide.Vendor.Controllers
         [HttpGet]
         public ActionResult<List<User>> GetUsers()
         {
-         
-            
-
             return _context.Users.Include(u=>u.RentalApplications).ToList();
         }
 
@@ -55,9 +52,7 @@ namespace Tide.Vendor.Controllers
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-
                 }
-
             }
 
             return application;
@@ -70,18 +65,17 @@ namespace Tide.Vendor.Controllers
 
         private async Task<string> Decrypt(Guid vuid, string cipher)
         {
-            var orks = new List<Uri>() {
-                new Uri("https://ork-0.azurewebsites.net"),
-                new Uri("https://ork-1.azurewebsites.net"),
-                new Uri("https://ork-2.azurewebsites.net")
-        };
-
-            //var orks = new List<Uri>() {
-            //    new Uri("http://localhost:5001"),
-            //    new Uri("http://localhost:5002"),
-            //    new Uri("http://localhost:5003")
+            //    var orks = new List<Uri>() {
+            //        new Uri("https://ork-0.azurewebsites.net"),
+            //        new Uri("https://ork-1.azurewebsites.net"),
+            //        new Uri("https://ork-2.azurewebsites.net")
             //};
 
+            var orks = new List<Uri>() {
+                new Uri("http://localhost:5001"),
+                new Uri("http://localhost:5002"),
+                new Uri("http://localhost:5003")
+            };
 
             //  var uris = (await Repo.GetListOrks(vuid)).Select(url => new Uri(url)).ToList();
             var flow = new DCryptFlow(vuid, orks);

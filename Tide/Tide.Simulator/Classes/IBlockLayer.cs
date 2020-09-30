@@ -73,5 +73,10 @@ namespace Tide.Simulator.Classes {
         ///     The same as 'Read', but will pull the full historical data of the item.
         /// </summary>
         List<Transaction> ReadHistoric(string contract, string table, string scope, string index);
+
+        /// <summary>
+        ///     The same as 'Read', but will pull the full historical data of the item.
+        /// </summary>
+        List<Transaction> ReadHistoric();
     }
 }

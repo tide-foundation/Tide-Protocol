@@ -35,7 +35,7 @@ namespace Tide.Simulator.Controllers {
         [HttpGet("{contract}/{table}/{scope}/{index}")]
         public IActionResult Get([FromRoute] string contract, string table, string scope, string index) {
 
-            var tran =_blockchain.Read(contract, table, scope, index);
+          //  var tran =_blockchain.Read(contract, table, scope, index);
           
 
             return Ok(_blockchain.Read(contract, table, scope, index));

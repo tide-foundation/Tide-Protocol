@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
 using Tide.Core;
@@ -12,8 +13,10 @@ using Tide.Simulator.Models;
 namespace Tide.Simulator {
     public class CosmosDbService : IBlockLayer {
         private readonly Container _container;
+        private readonly IHubContext<SimulatorHub> _hub;
 
-        public CosmosDbService(Settings settings) {
+        public CosmosDbService(Settings settings, IHubContext<SimulatorHub> hub) {
+            _hub = hub;
             var db = settings.CosmosDbSettings.Database;
             var container = settings.CosmosDbSettings.Container;
             var client = new CosmosClientBuilder(settings.CosmosDbSettings.Connection)
@@ -41,7 +44,19 @@ namespace Tide.Simulator {
             }
 
             return batch.ExecuteAsync().Result.IsSuccessStatusCode;
+            //if (batch.ExecuteAsync().Result.IsSuccessStatusCode)
+            //{
+            //    foreach (var blockData in blocks)
+            //    {
+            //        _hub.Clients.All.SendAsync("NewBlock", blockData);
+            //    }
+            //    return true;
+            //}
+
+            //return false;
         }
+
+   
 
         public List<Transaction> Read(string contract, string table, string scope, KeyValuePair<string,string> index)
         {
@@ -68,6 +83,10 @@ namespace Tide.Simulator {
         public List<Transaction> ReadHistoric(string contract, string table, string scope, string index)
         {
             return _container.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == Transaction.CreateLocation(contract, table, scope) && t.Index == index).ToList();
+        }
+
+        public List<Transaction> ReadHistoric() {
+            return _container.GetItemLinqQueryable<Transaction>(true).ToList();
         }
 
         #region Helpers

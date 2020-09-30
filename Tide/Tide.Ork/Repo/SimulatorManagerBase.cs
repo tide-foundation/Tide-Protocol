@@ -17,7 +17,8 @@ namespace Tide.Ork.Repo {
         protected virtual bool IsEncrypted => true;
 
         protected abstract string TableName { get; }
-        
+        protected abstract string Contract { get; }
+
         public SimulatorManagerBase(string orkId, SimulatorClient client, AesKey key) {
             _orkId = orkId;
             _client = client;
@@ -30,12 +31,12 @@ namespace Tide.Ork.Repo {
 
         public async Task<List<T>> GetAll()
         {
-            var response = await _client.Get("Simulator", TableName, _orkId);
+            var response = await _client.Get(Contract, TableName, _orkId);
             return response.Select(Map).ToList();
         }
 
         public async Task<T> GetById(Guid id) {
-            var response = await _client.Get("Simulator", TableName, _orkId, id.ToString());
+            var response = await _client.Get(Contract, TableName, _orkId, id.ToString());
             if (string.IsNullOrEmpty(response))
                 return null;
 
@@ -44,7 +45,7 @@ namespace Tide.Ork.Repo {
 
         public async Task<TideResponse> SetOrUpdate(T entity)
         {
-            var ok = await _client.Post("Simulator", TableName, _orkId, entity.Id.ToString(), Map(entity));
+            var ok = await _client.Post(Contract, TableName, _orkId, entity.Id.ToString(), Map(entity));
             return new TideResponse() { Success = ok };
         }
 
