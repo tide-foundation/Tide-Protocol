@@ -15,7 +15,7 @@ namespace Tide.Ork.Classes.Rules
         public static DateTimeKind Kind => DateTime.Now.Kind;
         public static int Hour => DateTime.Now.Hour;
         public static int DayOfYear => DateTime.Now.DayOfYear;
-        public static DayOfWeek DayOfWeek => DateTime.Now.DayOfWeek;
+        public static string DayOfWeek => DateTime.Now.DayOfWeek.ToString().ToLower();
         public static int Day => DateTime.Now.Day;
         public static TimeSpan TimeOfDay => DateTime.Now.TimeOfDay;
         public static int Year => DateTime.Now.Year;

@@ -20,8 +20,8 @@ namespace Tide.Ork.Classes.Rules
                 : oper.Equals(">") ? Expression.GreaterThan(left, rigth)
                 : oper.Equals("<=") ? Expression.LessThanOrEqual(left, rigth)
                 : oper.Equals("<") ? Expression.LessThan(left, rigth)
-                : oper.Equals("in") ? Expression.Call(rigth, typeof(string)
-                    .GetMethod("Contains", new Type[] { typeof(String) }), left) as Expression
+                : oper.Equals("in") ? Expression.Call(left, typeof(string)
+                    .GetMethod("Contains", new Type[] { typeof(String) }), rigth) as Expression
                 : null;
 
             if (node == null)
