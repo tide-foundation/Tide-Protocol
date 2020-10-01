@@ -1,7 +1,6 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
 WORKDIR /app
-EXPOSE 5000
-EXPOSE 5001
+EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
 RUN apt update -y && apt install nano -y
@@ -20,6 +19,5 @@ WORKDIR "/src/Tide/Tide.Ork"
 RUN dotnet publish "Tide.Ork.csproj" -c Release -o /app/publish
 
 FROM base AS final
-WORKDIR /app
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "Tide.Ork.dll"]
