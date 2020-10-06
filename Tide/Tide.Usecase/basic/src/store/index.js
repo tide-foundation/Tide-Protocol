@@ -7,8 +7,8 @@ var orks = [];
 for (let i = 0; i < 10; i++) {
   orks.push({
     id: i,
-    // url: `https://ork-${i}.azurewebsites.net`,
-    url: `http://localhost:500${i + 1}`,
+    url: `https://ork-${i}.azurewebsites.net`,
+    // url: `http://localhost:500${i + 1}`,
     cmk: false,
     cvk: false,
   });
@@ -22,7 +22,7 @@ for (let i = 3; i < 7; i++) {
   shuffled[i].cvk = true;
 }
 var vendorUrl = "https://tidevendor.azurewebsites.net";
-var vendorUrl = "http://127.0.0.1:6001";
+//var vendorUrl = "http://127.0.0.1:6001";
 
 export default new Vuex.Store({
   state: {

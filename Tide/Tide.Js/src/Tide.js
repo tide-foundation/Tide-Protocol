@@ -15,7 +15,7 @@ import RuleClientSet from "./dauth/RuleClientSet";
  * @class
  * @classdesc The client side library to interface with the Tide ecosystem.
  */
-export default class {
+export default class Index {
   /**
    * Create Tide.
    *

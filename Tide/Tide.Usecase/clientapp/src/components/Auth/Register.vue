@@ -1,127 +1,133 @@
 <template>
-  <span class="auth-form">
-    <p v-if="$parent.step == 0">
-      Create your account to access all of
-      <span style="color:#29AAFC">Future Places</span>
-      great features.
-    </p>
-    <p v-if="$parent.step == 1">Please choose your DNS ork, or use the one provided.</p>
-    <p v-if="$parent.step == 2">
-      We have randomly selected 3 Ork nodes to be used in the secret
-      sharing of your
-      <span style="color:#29AAFC">Tide account</span>. Feel free to change
-      them to your liking.
-    </p>
-    <p v-if="$parent.step == 3">
-      We've chosen 3 random orks for your
-      <span style="color:#29AAFC">Future Places</span> account. Feel free
-      to change them to your liking.
-    </p>
-    <br />
-    <section v-if="$parent.step == 0" key="reg0">
-      <form @submit.prevent="registerButtonClicked">
-        <input v-model="user.email" placeholder="Email" type="email" />
-        <password @score="$parent.showScore" v-model="user.password" :toggle="true" placeholder="Password" />
-        <input v-model="user.confirm" placeholder="Confirm Password" type="password" />
-        <div class="s-checkbox" @click="advancedSecurity = !advancedSecurity" :class="{ checked: advancedSecurity }">
-          <div class="holder">
-            <div class="slideOne" :class="{ checked: advancedSecurity }">
-              <input type="checkbox" value="None" id="sec" :checked="advancedSecurity" />
-              <label for="sec"></label>
-            </div>
-          </div>Advanced Security
-        </div>
+    <span class="auth-form">
+        <p v-if="$parent.step == 0">
+            Create your account to access all of
+            <span style="color:#29AAFC">Future Places</span>
+            great features.
+        </p>
+        <p v-if="$parent.step == 1">Please choose your DNS ork, or use the one provided.</p>
+        <p v-if="$parent.step == 2">
+            We have randomly selected 3 Ork nodes to be used in the secret sharing of your
+            <span style="color:#29AAFC">Tide account</span>. Feel free to change them to your liking.
+        </p>
+        <p v-if="$parent.step == 3">
+            We've chosen 3 random orks for your
+            <span style="color:#29AAFC">Future Places</span> account. Feel free to change them to your liking.
+        </p>
+        <br />
+        <section v-if="$parent.step == 0" key="reg0">
+            <form @submit.prevent="registerButtonClicked">
+                <input v-model="user.email" placeholder="Email" type="email" />
+                <password @score="$parent.showScore" v-model="user.password" :toggle="true" placeholder="Password" />
+                <input v-model="user.confirm" placeholder="Confirm Password" type="password" />
+                <div class="s-checkbox" @click="advancedSecurity = !advancedSecurity" :class="{ checked: advancedSecurity }">
+                    <div class="holder">
+                        <div class="slideOne" :class="{ checked: advancedSecurity }">
+                            <input type="checkbox" value="None" id="sec" :checked="advancedSecurity" />
+                            <label for="sec"></label>
+                        </div>
+                    </div>
+                    Advanced Security
+                </div>
 
-        <button :class="{ disabled: !passwordsValid }" class="gradiant-button">
-          {{ advancedSecurity ? "CONTINUE" : "SIGN UP" }} &nbsp;&nbsp;
-          <i :class="{
-                  'fa-arrow-right': advancedSecurity,
-                  'fa-sign-in': !advancedSecurity
-                }" class="fa"></i>
-        </button>
-      </form>
-    </section>
-    <section v-if="$parent.step == 1" key="reg1">
-      <label for="dns-ork"></label>
-      <input class="f-w" v-model="dnsOrk" id="dns-ork" placeholder="Enter your manual DNS ork" type="text" :disabled="!manualDns" />
-      <div class="s-checkbox" @click="manualDns = !manualDns" :class="{ checked: manualDns }">
-        <div class="holder">
-          <div class="slideOne" :class="{ checked: manualDns }">
-            <input type="checkbox" value="None" id="sec" :checked="manualDns" />
-            <label for="sec"></label>
-          </div>
-        </div>Manual DNS Selection
-      </div>
-      <button :class="{ disabled: dnsOrk.length == 0 }" @click="$parent.step++" class="gradiant-button">
-        CONTINUE &nbsp;&nbsp;
-        <i class="fa fa-arrow-right"></i>
-      </button>
-    </section>
-    <section v-if="$parent.step == 2" key="reg2">
-      <div class="accordian">
-        <div class="accordian-button" @click="showCMKorks = !showCMKorks">
-          <span>Select your Master Orks</span>
-          <i class="fa" :class="{
-                  'fa-chevron-down': !showCMKorks,
-                  'fa-chevron-up': showCMKorks
-                }" aria-hidden="true"></i>
-        </div>
-        <div class="accordian-rows" v-if="showCMKorks">
-          <div class="accordian-row" v-for="(ork,index) in orks" :key="ork.id" @click="$set(orks, index, toggledOrk(ork,'cmk'))" :class="{ disabled: !ork.cmk && CMKSelectedCount >= 3 }">
-            <div class="enabled-col">
-              <div class="slideOne" :class="{ checked: ork.cmk }">
-                <input type="checkbox" value="None" :id="`cmk-${ork.id}`" :checked="ork.cmk" />
-                <label :for="`cmk-${ork.id}`"></label>
-              </div>
+                <button :class="{ disabled: !passwordsValid }" class="gradiant-button">
+                    {{ advancedSecurity ? "CONTINUE" : "SIGN UP" }} &nbsp;&nbsp;
+                    <i
+                        :class="{
+                            'fa-arrow-right': advancedSecurity,
+                            'fa-sign-in': !advancedSecurity
+                        }"
+                        class="fa"
+                    ></i>
+                </button>
+            </form>
+        </section>
+        <section v-if="$parent.step == 1" key="reg1">
+            <label for="dns-ork"></label>
+            <input class="f-w" v-model="dnsOrk" id="dns-ork" placeholder="Enter your manual DNS ork" type="text" :disabled="!manualDns" />
+            <div class="s-checkbox" @click="manualDns = !manualDns" :class="{ checked: manualDns }">
+                <div class="holder">
+                    <div class="slideOne" :class="{ checked: manualDns }">
+                        <input type="checkbox" value="None" id="sec" :checked="manualDns" />
+                        <label for="sec"></label>
+                    </div>
+                </div>
+                Manual DNS Selection
             </div>
-            <div class="id-col">{{ ork.id }}</div>
-            <div class="endpoint-col">{{ ork.url }}</div>
-          </div>
-        </div>
-      </div>
+            <button :class="{ disabled: dnsOrk.length == 0 }" @click="$parent.step++" class="gradiant-button">
+                CONTINUE &nbsp;&nbsp;
+                <i class="fa fa-arrow-right"></i>
+            </button>
+        </section>
+        <section v-if="$parent.step == 2" key="reg2">
+            <div class="accordian">
+                <div class="accordian-button" @click="showCMKorks = !showCMKorks">
+                    <span>Select your Master Orks</span>
+                    <i
+                        class="fa"
+                        :class="{
+                            'fa-chevron-down': !showCMKorks,
+                            'fa-chevron-up': showCMKorks
+                        }"
+                        aria-hidden="true"
+                    ></i>
+                </div>
+                <div class="accordian-rows" v-if="showCMKorks">
+                    <div class="accordian-row" v-for="(ork, index) in orks" :key="ork.id" @click="$set(orks, index, toggledOrk(ork, 'cmk'))" :class="{ disabled: !ork.cmk && CMKSelectedCount >= 3 }">
+                        <div class="enabled-col">
+                            <div class="slideOne" :class="{ checked: ork.cmk }">
+                                <input type="checkbox" value="None" :id="`cmk-${ork.id}`" :checked="ork.cmk" />
+                                <label :for="`cmk-${ork.id}`"></label>
+                            </div>
+                        </div>
+                        <div class="id-col">{{ ork.id }}</div>
+                        <div class="endpoint-col">{{ ork.url }}</div>
+                    </div>
+                </div>
+            </div>
 
-      <div id="btn-bar">
-        <button class="gradiant-button back" @click="$parent.step = 0">
-          <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; BACK
-        </button>
-        <button :class="{ disabled: CMKSelectedCount < 3 }" class="gradiant-button" @click="$parent.step = 3">
-          NEXT &nbsp;&nbsp;
-          <i class="fa fa-arrow-right"></i>
-        </button>
-      </div>
-    </section>
-    <section v-if="$parent.step == 3" key="reg3">
-      <div class="accordian">
-        <div class="accordian-button" @click="showCVKorks = !showCVKorks">
-          <span>Select your Vendor Orks</span>
-          <i class="fa" :class="{
-                'fa-chevron-down': !showCVKorks,
-                'fa-chevron-up': showCVKorks
-              }" aria-hidden="true"></i>
-        </div>
-        <div class="accordian-rows" v-if="showCVKorks">
-          <div class="accordian-row" v-for="(ork,index) in orks" :key="ork.id" @click="$set(orks, index, toggledOrk(ork,'cvk'))" :class="{ disabled: !ork.cvk && CVKSelectedCount >= 3 }">
-            <div class="slideOne" :class="{ checked: ork.cvk }">
-              <input type="checkbox" value="None" :id="`cvk-${ork.id}`" :checked="ork.cvk" />
-              <label :for="`cvk-${ork.id}`"></label>
+            <div id="btn-bar">
+                <button class="gradiant-button back" @click="$parent.step = 0"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; BACK</button>
+                <button :class="{ disabled: CMKSelectedCount < 3 }" class="gradiant-button" @click="$parent.step = 3">
+                    NEXT &nbsp;&nbsp;
+                    <i class="fa fa-arrow-right"></i>
+                </button>
             </div>
-            <div class="id-col">{{ ork.id }}</div>
-            <div class="endpoint-col">{{ ork.url }}</div>
-          </div>
-        </div>
-      </div>
-      <div id="btn-bar">
-        <button class="gradiant-button back" @click="step = 1">
-          <i class="fa fa-arrow-left"></i> &nbsp;&nbsp; BACK
-        </button>
-        <button :class="{ disabled: CVKSelectedCount < 3 }" class="gradiant-button" @click="register">
-          SIGN UP &nbsp;&nbsp;
-          <i class="fa fa-sign-in"></i>
-        </button>
-      </div>
-    </section>
-    <a href="#" @click="$parent.changeMode('Login')">Have an account?</a>
-  </span>
+        </section>
+        <section v-if="$parent.step == 3" key="reg3">
+            <div class="accordian">
+                <div class="accordian-button" @click="showCVKorks = !showCVKorks">
+                    <span>Select your Vendor Orks</span>
+                    <i
+                        class="fa"
+                        :class="{
+                            'fa-chevron-down': !showCVKorks,
+                            'fa-chevron-up': showCVKorks
+                        }"
+                        aria-hidden="true"
+                    ></i>
+                </div>
+                <div class="accordian-rows" v-if="showCVKorks">
+                    <div class="accordian-row" v-for="(ork, index) in orks" :key="ork.id" @click="$set(orks, index, toggledOrk(ork, 'cvk'))" :class="{ disabled: !ork.cvk && CVKSelectedCount >= 3 }">
+                        <div class="slideOne" :class="{ checked: ork.cvk }">
+                            <input type="checkbox" value="None" :id="`cvk-${ork.id}`" :checked="ork.cvk" />
+                            <label :for="`cvk-${ork.id}`"></label>
+                        </div>
+                        <div class="id-col">{{ ork.id }}</div>
+                        <div class="endpoint-col">{{ ork.url }}</div>
+                    </div>
+                </div>
+            </div>
+            <div id="btn-bar">
+                <button class="gradiant-button back" @click="step = 1"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; BACK</button>
+                <button :class="{ disabled: CVKSelectedCount < 3 }" class="gradiant-button" @click="register">
+                    SIGN UP &nbsp;&nbsp;
+                    <i class="fa fa-sign-in"></i>
+                </button>
+            </div>
+        </section>
+        <a href="#" @click="$parent.changeMode('Login')">Have an account?</a>
+    </span>
 </template>
 
 
