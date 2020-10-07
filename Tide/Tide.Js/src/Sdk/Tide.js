@@ -1,15 +1,15 @@
-import DAuthFlow from "./dauth/DAuthFlow";
-import IdGenerator from "./IdGenerator";
+import DAuthFlow from "../dauth/DAuthFlow";
+import IdGenerator from "../IdGenerator";
 import request from "superagent";
-import { encodeBase64Url } from "./Helpers";
+import { encodeBase64Url } from "../Helpers";
 import { AESKey, C25519Key } from "cryptide";
-import DAuthV2Flow from "../src/dauth/DAuthV2Flow";
-import KeyStore from "./keyStore";
-import Cipher from "./Cipher";
-import Num64 from "./Num64";
-import Rule from "./rule";
-import RuleClient from "./dauth/RuleClient";
-import RuleClientSet from "./dauth/RuleClientSet";
+import DAuthV2Flow from "../dauth/DAuthV2Flow";
+import KeyStore from "../keyStore";
+import Cipher from "../Cipher";
+import Num64 from "../Num64";
+import Rule from "../rule";
+import RuleClient from "../dauth/RuleClient";
+import RuleClientSet from "../dauth/RuleClientSet";
 /**
  * A client-side library to interface with the Tide scosystem.
  * @class
@@ -50,7 +50,7 @@ export default class Index {
    * @param {String} username - Plain text username of the new user
    * @param {String} password - Plain text password of the new user
    * @param {String} email - The recovery email to be used by the user.
-   * @param {Array} orkIds - The desired ork nodes to be used for registration. An account can only be activated when all ork nodes have confirmed they have stored the shard.
+   * @param {string[]} orks - The desired ork nodes to be used for registration. An account can only be activated when all ork nodes have confirmed they have stored the shard.
    *
    * @fires progress
    *
@@ -58,29 +58,22 @@ export default class Index {
    * @example
    * var registerResult = await tide.register("myUsername", "pa$$w0rD", "john@wick.com",["ork-1","ork-2","ork-3"]);
    */
-  register(username, password, email, orkIds) {
+  register(username, password, email, orks) {
     return new Promise(async (resolve, reject) => {
       try {
-        // Some local validation, which is all we can really do.
-        if (username.length < 3 || password.length < 6) return reject("Invalid credentials");
+        var flow = new DAuthV2Flow(username);
+        flow.cmkUrls = orks;
+        flow.cvkUrls = orks;
+        flow.vendorUrl = this.serverUrl;
 
-        var flow = new DAuthFlow(generateOrkUrls(orkIds), username);
-        var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
-        // Ask the vendor to create the user as a liability.
+        var { vuid, cvk } = await flow.signUp(password, email, orks.length);
+        this.vuid = vuid;
+        this.cvk = cvk;
+        this.cvkUrls = orks;
 
-        await post(`${this.serverUrl}/CreateUser/${userId}`, orkIds);
-        event("progress", { progress: 20, action: "Initialized user" });
+        if (this.mandatoryTags.length > 0) await this.addTags(this.mandatoryTags);
 
-        // Send all shards to selected orks
-        var key = await flow.signUp(password, email, 2);
-        event("progress", { progress: 80, action: "Fragments stored" });
-
-        // Finally, ask the vendor to confirm the user
-        await get(`${this.serverUrl}/ConfirmUser/${userId}/`);
-        event("progress", { progress: 100, action: "Finalized creation" });
-
-        this.key = key;
-        resolve({ key: key });
+        resolve({ vuid: vuid, publicKey: this.cvk.public().toString() });
       } catch (error) {
         reject(error);
         // await get(`${this.serverUrl}/RollbackUser/${userId}/`);
@@ -95,48 +88,11 @@ export default class Index {
    *
    * @param {String} username - Plain text username of the user
    * @param {String} password - Plain text password of the user
+   * @param {string[]} orks - The orks used to register the account
    *
    * @returns {AESKey} - The users keys to be used on the data
    */
-  login(username, password) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
-        var userNodes = JSON.parse(await get(`${this.serverUrl}/GetUserNodes/${userId}`));
-
-        var flow = new DAuthFlow(generateOrkUrls(userNodes.map((un) => un.ork)), username);
-        var keyTag = await flow.logIn(password);
-        return resolve({ key: keyTag });
-      } catch (error) {
-        return reject(error);
-      }
-    });
-  }
-
-  registerV2(username, password, email, orks) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        var flow = new DAuthV2Flow(username);
-        flow.cmkUrls = orks;
-        flow.cvkUrls = orks;
-        flow.vendorUrl = this.serverUrl;
-
-        var { vuid, cvk } = await flow.signUp(password, email, orks.length);
-        this.vuid = vuid;
-        this.cvk = cvk;
-        this.cvkUrls = orks;
-
-        if (this.mandatoryTags.length > 0) await this.allowTags(this.mandatoryTags);
-
-        resolve({ vuid: vuid, publicKey: this.cvk.public().toString() });
-      } catch (error) {
-        reject(error);
-        // await get(`${this.serverUrl}/RollbackUser/${userId}/`);
-      }
-    });
-  }
-
-  loginV2(username, password, orks) {
+  login(username, password, orks) {
     return new Promise(async (resolve, reject) => {
       try {
         var flow = new DAuthV2Flow(username);
@@ -157,28 +113,31 @@ export default class Index {
     });
   }
 
-  /** @param tagArray {string[]} */
-  async allowTags(tagArray) {
+  /**
+   * Attach tags to the account/fields which allow conditional access to local and third parties
+   *
+   * @param {String[]} tagArray - An array of tags consisting of a name and condition
+   */
+  async addTags(tagArray) {
     const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
     await Promise.all(tagArray.map((tag) => Rule.allow(this.vuid, Num64.seed(tag.name), this.vendorStore, tag.condition)).map(async (rule) => await ruleCln.setOrUpdate(rule)));
   }
 
-  /** @param {Rule} rule */
+  /**
+   * Update an existing rule
+   *
+   * @param {Rule} rule - The rule with updated fields
+   */
   async updateRule(rule) {
     const ruleCln = new RuleClientSet(this.cvkUrls, this.vuid);
     await ruleCln.setOrUpdate(rule);
   }
 
-  /** @param {Rule} rule */
-  async updateCondition(ruleId, newCondition) {
-    const ruleCln = new RuleClient(this.cvkUrls[0], this.vuid);
-
-    var rule = await ruleCln.getById(ruleId);
-    rule.condition = newCondition;
-
-    await ruleCln.setOrUpdate(rule);
-  }
-
+  /**
+   * Gather all rules attached to the user
+   *
+   * @returns {Rule[]} - An array of user rules
+   */
   async getRules() {
     const ruleCln = new RuleClient(this.cvkUrls[0], this.vuid);
     console.log(ruleCln);
@@ -233,16 +192,9 @@ export default class Index {
    * Send a request to the ORK nodes used by the user to email them recovery shards. This is step 1 in a 2 step process to recover the user keys.
    *
    * @param {String} username - The username of the user who wishes to recover
+   * @param {string[]} orks - The orks used to register the account
    */
-  async recover(username) {
-    var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
-    var userNodes = JSON.parse(await get(`${this.serverUrl}/GetUserNodes/${userId}`));
-
-    var flow = new DAuthFlow(generateOrkUrls(userNodes.map((un) => un.ork)), username);
-    flow.Recover(username);
-  }
-
-  async recoverV2(username, orks) {
+  async recover(username, orks) {
     var flow = new DAuthFlow(orks, username);
     flow.Recover(username);
   }
@@ -255,23 +207,9 @@ export default class Index {
    * @param {String} username - Plain text username of the user
    * @param {Array} shares - An array of shares sent to the users email(s)
    * @param {String} newPass - The new password of the user
+   * @param {string[]} orks - The orks used to register the account
    */
-  reconstruct(username, shares, newPass) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        var userId = encodeBase64Url(IdGenerator.seed(username).buffer);
-        var userNodes = JSON.parse(await get(`${this.serverUrl}/GetUserNodes/${userId}`));
-        var urls = generateOrkUrls(userNodes.map((un) => un.ork));
-        var flow = new DAuthFlow(urls, username);
-
-        return resolve(await flow.Reconstruct(shares, newPass, urls.length));
-      } catch (error) {
-        return reject(error);
-      }
-    });
-  }
-
-  reconstructV2(username, shares, newPass, orks) {
+  reconstruct(username, shares, newPass, orks) {
     return new Promise(async (resolve, reject) => {
       try {
         var flow = new DAuthFlow(orks, username);

@@ -33,7 +33,8 @@ namespace Tide.Ork.Controllers
 
             var list = new List<OrkNode>();
             for (int i = 0; i < amount; i++) {
-                list.Add(new OrkNode(){Id = i.ToString(),Url = $"https://ork-${i}.azurewebsites.net/",Website = "https://tide.org/" });
+                list.Add(new OrkNode() { Id = i.ToString(), Url = $"http://localhost:500{i}", Website = "https://tide.org/" });
+                // list.Add(new OrkNode(){Id = i.ToString(),Url = $"https://ork-${i}.azurewebsites.net/",Website = "https://tide.org/" });
             }
 
             return new TideResponse(true,JsonConvert.SerializeObject(list),null);
