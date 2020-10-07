@@ -1,0 +1,1045 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.VendorSdk.Classes.CvkClient
+  commentId: T:Tide.VendorSdk.Classes.CvkClient
+  id: CvkClient
+  parent: Tide.VendorSdk.Classes
+  children:
+  - Tide.VendorSdk.Classes.CvkClient.#ctor(System.Uri)
+  - Tide.VendorSdk.Classes.CvkClient.Add(System.Guid,System.Numerics.BigInteger,Tide.Encryption.AesMAC.AesKey,Tide.Encryption.Ecc.C25519Key,System.Guid,System.Byte[])
+  - Tide.VendorSdk.Classes.CvkClient.Challenge(System.Guid,System.Guid)
+  - Tide.VendorSdk.Classes.CvkClient.Decrypt(System.Guid,System.Guid,System.Byte[],System.Byte[],System.Byte[])
+  - Tide.VendorSdk.Classes.CvkClient.GetGuid
+  - Tide.VendorSdk.Classes.CvkClient.GetId
+  - Tide.VendorSdk.Classes.CvkClient.GetPublic
+  langs:
+  - csharp
+  - vb
+  name: CvkClient
+  nameWithType: CvkClient
+  fullName: Tide.VendorSdk.Classes.CvkClient
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/CvkClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: CvkClient
+    path: ../../Tide.VendorSdk/Classes/CvkClient.cs
+    startLine: 14
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public class CvkClient
+    content.vb: Public Class CvkClient
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Tide.VendorSdk.Classes.CvkClient.#ctor(System.Uri)
+  commentId: M:Tide.VendorSdk.Classes.CvkClient.#ctor(System.Uri)
+  id: '#ctor(System.Uri)'
+  parent: Tide.VendorSdk.Classes.CvkClient
+  langs:
+  - csharp
+  - vb
+  name: CvkClient(Uri)
+  nameWithType: CvkClient.CvkClient(Uri)
+  fullName: Tide.VendorSdk.Classes.CvkClient.CvkClient(System.Uri)
+  type: Constructor
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/CvkClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: .ctor
+    path: ../../Tide.VendorSdk/Classes/CvkClient.cs
+    startLine: 19
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public CvkClient(Uri uri)
+    parameters:
+    - id: uri
+      type: System.Uri
+    content.vb: Public Sub New(uri As Uri)
+  overload: Tide.VendorSdk.Classes.CvkClient.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.CvkClient.GetId
+  commentId: M:Tide.VendorSdk.Classes.CvkClient.GetId
+  id: GetId
+  parent: Tide.VendorSdk.Classes.CvkClient
+  langs:
+  - csharp
+  - vb
+  name: GetId()
+  nameWithType: CvkClient.GetId()
+  fullName: Tide.VendorSdk.Classes.CvkClient.GetId()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/CvkClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetId
+    path: ../../Tide.VendorSdk/Classes/CvkClient.cs
+    startLine: 25
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<BigInteger> GetId()
+    return:
+      type: System.Threading.Tasks.Task{System.Numerics.BigInteger}
+    content.vb: Public Function GetId As Task(Of BigInteger)
+  overload: Tide.VendorSdk.Classes.CvkClient.GetId*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.CvkClient.GetGuid
+  commentId: M:Tide.VendorSdk.Classes.CvkClient.GetGuid
+  id: GetGuid
+  parent: Tide.VendorSdk.Classes.CvkClient
+  langs:
+  - csharp
+  - vb
+  name: GetGuid()
+  nameWithType: CvkClient.GetGuid()
+  fullName: Tide.VendorSdk.Classes.CvkClient.GetGuid()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/CvkClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetGuid
+    path: ../../Tide.VendorSdk/Classes/CvkClient.cs
+    startLine: 33
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<Guid> GetGuid()
+    return:
+      type: System.Threading.Tasks.Task{System.Guid}
+    content.vb: Public Function GetGuid As Task(Of Guid)
+  overload: Tide.VendorSdk.Classes.CvkClient.GetGuid*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.CvkClient.Add(System.Guid,System.Numerics.BigInteger,Tide.Encryption.AesMAC.AesKey,Tide.Encryption.Ecc.C25519Key,System.Guid,System.Byte[])
+  commentId: M:Tide.VendorSdk.Classes.CvkClient.Add(System.Guid,System.Numerics.BigInteger,Tide.Encryption.AesMAC.AesKey,Tide.Encryption.Ecc.C25519Key,System.Guid,System.Byte[])
+  id: Add(System.Guid,System.Numerics.BigInteger,Tide.Encryption.AesMAC.AesKey,Tide.Encryption.Ecc.C25519Key,System.Guid,System.Byte[])
+  parent: Tide.VendorSdk.Classes.CvkClient
+  langs:
+  - csharp
+  - vb
+  name: Add(Guid, BigInteger, AesKey, C25519Key, Guid, Byte[])
+  nameWithType: CvkClient.Add(Guid, BigInteger, AesKey, C25519Key, Guid, Byte[])
+  fullName: Tide.VendorSdk.Classes.CvkClient.Add(System.Guid, System.Numerics.BigInteger, Tide.Encryption.AesMAC.AesKey, Tide.Encryption.Ecc.C25519Key, System.Guid, System.Byte[])
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/CvkClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Add
+    path: ../../Tide.VendorSdk/Classes/CvkClient.cs
+    startLine: 41
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task Add(Guid viud, BigInteger cvki, AesKey cvkiAuth, C25519Key cvkPub, Guid keyId, byte[] signature)
+    parameters:
+    - id: viud
+      type: System.Guid
+    - id: cvki
+      type: System.Numerics.BigInteger
+    - id: cvkiAuth
+      type: Tide.Encryption.AesMAC.AesKey
+    - id: cvkPub
+      type: Tide.Encryption.Ecc.C25519Key
+    - id: keyId
+      type: System.Guid
+    - id: signature
+      type: System.Byte[]
+    return:
+      type: System.Threading.Tasks.Task
+    content.vb: Public Function Add(viud As Guid, cvki As BigInteger, cvkiAuth As AesKey, cvkPub As C25519Key, keyId As Guid, signature As Byte()) As Task
+  overload: Tide.VendorSdk.Classes.CvkClient.Add*
+  nameWithType.vb: CvkClient.Add(Guid, BigInteger, AesKey, C25519Key, Guid, Byte())
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.VendorSdk.Classes.CvkClient.Add(System.Guid, System.Numerics.BigInteger, Tide.Encryption.AesMAC.AesKey, Tide.Encryption.Ecc.C25519Key, System.Guid, System.Byte())
+  name.vb: Add(Guid, BigInteger, AesKey, C25519Key, Guid, Byte())
+- uid: Tide.VendorSdk.Classes.CvkClient.GetPublic
+  commentId: M:Tide.VendorSdk.Classes.CvkClient.GetPublic
+  id: GetPublic
+  parent: Tide.VendorSdk.Classes.CvkClient
+  langs:
+  - csharp
+  - vb
+  name: GetPublic()
+  nameWithType: CvkClient.GetPublic()
+  fullName: Tide.VendorSdk.Classes.CvkClient.GetPublic()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/CvkClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetPublic
+    path: ../../Tide.VendorSdk/Classes/CvkClient.cs
+    startLine: 57
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<C25519Key> GetPublic()
+    return:
+      type: System.Threading.Tasks.Task{Tide.Encryption.Ecc.C25519Key}
+    content.vb: Public Function GetPublic As Task(Of C25519Key)
+  overload: Tide.VendorSdk.Classes.CvkClient.GetPublic*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.CvkClient.Challenge(System.Guid,System.Guid)
+  commentId: M:Tide.VendorSdk.Classes.CvkClient.Challenge(System.Guid,System.Guid)
+  id: Challenge(System.Guid,System.Guid)
+  parent: Tide.VendorSdk.Classes.CvkClient
+  langs:
+  - csharp
+  - vb
+  name: Challenge(Guid, Guid)
+  nameWithType: CvkClient.Challenge(Guid, Guid)
+  fullName: Tide.VendorSdk.Classes.CvkClient.Challenge(System.Guid, System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/CvkClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Challenge
+    path: ../../Tide.VendorSdk/Classes/CvkClient.cs
+    startLine: 68
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<(byte[] Token, C25519Cipher Challenge)> Challenge(Guid viud, Guid keyId)
+    parameters:
+    - id: viud
+      type: System.Guid
+    - id: keyId
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{System.ValueTuple{System.Byte[],Tide.Encryption.Ecc.C25519Cipher}}
+    content.vb: Public Function Challenge(viud As Guid, keyId As Guid) As Task(Of(Token As Byte(), Challenge As C25519Cipher))
+  overload: Tide.VendorSdk.Classes.CvkClient.Challenge*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.CvkClient.Decrypt(System.Guid,System.Guid,System.Byte[],System.Byte[],System.Byte[])
+  commentId: M:Tide.VendorSdk.Classes.CvkClient.Decrypt(System.Guid,System.Guid,System.Byte[],System.Byte[],System.Byte[])
+  id: Decrypt(System.Guid,System.Guid,System.Byte[],System.Byte[],System.Byte[])
+  parent: Tide.VendorSdk.Classes.CvkClient
+  langs:
+  - csharp
+  - vb
+  name: Decrypt(Guid, Guid, Byte[], Byte[], Byte[])
+  nameWithType: CvkClient.Decrypt(Guid, Guid, Byte[], Byte[], Byte[])
+  fullName: Tide.VendorSdk.Classes.CvkClient.Decrypt(System.Guid, System.Guid, System.Byte[], System.Byte[], System.Byte[])
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/CvkClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Decrypt
+    path: ../../Tide.VendorSdk/Classes/CvkClient.cs
+    startLine: 79
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<byte[]> Decrypt(Guid viud, Guid keyId, byte[] data, byte[] token, byte[] sign)
+    parameters:
+    - id: viud
+      type: System.Guid
+    - id: keyId
+      type: System.Guid
+    - id: data
+      type: System.Byte[]
+    - id: token
+      type: System.Byte[]
+    - id: sign
+      type: System.Byte[]
+    return:
+      type: System.Threading.Tasks.Task{System.Byte[]}
+    content.vb: Public Function Decrypt(viud As Guid, keyId As Guid, data As Byte(), token As Byte(), sign As Byte()) As Task(Of Byte())
+  overload: Tide.VendorSdk.Classes.CvkClient.Decrypt*
+  nameWithType.vb: CvkClient.Decrypt(Guid, Guid, Byte(), Byte(), Byte())
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.VendorSdk.Classes.CvkClient.Decrypt(System.Guid, System.Guid, System.Byte(), System.Byte(), System.Byte())
+  name.vb: Decrypt(Guid, Guid, Byte(), Byte(), Byte())
+references:
+- uid: Tide.VendorSdk.Classes
+  commentId: N:Tide.VendorSdk.Classes
+  name: Tide.VendorSdk.Classes
+  nameWithType: Tide.VendorSdk.Classes
+  fullName: Tide.VendorSdk.Classes
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.VendorSdk.Classes.CvkClient.#ctor*
+  commentId: Overload:Tide.VendorSdk.Classes.CvkClient.#ctor
+  name: CvkClient
+  nameWithType: CvkClient.CvkClient
+  fullName: Tide.VendorSdk.Classes.CvkClient.CvkClient
+- uid: System.Uri
+  commentId: T:System.Uri
+  parent: System
+  isExternal: true
+  name: Uri
+  nameWithType: Uri
+  fullName: System.Uri
+- uid: Tide.VendorSdk.Classes.CvkClient.GetId*
+  commentId: Overload:Tide.VendorSdk.Classes.CvkClient.GetId
+  name: GetId
+  nameWithType: CvkClient.GetId
+  fullName: Tide.VendorSdk.Classes.CvkClient.GetId
+- uid: System.Threading.Tasks.Task{System.Numerics.BigInteger}
+  commentId: T:System.Threading.Tasks.Task{System.Numerics.BigInteger}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<BigInteger>
+  nameWithType: Task<BigInteger>
+  fullName: System.Threading.Tasks.Task<System.Numerics.BigInteger>
+  nameWithType.vb: Task(Of BigInteger)
+  fullName.vb: System.Threading.Tasks.Task(Of System.Numerics.BigInteger)
+  name.vb: Task(Of BigInteger)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Numerics.BigInteger
+    name: BigInteger
+    nameWithType: BigInteger
+    fullName: System.Numerics.BigInteger
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Numerics.BigInteger
+    name: BigInteger
+    nameWithType: BigInteger
+    fullName: System.Numerics.BigInteger
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+- uid: Tide.VendorSdk.Classes.CvkClient.GetGuid*
+  commentId: Overload:Tide.VendorSdk.Classes.CvkClient.GetGuid
+  name: GetGuid
+  nameWithType: CvkClient.GetGuid
+  fullName: Tide.VendorSdk.Classes.CvkClient.GetGuid
+- uid: System.Threading.Tasks.Task{System.Guid}
+  commentId: T:System.Threading.Tasks.Task{System.Guid}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<Guid>
+  nameWithType: Task<Guid>
+  fullName: System.Threading.Tasks.Task<System.Guid>
+  nameWithType.vb: Task(Of Guid)
+  fullName.vb: System.Threading.Tasks.Task(Of System.Guid)
+  name.vb: Task(Of Guid)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Classes.CvkClient.Add*
+  commentId: Overload:Tide.VendorSdk.Classes.CvkClient.Add
+  name: Add
+  nameWithType: CvkClient.Add
+  fullName: Tide.VendorSdk.Classes.CvkClient.Add
+- uid: System.Guid
+  commentId: T:System.Guid
+  parent: System
+  isExternal: true
+  name: Guid
+  nameWithType: Guid
+  fullName: System.Guid
+- uid: System.Numerics.BigInteger
+  commentId: T:System.Numerics.BigInteger
+  parent: System.Numerics
+  isExternal: true
+  name: BigInteger
+  nameWithType: BigInteger
+  fullName: System.Numerics.BigInteger
+- uid: Tide.Encryption.AesMAC.AesKey
+  commentId: T:Tide.Encryption.AesMAC.AesKey
+  parent: Tide.Encryption.AesMAC
+  isExternal: true
+  name: AesKey
+  nameWithType: AesKey
+  fullName: Tide.Encryption.AesMAC.AesKey
+- uid: Tide.Encryption.Ecc.C25519Key
+  commentId: T:Tide.Encryption.Ecc.C25519Key
+  parent: Tide.Encryption.Ecc
+  isExternal: true
+  name: C25519Key
+  nameWithType: C25519Key
+  fullName: Tide.Encryption.Ecc.C25519Key
+- uid: System.Byte[]
+  isExternal: true
+  name: Byte[]
+  nameWithType: Byte[]
+  fullName: System.Byte[]
+  nameWithType.vb: Byte()
+  fullName.vb: System.Byte()
+  name.vb: Byte()
+  spec.csharp:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: System.Threading.Tasks.Task
+  commentId: T:System.Threading.Tasks.Task
+  parent: System.Threading.Tasks
+  isExternal: true
+  name: Task
+  nameWithType: Task
+  fullName: System.Threading.Tasks.Task
+- uid: System.Numerics
+  commentId: N:System.Numerics
+  isExternal: true
+  name: System.Numerics
+  nameWithType: System.Numerics
+  fullName: System.Numerics
+- uid: Tide.Encryption.AesMAC
+  commentId: N:Tide.Encryption.AesMAC
+  isExternal: true
+  name: Tide.Encryption.AesMAC
+  nameWithType: Tide.Encryption.AesMAC
+  fullName: Tide.Encryption.AesMAC
+- uid: Tide.Encryption.Ecc
+  commentId: N:Tide.Encryption.Ecc
+  isExternal: true
+  name: Tide.Encryption.Ecc
+  nameWithType: Tide.Encryption.Ecc
+  fullName: Tide.Encryption.Ecc
+- uid: Tide.VendorSdk.Classes.CvkClient.GetPublic*
+  commentId: Overload:Tide.VendorSdk.Classes.CvkClient.GetPublic
+  name: GetPublic
+  nameWithType: CvkClient.GetPublic
+  fullName: Tide.VendorSdk.Classes.CvkClient.GetPublic
+- uid: System.Threading.Tasks.Task{Tide.Encryption.Ecc.C25519Key}
+  commentId: T:System.Threading.Tasks.Task{Tide.Encryption.Ecc.C25519Key}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<C25519Key>
+  nameWithType: Task<C25519Key>
+  fullName: System.Threading.Tasks.Task<Tide.Encryption.Ecc.C25519Key>
+  nameWithType.vb: Task(Of C25519Key)
+  fullName.vb: System.Threading.Tasks.Task(Of Tide.Encryption.Ecc.C25519Key)
+  name.vb: Task(Of C25519Key)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Encryption.Ecc.C25519Key
+    name: C25519Key
+    nameWithType: C25519Key
+    fullName: Tide.Encryption.Ecc.C25519Key
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Encryption.Ecc.C25519Key
+    name: C25519Key
+    nameWithType: C25519Key
+    fullName: Tide.Encryption.Ecc.C25519Key
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Classes.CvkClient.Challenge*
+  commentId: Overload:Tide.VendorSdk.Classes.CvkClient.Challenge
+  name: Challenge
+  nameWithType: CvkClient.Challenge
+  fullName: Tide.VendorSdk.Classes.CvkClient.Challenge
+- uid: System.Threading.Tasks.Task{System.ValueTuple{System.Byte[],Tide.Encryption.Ecc.C25519Cipher}}
+  commentId: T:System.Threading.Tasks.Task{System.ValueTuple{System.Byte[],Tide.Encryption.Ecc.C25519Cipher}}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<ValueTuple<Byte[], C25519Cipher>>
+  nameWithType: Task<ValueTuple<Byte[], C25519Cipher>>
+  fullName: System.Threading.Tasks.Task<System.ValueTuple<System.Byte[], Tide.Encryption.Ecc.C25519Cipher>>
+  nameWithType.vb: Task(Of ValueTuple(Of Byte(), C25519Cipher))
+  fullName.vb: System.Threading.Tasks.Task(Of System.ValueTuple(Of System.Byte(), Tide.Encryption.Ecc.C25519Cipher))
+  name.vb: Task(Of ValueTuple(Of Byte(), C25519Cipher))
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.ValueTuple`2
+    name: ValueTuple
+    nameWithType: ValueTuple
+    fullName: System.ValueTuple
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Tide.Encryption.Ecc.C25519Cipher
+    name: C25519Cipher
+    nameWithType: C25519Cipher
+    fullName: Tide.Encryption.Ecc.C25519Cipher
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.ValueTuple`2
+    name: ValueTuple
+    nameWithType: ValueTuple
+    fullName: System.ValueTuple
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Tide.Encryption.Ecc.C25519Cipher
+    name: C25519Cipher
+    nameWithType: C25519Cipher
+    fullName: Tide.Encryption.Ecc.C25519Cipher
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Classes.CvkClient.Decrypt*
+  commentId: Overload:Tide.VendorSdk.Classes.CvkClient.Decrypt
+  name: Decrypt
+  nameWithType: CvkClient.Decrypt
+  fullName: Tide.VendorSdk.Classes.CvkClient.Decrypt
+- uid: System.Threading.Tasks.Task{System.Byte[]}
+  commentId: T:System.Threading.Tasks.Task{System.Byte[]}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<Byte[]>
+  nameWithType: Task<Byte[]>
+  fullName: System.Threading.Tasks.Task<System.Byte[]>
+  nameWithType.vb: Task(Of Byte())
+  fullName.vb: System.Threading.Tasks.Task(Of System.Byte())
+  name.vb: Task(Of Byte())
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: )
+    nameWithType: )
+    fullName: )

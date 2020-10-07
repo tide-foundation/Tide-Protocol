@@ -29,23 +29,10 @@ namespace Tide.Ork {
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
             services.AddTransient<IEmailClient, MailKitClient>();
-            services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
+            services.AddTransient<IKeyManagerFactory, MemoryFactory>();
             services.AddTransient<OrkConfig>();
 
-            var privateKey =  settings.Instance.GetPrivateKey();
-            var publicKey = privateKey.GetPublic().ToString();
-            var client = new SimulatorClient("https://tidesimulator.azurewebsites.net", "Ork-0",privateKey);
-
-            // Post test
-            var guid = Guid.NewGuid().ToString();
-            var postRes = client.Post("MattContract", "MattTable", "MattScope", guid, new TestObject() {Field1 = "gioodbye", Field2 = "Hello test"}).Result;
-
-           var deleteRes = client.Delete("MattContract", "MattTable", "MattScope", guid).Result;
-        }
-
-        public class TestObject {
-            public string Field1 { get; set; }
-            public string Field2 { get; set; }
+          
         }
 
 

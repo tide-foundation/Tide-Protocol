@@ -208,7 +208,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: RollbackUser
     path: ../../Tide.VendorSdk/Classes/SimulatorClient.cs
-    startLine: 53
+    startLine: 52
   assemblies:
   - Tide.VendorSdk
   namespace: Tide.VendorSdk.Classes

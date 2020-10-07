@@ -1,0 +1,1210 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.VendorSdk.Classes.TideVendorRepo
+  commentId: T:Tide.VendorSdk.Classes.TideVendorRepo
+  id: TideVendorRepo
+  parent: Tide.VendorSdk.Classes
+  children:
+  - Tide.VendorSdk.Classes.TideVendorRepo.#ctor(Tide.VendorSdk.TideVendor)
+  - Tide.VendorSdk.Classes.TideVendorRepo.ConfirmUser(System.Guid)
+  - Tide.VendorSdk.Classes.TideVendorRepo.CreateUser(System.Guid,Tide.Encryption.AesMAC.AesKey,System.Collections.Generic.List{System.String})
+  - Tide.VendorSdk.Classes.TideVendorRepo.GetKey(System.Guid)
+  - Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks
+  - Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks(System.Guid)
+  - Tide.VendorSdk.Classes.TideVendorRepo.RollbackUser(System.Guid)
+  langs:
+  - csharp
+  - vb
+  name: TideVendorRepo
+  nameWithType: TideVendorRepo
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/TideVendorRepo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: TideVendorRepo
+    path: ../../Tide.VendorSdk/Classes/TideVendorRepo.cs
+    startLine: 9
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: 'public class TideVendorRepo : IVendorRepo'
+    content.vb: >-
+      Public Class TideVendorRepo
+          Implements IVendorRepo
+  inheritance:
+  - System.Object
+  implements:
+  - Tide.VendorSdk.Classes.IVendorRepo
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.#ctor(Tide.VendorSdk.TideVendor)
+  commentId: M:Tide.VendorSdk.Classes.TideVendorRepo.#ctor(Tide.VendorSdk.TideVendor)
+  id: '#ctor(Tide.VendorSdk.TideVendor)'
+  parent: Tide.VendorSdk.Classes.TideVendorRepo
+  langs:
+  - csharp
+  - vb
+  name: TideVendorRepo(TideVendor)
+  nameWithType: TideVendorRepo.TideVendorRepo(TideVendor)
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.TideVendorRepo(Tide.VendorSdk.TideVendor)
+  type: Constructor
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/TideVendorRepo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: .ctor
+    path: ../../Tide.VendorSdk/Classes/TideVendorRepo.cs
+    startLine: 13
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public TideVendorRepo(TideVendor client)
+    parameters:
+    - id: client
+      type: Tide.VendorSdk.TideVendor
+    content.vb: Public Sub New(client As TideVendor)
+  overload: Tide.VendorSdk.Classes.TideVendorRepo.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.ConfirmUser(System.Guid)
+  commentId: M:Tide.VendorSdk.Classes.TideVendorRepo.ConfirmUser(System.Guid)
+  id: ConfirmUser(System.Guid)
+  parent: Tide.VendorSdk.Classes.TideVendorRepo
+  langs:
+  - csharp
+  - vb
+  name: ConfirmUser(Guid)
+  nameWithType: TideVendorRepo.ConfirmUser(Guid)
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.ConfirmUser(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/TideVendorRepo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: ConfirmUser
+    path: ../../Tide.VendorSdk/Classes/TideVendorRepo.cs
+    startLine: 19
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task ConfirmUser(Guid vuid)
+    parameters:
+    - id: vuid
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task
+    content.vb: Public Function ConfirmUser(vuid As Guid) As Task
+  overload: Tide.VendorSdk.Classes.TideVendorRepo.ConfirmUser*
+  implements:
+  - Tide.VendorSdk.Classes.IVendorRepo.ConfirmUser(System.Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.CreateUser(System.Guid,Tide.Encryption.AesMAC.AesKey,System.Collections.Generic.List{System.String})
+  commentId: M:Tide.VendorSdk.Classes.TideVendorRepo.CreateUser(System.Guid,Tide.Encryption.AesMAC.AesKey,System.Collections.Generic.List{System.String})
+  id: CreateUser(System.Guid,Tide.Encryption.AesMAC.AesKey,System.Collections.Generic.List{System.String})
+  parent: Tide.VendorSdk.Classes.TideVendorRepo
+  langs:
+  - csharp
+  - vb
+  name: CreateUser(Guid, AesKey, List<String>)
+  nameWithType: TideVendorRepo.CreateUser(Guid, AesKey, List<String>)
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.CreateUser(System.Guid, Tide.Encryption.AesMAC.AesKey, System.Collections.Generic.List<System.String>)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/TideVendorRepo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: CreateUser
+    path: ../../Tide.VendorSdk/Classes/TideVendorRepo.cs
+    startLine: 27
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task CreateUser(Guid vuid, AesKey auth, List<string> orks)
+    parameters:
+    - id: vuid
+      type: System.Guid
+    - id: auth
+      type: Tide.Encryption.AesMAC.AesKey
+    - id: orks
+      type: System.Collections.Generic.List{System.String}
+    return:
+      type: System.Threading.Tasks.Task
+    content.vb: Public Function CreateUser(vuid As Guid, auth As AesKey, orks As List(Of String)) As Task
+  overload: Tide.VendorSdk.Classes.TideVendorRepo.CreateUser*
+  implements:
+  - Tide.VendorSdk.Classes.IVendorRepo.CreateUser(System.Guid,Tide.Encryption.AesMAC.AesKey,System.Collections.Generic.List{System.String})
+  nameWithType.vb: TideVendorRepo.CreateUser(Guid, AesKey, List(Of String))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.VendorSdk.Classes.TideVendorRepo.CreateUser(System.Guid, Tide.Encryption.AesMAC.AesKey, System.Collections.Generic.List(Of System.String))
+  name.vb: CreateUser(Guid, AesKey, List(Of String))
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.GetKey(System.Guid)
+  commentId: M:Tide.VendorSdk.Classes.TideVendorRepo.GetKey(System.Guid)
+  id: GetKey(System.Guid)
+  parent: Tide.VendorSdk.Classes.TideVendorRepo
+  langs:
+  - csharp
+  - vb
+  name: GetKey(Guid)
+  nameWithType: TideVendorRepo.GetKey(Guid)
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.GetKey(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/TideVendorRepo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetKey
+    path: ../../Tide.VendorSdk/Classes/TideVendorRepo.cs
+    startLine: 34
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<AesKey> GetKey(Guid vuid)
+    parameters:
+    - id: vuid
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{Tide.Encryption.AesMAC.AesKey}
+    content.vb: Public Function GetKey(vuid As Guid) As Task(Of AesKey)
+  overload: Tide.VendorSdk.Classes.TideVendorRepo.GetKey*
+  implements:
+  - Tide.VendorSdk.Classes.IVendorRepo.GetKey(System.Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks
+  commentId: M:Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks
+  id: GetListOrks
+  parent: Tide.VendorSdk.Classes.TideVendorRepo
+  langs:
+  - csharp
+  - vb
+  name: GetListOrks()
+  nameWithType: TideVendorRepo.GetListOrks()
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/TideVendorRepo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetListOrks
+    path: ../../Tide.VendorSdk/Classes/TideVendorRepo.cs
+    startLine: 39
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<List<string>> GetListOrks()
+    return:
+      type: System.Threading.Tasks.Task{System.Collections.Generic.List{System.String}}
+    content.vb: Public Function GetListOrks As Task(Of List(Of String))
+  overload: Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks*
+  implements:
+  - Tide.VendorSdk.Classes.IVendorRepo.GetListOrks
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks(System.Guid)
+  commentId: M:Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks(System.Guid)
+  id: GetListOrks(System.Guid)
+  parent: Tide.VendorSdk.Classes.TideVendorRepo
+  langs:
+  - csharp
+  - vb
+  name: GetListOrks(Guid)
+  nameWithType: TideVendorRepo.GetListOrks(Guid)
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/TideVendorRepo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetListOrks
+    path: ../../Tide.VendorSdk/Classes/TideVendorRepo.cs
+    startLine: 44
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<List<string>> GetListOrks(Guid vuid)
+    parameters:
+    - id: vuid
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{System.Collections.Generic.List{System.String}}
+    content.vb: Public Function GetListOrks(vuid As Guid) As Task(Of List(Of String))
+  overload: Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks*
+  implements:
+  - Tide.VendorSdk.Classes.IVendorRepo.GetListOrks(System.Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.RollbackUser(System.Guid)
+  commentId: M:Tide.VendorSdk.Classes.TideVendorRepo.RollbackUser(System.Guid)
+  id: RollbackUser(System.Guid)
+  parent: Tide.VendorSdk.Classes.TideVendorRepo
+  langs:
+  - csharp
+  - vb
+  name: RollbackUser(Guid)
+  nameWithType: TideVendorRepo.RollbackUser(Guid)
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.RollbackUser(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/TideVendorRepo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: RollbackUser
+    path: ../../Tide.VendorSdk/Classes/TideVendorRepo.cs
+    startLine: 54
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task RollbackUser(Guid vuid)
+    parameters:
+    - id: vuid
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task
+    content.vb: Public Function RollbackUser(vuid As Guid) As Task
+  overload: Tide.VendorSdk.Classes.TideVendorRepo.RollbackUser*
+  implements:
+  - Tide.VendorSdk.Classes.IVendorRepo.RollbackUser(System.Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: Tide.VendorSdk.Classes
+  commentId: N:Tide.VendorSdk.Classes
+  name: Tide.VendorSdk.Classes
+  nameWithType: Tide.VendorSdk.Classes
+  fullName: Tide.VendorSdk.Classes
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: Tide.VendorSdk.Classes.IVendorRepo
+  commentId: T:Tide.VendorSdk.Classes.IVendorRepo
+  parent: Tide.VendorSdk.Classes
+  name: IVendorRepo
+  nameWithType: IVendorRepo
+  fullName: Tide.VendorSdk.Classes.IVendorRepo
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.#ctor*
+  commentId: Overload:Tide.VendorSdk.Classes.TideVendorRepo.#ctor
+  name: TideVendorRepo
+  nameWithType: TideVendorRepo.TideVendorRepo
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.TideVendorRepo
+- uid: Tide.VendorSdk.TideVendor
+  commentId: T:Tide.VendorSdk.TideVendor
+  parent: Tide.VendorSdk
+  name: TideVendor
+  nameWithType: TideVendor
+  fullName: Tide.VendorSdk.TideVendor
+- uid: Tide.VendorSdk
+  commentId: N:Tide.VendorSdk
+  name: Tide.VendorSdk
+  nameWithType: Tide.VendorSdk
+  fullName: Tide.VendorSdk
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.ConfirmUser*
+  commentId: Overload:Tide.VendorSdk.Classes.TideVendorRepo.ConfirmUser
+  name: ConfirmUser
+  nameWithType: TideVendorRepo.ConfirmUser
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.ConfirmUser
+- uid: Tide.VendorSdk.Classes.IVendorRepo.ConfirmUser(System.Guid)
+  commentId: M:Tide.VendorSdk.Classes.IVendorRepo.ConfirmUser(System.Guid)
+  parent: Tide.VendorSdk.Classes.IVendorRepo
+  isExternal: true
+  name: ConfirmUser(Guid)
+  nameWithType: IVendorRepo.ConfirmUser(Guid)
+  fullName: Tide.VendorSdk.Classes.IVendorRepo.ConfirmUser(System.Guid)
+  spec.csharp:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.ConfirmUser(System.Guid)
+    name: ConfirmUser
+    nameWithType: IVendorRepo.ConfirmUser
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.ConfirmUser
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.ConfirmUser(System.Guid)
+    name: ConfirmUser
+    nameWithType: IVendorRepo.ConfirmUser
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.ConfirmUser
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Guid
+  commentId: T:System.Guid
+  parent: System
+  isExternal: true
+  name: Guid
+  nameWithType: Guid
+  fullName: System.Guid
+- uid: System.Threading.Tasks.Task
+  commentId: T:System.Threading.Tasks.Task
+  parent: System.Threading.Tasks
+  isExternal: true
+  name: Task
+  nameWithType: Task
+  fullName: System.Threading.Tasks.Task
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.CreateUser*
+  commentId: Overload:Tide.VendorSdk.Classes.TideVendorRepo.CreateUser
+  name: CreateUser
+  nameWithType: TideVendorRepo.CreateUser
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.CreateUser
+- uid: Tide.VendorSdk.Classes.IVendorRepo.CreateUser(System.Guid,Tide.Encryption.AesMAC.AesKey,System.Collections.Generic.List{System.String})
+  commentId: M:Tide.VendorSdk.Classes.IVendorRepo.CreateUser(System.Guid,Tide.Encryption.AesMAC.AesKey,System.Collections.Generic.List{System.String})
+  parent: Tide.VendorSdk.Classes.IVendorRepo
+  isExternal: true
+  name: CreateUser(Guid, AesKey, List<String>)
+  nameWithType: IVendorRepo.CreateUser(Guid, AesKey, List<String>)
+  fullName: Tide.VendorSdk.Classes.IVendorRepo.CreateUser(System.Guid, Tide.Encryption.AesMAC.AesKey, System.Collections.Generic.List<System.String>)
+  nameWithType.vb: IVendorRepo.CreateUser(Guid, AesKey, List(Of String))
+  fullName.vb: Tide.VendorSdk.Classes.IVendorRepo.CreateUser(System.Guid, Tide.Encryption.AesMAC.AesKey, System.Collections.Generic.List(Of System.String))
+  name.vb: CreateUser(Guid, AesKey, List(Of String))
+  spec.csharp:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.CreateUser(System.Guid,Tide.Encryption.AesMAC.AesKey,System.Collections.Generic.List{System.String})
+    name: CreateUser
+    nameWithType: IVendorRepo.CreateUser
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.CreateUser
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Tide.Encryption.AesMAC.AesKey
+    name: AesKey
+    nameWithType: AesKey
+    fullName: Tide.Encryption.AesMAC.AesKey
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.CreateUser(System.Guid,Tide.Encryption.AesMAC.AesKey,System.Collections.Generic.List{System.String})
+    name: CreateUser
+    nameWithType: IVendorRepo.CreateUser
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.CreateUser
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: Tide.Encryption.AesMAC.AesKey
+    name: AesKey
+    nameWithType: AesKey
+    fullName: Tide.Encryption.AesMAC.AesKey
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Encryption.AesMAC.AesKey
+  commentId: T:Tide.Encryption.AesMAC.AesKey
+  parent: Tide.Encryption.AesMAC
+  isExternal: true
+  name: AesKey
+  nameWithType: AesKey
+  fullName: Tide.Encryption.AesMAC.AesKey
+- uid: System.Collections.Generic.List{System.String}
+  commentId: T:System.Collections.Generic.List{System.String}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<String>
+  nameWithType: List<String>
+  fullName: System.Collections.Generic.List<System.String>
+  nameWithType.vb: List(Of String)
+  fullName.vb: System.Collections.Generic.List(Of System.String)
+  name.vb: List(Of String)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Encryption.AesMAC
+  commentId: N:Tide.Encryption.AesMAC
+  isExternal: true
+  name: Tide.Encryption.AesMAC
+  nameWithType: Tide.Encryption.AesMAC
+  fullName: Tide.Encryption.AesMAC
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.GetKey*
+  commentId: Overload:Tide.VendorSdk.Classes.TideVendorRepo.GetKey
+  name: GetKey
+  nameWithType: TideVendorRepo.GetKey
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.GetKey
+- uid: Tide.VendorSdk.Classes.IVendorRepo.GetKey(System.Guid)
+  commentId: M:Tide.VendorSdk.Classes.IVendorRepo.GetKey(System.Guid)
+  parent: Tide.VendorSdk.Classes.IVendorRepo
+  isExternal: true
+  name: GetKey(Guid)
+  nameWithType: IVendorRepo.GetKey(Guid)
+  fullName: Tide.VendorSdk.Classes.IVendorRepo.GetKey(System.Guid)
+  spec.csharp:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.GetKey(System.Guid)
+    name: GetKey
+    nameWithType: IVendorRepo.GetKey
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.GetKey
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.GetKey(System.Guid)
+    name: GetKey
+    nameWithType: IVendorRepo.GetKey
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.GetKey
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task{Tide.Encryption.AesMAC.AesKey}
+  commentId: T:System.Threading.Tasks.Task{Tide.Encryption.AesMAC.AesKey}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<AesKey>
+  nameWithType: Task<AesKey>
+  fullName: System.Threading.Tasks.Task<Tide.Encryption.AesMAC.AesKey>
+  nameWithType.vb: Task(Of AesKey)
+  fullName.vb: System.Threading.Tasks.Task(Of Tide.Encryption.AesMAC.AesKey)
+  name.vb: Task(Of AesKey)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Encryption.AesMAC.AesKey
+    name: AesKey
+    nameWithType: AesKey
+    fullName: Tide.Encryption.AesMAC.AesKey
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Encryption.AesMAC.AesKey
+    name: AesKey
+    nameWithType: AesKey
+    fullName: Tide.Encryption.AesMAC.AesKey
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks*
+  commentId: Overload:Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks
+  name: GetListOrks
+  nameWithType: TideVendorRepo.GetListOrks
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.GetListOrks
+- uid: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks
+  commentId: M:Tide.VendorSdk.Classes.IVendorRepo.GetListOrks
+  parent: Tide.VendorSdk.Classes.IVendorRepo
+  name: GetListOrks()
+  nameWithType: IVendorRepo.GetListOrks()
+  fullName: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks()
+  spec.csharp:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks
+    name: GetListOrks
+    nameWithType: IVendorRepo.GetListOrks
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks
+    name: GetListOrks
+    nameWithType: IVendorRepo.GetListOrks
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task{System.Collections.Generic.List{System.String}}
+  commentId: T:System.Threading.Tasks.Task{System.Collections.Generic.List{System.String}}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<List<String>>
+  nameWithType: Task<List<String>>
+  fullName: System.Threading.Tasks.Task<System.Collections.Generic.List<System.String>>
+  nameWithType.vb: Task(Of List(Of String))
+  fullName.vb: System.Threading.Tasks.Task(Of System.Collections.Generic.List(Of System.String))
+  name.vb: Task(Of List(Of String))
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks(System.Guid)
+  commentId: M:Tide.VendorSdk.Classes.IVendorRepo.GetListOrks(System.Guid)
+  parent: Tide.VendorSdk.Classes.IVendorRepo
+  isExternal: true
+  name: GetListOrks(Guid)
+  nameWithType: IVendorRepo.GetListOrks(Guid)
+  fullName: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks(System.Guid)
+  spec.csharp:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks(System.Guid)
+    name: GetListOrks
+    nameWithType: IVendorRepo.GetListOrks
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks(System.Guid)
+    name: GetListOrks
+    nameWithType: IVendorRepo.GetListOrks
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.GetListOrks
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Classes.TideVendorRepo.RollbackUser*
+  commentId: Overload:Tide.VendorSdk.Classes.TideVendorRepo.RollbackUser
+  name: RollbackUser
+  nameWithType: TideVendorRepo.RollbackUser
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo.RollbackUser
+- uid: Tide.VendorSdk.Classes.IVendorRepo.RollbackUser(System.Guid)
+  commentId: M:Tide.VendorSdk.Classes.IVendorRepo.RollbackUser(System.Guid)
+  parent: Tide.VendorSdk.Classes.IVendorRepo
+  isExternal: true
+  name: RollbackUser(Guid)
+  nameWithType: IVendorRepo.RollbackUser(Guid)
+  fullName: Tide.VendorSdk.Classes.IVendorRepo.RollbackUser(System.Guid)
+  spec.csharp:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.RollbackUser(System.Guid)
+    name: RollbackUser
+    nameWithType: IVendorRepo.RollbackUser
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.RollbackUser
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.VendorSdk.Classes.IVendorRepo.RollbackUser(System.Guid)
+    name: RollbackUser
+    nameWithType: IVendorRepo.RollbackUser
+    fullName: Tide.VendorSdk.Classes.IVendorRepo.RollbackUser
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )

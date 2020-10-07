@@ -1,0 +1,1302 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Repo.CacheManager`1
+  commentId: T:Tide.Ork.Repo.CacheManager`1
+  id: CacheManager`1
+  parent: Tide.Ork.Repo
+  children:
+  - Tide.Ork.Repo.CacheManager`1.#ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache,Tide.Ork.Repo.IManager{`0})
+  - Tide.Ork.Repo.CacheManager`1.Cache
+  - Tide.Ork.Repo.CacheManager`1.Confirm(System.Guid)
+  - Tide.Ork.Repo.CacheManager`1.Delete(System.Guid)
+  - Tide.Ork.Repo.CacheManager`1.Exist(System.Guid)
+  - Tide.Ork.Repo.CacheManager`1.GetAll
+  - Tide.Ork.Repo.CacheManager`1.GetById(System.Guid)
+  - Tide.Ork.Repo.CacheManager`1.GetEnumerable
+  - Tide.Ork.Repo.CacheManager`1.GetGuids
+  - Tide.Ork.Repo.CacheManager`1.life
+  - Tide.Ork.Repo.CacheManager`1.SetOrUpdate(`0)
+  langs:
+  - csharp
+  - vb
+  name: CacheManager<T>
+  nameWithType: CacheManager<T>
+  fullName: Tide.Ork.Repo.CacheManager<T>
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: CacheManager
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 10
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: >-
+      public class CacheManager<T>
+          where T : IGuid, new()
+    typeParameters:
+    - id: T
+    content.vb: Public Class CacheManager(Of T As {IGuid, New})
+  inheritance:
+  - System.Object
+  derivedClasses:
+  - Tide.Ork.Repo.CacheCmkManager
+  - Tide.Ork.Repo.CacheCvkManager
+  - Tide.Ork.Repo.CacheRuleManager
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  nameWithType.vb: CacheManager(Of T)
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T)
+  name.vb: CacheManager(Of T)
+- uid: Tide.Ork.Repo.CacheManager`1.life
+  commentId: F:Tide.Ork.Repo.CacheManager`1.life
+  id: life
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: life
+  nameWithType: CacheManager<T>.life
+  fullName: Tide.Ork.Repo.CacheManager<T>.life
+  type: Field
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: life
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 12
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected readonly TimeSpan life
+    return:
+      type: System.TimeSpan
+    content.vb: Protected ReadOnly life As TimeSpan
+  nameWithType.vb: CacheManager(Of T).life
+  modifiers.csharp:
+  - protected
+  - readonly
+  modifiers.vb:
+  - Protected
+  - ReadOnly
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).life
+- uid: Tide.Ork.Repo.CacheManager`1.Cache
+  commentId: F:Tide.Ork.Repo.CacheManager`1.Cache
+  id: Cache
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: Cache
+  nameWithType: CacheManager<T>.Cache
+  fullName: Tide.Ork.Repo.CacheManager<T>.Cache
+  type: Field
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Cache
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 13
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected readonly IMemoryCache Cache
+    return:
+      type: Microsoft.Extensions.Caching.Memory.IMemoryCache
+    content.vb: Protected ReadOnly Cache As IMemoryCache
+  nameWithType.vb: CacheManager(Of T).Cache
+  modifiers.csharp:
+  - protected
+  - readonly
+  modifiers.vb:
+  - Protected
+  - ReadOnly
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).Cache
+- uid: Tide.Ork.Repo.CacheManager`1.#ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache,Tide.Ork.Repo.IManager{`0})
+  commentId: M:Tide.Ork.Repo.CacheManager`1.#ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache,Tide.Ork.Repo.IManager{`0})
+  id: '#ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache,Tide.Ork.Repo.IManager{`0})'
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: CacheManager(IMemoryCache, IManager<T>)
+  nameWithType: CacheManager<T>.CacheManager(IMemoryCache, IManager<T>)
+  fullName: Tide.Ork.Repo.CacheManager<T>.CacheManager(Microsoft.Extensions.Caching.Memory.IMemoryCache, Tide.Ork.Repo.IManager<T>)
+  type: Constructor
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: .ctor
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 16
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public CacheManager(IMemoryCache cache, IManager<T> manager)
+    parameters:
+    - id: cache
+      type: Microsoft.Extensions.Caching.Memory.IMemoryCache
+    - id: manager
+      type: Tide.Ork.Repo.IManager{{T}}
+    content.vb: Public Sub New(cache As IMemoryCache, manager As IManager(Of T))
+  overload: Tide.Ork.Repo.CacheManager`1.#ctor*
+  nameWithType.vb: CacheManager(Of T).CacheManager(IMemoryCache, IManager(Of T))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).CacheManager(Microsoft.Extensions.Caching.Memory.IMemoryCache, Tide.Ork.Repo.IManager(Of T))
+  name.vb: CacheManager(IMemoryCache, IManager(Of T))
+- uid: Tide.Ork.Repo.CacheManager`1.SetOrUpdate(`0)
+  commentId: M:Tide.Ork.Repo.CacheManager`1.SetOrUpdate(`0)
+  id: SetOrUpdate(`0)
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: SetOrUpdate(T)
+  nameWithType: CacheManager<T>.SetOrUpdate(T)
+  fullName: Tide.Ork.Repo.CacheManager<T>.SetOrUpdate(T)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SetOrUpdate
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 23
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<TideResponse> SetOrUpdate(T entity)
+    parameters:
+    - id: entity
+      type: '{T}'
+    return:
+      type: System.Threading.Tasks.Task{Tide.Core.TideResponse}
+    content.vb: Public Function SetOrUpdate(entity As T) As Task(Of TideResponse)
+  overload: Tide.Ork.Repo.CacheManager`1.SetOrUpdate*
+  nameWithType.vb: CacheManager(Of T).SetOrUpdate(T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).SetOrUpdate(T)
+- uid: Tide.Ork.Repo.CacheManager`1.Confirm(System.Guid)
+  commentId: M:Tide.Ork.Repo.CacheManager`1.Confirm(System.Guid)
+  id: Confirm(System.Guid)
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: Confirm(Guid)
+  nameWithType: CacheManager<T>.Confirm(Guid)
+  fullName: Tide.Ork.Repo.CacheManager<T>.Confirm(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Confirm
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 32
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task Confirm(Guid id)
+    parameters:
+    - id: id
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task
+    content.vb: Public Function Confirm(id As Guid) As Task
+  overload: Tide.Ork.Repo.CacheManager`1.Confirm*
+  nameWithType.vb: CacheManager(Of T).Confirm(Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).Confirm(System.Guid)
+- uid: Tide.Ork.Repo.CacheManager`1.Delete(System.Guid)
+  commentId: M:Tide.Ork.Repo.CacheManager`1.Delete(System.Guid)
+  id: Delete(System.Guid)
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: Delete(Guid)
+  nameWithType: CacheManager<T>.Delete(Guid)
+  fullName: Tide.Ork.Repo.CacheManager<T>.Delete(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Delete
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 41
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task Delete(Guid id)
+    parameters:
+    - id: id
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task
+    content.vb: Public Function Delete(id As Guid) As Task
+  overload: Tide.Ork.Repo.CacheManager`1.Delete*
+  nameWithType.vb: CacheManager(Of T).Delete(Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).Delete(System.Guid)
+- uid: Tide.Ork.Repo.CacheManager`1.Exist(System.Guid)
+  commentId: M:Tide.Ork.Repo.CacheManager`1.Exist(System.Guid)
+  id: Exist(System.Guid)
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: Exist(Guid)
+  nameWithType: CacheManager<T>.Exist(Guid)
+  fullName: Tide.Ork.Repo.CacheManager<T>.Exist(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Exist
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 50
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<bool> Exist(Guid id)
+    parameters:
+    - id: id
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{System.Boolean}
+    content.vb: Public Function Exist(id As Guid) As Task(Of Boolean)
+  overload: Tide.Ork.Repo.CacheManager`1.Exist*
+  nameWithType.vb: CacheManager(Of T).Exist(Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).Exist(System.Guid)
+- uid: Tide.Ork.Repo.CacheManager`1.GetAll
+  commentId: M:Tide.Ork.Repo.CacheManager`1.GetAll
+  id: GetAll
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: GetAll()
+  nameWithType: CacheManager<T>.GetAll()
+  fullName: Tide.Ork.Repo.CacheManager<T>.GetAll()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetAll
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 55
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<List<T>> GetAll()
+    return:
+      type: System.Threading.Tasks.Task{System.Collections.Generic.List{{T}}}
+    content.vb: Public Function GetAll As Task(Of List(Of T))
+  overload: Tide.Ork.Repo.CacheManager`1.GetAll*
+  nameWithType.vb: CacheManager(Of T).GetAll()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).GetAll()
+- uid: Tide.Ork.Repo.CacheManager`1.GetById(System.Guid)
+  commentId: M:Tide.Ork.Repo.CacheManager`1.GetById(System.Guid)
+  id: GetById(System.Guid)
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: GetById(Guid)
+  nameWithType: CacheManager<T>.GetById(Guid)
+  fullName: Tide.Ork.Repo.CacheManager<T>.GetById(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetById
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 60
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<T> GetById(Guid id)
+    parameters:
+    - id: id
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{{T}}
+    content.vb: Public Function GetById(id As Guid) As Task(Of T)
+  overload: Tide.Ork.Repo.CacheManager`1.GetById*
+  nameWithType.vb: CacheManager(Of T).GetById(Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).GetById(System.Guid)
+- uid: Tide.Ork.Repo.CacheManager`1.GetEnumerable
+  commentId: M:Tide.Ork.Repo.CacheManager`1.GetEnumerable
+  id: GetEnumerable
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: GetEnumerable()
+  nameWithType: CacheManager<T>.GetEnumerable()
+  fullName: Tide.Ork.Repo.CacheManager<T>.GetEnumerable()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetEnumerable
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 65
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected IEnumerable<T> GetEnumerable()
+    return:
+      type: System.Collections.Generic.IEnumerable{{T}}
+    content.vb: Protected Function GetEnumerable As IEnumerable(Of T)
+  overload: Tide.Ork.Repo.CacheManager`1.GetEnumerable*
+  nameWithType.vb: CacheManager(Of T).GetEnumerable()
+  modifiers.csharp:
+  - protected
+  modifiers.vb:
+  - Protected
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).GetEnumerable()
+- uid: Tide.Ork.Repo.CacheManager`1.GetGuids
+  commentId: M:Tide.Ork.Repo.CacheManager`1.GetGuids
+  id: GetGuids
+  parent: Tide.Ork.Repo.CacheManager`1
+  langs:
+  - csharp
+  - vb
+  name: GetGuids()
+  nameWithType: CacheManager<T>.GetGuids()
+  fullName: Tide.Ork.Repo.CacheManager<T>.GetGuids()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/CacheManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetGuids
+    path: ../../Tide.Ork/Repo/CacheManager.cs
+    startLine: 75
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected IEnumerable<Guid> GetGuids()
+    return:
+      type: System.Collections.Generic.IEnumerable{System.Guid}
+    content.vb: Protected Function GetGuids As IEnumerable(Of Guid)
+  overload: Tide.Ork.Repo.CacheManager`1.GetGuids*
+  nameWithType.vb: CacheManager(Of T).GetGuids()
+  modifiers.csharp:
+  - protected
+  modifiers.vb:
+  - Protected
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).GetGuids()
+references:
+- uid: Tide.Ork.Repo
+  commentId: N:Tide.Ork.Repo
+  name: Tide.Ork.Repo
+  nameWithType: Tide.Ork.Repo
+  fullName: Tide.Ork.Repo
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.TimeSpan
+  commentId: T:System.TimeSpan
+  parent: System
+  isExternal: true
+  name: TimeSpan
+  nameWithType: TimeSpan
+  fullName: System.TimeSpan
+- uid: Microsoft.Extensions.Caching.Memory.IMemoryCache
+  commentId: T:Microsoft.Extensions.Caching.Memory.IMemoryCache
+  parent: Microsoft.Extensions.Caching.Memory
+  isExternal: true
+  name: IMemoryCache
+  nameWithType: IMemoryCache
+  fullName: Microsoft.Extensions.Caching.Memory.IMemoryCache
+- uid: Microsoft.Extensions.Caching.Memory
+  commentId: N:Microsoft.Extensions.Caching.Memory
+  isExternal: true
+  name: Microsoft.Extensions.Caching.Memory
+  nameWithType: Microsoft.Extensions.Caching.Memory
+  fullName: Microsoft.Extensions.Caching.Memory
+- uid: Tide.Ork.Repo.CacheManager`1.#ctor*
+  commentId: Overload:Tide.Ork.Repo.CacheManager`1.#ctor
+  name: CacheManager
+  nameWithType: CacheManager<T>.CacheManager
+  fullName: Tide.Ork.Repo.CacheManager<T>.CacheManager
+  nameWithType.vb: CacheManager(Of T).CacheManager
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).CacheManager
+- uid: Tide.Ork.Repo.IManager{{T}}
+  commentId: T:Tide.Ork.Repo.IManager{`0}
+  parent: Tide.Ork.Repo
+  definition: Tide.Ork.Repo.IManager`1
+  name: IManager<T>
+  nameWithType: IManager<T>
+  fullName: Tide.Ork.Repo.IManager<T>
+  nameWithType.vb: IManager(Of T)
+  fullName.vb: Tide.Ork.Repo.IManager(Of T)
+  name.vb: IManager(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager`1
+  commentId: T:Tide.Ork.Repo.IManager`1
+  name: IManager<T>
+  nameWithType: IManager<T>
+  fullName: Tide.Ork.Repo.IManager<T>
+  nameWithType.vb: IManager(Of T)
+  fullName.vb: Tide.Ork.Repo.IManager(Of T)
+  name.vb: IManager(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.CacheManager`1.SetOrUpdate*
+  commentId: Overload:Tide.Ork.Repo.CacheManager`1.SetOrUpdate
+  name: SetOrUpdate
+  nameWithType: CacheManager<T>.SetOrUpdate
+  fullName: Tide.Ork.Repo.CacheManager<T>.SetOrUpdate
+  nameWithType.vb: CacheManager(Of T).SetOrUpdate
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).SetOrUpdate
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: System.Threading.Tasks.Task{Tide.Core.TideResponse}
+  commentId: T:System.Threading.Tasks.Task{Tide.Core.TideResponse}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<TideResponse>
+  nameWithType: Task<TideResponse>
+  fullName: System.Threading.Tasks.Task<Tide.Core.TideResponse>
+  nameWithType.vb: Task(Of TideResponse)
+  fullName.vb: System.Threading.Tasks.Task(Of Tide.Core.TideResponse)
+  name.vb: Task(Of TideResponse)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.TideResponse
+    name: TideResponse
+    nameWithType: TideResponse
+    fullName: Tide.Core.TideResponse
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.TideResponse
+    name: TideResponse
+    nameWithType: TideResponse
+    fullName: Tide.Core.TideResponse
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+- uid: Tide.Ork.Repo.CacheManager`1.Confirm*
+  commentId: Overload:Tide.Ork.Repo.CacheManager`1.Confirm
+  name: Confirm
+  nameWithType: CacheManager<T>.Confirm
+  fullName: Tide.Ork.Repo.CacheManager<T>.Confirm
+  nameWithType.vb: CacheManager(Of T).Confirm
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).Confirm
+- uid: System.Guid
+  commentId: T:System.Guid
+  parent: System
+  isExternal: true
+  name: Guid
+  nameWithType: Guid
+  fullName: System.Guid
+- uid: System.Threading.Tasks.Task
+  commentId: T:System.Threading.Tasks.Task
+  parent: System.Threading.Tasks
+  isExternal: true
+  name: Task
+  nameWithType: Task
+  fullName: System.Threading.Tasks.Task
+- uid: Tide.Ork.Repo.CacheManager`1.Delete*
+  commentId: Overload:Tide.Ork.Repo.CacheManager`1.Delete
+  name: Delete
+  nameWithType: CacheManager<T>.Delete
+  fullName: Tide.Ork.Repo.CacheManager<T>.Delete
+  nameWithType.vb: CacheManager(Of T).Delete
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).Delete
+- uid: Tide.Ork.Repo.CacheManager`1.Exist*
+  commentId: Overload:Tide.Ork.Repo.CacheManager`1.Exist
+  name: Exist
+  nameWithType: CacheManager<T>.Exist
+  fullName: Tide.Ork.Repo.CacheManager<T>.Exist
+  nameWithType.vb: CacheManager(Of T).Exist
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).Exist
+- uid: System.Threading.Tasks.Task{System.Boolean}
+  commentId: T:System.Threading.Tasks.Task{System.Boolean}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<Boolean>
+  nameWithType: Task<Boolean>
+  fullName: System.Threading.Tasks.Task<System.Boolean>
+  nameWithType.vb: Task(Of Boolean)
+  fullName.vb: System.Threading.Tasks.Task(Of System.Boolean)
+  name.vb: Task(Of Boolean)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.CacheManager`1.GetAll*
+  commentId: Overload:Tide.Ork.Repo.CacheManager`1.GetAll
+  name: GetAll
+  nameWithType: CacheManager<T>.GetAll
+  fullName: Tide.Ork.Repo.CacheManager<T>.GetAll
+  nameWithType.vb: CacheManager(Of T).GetAll
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).GetAll
+- uid: System.Threading.Tasks.Task{System.Collections.Generic.List{{T}}}
+  commentId: T:System.Threading.Tasks.Task{System.Collections.Generic.List{`0}}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<List<T>>
+  nameWithType: Task<List<T>>
+  fullName: System.Threading.Tasks.Task<System.Collections.Generic.List<T>>
+  nameWithType.vb: Task(Of List(Of T))
+  fullName.vb: System.Threading.Tasks.Task(Of System.Collections.Generic.List(Of T))
+  name.vb: Task(Of List(Of T))
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.CacheManager`1.GetById*
+  commentId: Overload:Tide.Ork.Repo.CacheManager`1.GetById
+  name: GetById
+  nameWithType: CacheManager<T>.GetById
+  fullName: Tide.Ork.Repo.CacheManager<T>.GetById
+  nameWithType.vb: CacheManager(Of T).GetById
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).GetById
+- uid: System.Threading.Tasks.Task{{T}}
+  commentId: T:System.Threading.Tasks.Task{`0}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<T>
+  nameWithType: Task<T>
+  fullName: System.Threading.Tasks.Task<T>
+  nameWithType.vb: Task(Of T)
+  fullName.vb: System.Threading.Tasks.Task(Of T)
+  name.vb: Task(Of T)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.CacheManager`1.GetEnumerable*
+  commentId: Overload:Tide.Ork.Repo.CacheManager`1.GetEnumerable
+  name: GetEnumerable
+  nameWithType: CacheManager<T>.GetEnumerable
+  fullName: Tide.Ork.Repo.CacheManager<T>.GetEnumerable
+  nameWithType.vb: CacheManager(Of T).GetEnumerable
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).GetEnumerable
+- uid: System.Collections.Generic.IEnumerable{{T}}
+  commentId: T:System.Collections.Generic.IEnumerable{`0}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: Tide.Ork.Repo.CacheManager`1.GetGuids*
+  commentId: Overload:Tide.Ork.Repo.CacheManager`1.GetGuids
+  name: GetGuids
+  nameWithType: CacheManager<T>.GetGuids
+  fullName: Tide.Ork.Repo.CacheManager<T>.GetGuids
+  nameWithType.vb: CacheManager(Of T).GetGuids
+  fullName.vb: Tide.Ork.Repo.CacheManager(Of T).GetGuids
+- uid: System.Collections.Generic.IEnumerable{System.Guid}
+  commentId: T:System.Collections.Generic.IEnumerable{System.Guid}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<Guid>
+  nameWithType: IEnumerable<Guid>
+  fullName: System.Collections.Generic.IEnumerable<System.Guid>
+  nameWithType.vb: IEnumerable(Of Guid)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of System.Guid)
+  name.vb: IEnumerable(Of Guid)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )

@@ -21,7 +21,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: TideMiddleware
     path: ../../Tide.VendorSdk/Classes/Middleware/TideMiddleware.cs
-    startLine: 13
+    startLine: 14
   assemblies:
   - Tide.VendorSdk
   namespace: Tide.VendorSdk.Classes.Middleware
@@ -62,7 +62,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: .ctor
     path: ../../Tide.VendorSdk/Classes/Middleware/TideMiddleware.cs
-    startLine: 24
+    startLine: 25
   assemblies:
   - Tide.VendorSdk
   namespace: Tide.VendorSdk.Classes.Middleware
@@ -97,7 +97,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Invoke
     path: ../../Tide.VendorSdk/Classes/Middleware/TideMiddleware.cs
-    startLine: 29
+    startLine: 30
   assemblies:
   - Tide.VendorSdk
   namespace: Tide.VendorSdk.Classes.Middleware

@@ -1,4 +1,9 @@
 ### YamlMime:TableOfContent
+- uid: Microsoft.Extensions.Logging
+  name: Microsoft.Extensions.Logging
+  items:
+  - uid: Microsoft.Extensions.Logging.Extension
+    name: Extension
 - uid: Tide.Ork
   name: Tide.Ork
   items:
@@ -6,58 +11,63 @@
     name: Program
   - uid: Tide.Ork.Startup
     name: Startup
+  - uid: Tide.Ork.Startup.TestObject
+    name: Startup.TestObject
 - uid: Tide.Ork.Classes
   name: Tide.Ork.Classes
   items:
-  - uid: Tide.Ork.Classes.IdGenerator
-    name: IdGenerator
   - uid: Tide.Ork.Classes.IEmailClient
     name: IEmailClient
-  - uid: Tide.Ork.Classes.IKeyManager
-    name: IKeyManager
-  - uid: Tide.Ork.Classes.IKeyManagerFactory
-    name: IKeyManagerFactory
-  - uid: Tide.Ork.Classes.IManager`1
-    name: IManager<T>
-    name.vb: IManager(Of T)
-  - uid: Tide.Ork.Classes.IRuleManager
-    name: IRuleManager
   - uid: Tide.Ork.Classes.MailKitClient
     name: MailKitClient
-  - uid: Tide.Ork.Classes.MemoryFactory
-    name: MemoryFactory
-  - uid: Tide.Ork.Classes.MemoryKeyManager
-    name: MemoryKeyManager
-  - uid: Tide.Ork.Classes.MemoryManagerBase`1
-    name: MemoryManagerBase<T>
-    name.vb: MemoryManagerBase(Of T)
-  - uid: Tide.Ork.Classes.MemoryRuleManager
-    name: MemoryRuleManager
+  - uid: Tide.Ork.Classes.OrkConfig
+    name: OrkConfig
   - uid: Tide.Ork.Classes.OrkShare
     name: OrkShare
   - uid: Tide.Ork.Classes.SimulatorClient
     name: SimulatorClient
-  - uid: Tide.Ork.Classes.SimulatorFactory
-    name: SimulatorFactory
-  - uid: Tide.Ork.Classes.SimulatorKeyManager
-    name: SimulatorKeyManager
-  - uid: Tide.Ork.Classes.SimulatorManagerBase`1
-    name: SimulatorManagerBase<T>
-    name.vb: SimulatorManagerBase(Of T)
-  - uid: Tide.Ork.Classes.SimulatorRuleManager
-    name: SimulatorRuleManager
-  - uid: Tide.Ork.Classes.TranToken
-    name: TranToken
-  - uid: Tide.Ork.Classes.VerifyChallenge
-    name: VerifyChallenge
+- uid: Tide.Ork.Classes.Rules
+  name: Tide.Ork.Classes.Rules
+  items:
+  - uid: Tide.Ork.Classes.Rules.Check
+    name: Check
+  - uid: Tide.Ork.Classes.Rules.ContextInfo
+    name: ContextInfo
+  - uid: Tide.Ork.Classes.Rules.DateInfo
+    name: DateInfo
+  - uid: Tide.Ork.Classes.Rules.OperChecker
+    name: OperChecker
+  - uid: Tide.Ork.Classes.Rules.PropChecker
+    name: PropChecker
+  - uid: Tide.Ork.Classes.Rules.RuleConditionEval
+    name: RuleConditionEval
 - uid: Tide.Ork.Controllers
   name: Tide.Ork.Controllers
   items:
-  - uid: Tide.Ork.Controllers.DAuthController
-    name: DAuthController
+  - uid: Tide.Ork.Controllers.CMKController
+    name: CMKController
+  - uid: Tide.Ork.Controllers.CVKController
+    name: CVKController
+  - uid: Tide.Ork.Controllers.DiscoveryController
+    name: DiscoveryController
+  - uid: Tide.Ork.Controllers.IndexController
+    name: IndexController
+  - uid: Tide.Ork.Controllers.KeyController
+    name: KeyController
+  - uid: Tide.Ork.Controllers.RuleController
+    name: RuleController
+- uid: Tide.Ork.DTOs
+  name: Tide.Ork.DTOs
+  items:
+  - uid: Tide.Ork.DTOs.KeyIdVaultDTO
+    name: KeyIdVaultDTO
+  - uid: Tide.Ork.DTOs.RuleVaultDTO
+    name: RuleVaultDTO
 - uid: Tide.Ork.Models
   name: Tide.Ork.Models
   items:
+  - uid: Tide.Ork.Models.ApplyResponse
+    name: ApplyResponse
   - uid: Tide.Ork.Models.EmailClient
     name: EmailClient
   - uid: Tide.Ork.Models.Endpoint
@@ -68,3 +78,54 @@
     name: Instance
   - uid: Tide.Ork.Models.Settings
     name: Settings
+- uid: Tide.Ork.Repo
+  name: Tide.Ork.Repo
+  items:
+  - uid: Tide.Ork.Repo.CacheCmkManager
+    name: CacheCmkManager
+  - uid: Tide.Ork.Repo.CacheCvkManager
+    name: CacheCvkManager
+  - uid: Tide.Ork.Repo.CacheManager`1
+    name: CacheManager<T>
+    name.vb: CacheManager(Of T)
+  - uid: Tide.Ork.Repo.CacheRuleManager
+    name: CacheRuleManager
+  - uid: Tide.Ork.Repo.ICmkManager
+    name: ICmkManager
+  - uid: Tide.Ork.Repo.ICvkManager
+    name: ICvkManager
+  - uid: Tide.Ork.Repo.IKeyIdManager
+    name: IKeyIdManager
+  - uid: Tide.Ork.Repo.IKeyManagerFactory
+    name: IKeyManagerFactory
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager<T>
+    name.vb: IManager(Of T)
+  - uid: Tide.Ork.Repo.IRuleManager
+    name: IRuleManager
+  - uid: Tide.Ork.Repo.MemoryCmkManager
+    name: MemoryCmkManager
+  - uid: Tide.Ork.Repo.MemoryCvkManager
+    name: MemoryCvkManager
+  - uid: Tide.Ork.Repo.MemoryFactory
+    name: MemoryFactory
+  - uid: Tide.Ork.Repo.MemoryKeyIdManager
+    name: MemoryKeyIdManager
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1
+    name: MemoryManagerBase<T>
+    name.vb: MemoryManagerBase(Of T)
+  - uid: Tide.Ork.Repo.MemoryRuleManager
+    name: MemoryRuleManager
+  - uid: Tide.Ork.Repo.SimulatorCmkManager
+    name: SimulatorCmkManager
+  - uid: Tide.Ork.Repo.SimulatorCvkManager
+    name: SimulatorCvkManager
+  - uid: Tide.Ork.Repo.SimulatorFactory
+    name: SimulatorFactory
+  - uid: Tide.Ork.Repo.SimulatorKeyIdManager
+    name: SimulatorKeyIdManager
+  - uid: Tide.Ork.Repo.SimulatorManagerBase`1
+    name: SimulatorManagerBase<T>
+    name.vb: SimulatorManagerBase(Of T)
+  - uid: Tide.Ork.Repo.SimulatorRuleManager
+    name: SimulatorRuleManager

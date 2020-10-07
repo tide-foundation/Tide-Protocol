@@ -6,6 +6,7 @@ items:
   children:
   - Tide.Ork.Program
   - Tide.Ork.Startup
+  - Tide.Ork.Startup.TestObject
   langs:
   - csharp
   - vb
@@ -26,3 +27,8 @@ references:
   name: Startup
   nameWithType: Startup
   fullName: Tide.Ork.Startup
+- uid: Tide.Ork.Startup.TestObject
+  commentId: T:Tide.Ork.Startup.TestObject
+  name: Startup.TestObject
+  nameWithType: Startup.TestObject
+  fullName: Tide.Ork.Startup.TestObject

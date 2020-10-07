@@ -1,0 +1,1417 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Repo.MemoryRuleManager
+  commentId: T:Tide.Ork.Repo.MemoryRuleManager
+  id: MemoryRuleManager
+  parent: Tide.Ork.Repo
+  children:
+  - Tide.Ork.Repo.MemoryRuleManager.ConfirmAll(System.Guid)
+  - Tide.Ork.Repo.MemoryRuleManager.GetSetBy(System.Guid)
+  - Tide.Ork.Repo.MemoryRuleManager.GetSetBy(System.Guid,System.UInt64,System.Guid)
+  - Tide.Ork.Repo.MemoryRuleManager.MaxID
+  langs:
+  - csharp
+  - vb
+  name: MemoryRuleManager
+  nameWithType: MemoryRuleManager
+  fullName: Tide.Ork.Repo.MemoryRuleManager
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/MemoryRuleManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: MemoryRuleManager
+    path: ../../Tide.Ork/Repo/MemoryRuleManager.cs
+    startLine: 8
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: 'public class MemoryRuleManager : MemoryManagerBase<RuleVault>, IRuleManager, IManager<RuleVault>'
+    content.vb: >-
+      Public Class MemoryRuleManager
+          Inherits MemoryManagerBase(Of RuleVault)
+          Implements IRuleManager, IManager(Of RuleVault)
+  inheritance:
+  - System.Object
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  implements:
+  - Tide.Ork.Repo.IRuleManager
+  - Tide.Ork.Repo.IManager{Tide.Core.RuleVault}
+  inheritedMembers:
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}._items
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.Delete(System.Guid)
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.Exist(System.Guid)
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.GetAll
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.GetById(System.Guid)
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.SetOrUpdate(Tide.Core.RuleVault)
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.GetEnumerable
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Tide.Ork.Repo.MemoryRuleManager.MaxID
+  commentId: P:Tide.Ork.Repo.MemoryRuleManager.MaxID
+  id: MaxID
+  parent: Tide.Ork.Repo.MemoryRuleManager
+  langs:
+  - csharp
+  - vb
+  name: MaxID
+  nameWithType: MemoryRuleManager.MaxID
+  fullName: Tide.Ork.Repo.MemoryRuleManager.MaxID
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/MemoryRuleManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: MaxID
+    path: ../../Tide.Ork/Repo/MemoryRuleManager.cs
+    startLine: 10
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public static Guid MaxID { get; }
+    parameters: []
+    return:
+      type: System.Guid
+    content.vb: Public Shared ReadOnly Property MaxID As Guid
+  overload: Tide.Ork.Repo.MemoryRuleManager.MaxID*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Repo.MemoryRuleManager.ConfirmAll(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryRuleManager.ConfirmAll(System.Guid)
+  id: ConfirmAll(System.Guid)
+  parent: Tide.Ork.Repo.MemoryRuleManager
+  langs:
+  - csharp
+  - vb
+  name: ConfirmAll(Guid)
+  nameWithType: MemoryRuleManager.ConfirmAll(Guid)
+  fullName: Tide.Ork.Repo.MemoryRuleManager.ConfirmAll(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/MemoryRuleManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: ConfirmAll
+    path: ../../Tide.Ork/Repo/MemoryRuleManager.cs
+    startLine: 12
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task ConfirmAll(Guid id)
+    parameters:
+    - id: id
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task
+    content.vb: Public Function ConfirmAll(id As Guid) As Task
+  overload: Tide.Ork.Repo.MemoryRuleManager.ConfirmAll*
+  implements:
+  - Tide.Ork.Repo.IRuleManager.ConfirmAll(System.Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Repo.MemoryRuleManager.GetSetBy(System.Guid,System.UInt64,System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryRuleManager.GetSetBy(System.Guid,System.UInt64,System.Guid)
+  id: GetSetBy(System.Guid,System.UInt64,System.Guid)
+  parent: Tide.Ork.Repo.MemoryRuleManager
+  langs:
+  - csharp
+  - vb
+  name: GetSetBy(Guid, UInt64, Guid)
+  nameWithType: MemoryRuleManager.GetSetBy(Guid, UInt64, Guid)
+  fullName: Tide.Ork.Repo.MemoryRuleManager.GetSetBy(System.Guid, System.UInt64, System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/MemoryRuleManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetSetBy
+    path: ../../Tide.Ork/Repo/MemoryRuleManager.cs
+    startLine: 14
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId)
+    parameters:
+    - id: ownerId
+      type: System.Guid
+    - id: tag
+      type: System.UInt64
+    - id: keyId
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{System.Collections.Generic.List{Tide.Core.RuleVault}}
+    content.vb: Public Function GetSetBy(ownerId As Guid, tag As ULong, keyId As Guid) As Task(Of List(Of RuleVault))
+  overload: Tide.Ork.Repo.MemoryRuleManager.GetSetBy*
+  implements:
+  - Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid,System.UInt64,System.Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Repo.MemoryRuleManager.GetSetBy(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryRuleManager.GetSetBy(System.Guid)
+  id: GetSetBy(System.Guid)
+  parent: Tide.Ork.Repo.MemoryRuleManager
+  langs:
+  - csharp
+  - vb
+  name: GetSetBy(Guid)
+  nameWithType: MemoryRuleManager.GetSetBy(Guid)
+  fullName: Tide.Ork.Repo.MemoryRuleManager.GetSetBy(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/MemoryRuleManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetSetBy
+    path: ../../Tide.Ork/Repo/MemoryRuleManager.cs
+    startLine: 21
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<List<RuleVault>> GetSetBy(Guid ownerId)
+    parameters:
+    - id: ownerId
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{System.Collections.Generic.List{Tide.Core.RuleVault}}
+    content.vb: Public Function GetSetBy(ownerId As Guid) As Task(Of List(Of RuleVault))
+  overload: Tide.Ork.Repo.MemoryRuleManager.GetSetBy*
+  implements:
+  - Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: Tide.Ork.Repo
+  commentId: N:Tide.Ork.Repo
+  name: Tide.Ork.Repo
+  nameWithType: Tide.Ork.Repo
+  fullName: Tide.Ork.Repo
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  commentId: T:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  parent: Tide.Ork.Repo
+  definition: Tide.Ork.Repo.MemoryManagerBase`1
+  name: MemoryManagerBase<RuleVault>
+  nameWithType: MemoryManagerBase<RuleVault>
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>
+  nameWithType.vb: MemoryManagerBase(Of RuleVault)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault)
+  name.vb: MemoryManagerBase(Of RuleVault)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Repo.MemoryManagerBase
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.RuleVault
+    name: RuleVault
+    nameWithType: RuleVault
+    fullName: Tide.Core.RuleVault
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Repo.MemoryManagerBase
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.RuleVault
+    name: RuleVault
+    nameWithType: RuleVault
+    fullName: Tide.Core.RuleVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IRuleManager
+  commentId: T:Tide.Ork.Repo.IRuleManager
+  parent: Tide.Ork.Repo
+  name: IRuleManager
+  nameWithType: IRuleManager
+  fullName: Tide.Ork.Repo.IRuleManager
+- uid: Tide.Ork.Repo.IManager{Tide.Core.RuleVault}
+  commentId: T:Tide.Ork.Repo.IManager{Tide.Core.RuleVault}
+  parent: Tide.Ork.Repo
+  definition: Tide.Ork.Repo.IManager`1
+  name: IManager<RuleVault>
+  nameWithType: IManager<RuleVault>
+  fullName: Tide.Ork.Repo.IManager<Tide.Core.RuleVault>
+  nameWithType.vb: IManager(Of RuleVault)
+  fullName.vb: Tide.Ork.Repo.IManager(Of Tide.Core.RuleVault)
+  name.vb: IManager(Of RuleVault)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.RuleVault
+    name: RuleVault
+    nameWithType: RuleVault
+    fullName: Tide.Core.RuleVault
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.RuleVault
+    name: RuleVault
+    nameWithType: RuleVault
+    fullName: Tide.Core.RuleVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}._items
+  commentId: F:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}._items
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1._items
+  name: _items
+  nameWithType: MemoryManagerBase<RuleVault>._items
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>._items
+  nameWithType.vb: MemoryManagerBase(Of RuleVault)._items
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault)._items
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.Delete(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.Delete(System.Guid)
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+  name: Delete(Guid)
+  nameWithType: MemoryManagerBase<RuleVault>.Delete(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.Delete(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of RuleVault).Delete(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).Delete(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: MemoryManagerBase<RuleVault>.Delete
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: MemoryManagerBase(Of RuleVault).Delete
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.Exist(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.Exist(System.Guid)
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+  name: Exist(Guid)
+  nameWithType: MemoryManagerBase<RuleVault>.Exist(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.Exist(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of RuleVault).Exist(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).Exist(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: MemoryManagerBase<RuleVault>.Exist
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: MemoryManagerBase(Of RuleVault).Exist
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.GetAll
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.GetAll
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+  name: GetAll()
+  nameWithType: MemoryManagerBase<RuleVault>.GetAll()
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.GetAll()
+  nameWithType.vb: MemoryManagerBase(Of RuleVault).GetAll()
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).GetAll()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+    name: GetAll
+    nameWithType: MemoryManagerBase<RuleVault>.GetAll
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+    name: GetAll
+    nameWithType: MemoryManagerBase(Of RuleVault).GetAll
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.GetById(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.GetById(System.Guid)
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+  name: GetById(Guid)
+  nameWithType: MemoryManagerBase<RuleVault>.GetById(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.GetById(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of RuleVault).GetById(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).GetById(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: MemoryManagerBase<RuleVault>.GetById
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: MemoryManagerBase(Of RuleVault).GetById
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.SetOrUpdate(Tide.Core.RuleVault)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.SetOrUpdate(Tide.Core.RuleVault)
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+  name: SetOrUpdate(RuleVault)
+  nameWithType: MemoryManagerBase<RuleVault>.SetOrUpdate(RuleVault)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.SetOrUpdate(Tide.Core.RuleVault)
+  nameWithType.vb: MemoryManagerBase(Of RuleVault).SetOrUpdate(RuleVault)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).SetOrUpdate(Tide.Core.RuleVault)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: MemoryManagerBase<RuleVault>.SetOrUpdate
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.Core.RuleVault
+    name: RuleVault
+    nameWithType: RuleVault
+    fullName: Tide.Core.RuleVault
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: MemoryManagerBase(Of RuleVault).SetOrUpdate
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.Core.RuleVault
+    name: RuleVault
+    nameWithType: RuleVault
+    fullName: Tide.Core.RuleVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.GetEnumerable
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}.GetEnumerable
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.RuleVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+  name: GetEnumerable()
+  nameWithType: MemoryManagerBase<RuleVault>.GetEnumerable()
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.GetEnumerable()
+  nameWithType.vb: MemoryManagerBase(Of RuleVault).GetEnumerable()
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).GetEnumerable()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+    name: GetEnumerable
+    nameWithType: MemoryManagerBase<RuleVault>.GetEnumerable
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.RuleVault>.GetEnumerable
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+    name: GetEnumerable
+    nameWithType: MemoryManagerBase(Of RuleVault).GetEnumerable
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.RuleVault).GetEnumerable
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.Ork.Repo.MemoryManagerBase`1
+  commentId: T:Tide.Ork.Repo.MemoryManagerBase`1
+  name: MemoryManagerBase<T>
+  nameWithType: MemoryManagerBase<T>
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>
+  nameWithType.vb: MemoryManagerBase(Of T)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T)
+  name.vb: MemoryManagerBase(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Repo.MemoryManagerBase
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Repo.MemoryManagerBase
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager`1
+  commentId: T:Tide.Ork.Repo.IManager`1
+  name: IManager<T>
+  nameWithType: IManager<T>
+  fullName: Tide.Ork.Repo.IManager<T>
+  nameWithType.vb: IManager(Of T)
+  fullName.vb: Tide.Ork.Repo.IManager(Of T)
+  name.vb: IManager(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1._items
+  commentId: F:Tide.Ork.Repo.MemoryManagerBase`1._items
+  name: _items
+  nameWithType: MemoryManagerBase<T>._items
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>._items
+  nameWithType.vb: MemoryManagerBase(Of T)._items
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T)._items
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+  isExternal: true
+  name: Delete(Guid)
+  nameWithType: MemoryManagerBase<T>.Delete(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.Delete(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of T).Delete(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).Delete(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: MemoryManagerBase<T>.Delete
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: MemoryManagerBase(Of T).Delete
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+  isExternal: true
+  name: Exist(Guid)
+  nameWithType: MemoryManagerBase<T>.Exist(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.Exist(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of T).Exist(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).Exist(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: MemoryManagerBase<T>.Exist
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: MemoryManagerBase(Of T).Exist
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+  name: GetAll()
+  nameWithType: MemoryManagerBase<T>.GetAll()
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetAll()
+  nameWithType.vb: MemoryManagerBase(Of T).GetAll()
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).GetAll()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+    name: GetAll
+    nameWithType: MemoryManagerBase<T>.GetAll
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+    name: GetAll
+    nameWithType: MemoryManagerBase(Of T).GetAll
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+  isExternal: true
+  name: GetById(Guid)
+  nameWithType: MemoryManagerBase<T>.GetById(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetById(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of T).GetById(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).GetById(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: MemoryManagerBase<T>.GetById
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: MemoryManagerBase(Of T).GetById
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+  name: SetOrUpdate(T)
+  nameWithType: MemoryManagerBase<T>.SetOrUpdate(T)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.SetOrUpdate(T)
+  nameWithType.vb: MemoryManagerBase(Of T).SetOrUpdate(T)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).SetOrUpdate(T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: MemoryManagerBase<T>.SetOrUpdate
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: MemoryManagerBase(Of T).SetOrUpdate
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+  name: GetEnumerable()
+  nameWithType: MemoryManagerBase<T>.GetEnumerable()
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetEnumerable()
+  nameWithType.vb: MemoryManagerBase(Of T).GetEnumerable()
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).GetEnumerable()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+    name: GetEnumerable
+    nameWithType: MemoryManagerBase<T>.GetEnumerable
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetEnumerable
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+    name: GetEnumerable
+    nameWithType: MemoryManagerBase(Of T).GetEnumerable
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).GetEnumerable
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryRuleManager.MaxID*
+  commentId: Overload:Tide.Ork.Repo.MemoryRuleManager.MaxID
+  name: MaxID
+  nameWithType: MemoryRuleManager.MaxID
+  fullName: Tide.Ork.Repo.MemoryRuleManager.MaxID
+- uid: System.Guid
+  commentId: T:System.Guid
+  parent: System
+  isExternal: true
+  name: Guid
+  nameWithType: Guid
+  fullName: System.Guid
+- uid: Tide.Ork.Repo.MemoryRuleManager.ConfirmAll*
+  commentId: Overload:Tide.Ork.Repo.MemoryRuleManager.ConfirmAll
+  name: ConfirmAll
+  nameWithType: MemoryRuleManager.ConfirmAll
+  fullName: Tide.Ork.Repo.MemoryRuleManager.ConfirmAll
+- uid: Tide.Ork.Repo.IRuleManager.ConfirmAll(System.Guid)
+  commentId: M:Tide.Ork.Repo.IRuleManager.ConfirmAll(System.Guid)
+  parent: Tide.Ork.Repo.IRuleManager
+  isExternal: true
+  name: ConfirmAll(Guid)
+  nameWithType: IRuleManager.ConfirmAll(Guid)
+  fullName: Tide.Ork.Repo.IRuleManager.ConfirmAll(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IRuleManager.ConfirmAll(System.Guid)
+    name: ConfirmAll
+    nameWithType: IRuleManager.ConfirmAll
+    fullName: Tide.Ork.Repo.IRuleManager.ConfirmAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IRuleManager.ConfirmAll(System.Guid)
+    name: ConfirmAll
+    nameWithType: IRuleManager.ConfirmAll
+    fullName: Tide.Ork.Repo.IRuleManager.ConfirmAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task
+  commentId: T:System.Threading.Tasks.Task
+  parent: System.Threading.Tasks
+  isExternal: true
+  name: Task
+  nameWithType: Task
+  fullName: System.Threading.Tasks.Task
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+- uid: Tide.Ork.Repo.MemoryRuleManager.GetSetBy*
+  commentId: Overload:Tide.Ork.Repo.MemoryRuleManager.GetSetBy
+  name: GetSetBy
+  nameWithType: MemoryRuleManager.GetSetBy
+  fullName: Tide.Ork.Repo.MemoryRuleManager.GetSetBy
+- uid: Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid,System.UInt64,System.Guid)
+  commentId: M:Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid,System.UInt64,System.Guid)
+  parent: Tide.Ork.Repo.IRuleManager
+  isExternal: true
+  name: GetSetBy(Guid, UInt64, Guid)
+  nameWithType: IRuleManager.GetSetBy(Guid, UInt64, Guid)
+  fullName: Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid, System.UInt64, System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid,System.UInt64,System.Guid)
+    name: GetSetBy
+    nameWithType: IRuleManager.GetSetBy
+    fullName: Tide.Ork.Repo.IRuleManager.GetSetBy
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.UInt64
+    name: UInt64
+    nameWithType: UInt64
+    fullName: System.UInt64
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid,System.UInt64,System.Guid)
+    name: GetSetBy
+    nameWithType: IRuleManager.GetSetBy
+    fullName: Tide.Ork.Repo.IRuleManager.GetSetBy
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.UInt64
+    name: UInt64
+    nameWithType: UInt64
+    fullName: System.UInt64
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.UInt64
+  commentId: T:System.UInt64
+  parent: System
+  isExternal: true
+  name: UInt64
+  nameWithType: UInt64
+  fullName: System.UInt64
+- uid: System.Threading.Tasks.Task{System.Collections.Generic.List{Tide.Core.RuleVault}}
+  commentId: T:System.Threading.Tasks.Task{System.Collections.Generic.List{Tide.Core.RuleVault}}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<List<RuleVault>>
+  nameWithType: Task<List<RuleVault>>
+  fullName: System.Threading.Tasks.Task<System.Collections.Generic.List<Tide.Core.RuleVault>>
+  nameWithType.vb: Task(Of List(Of RuleVault))
+  fullName.vb: System.Threading.Tasks.Task(Of System.Collections.Generic.List(Of Tide.Core.RuleVault))
+  name.vb: Task(Of List(Of RuleVault))
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.RuleVault
+    name: RuleVault
+    nameWithType: RuleVault
+    fullName: Tide.Core.RuleVault
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.RuleVault
+    name: RuleVault
+    nameWithType: RuleVault
+    fullName: Tide.Core.RuleVault
+  - name: )
+    nameWithType: )
+    fullName: )
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid)
+  commentId: M:Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid)
+  parent: Tide.Ork.Repo.IRuleManager
+  isExternal: true
+  name: GetSetBy(Guid)
+  nameWithType: IRuleManager.GetSetBy(Guid)
+  fullName: Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid)
+    name: GetSetBy
+    nameWithType: IRuleManager.GetSetBy
+    fullName: Tide.Ork.Repo.IRuleManager.GetSetBy
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IRuleManager.GetSetBy(System.Guid)
+    name: GetSetBy
+    nameWithType: IRuleManager.GetSetBy
+    fullName: Tide.Ork.Repo.IRuleManager.GetSetBy
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )

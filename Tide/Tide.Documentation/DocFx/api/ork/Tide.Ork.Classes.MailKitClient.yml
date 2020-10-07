@@ -29,7 +29,6 @@ items:
     content: 'public class MailKitClient : IEmailClient'
     content.vb: >-
       Public Class MailKitClient
-
           Implements IEmailClient
   inheritance:
   - System.Object

@@ -22,7 +22,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Settings
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 1
+    startLine: 5
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -63,7 +63,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Instance
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 3
+    startLine: 7
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -98,7 +98,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Endpoints
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 4
+    startLine: 8
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -133,7 +133,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: EmailClient
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 5
+    startLine: 9
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models

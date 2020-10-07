@@ -4,6 +4,7 @@ items:
   commentId: N:Tide.Ork.Models
   id: Tide.Ork.Models
   children:
+  - Tide.Ork.Models.ApplyResponse
   - Tide.Ork.Models.EmailClient
   - Tide.Ork.Models.Endpoint
   - Tide.Ork.Models.Endpoints
@@ -19,6 +20,11 @@ items:
   assemblies:
   - Tide.Ork
 references:
+- uid: Tide.Ork.Models.ApplyResponse
+  commentId: T:Tide.Ork.Models.ApplyResponse
+  name: ApplyResponse
+  nameWithType: ApplyResponse
+  fullName: Tide.Ork.Models.ApplyResponse
 - uid: Tide.Ork.Models.Settings
   commentId: T:Tide.Ork.Models.Settings
   parent: Tide.Ork.Models

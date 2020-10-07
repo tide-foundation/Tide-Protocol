@@ -1,0 +1,684 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Repo.ICmkManager
+  commentId: T:Tide.Ork.Repo.ICmkManager
+  id: ICmkManager
+  parent: Tide.Ork.Repo
+  children:
+  - Tide.Ork.Repo.ICmkManager.Confirm(System.Guid)
+  - Tide.Ork.Repo.ICmkManager.GetPrism(System.Guid)
+  langs:
+  - csharp
+  - vb
+  name: ICmkManager
+  nameWithType: ICmkManager
+  fullName: Tide.Ork.Repo.ICmkManager
+  type: Interface
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/ICmkManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: ICmkManager
+    path: ../../Tide.Ork/Repo/ICmkManager.cs
+    startLine: 22
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: 'public interface ICmkManager : IManager<CmkVault>'
+    content.vb: >-
+      Public Interface ICmkManager
+          Inherits IManager(Of CmkVault)
+  inheritedMembers:
+  - Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.GetAll
+  - Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.Exist(System.Guid)
+  - Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.GetById(System.Guid)
+  - Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.SetOrUpdate(Tide.Core.CmkVault)
+  - Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.Delete(System.Guid)
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+- uid: Tide.Ork.Repo.ICmkManager.GetPrism(System.Guid)
+  commentId: M:Tide.Ork.Repo.ICmkManager.GetPrism(System.Guid)
+  id: GetPrism(System.Guid)
+  parent: Tide.Ork.Repo.ICmkManager
+  langs:
+  - csharp
+  - vb
+  name: GetPrism(Guid)
+  nameWithType: ICmkManager.GetPrism(Guid)
+  fullName: Tide.Ork.Repo.ICmkManager.GetPrism(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/ICmkManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetPrism
+    path: ../../Tide.Ork/Repo/ICmkManager.cs
+    startLine: 24
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: Task<BigInteger> GetPrism(Guid user)
+    parameters:
+    - id: user
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{System.Numerics.BigInteger}
+    content.vb: Function GetPrism(user As Guid) As Task(Of BigInteger)
+  overload: Tide.Ork.Repo.ICmkManager.GetPrism*
+- uid: Tide.Ork.Repo.ICmkManager.Confirm(System.Guid)
+  commentId: M:Tide.Ork.Repo.ICmkManager.Confirm(System.Guid)
+  id: Confirm(System.Guid)
+  parent: Tide.Ork.Repo.ICmkManager
+  langs:
+  - csharp
+  - vb
+  name: Confirm(Guid)
+  nameWithType: ICmkManager.Confirm(Guid)
+  fullName: Tide.Ork.Repo.ICmkManager.Confirm(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/ICmkManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Confirm
+    path: ../../Tide.Ork/Repo/ICmkManager.cs
+    startLine: 25
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: Task Confirm(Guid id)
+    parameters:
+    - id: id
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task
+    content.vb: Function Confirm(id As Guid) As Task
+  overload: Tide.Ork.Repo.ICmkManager.Confirm*
+references:
+- uid: Tide.Ork.Repo
+  commentId: N:Tide.Ork.Repo
+  name: Tide.Ork.Repo
+  nameWithType: Tide.Ork.Repo
+  fullName: Tide.Ork.Repo
+- uid: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.GetAll
+  commentId: M:Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.GetAll
+  parent: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}
+  definition: Tide.Ork.Repo.IManager`1.GetAll
+  name: GetAll()
+  nameWithType: IManager<CmkVault>.GetAll()
+  fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.GetAll()
+  nameWithType.vb: IManager(Of CmkVault).GetAll()
+  fullName.vb: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).GetAll()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.GetAll
+    name: GetAll
+    nameWithType: IManager<CmkVault>.GetAll
+    fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.GetAll
+    name: GetAll
+    nameWithType: IManager(Of CmkVault).GetAll
+    fullName: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.Exist(System.Guid)
+  commentId: M:Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.Exist(System.Guid)
+  parent: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}
+  definition: Tide.Ork.Repo.IManager`1.Exist(System.Guid)
+  name: Exist(Guid)
+  nameWithType: IManager<CmkVault>.Exist(Guid)
+  fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.Exist(System.Guid)
+  nameWithType.vb: IManager(Of CmkVault).Exist(Guid)
+  fullName.vb: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).Exist(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: IManager<CmkVault>.Exist
+    fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: IManager(Of CmkVault).Exist
+    fullName: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.GetById(System.Guid)
+  commentId: M:Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.GetById(System.Guid)
+  parent: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}
+  definition: Tide.Ork.Repo.IManager`1.GetById(System.Guid)
+  name: GetById(Guid)
+  nameWithType: IManager<CmkVault>.GetById(Guid)
+  fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.GetById(System.Guid)
+  nameWithType.vb: IManager(Of CmkVault).GetById(Guid)
+  fullName.vb: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).GetById(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: IManager<CmkVault>.GetById
+    fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: IManager(Of CmkVault).GetById
+    fullName: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.SetOrUpdate(Tide.Core.CmkVault)
+  commentId: M:Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.SetOrUpdate(Tide.Core.CmkVault)
+  parent: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}
+  definition: Tide.Ork.Repo.IManager`1.SetOrUpdate(`0)
+  name: SetOrUpdate(CmkVault)
+  nameWithType: IManager<CmkVault>.SetOrUpdate(CmkVault)
+  fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.SetOrUpdate(Tide.Core.CmkVault)
+  nameWithType.vb: IManager(Of CmkVault).SetOrUpdate(CmkVault)
+  fullName.vb: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).SetOrUpdate(Tide.Core.CmkVault)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: IManager<CmkVault>.SetOrUpdate
+    fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.Core.CmkVault
+    name: CmkVault
+    nameWithType: CmkVault
+    fullName: Tide.Core.CmkVault
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: IManager(Of CmkVault).SetOrUpdate
+    fullName: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.Core.CmkVault
+    name: CmkVault
+    nameWithType: CmkVault
+    fullName: Tide.Core.CmkVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.Delete(System.Guid)
+  commentId: M:Tide.Ork.Repo.IManager{Tide.Core.CmkVault}.Delete(System.Guid)
+  parent: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}
+  definition: Tide.Ork.Repo.IManager`1.Delete(System.Guid)
+  name: Delete(Guid)
+  nameWithType: IManager<CmkVault>.Delete(Guid)
+  fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.Delete(System.Guid)
+  nameWithType.vb: IManager(Of CmkVault).Delete(Guid)
+  fullName.vb: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).Delete(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: IManager<CmkVault>.Delete
+    fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>.Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: IManager(Of CmkVault).Delete
+    fullName: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault).Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager`1.GetAll
+  commentId: M:Tide.Ork.Repo.IManager`1.GetAll
+  name: GetAll()
+  nameWithType: IManager<T>.GetAll()
+  fullName: Tide.Ork.Repo.IManager<T>.GetAll()
+  nameWithType.vb: IManager(Of T).GetAll()
+  fullName.vb: Tide.Ork.Repo.IManager(Of T).GetAll()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.GetAll
+    name: GetAll
+    nameWithType: IManager<T>.GetAll
+    fullName: Tide.Ork.Repo.IManager<T>.GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.GetAll
+    name: GetAll
+    nameWithType: IManager(Of T).GetAll
+    fullName: Tide.Ork.Repo.IManager(Of T).GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager{Tide.Core.CmkVault}
+  commentId: T:Tide.Ork.Repo.IManager{Tide.Core.CmkVault}
+  parent: Tide.Ork.Repo
+  definition: Tide.Ork.Repo.IManager`1
+  name: IManager<CmkVault>
+  nameWithType: IManager<CmkVault>
+  fullName: Tide.Ork.Repo.IManager<Tide.Core.CmkVault>
+  nameWithType.vb: IManager(Of CmkVault)
+  fullName.vb: Tide.Ork.Repo.IManager(Of Tide.Core.CmkVault)
+  name.vb: IManager(Of CmkVault)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.CmkVault
+    name: CmkVault
+    nameWithType: CmkVault
+    fullName: Tide.Core.CmkVault
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.CmkVault
+    name: CmkVault
+    nameWithType: CmkVault
+    fullName: Tide.Core.CmkVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager`1.Exist(System.Guid)
+  commentId: M:Tide.Ork.Repo.IManager`1.Exist(System.Guid)
+  isExternal: true
+  name: Exist(Guid)
+  nameWithType: IManager<T>.Exist(Guid)
+  fullName: Tide.Ork.Repo.IManager<T>.Exist(System.Guid)
+  nameWithType.vb: IManager(Of T).Exist(Guid)
+  fullName.vb: Tide.Ork.Repo.IManager(Of T).Exist(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: IManager<T>.Exist
+    fullName: Tide.Ork.Repo.IManager<T>.Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: IManager(Of T).Exist
+    fullName: Tide.Ork.Repo.IManager(Of T).Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager`1.GetById(System.Guid)
+  commentId: M:Tide.Ork.Repo.IManager`1.GetById(System.Guid)
+  isExternal: true
+  name: GetById(Guid)
+  nameWithType: IManager<T>.GetById(Guid)
+  fullName: Tide.Ork.Repo.IManager<T>.GetById(System.Guid)
+  nameWithType.vb: IManager(Of T).GetById(Guid)
+  fullName.vb: Tide.Ork.Repo.IManager(Of T).GetById(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: IManager<T>.GetById
+    fullName: Tide.Ork.Repo.IManager<T>.GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: IManager(Of T).GetById
+    fullName: Tide.Ork.Repo.IManager(Of T).GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager`1.SetOrUpdate(`0)
+  commentId: M:Tide.Ork.Repo.IManager`1.SetOrUpdate(`0)
+  name: SetOrUpdate(T)
+  nameWithType: IManager<T>.SetOrUpdate(T)
+  fullName: Tide.Ork.Repo.IManager<T>.SetOrUpdate(T)
+  nameWithType.vb: IManager(Of T).SetOrUpdate(T)
+  fullName.vb: Tide.Ork.Repo.IManager(Of T).SetOrUpdate(T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: IManager<T>.SetOrUpdate
+    fullName: Tide.Ork.Repo.IManager<T>.SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: IManager(Of T).SetOrUpdate
+    fullName: Tide.Ork.Repo.IManager(Of T).SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager`1.Delete(System.Guid)
+  commentId: M:Tide.Ork.Repo.IManager`1.Delete(System.Guid)
+  isExternal: true
+  name: Delete(Guid)
+  nameWithType: IManager<T>.Delete(Guid)
+  fullName: Tide.Ork.Repo.IManager<T>.Delete(System.Guid)
+  nameWithType.vb: IManager(Of T).Delete(Guid)
+  fullName.vb: Tide.Ork.Repo.IManager(Of T).Delete(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: IManager<T>.Delete
+    fullName: Tide.Ork.Repo.IManager<T>.Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: IManager(Of T).Delete
+    fullName: Tide.Ork.Repo.IManager(Of T).Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager`1
+  commentId: T:Tide.Ork.Repo.IManager`1
+  name: IManager<T>
+  nameWithType: IManager<T>
+  fullName: Tide.Ork.Repo.IManager<T>
+  nameWithType.vb: IManager(Of T)
+  fullName.vb: Tide.Ork.Repo.IManager(Of T)
+  name.vb: IManager(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.ICmkManager.GetPrism*
+  commentId: Overload:Tide.Ork.Repo.ICmkManager.GetPrism
+  name: GetPrism
+  nameWithType: ICmkManager.GetPrism
+  fullName: Tide.Ork.Repo.ICmkManager.GetPrism
+- uid: System.Guid
+  commentId: T:System.Guid
+  parent: System
+  isExternal: true
+  name: Guid
+  nameWithType: Guid
+  fullName: System.Guid
+- uid: System.Threading.Tasks.Task{System.Numerics.BigInteger}
+  commentId: T:System.Threading.Tasks.Task{System.Numerics.BigInteger}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<BigInteger>
+  nameWithType: Task<BigInteger>
+  fullName: System.Threading.Tasks.Task<System.Numerics.BigInteger>
+  nameWithType.vb: Task(Of BigInteger)
+  fullName.vb: System.Threading.Tasks.Task(Of System.Numerics.BigInteger)
+  name.vb: Task(Of BigInteger)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Numerics.BigInteger
+    name: BigInteger
+    nameWithType: BigInteger
+    fullName: System.Numerics.BigInteger
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Numerics.BigInteger
+    name: BigInteger
+    nameWithType: BigInteger
+    fullName: System.Numerics.BigInteger
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+- uid: Tide.Ork.Repo.ICmkManager.Confirm*
+  commentId: Overload:Tide.Ork.Repo.ICmkManager.Confirm
+  name: Confirm
+  nameWithType: ICmkManager.Confirm
+  fullName: Tide.Ork.Repo.ICmkManager.Confirm
+- uid: System.Threading.Tasks.Task
+  commentId: T:System.Threading.Tasks.Task
+  parent: System.Threading.Tasks
+  isExternal: true
+  name: Task
+  nameWithType: Task
+  fullName: System.Threading.Tasks.Task

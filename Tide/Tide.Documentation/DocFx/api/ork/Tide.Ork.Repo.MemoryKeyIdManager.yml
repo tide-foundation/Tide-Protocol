@@ -1,0 +1,967 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Repo.MemoryKeyIdManager
+  commentId: T:Tide.Ork.Repo.MemoryKeyIdManager
+  id: MemoryKeyIdManager
+  parent: Tide.Ork.Repo
+  children: []
+  langs:
+  - csharp
+  - vb
+  name: MemoryKeyIdManager
+  nameWithType: MemoryKeyIdManager
+  fullName: Tide.Ork.Repo.MemoryKeyIdManager
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/MemoryKeyIdManager.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: MemoryKeyIdManager
+    path: ../../Tide.Ork/Repo/MemoryKeyIdManager.cs
+    startLine: 5
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: 'public class MemoryKeyIdManager : MemoryManagerBase<KeyIdVault>, IManager<KeyIdVault>, IKeyIdManager'
+    content.vb: >-
+      Public Class MemoryKeyIdManager
+          Inherits MemoryManagerBase(Of KeyIdVault)
+          Implements IManager(Of KeyIdVault), IKeyIdManager
+  inheritance:
+  - System.Object
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  implements:
+  - Tide.Ork.Repo.IManager{Tide.Core.KeyIdVault}
+  - Tide.Ork.Repo.IKeyIdManager
+  inheritedMembers:
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}._items
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.Delete(System.Guid)
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.Exist(System.Guid)
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.GetAll
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.GetById(System.Guid)
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.SetOrUpdate(Tide.Core.KeyIdVault)
+  - Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.GetEnumerable
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+references:
+- uid: Tide.Ork.Repo
+  commentId: N:Tide.Ork.Repo
+  name: Tide.Ork.Repo
+  nameWithType: Tide.Ork.Repo
+  fullName: Tide.Ork.Repo
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  commentId: T:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  parent: Tide.Ork.Repo
+  definition: Tide.Ork.Repo.MemoryManagerBase`1
+  name: MemoryManagerBase<KeyIdVault>
+  nameWithType: MemoryManagerBase<KeyIdVault>
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>
+  nameWithType.vb: MemoryManagerBase(Of KeyIdVault)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault)
+  name.vb: MemoryManagerBase(Of KeyIdVault)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Repo.MemoryManagerBase
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.KeyIdVault
+    name: KeyIdVault
+    nameWithType: KeyIdVault
+    fullName: Tide.Core.KeyIdVault
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Repo.MemoryManagerBase
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.KeyIdVault
+    name: KeyIdVault
+    nameWithType: KeyIdVault
+    fullName: Tide.Core.KeyIdVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager{Tide.Core.KeyIdVault}
+  commentId: T:Tide.Ork.Repo.IManager{Tide.Core.KeyIdVault}
+  parent: Tide.Ork.Repo
+  definition: Tide.Ork.Repo.IManager`1
+  name: IManager<KeyIdVault>
+  nameWithType: IManager<KeyIdVault>
+  fullName: Tide.Ork.Repo.IManager<Tide.Core.KeyIdVault>
+  nameWithType.vb: IManager(Of KeyIdVault)
+  fullName.vb: Tide.Ork.Repo.IManager(Of Tide.Core.KeyIdVault)
+  name.vb: IManager(Of KeyIdVault)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.KeyIdVault
+    name: KeyIdVault
+    nameWithType: KeyIdVault
+    fullName: Tide.Core.KeyIdVault
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.KeyIdVault
+    name: KeyIdVault
+    nameWithType: KeyIdVault
+    fullName: Tide.Core.KeyIdVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IKeyIdManager
+  commentId: T:Tide.Ork.Repo.IKeyIdManager
+  parent: Tide.Ork.Repo
+  name: IKeyIdManager
+  nameWithType: IKeyIdManager
+  fullName: Tide.Ork.Repo.IKeyIdManager
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}._items
+  commentId: F:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}._items
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1._items
+  name: _items
+  nameWithType: MemoryManagerBase<KeyIdVault>._items
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>._items
+  nameWithType.vb: MemoryManagerBase(Of KeyIdVault)._items
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault)._items
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.Delete(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.Delete(System.Guid)
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+  name: Delete(Guid)
+  nameWithType: MemoryManagerBase<KeyIdVault>.Delete(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.Delete(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of KeyIdVault).Delete(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).Delete(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: MemoryManagerBase<KeyIdVault>.Delete
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: MemoryManagerBase(Of KeyIdVault).Delete
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.Exist(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.Exist(System.Guid)
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+  name: Exist(Guid)
+  nameWithType: MemoryManagerBase<KeyIdVault>.Exist(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.Exist(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of KeyIdVault).Exist(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).Exist(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: MemoryManagerBase<KeyIdVault>.Exist
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: MemoryManagerBase(Of KeyIdVault).Exist
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.GetAll
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.GetAll
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+  name: GetAll()
+  nameWithType: MemoryManagerBase<KeyIdVault>.GetAll()
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.GetAll()
+  nameWithType.vb: MemoryManagerBase(Of KeyIdVault).GetAll()
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).GetAll()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+    name: GetAll
+    nameWithType: MemoryManagerBase<KeyIdVault>.GetAll
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+    name: GetAll
+    nameWithType: MemoryManagerBase(Of KeyIdVault).GetAll
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.GetById(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.GetById(System.Guid)
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+  name: GetById(Guid)
+  nameWithType: MemoryManagerBase<KeyIdVault>.GetById(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.GetById(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of KeyIdVault).GetById(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).GetById(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: MemoryManagerBase<KeyIdVault>.GetById
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: MemoryManagerBase(Of KeyIdVault).GetById
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.SetOrUpdate(Tide.Core.KeyIdVault)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.SetOrUpdate(Tide.Core.KeyIdVault)
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+  name: SetOrUpdate(KeyIdVault)
+  nameWithType: MemoryManagerBase<KeyIdVault>.SetOrUpdate(KeyIdVault)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.SetOrUpdate(Tide.Core.KeyIdVault)
+  nameWithType.vb: MemoryManagerBase(Of KeyIdVault).SetOrUpdate(KeyIdVault)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).SetOrUpdate(Tide.Core.KeyIdVault)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: MemoryManagerBase<KeyIdVault>.SetOrUpdate
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.Core.KeyIdVault
+    name: KeyIdVault
+    nameWithType: KeyIdVault
+    fullName: Tide.Core.KeyIdVault
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: MemoryManagerBase(Of KeyIdVault).SetOrUpdate
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: Tide.Core.KeyIdVault
+    name: KeyIdVault
+    nameWithType: KeyIdVault
+    fullName: Tide.Core.KeyIdVault
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.GetEnumerable
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}.GetEnumerable
+  parent: Tide.Ork.Repo.MemoryManagerBase{Tide.Core.KeyIdVault}
+  definition: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+  name: GetEnumerable()
+  nameWithType: MemoryManagerBase<KeyIdVault>.GetEnumerable()
+  fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.GetEnumerable()
+  nameWithType.vb: MemoryManagerBase(Of KeyIdVault).GetEnumerable()
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).GetEnumerable()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+    name: GetEnumerable
+    nameWithType: MemoryManagerBase<KeyIdVault>.GetEnumerable
+    fullName: Tide.Ork.Repo.MemoryManagerBase<Tide.Core.KeyIdVault>.GetEnumerable
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+    name: GetEnumerable
+    nameWithType: MemoryManagerBase(Of KeyIdVault).GetEnumerable
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of Tide.Core.KeyIdVault).GetEnumerable
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.Ork.Repo.MemoryManagerBase`1
+  commentId: T:Tide.Ork.Repo.MemoryManagerBase`1
+  name: MemoryManagerBase<T>
+  nameWithType: MemoryManagerBase<T>
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>
+  nameWithType.vb: MemoryManagerBase(Of T)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T)
+  name.vb: MemoryManagerBase(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Repo.MemoryManagerBase
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1
+    name: MemoryManagerBase
+    nameWithType: MemoryManagerBase
+    fullName: Tide.Ork.Repo.MemoryManagerBase
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.IManager`1
+  commentId: T:Tide.Ork.Repo.IManager`1
+  name: IManager<T>
+  nameWithType: IManager<T>
+  fullName: Tide.Ork.Repo.IManager<T>
+  nameWithType.vb: IManager(Of T)
+  fullName.vb: Tide.Ork.Repo.IManager(Of T)
+  name.vb: IManager(Of T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Tide.Ork.Repo.IManager`1
+    name: IManager
+    nameWithType: IManager
+    fullName: Tide.Ork.Repo.IManager
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1._items
+  commentId: F:Tide.Ork.Repo.MemoryManagerBase`1._items
+  name: _items
+  nameWithType: MemoryManagerBase<T>._items
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>._items
+  nameWithType.vb: MemoryManagerBase(Of T)._items
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T)._items
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+  isExternal: true
+  name: Delete(Guid)
+  nameWithType: MemoryManagerBase<T>.Delete(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.Delete(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of T).Delete(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).Delete(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: MemoryManagerBase<T>.Delete
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Delete(System.Guid)
+    name: Delete
+    nameWithType: MemoryManagerBase(Of T).Delete
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).Delete
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+  isExternal: true
+  name: Exist(Guid)
+  nameWithType: MemoryManagerBase<T>.Exist(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.Exist(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of T).Exist(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).Exist(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: MemoryManagerBase<T>.Exist
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.Exist(System.Guid)
+    name: Exist
+    nameWithType: MemoryManagerBase(Of T).Exist
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).Exist
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+  name: GetAll()
+  nameWithType: MemoryManagerBase<T>.GetAll()
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetAll()
+  nameWithType.vb: MemoryManagerBase(Of T).GetAll()
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).GetAll()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+    name: GetAll
+    nameWithType: MemoryManagerBase<T>.GetAll
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetAll
+    name: GetAll
+    nameWithType: MemoryManagerBase(Of T).GetAll
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).GetAll
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+  isExternal: true
+  name: GetById(Guid)
+  nameWithType: MemoryManagerBase<T>.GetById(Guid)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetById(System.Guid)
+  nameWithType.vb: MemoryManagerBase(Of T).GetById(Guid)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).GetById(System.Guid)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: MemoryManagerBase<T>.GetById
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetById(System.Guid)
+    name: GetById
+    nameWithType: MemoryManagerBase(Of T).GetById
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).GetById
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Guid
+    name: Guid
+    nameWithType: Guid
+    fullName: System.Guid
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+  name: SetOrUpdate(T)
+  nameWithType: MemoryManagerBase<T>.SetOrUpdate(T)
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.SetOrUpdate(T)
+  nameWithType.vb: MemoryManagerBase(Of T).SetOrUpdate(T)
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).SetOrUpdate(T)
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: MemoryManagerBase<T>.SetOrUpdate
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.SetOrUpdate(`0)
+    name: SetOrUpdate
+    nameWithType: MemoryManagerBase(Of T).SetOrUpdate
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).SetOrUpdate
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+  commentId: M:Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+  name: GetEnumerable()
+  nameWithType: MemoryManagerBase<T>.GetEnumerable()
+  fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetEnumerable()
+  nameWithType.vb: MemoryManagerBase(Of T).GetEnumerable()
+  fullName.vb: Tide.Ork.Repo.MemoryManagerBase(Of T).GetEnumerable()
+  spec.csharp:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+    name: GetEnumerable
+    nameWithType: MemoryManagerBase<T>.GetEnumerable
+    fullName: Tide.Ork.Repo.MemoryManagerBase<T>.GetEnumerable
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: Tide.Ork.Repo.MemoryManagerBase`1.GetEnumerable
+    name: GetEnumerable
+    nameWithType: MemoryManagerBase(Of T).GetEnumerable
+    fullName: Tide.Ork.Repo.MemoryManagerBase(Of T).GetEnumerable
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )

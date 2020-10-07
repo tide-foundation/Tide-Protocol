@@ -1,0 +1,501 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.VendorSdk.Classes.VendorConfig
+  commentId: T:Tide.VendorSdk.Classes.VendorConfig
+  id: VendorConfig
+  parent: Tide.VendorSdk.Classes
+  children:
+  - Tide.VendorSdk.Classes.VendorConfig.GetSessionKey
+  - Tide.VendorSdk.Classes.VendorConfig.PrivateKey
+  - Tide.VendorSdk.Classes.VendorConfig.SecretKey
+  langs:
+  - csharp
+  - vb
+  name: VendorConfig
+  nameWithType: VendorConfig
+  fullName: Tide.VendorSdk.Classes.VendorConfig
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/VendorConfig.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: VendorConfig
+    path: ../../Tide.VendorSdk/Classes/VendorConfig.cs
+    startLine: 21
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public class VendorConfig
+    content.vb: Public Class VendorConfig
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Tide.VendorSdk.Classes.VendorConfig.PrivateKey
+  commentId: P:Tide.VendorSdk.Classes.VendorConfig.PrivateKey
+  id: PrivateKey
+  parent: Tide.VendorSdk.Classes.VendorConfig
+  langs:
+  - csharp
+  - vb
+  name: PrivateKey
+  nameWithType: VendorConfig.PrivateKey
+  fullName: Tide.VendorSdk.Classes.VendorConfig.PrivateKey
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/VendorConfig.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: PrivateKey
+    path: ../../Tide.VendorSdk/Classes/VendorConfig.cs
+    startLine: 23
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public C25519Key PrivateKey { get; set; }
+    parameters: []
+    return:
+      type: Tide.Encryption.Ecc.C25519Key
+    content.vb: Public Property PrivateKey As C25519Key
+  overload: Tide.VendorSdk.Classes.VendorConfig.PrivateKey*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.VendorConfig.SecretKey
+  commentId: P:Tide.VendorSdk.Classes.VendorConfig.SecretKey
+  id: SecretKey
+  parent: Tide.VendorSdk.Classes.VendorConfig
+  langs:
+  - csharp
+  - vb
+  name: SecretKey
+  nameWithType: VendorConfig.SecretKey
+  fullName: Tide.VendorSdk.Classes.VendorConfig.SecretKey
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/VendorConfig.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SecretKey
+    path: ../../Tide.VendorSdk/Classes/VendorConfig.cs
+    startLine: 24
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public AesKey SecretKey { get; set; }
+    parameters: []
+    return:
+      type: Tide.Encryption.AesMAC.AesKey
+    content.vb: Public Property SecretKey As AesKey
+  overload: Tide.VendorSdk.Classes.VendorConfig.SecretKey*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.Classes.VendorConfig.GetSessionKey
+  commentId: M:Tide.VendorSdk.Classes.VendorConfig.GetSessionKey
+  id: GetSessionKey
+  parent: Tide.VendorSdk.Classes.VendorConfig
+  langs:
+  - csharp
+  - vb
+  name: GetSessionKey()
+  nameWithType: VendorConfig.GetSessionKey()
+  fullName: Tide.VendorSdk.Classes.VendorConfig.GetSessionKey()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/VendorConfig.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetSessionKey
+    path: ../../Tide.VendorSdk/Classes/VendorConfig.cs
+    startLine: 26
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public SecurityKey GetSessionKey()
+    return:
+      type: Microsoft.IdentityModel.Tokens.SecurityKey
+    content.vb: Public Function GetSessionKey As SecurityKey
+  overload: Tide.VendorSdk.Classes.VendorConfig.GetSessionKey*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: Tide.VendorSdk.Classes
+  commentId: N:Tide.VendorSdk.Classes
+  name: Tide.VendorSdk.Classes
+  nameWithType: Tide.VendorSdk.Classes
+  fullName: Tide.VendorSdk.Classes
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.VendorSdk.Classes.VendorConfig.PrivateKey*
+  commentId: Overload:Tide.VendorSdk.Classes.VendorConfig.PrivateKey
+  name: PrivateKey
+  nameWithType: VendorConfig.PrivateKey
+  fullName: Tide.VendorSdk.Classes.VendorConfig.PrivateKey
+- uid: Tide.Encryption.Ecc.C25519Key
+  commentId: T:Tide.Encryption.Ecc.C25519Key
+  parent: Tide.Encryption.Ecc
+  isExternal: true
+  name: C25519Key
+  nameWithType: C25519Key
+  fullName: Tide.Encryption.Ecc.C25519Key
+- uid: Tide.Encryption.Ecc
+  commentId: N:Tide.Encryption.Ecc
+  isExternal: true
+  name: Tide.Encryption.Ecc
+  nameWithType: Tide.Encryption.Ecc
+  fullName: Tide.Encryption.Ecc
+- uid: Tide.VendorSdk.Classes.VendorConfig.SecretKey*
+  commentId: Overload:Tide.VendorSdk.Classes.VendorConfig.SecretKey
+  name: SecretKey
+  nameWithType: VendorConfig.SecretKey
+  fullName: Tide.VendorSdk.Classes.VendorConfig.SecretKey
+- uid: Tide.Encryption.AesMAC.AesKey
+  commentId: T:Tide.Encryption.AesMAC.AesKey
+  parent: Tide.Encryption.AesMAC
+  isExternal: true
+  name: AesKey
+  nameWithType: AesKey
+  fullName: Tide.Encryption.AesMAC.AesKey
+- uid: Tide.Encryption.AesMAC
+  commentId: N:Tide.Encryption.AesMAC
+  isExternal: true
+  name: Tide.Encryption.AesMAC
+  nameWithType: Tide.Encryption.AesMAC
+  fullName: Tide.Encryption.AesMAC
+- uid: Tide.VendorSdk.Classes.VendorConfig.GetSessionKey*
+  commentId: Overload:Tide.VendorSdk.Classes.VendorConfig.GetSessionKey
+  name: GetSessionKey
+  nameWithType: VendorConfig.GetSessionKey
+  fullName: Tide.VendorSdk.Classes.VendorConfig.GetSessionKey
+- uid: Microsoft.IdentityModel.Tokens.SecurityKey
+  commentId: T:Microsoft.IdentityModel.Tokens.SecurityKey
+  parent: Microsoft.IdentityModel.Tokens
+  isExternal: true
+  name: SecurityKey
+  nameWithType: SecurityKey
+  fullName: Microsoft.IdentityModel.Tokens.SecurityKey
+- uid: Microsoft.IdentityModel.Tokens
+  commentId: N:Microsoft.IdentityModel.Tokens
+  isExternal: true
+  name: Microsoft.IdentityModel.Tokens
+  nameWithType: Microsoft.IdentityModel.Tokens
+  fullName: Microsoft.IdentityModel.Tokens

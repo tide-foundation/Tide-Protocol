@@ -1,0 +1,52 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Classes.Rules
+  commentId: N:Tide.Ork.Classes.Rules
+  id: Tide.Ork.Classes.Rules
+  children:
+  - Tide.Ork.Classes.Rules.Check
+  - Tide.Ork.Classes.Rules.ContextInfo
+  - Tide.Ork.Classes.Rules.DateInfo
+  - Tide.Ork.Classes.Rules.OperChecker
+  - Tide.Ork.Classes.Rules.PropChecker
+  - Tide.Ork.Classes.Rules.RuleConditionEval
+  langs:
+  - csharp
+  - vb
+  name: Tide.Ork.Classes.Rules
+  nameWithType: Tide.Ork.Classes.Rules
+  fullName: Tide.Ork.Classes.Rules
+  type: Namespace
+  assemblies:
+  - Tide.Ork
+references:
+- uid: Tide.Ork.Classes.Rules.Check
+  commentId: T:Tide.Ork.Classes.Rules.Check
+  name: Check
+  nameWithType: Check
+  fullName: Tide.Ork.Classes.Rules.Check
+- uid: Tide.Ork.Classes.Rules.ContextInfo
+  commentId: T:Tide.Ork.Classes.Rules.ContextInfo
+  name: ContextInfo
+  nameWithType: ContextInfo
+  fullName: Tide.Ork.Classes.Rules.ContextInfo
+- uid: Tide.Ork.Classes.Rules.DateInfo
+  commentId: T:Tide.Ork.Classes.Rules.DateInfo
+  name: DateInfo
+  nameWithType: DateInfo
+  fullName: Tide.Ork.Classes.Rules.DateInfo
+- uid: Tide.Ork.Classes.Rules.RuleConditionEval
+  commentId: T:Tide.Ork.Classes.Rules.RuleConditionEval
+  name: RuleConditionEval
+  nameWithType: RuleConditionEval
+  fullName: Tide.Ork.Classes.Rules.RuleConditionEval
+- uid: Tide.Ork.Classes.Rules.OperChecker
+  commentId: T:Tide.Ork.Classes.Rules.OperChecker
+  name: OperChecker
+  nameWithType: OperChecker
+  fullName: Tide.Ork.Classes.Rules.OperChecker
+- uid: Tide.Ork.Classes.Rules.PropChecker
+  commentId: T:Tide.Ork.Classes.Rules.PropChecker
+  name: PropChecker
+  nameWithType: PropChecker
+  fullName: Tide.Ork.Classes.Rules.PropChecker

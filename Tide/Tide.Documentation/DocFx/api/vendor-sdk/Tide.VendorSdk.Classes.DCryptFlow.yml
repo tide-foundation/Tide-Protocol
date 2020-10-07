@@ -1,0 +1,1043 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.VendorSdk.Classes.DCryptFlow
+  commentId: T:Tide.VendorSdk.Classes.DCryptFlow
+  id: DCryptFlow
+  parent: Tide.VendorSdk.Classes
+  children:
+  - Tide.VendorSdk.Classes.DCryptFlow.#ctor(System.Guid,System.Collections.Generic.IEnumerable{System.Uri})
+  - Tide.VendorSdk.Classes.DCryptFlow.Clients
+  - Tide.VendorSdk.Classes.DCryptFlow.Decrypt(System.Byte[],Tide.Encryption.Ecc.C25519Key)
+  - Tide.VendorSdk.Classes.DCryptFlow.SignUp(Tide.Encryption.AesMAC.AesKey,System.Int32,System.Guid,System.Collections.Generic.List{System.Byte[]})
+  - Tide.VendorSdk.Classes.DCryptFlow.UserId
+  - Tide.VendorSdk.Classes.DCryptFlow.VuId
+  langs:
+  - csharp
+  - vb
+  name: DCryptFlow
+  nameWithType: DCryptFlow
+  fullName: Tide.VendorSdk.Classes.DCryptFlow
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/DCryptFlow.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: DCryptFlow
+    path: ../../Tide.VendorSdk/Classes/DCryptFlow.cs
+    startLine: 10
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public class DCryptFlow
+    content.vb: Public Class DCryptFlow
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: Tide.VendorSdk.Classes.DCryptFlow.Clients
+  commentId: P:Tide.VendorSdk.Classes.DCryptFlow.Clients
+  id: Clients
+  parent: Tide.VendorSdk.Classes.DCryptFlow
+  langs:
+  - csharp
+  - vb
+  name: Clients
+  nameWithType: DCryptFlow.Clients
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.Clients
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/DCryptFlow.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Clients
+    path: ../../Tide.VendorSdk/Classes/DCryptFlow.cs
+    startLine: 14
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public List<CvkClient> Clients { get; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.List{Tide.VendorSdk.Classes.CvkClient}
+    content.vb: Public ReadOnly Property Clients As List(Of CvkClient)
+  overload: Tide.VendorSdk.Classes.DCryptFlow.Clients*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: Tide.VendorSdk.Classes.DCryptFlow.UserId
+  commentId: P:Tide.VendorSdk.Classes.DCryptFlow.UserId
+  id: UserId
+  parent: Tide.VendorSdk.Classes.DCryptFlow
+  langs:
+  - csharp
+  - vb
+  name: UserId
+  nameWithType: DCryptFlow.UserId
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.UserId
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/DCryptFlow.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: UserId
+    path: ../../Tide.VendorSdk/Classes/DCryptFlow.cs
+    startLine: 15
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public BigInteger UserId { get; }
+    parameters: []
+    return:
+      type: System.Numerics.BigInteger
+    content.vb: Public ReadOnly Property UserId As BigInteger
+  overload: Tide.VendorSdk.Classes.DCryptFlow.UserId*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: Tide.VendorSdk.Classes.DCryptFlow.VuId
+  commentId: P:Tide.VendorSdk.Classes.DCryptFlow.VuId
+  id: VuId
+  parent: Tide.VendorSdk.Classes.DCryptFlow
+  langs:
+  - csharp
+  - vb
+  name: VuId
+  nameWithType: DCryptFlow.VuId
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.VuId
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/DCryptFlow.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: VuId
+    path: ../../Tide.VendorSdk/Classes/DCryptFlow.cs
+    startLine: 16
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Guid VuId { get; }
+    parameters: []
+    return:
+      type: System.Guid
+    content.vb: Public ReadOnly Property VuId As Guid
+  overload: Tide.VendorSdk.Classes.DCryptFlow.VuId*
+  modifiers.csharp:
+  - public
+  - get
+  modifiers.vb:
+  - Public
+  - ReadOnly
+- uid: Tide.VendorSdk.Classes.DCryptFlow.#ctor(System.Guid,System.Collections.Generic.IEnumerable{System.Uri})
+  commentId: M:Tide.VendorSdk.Classes.DCryptFlow.#ctor(System.Guid,System.Collections.Generic.IEnumerable{System.Uri})
+  id: '#ctor(System.Guid,System.Collections.Generic.IEnumerable{System.Uri})'
+  parent: Tide.VendorSdk.Classes.DCryptFlow
+  langs:
+  - csharp
+  - vb
+  name: DCryptFlow(Guid, IEnumerable<Uri>)
+  nameWithType: DCryptFlow.DCryptFlow(Guid, IEnumerable<Uri>)
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.DCryptFlow(System.Guid, System.Collections.Generic.IEnumerable<System.Uri>)
+  type: Constructor
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/DCryptFlow.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: .ctor
+    path: ../../Tide.VendorSdk/Classes/DCryptFlow.cs
+    startLine: 18
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public DCryptFlow(Guid guid, IEnumerable<Uri> uris)
+    parameters:
+    - id: guid
+      type: System.Guid
+    - id: uris
+      type: System.Collections.Generic.IEnumerable{System.Uri}
+    content.vb: Public Sub New(guid As Guid, uris As IEnumerable(Of Uri))
+  overload: Tide.VendorSdk.Classes.DCryptFlow.#ctor*
+  nameWithType.vb: DCryptFlow.DCryptFlow(Guid, IEnumerable(Of Uri))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.VendorSdk.Classes.DCryptFlow.DCryptFlow(System.Guid, System.Collections.Generic.IEnumerable(Of System.Uri))
+  name.vb: DCryptFlow(Guid, IEnumerable(Of Uri))
+- uid: Tide.VendorSdk.Classes.DCryptFlow.SignUp(Tide.Encryption.AesMAC.AesKey,System.Int32,System.Guid,System.Collections.Generic.List{System.Byte[]})
+  commentId: M:Tide.VendorSdk.Classes.DCryptFlow.SignUp(Tide.Encryption.AesMAC.AesKey,System.Int32,System.Guid,System.Collections.Generic.List{System.Byte[]})
+  id: SignUp(Tide.Encryption.AesMAC.AesKey,System.Int32,System.Guid,System.Collections.Generic.List{System.Byte[]})
+  parent: Tide.VendorSdk.Classes.DCryptFlow
+  langs:
+  - csharp
+  - vb
+  name: SignUp(AesKey, Int32, Guid, List<Byte[]>)
+  nameWithType: DCryptFlow.SignUp(AesKey, Int32, Guid, List<Byte[]>)
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.SignUp(Tide.Encryption.AesMAC.AesKey, System.Int32, System.Guid, System.Collections.Generic.List<System.Byte[]>)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/DCryptFlow.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SignUp
+    path: ../../Tide.VendorSdk/Classes/DCryptFlow.cs
+    startLine: 24
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<C25519Key> SignUp(AesKey cmkAuth, int threshold, Guid keyId, List<byte[]> signatures)
+    parameters:
+    - id: cmkAuth
+      type: Tide.Encryption.AesMAC.AesKey
+    - id: threshold
+      type: System.Int32
+    - id: keyId
+      type: System.Guid
+    - id: signatures
+      type: System.Collections.Generic.List{System.Byte[]}
+    return:
+      type: System.Threading.Tasks.Task{Tide.Encryption.Ecc.C25519Key}
+    content.vb: Public Function SignUp(cmkAuth As AesKey, threshold As Integer, keyId As Guid, signatures As List(Of Byte())) As Task(Of C25519Key)
+  overload: Tide.VendorSdk.Classes.DCryptFlow.SignUp*
+  nameWithType.vb: DCryptFlow.SignUp(AesKey, Int32, Guid, List(Of Byte()))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.VendorSdk.Classes.DCryptFlow.SignUp(Tide.Encryption.AesMAC.AesKey, System.Int32, System.Guid, System.Collections.Generic.List(Of System.Byte()))
+  name.vb: SignUp(AesKey, Int32, Guid, List(Of Byte()))
+- uid: Tide.VendorSdk.Classes.DCryptFlow.Decrypt(System.Byte[],Tide.Encryption.Ecc.C25519Key)
+  commentId: M:Tide.VendorSdk.Classes.DCryptFlow.Decrypt(System.Byte[],Tide.Encryption.Ecc.C25519Key)
+  id: Decrypt(System.Byte[],Tide.Encryption.Ecc.C25519Key)
+  parent: Tide.VendorSdk.Classes.DCryptFlow
+  langs:
+  - csharp
+  - vb
+  name: Decrypt(Byte[], C25519Key)
+  nameWithType: DCryptFlow.Decrypt(Byte[], C25519Key)
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.Decrypt(System.Byte[], Tide.Encryption.Ecc.C25519Key)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/Classes/DCryptFlow.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Decrypt
+    path: ../../Tide.VendorSdk/Classes/DCryptFlow.cs
+    startLine: 40
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
+  syntax:
+    content: public Task<byte[]> Decrypt(byte[] cipher, C25519Key prv)
+    parameters:
+    - id: cipher
+      type: System.Byte[]
+    - id: prv
+      type: Tide.Encryption.Ecc.C25519Key
+    return:
+      type: System.Threading.Tasks.Task{System.Byte[]}
+    content.vb: Public Function Decrypt(cipher As Byte(), prv As C25519Key) As Task(Of Byte())
+  overload: Tide.VendorSdk.Classes.DCryptFlow.Decrypt*
+  nameWithType.vb: DCryptFlow.Decrypt(Byte(), C25519Key)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.VendorSdk.Classes.DCryptFlow.Decrypt(System.Byte(), Tide.Encryption.Ecc.C25519Key)
+  name.vb: Decrypt(Byte(), C25519Key)
+references:
+- uid: Tide.VendorSdk.Classes
+  commentId: N:Tide.VendorSdk.Classes
+  name: Tide.VendorSdk.Classes
+  nameWithType: Tide.VendorSdk.Classes
+  fullName: Tide.VendorSdk.Classes
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.VendorSdk.Classes.DCryptFlow.Clients*
+  commentId: Overload:Tide.VendorSdk.Classes.DCryptFlow.Clients
+  name: Clients
+  nameWithType: DCryptFlow.Clients
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.Clients
+- uid: System.Collections.Generic.List{Tide.VendorSdk.Classes.CvkClient}
+  commentId: T:System.Collections.Generic.List{Tide.VendorSdk.Classes.CvkClient}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<CvkClient>
+  nameWithType: List<CvkClient>
+  fullName: System.Collections.Generic.List<Tide.VendorSdk.Classes.CvkClient>
+  nameWithType.vb: List(Of CvkClient)
+  fullName.vb: System.Collections.Generic.List(Of Tide.VendorSdk.Classes.CvkClient)
+  name.vb: List(Of CvkClient)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.VendorSdk.Classes.CvkClient
+    name: CvkClient
+    nameWithType: CvkClient
+    fullName: Tide.VendorSdk.Classes.CvkClient
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.VendorSdk.Classes.CvkClient
+    name: CvkClient
+    nameWithType: CvkClient
+    fullName: Tide.VendorSdk.Classes.CvkClient
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: Tide.VendorSdk.Classes.DCryptFlow.UserId*
+  commentId: Overload:Tide.VendorSdk.Classes.DCryptFlow.UserId
+  name: UserId
+  nameWithType: DCryptFlow.UserId
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.UserId
+- uid: System.Numerics.BigInteger
+  commentId: T:System.Numerics.BigInteger
+  parent: System.Numerics
+  isExternal: true
+  name: BigInteger
+  nameWithType: BigInteger
+  fullName: System.Numerics.BigInteger
+- uid: System.Numerics
+  commentId: N:System.Numerics
+  isExternal: true
+  name: System.Numerics
+  nameWithType: System.Numerics
+  fullName: System.Numerics
+- uid: Tide.VendorSdk.Classes.DCryptFlow.VuId*
+  commentId: Overload:Tide.VendorSdk.Classes.DCryptFlow.VuId
+  name: VuId
+  nameWithType: DCryptFlow.VuId
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.VuId
+- uid: System.Guid
+  commentId: T:System.Guid
+  parent: System
+  isExternal: true
+  name: Guid
+  nameWithType: Guid
+  fullName: System.Guid
+- uid: Tide.VendorSdk.Classes.DCryptFlow.#ctor*
+  commentId: Overload:Tide.VendorSdk.Classes.DCryptFlow.#ctor
+  name: DCryptFlow
+  nameWithType: DCryptFlow.DCryptFlow
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.DCryptFlow
+- uid: System.Collections.Generic.IEnumerable{System.Uri}
+  commentId: T:System.Collections.Generic.IEnumerable{System.Uri}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<Uri>
+  nameWithType: IEnumerable<Uri>
+  fullName: System.Collections.Generic.IEnumerable<System.Uri>
+  nameWithType.vb: IEnumerable(Of Uri)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of System.Uri)
+  name.vb: IEnumerable(Of Uri)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Uri
+    name: Uri
+    nameWithType: Uri
+    fullName: System.Uri
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Uri
+    name: Uri
+    nameWithType: Uri
+    fullName: System.Uri
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.VendorSdk.Classes.DCryptFlow.SignUp*
+  commentId: Overload:Tide.VendorSdk.Classes.DCryptFlow.SignUp
+  name: SignUp
+  nameWithType: DCryptFlow.SignUp
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.SignUp
+- uid: Tide.Encryption.AesMAC.AesKey
+  commentId: T:Tide.Encryption.AesMAC.AesKey
+  parent: Tide.Encryption.AesMAC
+  isExternal: true
+  name: AesKey
+  nameWithType: AesKey
+  fullName: Tide.Encryption.AesMAC.AesKey
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: System.Collections.Generic.List{System.Byte[]}
+  commentId: T:System.Collections.Generic.List{System.Byte[]}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<Byte[]>
+  nameWithType: List<Byte[]>
+  fullName: System.Collections.Generic.List<System.Byte[]>
+  nameWithType.vb: List(Of Byte())
+  fullName.vb: System.Collections.Generic.List(Of System.Byte())
+  name.vb: List(Of Byte())
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task{Tide.Encryption.Ecc.C25519Key}
+  commentId: T:System.Threading.Tasks.Task{Tide.Encryption.Ecc.C25519Key}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<C25519Key>
+  nameWithType: Task<C25519Key>
+  fullName: System.Threading.Tasks.Task<Tide.Encryption.Ecc.C25519Key>
+  nameWithType.vb: Task(Of C25519Key)
+  fullName.vb: System.Threading.Tasks.Task(Of Tide.Encryption.Ecc.C25519Key)
+  name.vb: Task(Of C25519Key)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Encryption.Ecc.C25519Key
+    name: C25519Key
+    nameWithType: C25519Key
+    fullName: Tide.Encryption.Ecc.C25519Key
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Encryption.Ecc.C25519Key
+    name: C25519Key
+    nameWithType: C25519Key
+    fullName: Tide.Encryption.Ecc.C25519Key
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Encryption.AesMAC
+  commentId: N:Tide.Encryption.AesMAC
+  isExternal: true
+  name: Tide.Encryption.AesMAC
+  nameWithType: Tide.Encryption.AesMAC
+  fullName: Tide.Encryption.AesMAC
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+- uid: Tide.VendorSdk.Classes.DCryptFlow.Decrypt*
+  commentId: Overload:Tide.VendorSdk.Classes.DCryptFlow.Decrypt
+  name: Decrypt
+  nameWithType: DCryptFlow.Decrypt
+  fullName: Tide.VendorSdk.Classes.DCryptFlow.Decrypt
+- uid: System.Byte[]
+  isExternal: true
+  name: Byte[]
+  nameWithType: Byte[]
+  fullName: System.Byte[]
+  nameWithType.vb: Byte()
+  fullName.vb: System.Byte()
+  name.vb: Byte()
+  spec.csharp:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  spec.vb:
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+- uid: Tide.Encryption.Ecc.C25519Key
+  commentId: T:Tide.Encryption.Ecc.C25519Key
+  parent: Tide.Encryption.Ecc
+  isExternal: true
+  name: C25519Key
+  nameWithType: C25519Key
+  fullName: Tide.Encryption.Ecc.C25519Key
+- uid: System.Threading.Tasks.Task{System.Byte[]}
+  commentId: T:System.Threading.Tasks.Task{System.Byte[]}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<Byte[]>
+  nameWithType: Task<Byte[]>
+  fullName: System.Threading.Tasks.Task<System.Byte[]>
+  nameWithType.vb: Task(Of Byte())
+  fullName.vb: System.Threading.Tasks.Task(Of System.Byte())
+  name.vb: Task(Of Byte())
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: '[]'
+    nameWithType: '[]'
+    fullName: '[]'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Byte
+    name: Byte
+    nameWithType: Byte
+    fullName: System.Byte
+    isExternal: true
+  - name: ()
+    nameWithType: ()
+    fullName: ()
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Encryption.Ecc
+  commentId: N:Tide.Encryption.Ecc
+  isExternal: true
+  name: Tide.Encryption.Ecc
+  nameWithType: Tide.Encryption.Ecc
+  fullName: Tide.Encryption.Ecc

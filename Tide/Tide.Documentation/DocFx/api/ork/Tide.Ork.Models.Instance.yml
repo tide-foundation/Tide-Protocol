@@ -5,6 +5,9 @@ items:
   id: Instance
   parent: Tide.Ork.Models
   children:
+  - Tide.Ork.Models.Instance.GetPrivateKey
+  - Tide.Ork.Models.Instance.GetSecretKey
+  - Tide.Ork.Models.Instance.PrivateKey
   - Tide.Ork.Models.Instance.SecretKey
   - Tide.Ork.Models.Instance.Username
   langs:
@@ -21,7 +24,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Instance
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 8
+    startLine: 12
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -44,6 +47,41 @@ items:
   modifiers.vb:
   - Public
   - Class
+- uid: Tide.Ork.Models.Instance.PrivateKey
+  commentId: P:Tide.Ork.Models.Instance.PrivateKey
+  id: PrivateKey
+  parent: Tide.Ork.Models.Instance
+  langs:
+  - csharp
+  - vb
+  name: PrivateKey
+  nameWithType: Instance.PrivateKey
+  fullName: Tide.Ork.Models.Instance.PrivateKey
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: PrivateKey
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 14
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public string PrivateKey { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property PrivateKey As String
+  overload: Tide.Ork.Models.Instance.PrivateKey*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
 - uid: Tide.Ork.Models.Instance.SecretKey
   commentId: P:Tide.Ork.Models.Instance.SecretKey
   id: SecretKey
@@ -62,7 +100,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: SecretKey
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 10
+    startLine: 15
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -97,7 +135,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Username
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 11
+    startLine: 16
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -112,6 +150,70 @@ items:
   - public
   - get
   - set
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Models.Instance.GetPrivateKey
+  commentId: M:Tide.Ork.Models.Instance.GetPrivateKey
+  id: GetPrivateKey
+  parent: Tide.Ork.Models.Instance
+  langs:
+  - csharp
+  - vb
+  name: GetPrivateKey()
+  nameWithType: Instance.GetPrivateKey()
+  fullName: Tide.Ork.Models.Instance.GetPrivateKey()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetPrivateKey
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 18
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public C25519Key GetPrivateKey()
+    return:
+      type: Tide.Encryption.Ecc.C25519Key
+    content.vb: Public Function GetPrivateKey As C25519Key
+  overload: Tide.Ork.Models.Instance.GetPrivateKey*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Models.Instance.GetSecretKey
+  commentId: M:Tide.Ork.Models.Instance.GetSecretKey
+  id: GetSecretKey
+  parent: Tide.Ork.Models.Instance
+  langs:
+  - csharp
+  - vb
+  name: GetSecretKey()
+  nameWithType: Instance.GetSecretKey()
+  fullName: Tide.Ork.Models.Instance.GetSecretKey()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetSecretKey
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 19
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public AesKey GetSecretKey()
+    return:
+      type: Tide.Encryption.AesMAC.AesKey
+    content.vb: Public Function GetSecretKey As AesKey
+  overload: Tide.Ork.Models.Instance.GetSecretKey*
+  modifiers.csharp:
+  - public
   modifiers.vb:
   - Public
 references:
@@ -412,11 +514,11 @@ references:
   name: System
   nameWithType: System
   fullName: System
-- uid: Tide.Ork.Models.Instance.SecretKey*
-  commentId: Overload:Tide.Ork.Models.Instance.SecretKey
-  name: SecretKey
-  nameWithType: Instance.SecretKey
-  fullName: Tide.Ork.Models.Instance.SecretKey
+- uid: Tide.Ork.Models.Instance.PrivateKey*
+  commentId: Overload:Tide.Ork.Models.Instance.PrivateKey
+  name: PrivateKey
+  nameWithType: Instance.PrivateKey
+  fullName: Tide.Ork.Models.Instance.PrivateKey
 - uid: System.String
   commentId: T:System.String
   parent: System
@@ -424,8 +526,49 @@ references:
   name: String
   nameWithType: String
   fullName: System.String
+- uid: Tide.Ork.Models.Instance.SecretKey*
+  commentId: Overload:Tide.Ork.Models.Instance.SecretKey
+  name: SecretKey
+  nameWithType: Instance.SecretKey
+  fullName: Tide.Ork.Models.Instance.SecretKey
 - uid: Tide.Ork.Models.Instance.Username*
   commentId: Overload:Tide.Ork.Models.Instance.Username
   name: Username
   nameWithType: Instance.Username
   fullName: Tide.Ork.Models.Instance.Username
+- uid: Tide.Ork.Models.Instance.GetPrivateKey*
+  commentId: Overload:Tide.Ork.Models.Instance.GetPrivateKey
+  name: GetPrivateKey
+  nameWithType: Instance.GetPrivateKey
+  fullName: Tide.Ork.Models.Instance.GetPrivateKey
+- uid: Tide.Encryption.Ecc.C25519Key
+  commentId: T:Tide.Encryption.Ecc.C25519Key
+  parent: Tide.Encryption.Ecc
+  isExternal: true
+  name: C25519Key
+  nameWithType: C25519Key
+  fullName: Tide.Encryption.Ecc.C25519Key
+- uid: Tide.Encryption.Ecc
+  commentId: N:Tide.Encryption.Ecc
+  isExternal: true
+  name: Tide.Encryption.Ecc
+  nameWithType: Tide.Encryption.Ecc
+  fullName: Tide.Encryption.Ecc
+- uid: Tide.Ork.Models.Instance.GetSecretKey*
+  commentId: Overload:Tide.Ork.Models.Instance.GetSecretKey
+  name: GetSecretKey
+  nameWithType: Instance.GetSecretKey
+  fullName: Tide.Ork.Models.Instance.GetSecretKey
+- uid: Tide.Encryption.AesMAC.AesKey
+  commentId: T:Tide.Encryption.AesMAC.AesKey
+  parent: Tide.Encryption.AesMAC
+  isExternal: true
+  name: AesKey
+  nameWithType: AesKey
+  fullName: Tide.Encryption.AesMAC.AesKey
+- uid: Tide.Encryption.AesMAC
+  commentId: N:Tide.Encryption.AesMAC
+  isExternal: true
+  name: Tide.Encryption.AesMAC
+  nameWithType: Tide.Encryption.AesMAC
+  fullName: Tide.Encryption.AesMAC

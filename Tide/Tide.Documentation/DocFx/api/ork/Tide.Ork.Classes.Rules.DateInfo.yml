@@ -1,0 +1,1030 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Classes.Rules.DateInfo
+  commentId: T:Tide.Ork.Classes.Rules.DateInfo
+  id: DateInfo
+  parent: Tide.Ork.Classes.Rules
+  children:
+  - Tide.Ork.Classes.Rules.DateInfo.Date
+  - Tide.Ork.Classes.Rules.DateInfo.Day
+  - Tide.Ork.Classes.Rules.DateInfo.DayOfWeek
+  - Tide.Ork.Classes.Rules.DateInfo.DayOfYear
+  - Tide.Ork.Classes.Rules.DateInfo.Hour
+  - Tide.Ork.Classes.Rules.DateInfo.Kind
+  - Tide.Ork.Classes.Rules.DateInfo.Millisecond
+  - Tide.Ork.Classes.Rules.DateInfo.Minute
+  - Tide.Ork.Classes.Rules.DateInfo.Month
+  - Tide.Ork.Classes.Rules.DateInfo.Now
+  - Tide.Ork.Classes.Rules.DateInfo.Second
+  - Tide.Ork.Classes.Rules.DateInfo.Ticks
+  - Tide.Ork.Classes.Rules.DateInfo.TimeOfDay
+  - Tide.Ork.Classes.Rules.DateInfo.Today
+  - Tide.Ork.Classes.Rules.DateInfo.Year
+  langs:
+  - csharp
+  - vb
+  name: DateInfo
+  nameWithType: DateInfo
+  fullName: Tide.Ork.Classes.Rules.DateInfo
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: DateInfo
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 4
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static class DateInfo
+    content.vb: Public Module DateInfo
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: Tide.Ork.Classes.Rules.DateInfo.Today
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Today
+  id: Today
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Today
+  nameWithType: DateInfo.Today
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Today
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Today
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 6
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static DateTime Today { get; }
+    parameters: []
+    return:
+      type: System.DateTime
+    content.vb: Public Shared ReadOnly Property Today As Date
+  overload: Tide.Ork.Classes.Rules.DateInfo.Today*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Now
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Now
+  id: Now
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Now
+  nameWithType: DateInfo.Now
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Now
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Now
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 7
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static DateTime Now { get; }
+    parameters: []
+    return:
+      type: System.DateTime
+    content.vb: Public Shared ReadOnly Property Now As Date
+  overload: Tide.Ork.Classes.Rules.DateInfo.Now*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Ticks
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Ticks
+  id: Ticks
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Ticks
+  nameWithType: DateInfo.Ticks
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Ticks
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Ticks
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 8
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static long Ticks { get; }
+    parameters: []
+    return:
+      type: System.Int64
+    content.vb: Public Shared ReadOnly Property Ticks As Long
+  overload: Tide.Ork.Classes.Rules.DateInfo.Ticks*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Second
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Second
+  id: Second
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Second
+  nameWithType: DateInfo.Second
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Second
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Second
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 9
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static int Second { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property Second As Integer
+  overload: Tide.Ork.Classes.Rules.DateInfo.Second*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Date
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Date
+  id: Date
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Date
+  nameWithType: DateInfo.Date
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Date
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Date
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 10
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static DateTime Date { get; }
+    parameters: []
+    return:
+      type: System.DateTime
+    content.vb: Public Shared ReadOnly Property Date As Date
+  overload: Tide.Ork.Classes.Rules.DateInfo.Date*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Month
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Month
+  id: Month
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Month
+  nameWithType: DateInfo.Month
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Month
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Month
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 11
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static int Month { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property Month As Integer
+  overload: Tide.Ork.Classes.Rules.DateInfo.Month*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Minute
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Minute
+  id: Minute
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Minute
+  nameWithType: DateInfo.Minute
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Minute
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Minute
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 12
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static int Minute { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property Minute As Integer
+  overload: Tide.Ork.Classes.Rules.DateInfo.Minute*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Millisecond
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Millisecond
+  id: Millisecond
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Millisecond
+  nameWithType: DateInfo.Millisecond
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Millisecond
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Millisecond
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 13
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static int Millisecond { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property Millisecond As Integer
+  overload: Tide.Ork.Classes.Rules.DateInfo.Millisecond*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Kind
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Kind
+  id: Kind
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Kind
+  nameWithType: DateInfo.Kind
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Kind
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Kind
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 14
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static DateTimeKind Kind { get; }
+    parameters: []
+    return:
+      type: System.DateTimeKind
+    content.vb: Public Shared ReadOnly Property Kind As DateTimeKind
+  overload: Tide.Ork.Classes.Rules.DateInfo.Kind*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Hour
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Hour
+  id: Hour
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Hour
+  nameWithType: DateInfo.Hour
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Hour
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Hour
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 15
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static int Hour { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property Hour As Integer
+  overload: Tide.Ork.Classes.Rules.DateInfo.Hour*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.DayOfYear
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.DayOfYear
+  id: DayOfYear
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: DayOfYear
+  nameWithType: DateInfo.DayOfYear
+  fullName: Tide.Ork.Classes.Rules.DateInfo.DayOfYear
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: DayOfYear
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 16
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static int DayOfYear { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property DayOfYear As Integer
+  overload: Tide.Ork.Classes.Rules.DateInfo.DayOfYear*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.DayOfWeek
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.DayOfWeek
+  id: DayOfWeek
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: DayOfWeek
+  nameWithType: DateInfo.DayOfWeek
+  fullName: Tide.Ork.Classes.Rules.DateInfo.DayOfWeek
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: DayOfWeek
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 17
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static string DayOfWeek { get; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Shared ReadOnly Property DayOfWeek As String
+  overload: Tide.Ork.Classes.Rules.DateInfo.DayOfWeek*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Day
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Day
+  id: Day
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Day
+  nameWithType: DateInfo.Day
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Day
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Day
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 18
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static int Day { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property Day As Integer
+  overload: Tide.Ork.Classes.Rules.DateInfo.Day*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.TimeOfDay
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.TimeOfDay
+  id: TimeOfDay
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: TimeOfDay
+  nameWithType: DateInfo.TimeOfDay
+  fullName: Tide.Ork.Classes.Rules.DateInfo.TimeOfDay
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: TimeOfDay
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 19
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static TimeSpan TimeOfDay { get; }
+    parameters: []
+    return:
+      type: System.TimeSpan
+    content.vb: Public Shared ReadOnly Property TimeOfDay As TimeSpan
+  overload: Tide.Ork.Classes.Rules.DateInfo.TimeOfDay*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+- uid: Tide.Ork.Classes.Rules.DateInfo.Year
+  commentId: P:Tide.Ork.Classes.Rules.DateInfo.Year
+  id: Year
+  parent: Tide.Ork.Classes.Rules.DateInfo
+  langs:
+  - csharp
+  - vb
+  name: Year
+  nameWithType: DateInfo.Year
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Year
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Rules/DateInfo.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Year
+    path: ../../Tide.Ork/Classes/Rules/DateInfo.cs
+    startLine: 20
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes.Rules
+  syntax:
+    content: public static int Year { get; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: Public Shared ReadOnly Property Year As Integer
+  overload: Tide.Ork.Classes.Rules.DateInfo.Year*
+  modifiers.csharp:
+  - public
+  - static
+  - get
+  modifiers.vb:
+  - Public
+  - Shared
+  - ReadOnly
+references:
+- uid: Tide.Ork.Classes.Rules
+  commentId: N:Tide.Ork.Classes.Rules
+  name: Tide.Ork.Classes.Rules
+  nameWithType: Tide.Ork.Classes.Rules
+  fullName: Tide.Ork.Classes.Rules
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.Ork.Classes.Rules.DateInfo.Today*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Today
+  name: Today
+  nameWithType: DateInfo.Today
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Today
+- uid: System.DateTime
+  commentId: T:System.DateTime
+  parent: System
+  isExternal: true
+  name: DateTime
+  nameWithType: DateTime
+  fullName: System.DateTime
+- uid: Tide.Ork.Classes.Rules.DateInfo.Now*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Now
+  name: Now
+  nameWithType: DateInfo.Now
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Now
+- uid: Tide.Ork.Classes.Rules.DateInfo.Ticks*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Ticks
+  name: Ticks
+  nameWithType: DateInfo.Ticks
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Ticks
+- uid: System.Int64
+  commentId: T:System.Int64
+  parent: System
+  isExternal: true
+  name: Int64
+  nameWithType: Int64
+  fullName: System.Int64
+- uid: Tide.Ork.Classes.Rules.DateInfo.Second*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Second
+  name: Second
+  nameWithType: DateInfo.Second
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Second
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: Tide.Ork.Classes.Rules.DateInfo.Date*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Date
+  name: Date
+  nameWithType: DateInfo.Date
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Date
+- uid: Tide.Ork.Classes.Rules.DateInfo.Month*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Month
+  name: Month
+  nameWithType: DateInfo.Month
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Month
+- uid: Tide.Ork.Classes.Rules.DateInfo.Minute*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Minute
+  name: Minute
+  nameWithType: DateInfo.Minute
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Minute
+- uid: Tide.Ork.Classes.Rules.DateInfo.Millisecond*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Millisecond
+  name: Millisecond
+  nameWithType: DateInfo.Millisecond
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Millisecond
+- uid: Tide.Ork.Classes.Rules.DateInfo.Kind*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Kind
+  name: Kind
+  nameWithType: DateInfo.Kind
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Kind
+- uid: System.DateTimeKind
+  commentId: T:System.DateTimeKind
+  parent: System
+  isExternal: true
+  name: DateTimeKind
+  nameWithType: DateTimeKind
+  fullName: System.DateTimeKind
+- uid: Tide.Ork.Classes.Rules.DateInfo.Hour*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Hour
+  name: Hour
+  nameWithType: DateInfo.Hour
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Hour
+- uid: Tide.Ork.Classes.Rules.DateInfo.DayOfYear*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.DayOfYear
+  name: DayOfYear
+  nameWithType: DateInfo.DayOfYear
+  fullName: Tide.Ork.Classes.Rules.DateInfo.DayOfYear
+- uid: Tide.Ork.Classes.Rules.DateInfo.DayOfWeek*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.DayOfWeek
+  name: DayOfWeek
+  nameWithType: DateInfo.DayOfWeek
+  fullName: Tide.Ork.Classes.Rules.DateInfo.DayOfWeek
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: Tide.Ork.Classes.Rules.DateInfo.Day*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Day
+  name: Day
+  nameWithType: DateInfo.Day
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Day
+- uid: Tide.Ork.Classes.Rules.DateInfo.TimeOfDay*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.TimeOfDay
+  name: TimeOfDay
+  nameWithType: DateInfo.TimeOfDay
+  fullName: Tide.Ork.Classes.Rules.DateInfo.TimeOfDay
+- uid: System.TimeSpan
+  commentId: T:System.TimeSpan
+  parent: System
+  isExternal: true
+  name: TimeSpan
+  nameWithType: TimeSpan
+  fullName: System.TimeSpan
+- uid: Tide.Ork.Classes.Rules.DateInfo.Year*
+  commentId: Overload:Tide.Ork.Classes.Rules.DateInfo.Year
+  name: Year
+  nameWithType: DateInfo.Year
+  fullName: Tide.Ork.Classes.Rules.DateInfo.Year

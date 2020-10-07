@@ -1,0 +1,518 @@
+### YamlMime:ManagedReference
+items:
+- uid: Microsoft.Extensions.Logging.Extension
+  commentId: T:Microsoft.Extensions.Logging.Extension
+  id: Extension
+  parent: Microsoft.Extensions.Logging
+  children:
+  - Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ActionResult,System.String)
+  - Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult)
+  - Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult,System.String)
+  langs:
+  - csharp
+  - vb
+  name: Extension
+  nameWithType: Extension
+  fullName: Microsoft.Extensions.Logging.Extension
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Extension.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Extension
+    path: ../../Tide.Ork/Classes/Extension.cs
+    startLine: 5
+  assemblies:
+  - Tide.Ork
+  namespace: Microsoft.Extensions.Logging
+  syntax:
+    content: public static class Extension
+    content.vb: Public Module Extension
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - static
+  - class
+  modifiers.vb:
+  - Public
+  - Module
+- uid: Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult)
+  commentId: M:Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult)
+  id: Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult)
+  isExtensionMethod: true
+  parent: Microsoft.Extensions.Logging.Extension
+  langs:
+  - csharp
+  - vb
+  name: Log(ILogger, ObjectResult)
+  nameWithType: Extension.Log(ILogger, ObjectResult)
+  fullName: Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger, Microsoft.AspNetCore.Mvc.ObjectResult)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Extension.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Log
+    path: ../../Tide.Ork/Classes/Extension.cs
+    startLine: 8
+  assemblies:
+  - Tide.Ork
+  namespace: Microsoft.Extensions.Logging
+  syntax:
+    content: public static ActionResult Log(this ILogger logger, ObjectResult result)
+    parameters:
+    - id: logger
+      type: Microsoft.Extensions.Logging.ILogger
+    - id: result
+      type: Microsoft.AspNetCore.Mvc.ObjectResult
+    return:
+      type: Microsoft.AspNetCore.Mvc.ActionResult
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function Log(logger As ILogger, result As ObjectResult) As ActionResult
+  overload: Microsoft.Extensions.Logging.Extension.Log*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult,System.String)
+  commentId: M:Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult,System.String)
+  id: Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult,System.String)
+  isExtensionMethod: true
+  parent: Microsoft.Extensions.Logging.Extension
+  langs:
+  - csharp
+  - vb
+  name: Log(ILogger, ObjectResult, String)
+  nameWithType: Extension.Log(ILogger, ObjectResult, String)
+  fullName: Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger, Microsoft.AspNetCore.Mvc.ObjectResult, System.String)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Extension.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Log
+    path: ../../Tide.Ork/Classes/Extension.cs
+    startLine: 14
+  assemblies:
+  - Tide.Ork
+  namespace: Microsoft.Extensions.Logging
+  syntax:
+    content: public static ActionResult Log(this ILogger logger, ObjectResult result, string message)
+    parameters:
+    - id: logger
+      type: Microsoft.Extensions.Logging.ILogger
+    - id: result
+      type: Microsoft.AspNetCore.Mvc.ObjectResult
+    - id: message
+      type: System.String
+    return:
+      type: Microsoft.AspNetCore.Mvc.ActionResult
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function Log(logger As ILogger, result As ObjectResult, message As String) As ActionResult
+  overload: Microsoft.Extensions.Logging.Extension.Log*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+- uid: Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ActionResult,System.String)
+  commentId: M:Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ActionResult,System.String)
+  id: Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ActionResult,System.String)
+  isExtensionMethod: true
+  parent: Microsoft.Extensions.Logging.Extension
+  langs:
+  - csharp
+  - vb
+  name: Log(ILogger, ActionResult, String)
+  nameWithType: Extension.Log(ILogger, ActionResult, String)
+  fullName: Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger, Microsoft.AspNetCore.Mvc.ActionResult, System.String)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/Extension.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Log
+    path: ../../Tide.Ork/Classes/Extension.cs
+    startLine: 20
+  assemblies:
+  - Tide.Ork
+  namespace: Microsoft.Extensions.Logging
+  syntax:
+    content: public static ActionResult Log(this ILogger logger, ActionResult result, string message)
+    parameters:
+    - id: logger
+      type: Microsoft.Extensions.Logging.ILogger
+    - id: result
+      type: Microsoft.AspNetCore.Mvc.ActionResult
+    - id: message
+      type: System.String
+    return:
+      type: Microsoft.AspNetCore.Mvc.ActionResult
+    content.vb: >-
+      <ExtensionAttribute>
+
+      Public Shared Function Log(logger As ILogger, result As ActionResult, message As String) As ActionResult
+  overload: Microsoft.Extensions.Logging.Extension.Log*
+  modifiers.csharp:
+  - public
+  - static
+  modifiers.vb:
+  - Public
+  - Shared
+references:
+- uid: Microsoft.Extensions.Logging
+  commentId: N:Microsoft.Extensions.Logging
+  name: Microsoft.Extensions.Logging
+  nameWithType: Microsoft.Extensions.Logging
+  fullName: Microsoft.Extensions.Logging
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Microsoft.Extensions.Logging.Extension.Log*
+  commentId: Overload:Microsoft.Extensions.Logging.Extension.Log
+  name: Log
+  nameWithType: Extension.Log
+  fullName: Microsoft.Extensions.Logging.Extension.Log
+- uid: Microsoft.Extensions.Logging.ILogger
+  commentId: T:Microsoft.Extensions.Logging.ILogger
+  parent: Microsoft.Extensions.Logging
+  isExternal: true
+  name: ILogger
+  nameWithType: ILogger
+  fullName: Microsoft.Extensions.Logging.ILogger
+- uid: Microsoft.AspNetCore.Mvc.ObjectResult
+  commentId: T:Microsoft.AspNetCore.Mvc.ObjectResult
+  parent: Microsoft.AspNetCore.Mvc
+  isExternal: true
+  name: ObjectResult
+  nameWithType: ObjectResult
+  fullName: Microsoft.AspNetCore.Mvc.ObjectResult
+- uid: Microsoft.AspNetCore.Mvc.ActionResult
+  commentId: T:Microsoft.AspNetCore.Mvc.ActionResult
+  parent: Microsoft.AspNetCore.Mvc
+  isExternal: true
+  name: ActionResult
+  nameWithType: ActionResult
+  fullName: Microsoft.AspNetCore.Mvc.ActionResult
+- uid: Microsoft.AspNetCore.Mvc
+  commentId: N:Microsoft.AspNetCore.Mvc
+  isExternal: true
+  name: Microsoft.AspNetCore.Mvc
+  nameWithType: Microsoft.AspNetCore.Mvc
+  fullName: Microsoft.AspNetCore.Mvc
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String

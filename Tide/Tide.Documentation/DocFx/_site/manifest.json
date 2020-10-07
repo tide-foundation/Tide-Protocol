@@ -1,78 +1,42 @@
 {
   "homepages": [],
-  "source_base_path": "X:/Git/Tide-Protocol/Tide/Tide.Documentation/DocFx",
+  "source_base_path": "C:/Users/MatthewSpencer/Documents/GitHub/Tide-Protocol/Tide/Tide.Documentation/DocFx",
   "xrefmap": "xrefmap.yml",
   "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Microsoft.Extensions.Logging.Extension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Microsoft.Extensions.Logging.Extension.html",
+          "hash": "9f5r3KsiT91nXmLiMqNS8g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Microsoft.Extensions.Logging.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Microsoft.Extensions.Logging.html",
+          "hash": "Ct6eodlzTXhvUw7L8BJiIw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
     {
       "type": "ManagedReference",
       "source_relative_path": "api/ork/Tide.Ork.Classes.IEmailClient.yml",
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Classes.IEmailClient.html",
-          "hash": "3ZjWRFCCvtmzoww9NiIukw=="
+          "hash": "QZUpMp2Kv2YOvMso8IWU9A=="
         }
       },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.IKeyManager.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.IKeyManager.html",
-          "hash": "dwbD+pjbkZvIHxPV1Sr0Fg=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.IKeyManagerFactory.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.IKeyManagerFactory.html",
-          "hash": "uHAEXlAVZJLVtJeithHlWw=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.IManager-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.IManager-1.html",
-          "hash": "BmYrQXvLfBRz/lCHhkdAJw=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.IRuleManager.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.IRuleManager.html",
-          "hash": "d4+AjrGoRc9/gusP1wIrew=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.IdGenerator.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.IdGenerator.html",
-          "hash": "4mHXr3eglGACY8bW0YNUjQ=="
-        }
-      },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -81,58 +45,22 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Classes.MailKitClient.html",
-          "hash": "xA+quA1I/WJ9mcsCix5k4Q=="
+          "hash": "wFyf0v8iMrUE9dDe77T+YQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.MemoryFactory.yml",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.OrkConfig.yml",
       "output": {
         ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.MemoryFactory.html",
-          "hash": "1PIUg/PRmndCQbQRojkd9w=="
+          "relative_path": "api/ork/Tide.Ork.Classes.OrkConfig.html",
+          "hash": "2//gV4yCkFWjGX4ArfkNJQ=="
         }
       },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.MemoryKeyManager.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.MemoryKeyManager.html",
-          "hash": "JkaWzbGM9/CKudzanc+wtQ=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.MemoryManagerBase-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.MemoryManagerBase-1.html",
-          "hash": "fwrtlLiIfS3U5/oJlyc91g=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.MemoryRuleManager.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.MemoryRuleManager.html",
-          "hash": "IQ7lVorfCV9yGHTeWUK8KQ=="
-        }
-      },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -141,10 +69,94 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Classes.OrkShare.html",
-          "hash": "bOvzqoFW/dbF5LSusQn1iQ=="
+          "hash": "4HBmypQz0YeTany66S/Rig=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.Rules.Check.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.Rules.Check.html",
+          "hash": "uc9RlsA+oBVEnuXr2agKTA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.Rules.ContextInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.Rules.ContextInfo.html",
+          "hash": "By4NGLiYPzM4Vx8PHmbe8w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.Rules.DateInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.Rules.DateInfo.html",
+          "hash": "Lt+J/oDLWB9lKcL6NY6x4A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.Rules.OperChecker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.Rules.OperChecker.html",
+          "hash": "gTSP6QSYEQRljY0VbKgGcQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.Rules.PropChecker.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.Rules.PropChecker.html",
+          "hash": "IVkF5QVOhiYA3vt44KI2Yg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.Rules.RuleConditionEval.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.Rules.RuleConditionEval.html",
+          "hash": "+CClqGGe8L64QtuLCmofpg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Classes.Rules.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Classes.Rules.html",
+          "hash": "9nGdCRjG2v9V1GBesWbmtQ=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -153,82 +165,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Classes.SimulatorClient.html",
-          "hash": "bhgmMVq7n7ko5cnqBEraXg=="
+          "hash": "XA0K6Ha+/D87YzJjevhkxQ=="
         }
       },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.SimulatorFactory.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.SimulatorFactory.html",
-          "hash": "UJWrdrMa2NtgOYUZi0BCTw=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.SimulatorKeyManager.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.SimulatorKeyManager.html",
-          "hash": "KmMiqRvz+yg5f089SVm2LQ=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.SimulatorManagerBase-1.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.SimulatorManagerBase-1.html",
-          "hash": "9veoOWlWwOE4irLcbisupQ=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.SimulatorRuleManager.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.SimulatorRuleManager.html",
-          "hash": "4UF8Ka4cXJ228UJdVLq6zw=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.TranToken.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.TranToken.html",
-          "hash": "2ZPQBxcUi7f2uD7RVJ+1ig=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Classes.VerifyChallenge.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/ork/Tide.Ork.Classes.VerifyChallenge.html",
-          "hash": "po5TBYSlhi/wZK7y0NF4rg=="
-        }
-      },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -237,22 +177,82 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Classes.html",
-          "hash": "4t5tsVSPHPF2SNLOloNcsw=="
+          "hash": "3GOxoGPq7mna/PCKW/N72w=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/ork/Tide.Ork.Controllers.DAuthController.yml",
+      "source_relative_path": "api/ork/Tide.Ork.Controllers.CMKController.yml",
       "output": {
         ".html": {
-          "relative_path": "api/ork/Tide.Ork.Controllers.DAuthController.html",
-          "hash": "mSNMJU8DYcMP/X5GDZJUxQ=="
+          "relative_path": "api/ork/Tide.Ork.Controllers.CMKController.html",
+          "hash": "fDz87IA95P78J7JJJZoBkA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Controllers.CVKController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Controllers.CVKController.html",
+          "hash": "Anp3Jy1bb6Podj09Lzb/TQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Controllers.DiscoveryController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Controllers.DiscoveryController.html",
+          "hash": "ujLqxoyzo/qLT0t74CCcTA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Controllers.IndexController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Controllers.IndexController.html",
+          "hash": "Ln9A6vJDjBCSV3XdqZfbUA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Controllers.KeyController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Controllers.KeyController.html",
+          "hash": "JyqbF90jKjPlc3zfC7yhJA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Controllers.RuleController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Controllers.RuleController.html",
+          "hash": "RvD9EejDP6gMq2UPrcTOww=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -261,10 +261,58 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Controllers.html",
-          "hash": "farf3BI4DCj/uvduwk+eiw=="
+          "hash": "eK3NgLpF1pzPVkC860cS2Q=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.DTOs.KeyIdVaultDTO.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.DTOs.KeyIdVaultDTO.html",
+          "hash": "jbruPqoOfR4FtQiC2ZAhCg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.DTOs.RuleVaultDTO.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.DTOs.RuleVaultDTO.html",
+          "hash": "qtUwbrWuPm42QoHxOLxoOA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.DTOs.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.DTOs.html",
+          "hash": "YWMIWzSY/dfWbeRs3xQRUg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Models.ApplyResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Models.ApplyResponse.html",
+          "hash": "82eYG3/LzJ7rs1axBWlmcw=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -273,10 +321,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Models.EmailClient.html",
-          "hash": "B0vWQSkoIhy/vnI1wxKsLQ=="
+          "hash": "SER4aCz3AXXmMTpeg0N12w=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -285,10 +333,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Models.Endpoint.html",
-          "hash": "qMBgoKjhtUtRsdLUgIRoBQ=="
+          "hash": "OmWF2tucIiqUYenqIOOtkg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -297,10 +345,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Models.Endpoints.html",
-          "hash": "S/+Ol4L3Lkz9udaKAbmlVQ=="
+          "hash": "fgNKvcUC1Ne3LSL0VjhG0A=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -309,10 +357,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Models.Instance.html",
-          "hash": "C1Oc6qlDI6wAaFuxubIrRQ=="
+          "hash": "PNAKt85+MZ7pV/wMHuK2bA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -321,10 +369,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Models.Settings.html",
-          "hash": "HS274CwSpoMugeTcFmcJlg=="
+          "hash": "2mbtElDyyXqmA5K29ByrMQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -333,10 +381,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Models.html",
-          "hash": "MHwmtrHDcXEq853Oan+p0w=="
+          "hash": "6v3YInwUkQxc+qUL+Nw+LQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -345,10 +393,298 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Program.html",
-          "hash": "vwz4OW9pNAgYIBQ3YbVmyg=="
+          "hash": "1DDhYsbysUcf0aWC3zJw9w=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.CacheCmkManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.CacheCmkManager.html",
+          "hash": "bLfU30YePuHJyscEPNxI7w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.CacheCvkManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.CacheCvkManager.html",
+          "hash": "YMCHrjM+U1yT1JDCgiLBdw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.CacheManager-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.CacheManager-1.html",
+          "hash": "+uh7WMZuHMW4dBBuZ/HhHQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.CacheRuleManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.CacheRuleManager.html",
+          "hash": "NRRLyuWjb+5JihaDg42NRQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.ICmkManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.ICmkManager.html",
+          "hash": "nibPlGnWszFO1bBcLUc1Dw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.ICvkManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.ICvkManager.html",
+          "hash": "fD6cEDD2p9l4z65YfBeEsA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.IKeyIdManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.IKeyIdManager.html",
+          "hash": "eJM05l85tzmR4LdGZ75qyA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.IKeyManagerFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.IKeyManagerFactory.html",
+          "hash": "94Ti6Lvr1wUJq0mWWgDKWw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.IManager-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.IManager-1.html",
+          "hash": "XP3cy8LSBTQ9L9hJydHkZw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.IRuleManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.IRuleManager.html",
+          "hash": "2X4KH4zf+x15qibJIh4luA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.MemoryCmkManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.MemoryCmkManager.html",
+          "hash": "1RGHc1zeYFK+WcenAWjZIw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.MemoryCvkManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.MemoryCvkManager.html",
+          "hash": "krxfK433FBsTndoKNmUVnA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.MemoryFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.MemoryFactory.html",
+          "hash": "oe37iXyXw0sGiAUs85tjxA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.MemoryKeyIdManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.MemoryKeyIdManager.html",
+          "hash": "TegiDB1TMMfKjG02nWK9Hw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.MemoryManagerBase-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.MemoryManagerBase-1.html",
+          "hash": "+Bl9HC1KUzBsWhV2fH2Lsg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.MemoryRuleManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.MemoryRuleManager.html",
+          "hash": "L07l1lilSQrwhDHGA05cmw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.SimulatorCmkManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.SimulatorCmkManager.html",
+          "hash": "3XLp3UCRIVKJooUyG4kWJw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.SimulatorCvkManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.SimulatorCvkManager.html",
+          "hash": "NL5Z423wp/3T0ffTTh06Ew=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.SimulatorFactory.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.SimulatorFactory.html",
+          "hash": "an2IBxu+///3cOAsl1K7TA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.SimulatorKeyIdManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.SimulatorKeyIdManager.html",
+          "hash": "8caEzCeWq9GH833pDJSy6w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.SimulatorManagerBase-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.SimulatorManagerBase-1.html",
+          "hash": "9EqspS9WoSZPISrereBUKA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.SimulatorRuleManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.SimulatorRuleManager.html",
+          "hash": "6qzxDYXCwfX/39GioKFJaA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Repo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Repo.html",
+          "hash": "S0CkzJaY6atZMidxus5swg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ork/Tide.Ork.Startup.TestObject.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ork/Tide.Ork.Startup.TestObject.html",
+          "hash": "W32INWZNF7CcXjLHUkEZzg=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -357,10 +693,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.Startup.html",
-          "hash": "KH0D0CZVwIagHSULh7xb6g=="
+          "hash": "ei9Rj3jx1rEAlIAt0lEHsw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -369,10 +705,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/Tide.Ork.html",
-          "hash": "P9xYAlADT0c8H1wUA0qFBw=="
+          "hash": "YZmN/NAywDuCFn/OTBkKzA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -381,7 +717,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ork/toc.html",
-          "hash": "3LfSDzcUKotkCIyimqtSQQ=="
+          "hash": "0IVaiIyNmAd9UEbqPABE0g=="
         }
       },
       "is_incremental": false,
@@ -393,7 +729,7 @@
       "output": {
         ".html": {
           "relative_path": "api/tide-js/Tide.html",
-          "hash": "ink7ZQnvgFFCP6+5fCg34A=="
+          "hash": "RqO1FQvqE0CF7d/3EqfKhg=="
         }
       },
       "is_incremental": false,
@@ -405,7 +741,7 @@
       "output": {
         ".html": {
           "relative_path": "api/tide-js/index.html",
-          "hash": "WTowkbHHr+2+QMIPeFcxLg=="
+          "hash": "WP+FMZUiaMvKpsfS4gF7GA=="
         }
       },
       "is_incremental": false,
@@ -417,7 +753,7 @@
       "output": {
         ".html": {
           "relative_path": "api/tide-js/module.exports#module.exports.html",
-          "hash": "WNpR2YW2inI9dxLVnAPZIw=="
+          "hash": "ylhdGRNd+Wnti67A/eyVGw=="
         }
       },
       "is_incremental": false,
@@ -437,14 +773,110 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Microsoft.Extensions.DependencyInjection.TideExtension.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Microsoft.Extensions.DependencyInjection.TideExtension.html",
+          "hash": "6MJncQiDvcICPR7AKJuQbw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Microsoft.Extensions.DependencyInjection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Microsoft.Extensions.DependencyInjection.html",
+          "hash": "eMORXaJJ1F2rZnNHzVu0Hg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.ByteEncoder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.ByteEncoder.html",
+          "hash": "w/D1Ba9uS9/B3uSOETQpsA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Cipher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Cipher.html",
+          "hash": "NUWWmsL8H2wHRsm5lJROyA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.CvkClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.CvkClient.html",
+          "hash": "tnxA2Dm8eMqMgsouWuO7TA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.DCryptFlow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.DCryptFlow.html",
+          "hash": "Ezsj6kLMP7w1pkAozRmxhw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.IVendorRepo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.IVendorRepo.html",
+          "hash": "zLCMDFXiYiXnLtp5HswIlw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.IdGenerator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.IdGenerator.html",
+          "hash": "i33Sok/gqYbCClj10NdjKA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.TideMiddleware.yml",
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.TideMiddleware.html",
-          "hash": "aM1DKcmyOlvRVZHw4ZIJbQ=="
+          "hash": "eVYMXTB0wJKMd5J7lBtHUw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -453,10 +885,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.TideMiddlewareExtensions.html",
-          "hash": "SEVys99s4lC5bVe+cWMUdA=="
+          "hash": "ZIexkEPVNPizXQjxW8bf5Q=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -465,10 +897,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Middleware.html",
-          "hash": "cD34cwlOqaCaxYkXn4rr1w=="
+          "hash": "QhyvoB/eDM9eBWxnIVJtFQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -477,10 +909,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.SimulatorClient.html",
-          "hash": "BZVO9/kcl/CPYwedN6AgSQ=="
+          "hash": "EzfEGC6D6VsRV58X3gCdgg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -489,10 +921,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Storage.IDatabase.html",
-          "hash": "I2bS6Kw4p67FSNvDR16LeA=="
+          "hash": "NE9J6H5PlY5pmq7q6tagfQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -501,10 +933,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Storage.SqlDatabase.html",
-          "hash": "oGTfCh2YPNrKY3+GVlwSbQ=="
+          "hash": "vS4tC1HO7FeZTBsGw3DHow=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -513,10 +945,58 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.Storage.html",
-          "hash": "fwGybMVcoDhpBHhBI9XNCQ=="
+          "hash": "w8xtymDLec2L0XDTvwSMgg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.TideVendorRepo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.TideVendorRepo.html",
+          "hash": "FlSGIAQb1cc2tRLSiG+CNQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.VendorConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.VendorConfig.html",
+          "hash": "aDuJ2qAyebCW4n+Oaw0O1g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.VendorRepo.Account.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.VendorRepo.Account.html",
+          "hash": "dIvPLGbCbY76EsjJ92fvXA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.VendorRepo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.VendorRepo.html",
+          "hash": "fTh6T3pM7ipJcQIY/BWxFA=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -525,10 +1005,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Classes.html",
-          "hash": "qHp/M8IaoQFu69j19E9LGQ=="
+          "hash": "IKrdjIulBXGpY5+syGP36w=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -537,10 +1017,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.ConfigurationExtensions.html",
-          "hash": "rxbA0sLNjcNB6ismWEK5Rw=="
+          "hash": "BO2QYxb28hMn80hGkhNlMA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -549,10 +1029,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.ITideConfiguration.html",
-          "hash": "eGlBtd4Dz4sQyfrDFfkuIg=="
+          "hash": "SlFBrjgwOHMGYxliH+utsQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -561,10 +1041,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.TideConfiguration.html",
-          "hash": "u4StVnnG8Zi9BCmXNkCjsA=="
+          "hash": "pi3ALivPZgGrzLQ5KECK2Q=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -573,10 +1053,82 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.Configuration.html",
-          "hash": "xO8Ys81a0mjjTJ6rU/CYuA=="
+          "hash": "e2sFfCI7furL6J048mbsbQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Controllers.VendorController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Controllers.VendorController.html",
+          "hash": "O1hMefc6cq8sPx8J5eufZA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Controllers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Controllers.html",
+          "hash": "VHwC5ZmwLp0Rm1qscSwqxQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Models.ConfRespose.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Models.ConfRespose.html",
+          "hash": "CmsXENh9m2qLw616DfgZFw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Models.SignupRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Models.SignupRequest.html",
+          "hash": "DoENPJ3o1dtJouhpQkHb8w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Models.SignupRsponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Models.SignupRsponse.html",
+          "hash": "lHgeX/I5bz3f2phmgjvcqw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/vendor-sdk/Tide.VendorSdk.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/vendor-sdk/Tide.VendorSdk.Models.html",
+          "hash": "7nublmEpG+c+DMYXmWhEqw=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -585,10 +1137,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.TideVendor.html",
-          "hash": "s2f+R6nc+o8yC57mMGQTKA=="
+          "hash": "zNqcqGwXZC2Rr+6GEKbjrA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -597,10 +1149,10 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/Tide.VendorSdk.html",
-          "hash": "U2O2BrOj2uvNzsHqmxm6Mg=="
+          "hash": "sFofywGP2PARXTrESCIXzg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -609,7 +1161,7 @@
       "output": {
         ".html": {
           "relative_path": "api/vendor-sdk/toc.html",
-          "hash": "aSyhE2uX8gU7PZAPMAoYxw=="
+          "hash": "kpgM9vPJw9G1iP7Hu0nXZg=="
         }
       },
       "is_incremental": false,
@@ -621,10 +1173,10 @@
       "output": {
         ".html": {
           "relative_path": "docs/features/authentication.html",
-          "hash": "9jiMZpfMWIrJXAJ0c45Mog=="
+          "hash": "bOeduR3DOvNhlPEsYJmLQA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -633,10 +1185,10 @@
       "output": {
         ".html": {
           "relative_path": "docs/features/encryption.html",
-          "hash": "XR1jLD4/uypRci4+qvmsrQ=="
+          "hash": "a69Ve+wLTlrI5s2mm8raGA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -645,10 +1197,10 @@
       "output": {
         ".html": {
           "relative_path": "docs/features/marketplace.html",
-          "hash": "lHrC3dr72fKli8Tx3ValiQ=="
+          "hash": "Hyg3uKOMiqsX+3/LhsrFLA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -657,10 +1209,10 @@
       "output": {
         ".html": {
           "relative_path": "docs/general/about.html",
-          "hash": "ho/cFWsbuxJISw5If2pSng=="
+          "hash": "IVKlsGa1HX6gkOANf3nbIQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -669,10 +1221,10 @@
       "output": {
         ".html": {
           "relative_path": "docs/general/high-level.html",
-          "hash": "mvEbIalbu/HKc3SdKcesug=="
+          "hash": "qayJIuI7e1uDif3m88dH/Q=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -681,10 +1233,10 @@
       "output": {
         ".html": {
           "relative_path": "docs/integration/client-side.html",
-          "hash": "76xWW4Yp1FLPzR8IUhWyJg=="
+          "hash": "KZwtgw7t3lKkyLzG84HLrw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -696,10 +1248,10 @@
       "output": {
         ".html": {
           "relative_path": "docs/integration/getting-started.html",
-          "hash": "zotTfFRRdUdvy/c+l3GOBw=="
+          "hash": "ppBIDJG/ycJRK52Sq2N87g=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -708,10 +1260,10 @@
       "output": {
         ".html": {
           "relative_path": "docs/integration/how-it-works.html",
-          "hash": "qcahgivYOOxsCFU5qSzO6Q=="
+          "hash": "M44a6QuxO9zO8LnooLXX1Q=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -720,10 +1272,10 @@
       "output": {
         ".html": {
           "relative_path": "docs/integration/server-side.html",
-          "hash": "2xXgHC+PtG6vwQFqAwNTBA=="
+          "hash": "5MFmhSVXG7d3+ELyKC08EQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -777,10 +1329,10 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "tI28GsgQqgzp2gALwuv44g=="
+          "hash": "cdech2HvBZybzXL8kZGsJA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -789,7 +1341,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "DEsiCY2xOnkgFje9zJKnmQ=="
+          "hash": "BEej+WHIhyMPpFWWxwTn6Q=="
         }
       },
       "is_incremental": false,
@@ -799,23 +1351,25 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": true,
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
         "incrementalPhase": "build",
         "total_file_count": 0,
-        "skipped_file_count": 0
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
         "ConceptualDocumentProcessor": {
-          "can_incremental": true,
+          "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 10,
-          "skipped_file_count": 10
+          "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
-          "can_incremental": true,
+          "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 45,
-          "skipped_file_count": 45
+          "total_file_count": 91,
+          "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
@@ -842,8 +1396,8 @@
     },
     {
       "status": {
-        "can_incremental": true,
-        "details": "Can support incremental post processing.",
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0

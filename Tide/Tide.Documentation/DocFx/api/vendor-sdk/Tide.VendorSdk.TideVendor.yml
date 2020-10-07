@@ -11,6 +11,7 @@ items:
   - Tide.VendorSdk.TideVendor.CreateUser(System.String,System.Collections.Generic.List{System.String})
   - Tide.VendorSdk.TideVendor.GetUserNodes(System.String)
   - Tide.VendorSdk.TideVendor.RollbackUser(System.String)
+  - Tide.VendorSdk.TideVendor.TestCipher(System.String)
   langs:
   - csharp
   - vb
@@ -259,6 +260,41 @@ items:
       type: Tide.Core.TideResponse
     content.vb: Public Function RollbackUser(username As String) As TideResponse
   overload: Tide.VendorSdk.TideVendor.RollbackUser*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.VendorSdk.TideVendor.TestCipher(System.String)
+  commentId: M:Tide.VendorSdk.TideVendor.TestCipher(System.String)
+  id: TestCipher(System.String)
+  parent: Tide.VendorSdk.TideVendor
+  langs:
+  - csharp
+  - vb
+  name: TestCipher(String)
+  nameWithType: TideVendor.TestCipher(String)
+  fullName: Tide.VendorSdk.TideVendor.TestCipher(System.String)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.VendorSdk/TideVendor.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: TestCipher
+    path: ../../Tide.VendorSdk/TideVendor.cs
+    startLine: 56
+  assemblies:
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk
+  syntax:
+    content: public TideResponse TestCipher(string username)
+    parameters:
+    - id: username
+      type: System.String
+    return:
+      type: Tide.Core.TideResponse
+    content.vb: Public Function TestCipher(username As String) As TideResponse
+  overload: Tide.VendorSdk.TideVendor.TestCipher*
   modifiers.csharp:
   - public
   modifiers.vb:
@@ -704,3 +740,8 @@ references:
   name: RollbackUser
   nameWithType: TideVendor.RollbackUser
   fullName: Tide.VendorSdk.TideVendor.RollbackUser
+- uid: Tide.VendorSdk.TideVendor.TestCipher*
+  commentId: Overload:Tide.VendorSdk.TideVendor.TestCipher
+  name: TestCipher
+  nameWithType: TideVendor.TestCipher
+  fullName: Tide.VendorSdk.TideVendor.TestCipher

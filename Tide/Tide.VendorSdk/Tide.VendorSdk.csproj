@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <PackageId>Tide</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Matthew Spencer, Jose Luis Lobo Vasquez</Authors>
+    <Company>Tide</Company>
+    <Product>Tide Vendor Sdk</Product>
+    <PackageTags>Tide</PackageTags>
+    <RepositoryUrl>https://github.com/tide-foundation</RepositoryUrl>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/tide-foundation/Tide-Protocol</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,5 +24,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tide.Core\Tide.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>

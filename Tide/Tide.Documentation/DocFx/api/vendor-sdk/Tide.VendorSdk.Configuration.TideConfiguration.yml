@@ -31,7 +31,6 @@ items:
     content: 'public class TideConfiguration : ITideConfiguration'
     content.vb: >-
       Public Class TideConfiguration
-
           Implements ITideConfiguration
   inheritance:
   - System.Object

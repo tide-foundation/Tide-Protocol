@@ -5,9 +5,11 @@ items:
   id: SimulatorClient
   parent: Tide.Ork.Classes
   children:
-  - Tide.Ork.Classes.SimulatorClient.#ctor(System.String,System.String,System.String)
-  - Tide.Ork.Classes.SimulatorClient.GetVault(System.String,System.String)
-  - Tide.Ork.Classes.SimulatorClient.PostVault(System.String,System.String,System.String)
+  - Tide.Ork.Classes.SimulatorClient.#ctor(System.String,System.String,Tide.Encryption.Ecc.C25519Key)
+  - Tide.Ork.Classes.SimulatorClient.Delete(System.String,System.String,System.String,System.String)
+  - Tide.Ork.Classes.SimulatorClient.Get(System.String,System.String,System.String)
+  - Tide.Ork.Classes.SimulatorClient.Get(System.String,System.String,System.String,System.String)
+  - Tide.Ork.Classes.SimulatorClient.Post(System.String,System.String,System.String,System.String,System.Object)
   langs:
   - csharp
   - vb
@@ -22,7 +24,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: SimulatorClient
     path: ../../Tide.Ork/Classes/SimulatorClient.cs
-    startLine: 9
+    startLine: 16
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Classes
@@ -45,16 +47,16 @@ items:
   modifiers.vb:
   - Public
   - Class
-- uid: Tide.Ork.Classes.SimulatorClient.#ctor(System.String,System.String,System.String)
-  commentId: M:Tide.Ork.Classes.SimulatorClient.#ctor(System.String,System.String,System.String)
-  id: '#ctor(System.String,System.String,System.String)'
+- uid: Tide.Ork.Classes.SimulatorClient.#ctor(System.String,System.String,Tide.Encryption.Ecc.C25519Key)
+  commentId: M:Tide.Ork.Classes.SimulatorClient.#ctor(System.String,System.String,Tide.Encryption.Ecc.C25519Key)
+  id: '#ctor(System.String,System.String,Tide.Encryption.Ecc.C25519Key)'
   parent: Tide.Ork.Classes.SimulatorClient
   langs:
   - csharp
   - vb
-  name: SimulatorClient(String, String, String)
-  nameWithType: SimulatorClient.SimulatorClient(String, String, String)
-  fullName: Tide.Ork.Classes.SimulatorClient.SimulatorClient(System.String, System.String, System.String)
+  name: SimulatorClient(String, String, C25519Key)
+  nameWithType: SimulatorClient.SimulatorClient(String, String, C25519Key)
+  fullName: Tide.Ork.Classes.SimulatorClient.SimulatorClient(System.String, System.String, Tide.Encryption.Ecc.C25519Key)
   type: Constructor
   source:
     remote:
@@ -63,97 +65,185 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: .ctor
     path: ../../Tide.Ork/Classes/SimulatorClient.cs
-    startLine: 13
+    startLine: 22
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Classes
   syntax:
-    content: public SimulatorClient(string url, string orkId, string password)
+    content: public SimulatorClient(string url, string orkId, C25519Key privateKey)
     parameters:
     - id: url
       type: System.String
     - id: orkId
       type: System.String
-    - id: password
-      type: System.String
-    content.vb: Public Sub New(url As String, orkId As String, password As String)
+    - id: privateKey
+      type: Tide.Encryption.Ecc.C25519Key
+    content.vb: Public Sub New(url As String, orkId As String, privateKey As C25519Key)
   overload: Tide.Ork.Classes.SimulatorClient.#ctor*
   modifiers.csharp:
   - public
   modifiers.vb:
   - Public
-- uid: Tide.Ork.Classes.SimulatorClient.PostVault(System.String,System.String,System.String)
-  commentId: M:Tide.Ork.Classes.SimulatorClient.PostVault(System.String,System.String,System.String)
-  id: PostVault(System.String,System.String,System.String)
+- uid: Tide.Ork.Classes.SimulatorClient.Post(System.String,System.String,System.String,System.String,System.Object)
+  commentId: M:Tide.Ork.Classes.SimulatorClient.Post(System.String,System.String,System.String,System.String,System.Object)
+  id: Post(System.String,System.String,System.String,System.String,System.Object)
   parent: Tide.Ork.Classes.SimulatorClient
   langs:
   - csharp
   - vb
-  name: PostVault(String, String, String)
-  nameWithType: SimulatorClient.PostVault(String, String, String)
-  fullName: Tide.Ork.Classes.SimulatorClient.PostVault(System.String, System.String, System.String)
+  name: Post(String, String, String, String, Object)
+  nameWithType: SimulatorClient.Post(String, String, String, String, Object)
+  fullName: Tide.Ork.Classes.SimulatorClient.Post(System.String, System.String, System.String, System.String, System.Object)
   type: Method
   source:
     remote:
       path: Tide/Tide.Ork/Classes/SimulatorClient.cs
       branch: master
       repo: https://github.com/tide-foundation/Tide-Protocol.git
-    id: PostVault
+    id: Post
     path: ../../Tide.Ork/Classes/SimulatorClient.cs
-    startLine: 19
+    startLine: 40
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Classes
   syntax:
-    content: public Task<TideResponse> PostVault(string ork, string username, string payload)
+    content: public Task<bool> Post(string contract, string table, string scope, string index, object payload)
     parameters:
-    - id: ork
+    - id: contract
       type: System.String
-    - id: username
+    - id: table
+      type: System.String
+    - id: scope
+      type: System.String
+    - id: index
       type: System.String
     - id: payload
-      type: System.String
+      type: System.Object
     return:
-      type: System.Threading.Tasks.Task{Tide.Core.TideResponse}
-    content.vb: Public Function PostVault(ork As String, username As String, payload As String) As Task(Of TideResponse)
-  overload: Tide.Ork.Classes.SimulatorClient.PostVault*
+      type: System.Threading.Tasks.Task{System.Boolean}
+    content.vb: Public Function Post(contract As String, table As String, scope As String, index As String, payload As Object) As Task(Of Boolean)
+  overload: Tide.Ork.Classes.SimulatorClient.Post*
   modifiers.csharp:
   - public
   modifiers.vb:
   - Public
-- uid: Tide.Ork.Classes.SimulatorClient.GetVault(System.String,System.String)
-  commentId: M:Tide.Ork.Classes.SimulatorClient.GetVault(System.String,System.String)
-  id: GetVault(System.String,System.String)
+- uid: Tide.Ork.Classes.SimulatorClient.Get(System.String,System.String,System.String,System.String)
+  commentId: M:Tide.Ork.Classes.SimulatorClient.Get(System.String,System.String,System.String,System.String)
+  id: Get(System.String,System.String,System.String,System.String)
   parent: Tide.Ork.Classes.SimulatorClient
   langs:
   - csharp
   - vb
-  name: GetVault(String, String)
-  nameWithType: SimulatorClient.GetVault(String, String)
-  fullName: Tide.Ork.Classes.SimulatorClient.GetVault(System.String, System.String)
+  name: Get(String, String, String, String)
+  nameWithType: SimulatorClient.Get(String, String, String, String)
+  fullName: Tide.Ork.Classes.SimulatorClient.Get(System.String, System.String, System.String, System.String)
   type: Method
   source:
     remote:
       path: Tide/Tide.Ork/Classes/SimulatorClient.cs
       branch: master
       repo: https://github.com/tide-foundation/Tide-Protocol.git
-    id: GetVault
+    id: Get
     path: ../../Tide.Ork/Classes/SimulatorClient.cs
-    startLine: 27
+    startLine: 53
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Classes
   syntax:
-    content: public Task<TideResponse> GetVault(string ork, string username)
+    content: public Task<string> Get(string contract, string table, string scope, string index)
     parameters:
-    - id: ork
+    - id: contract
       type: System.String
-    - id: username
+    - id: table
+      type: System.String
+    - id: scope
+      type: System.String
+    - id: index
       type: System.String
     return:
-      type: System.Threading.Tasks.Task{Tide.Core.TideResponse}
-    content.vb: Public Function GetVault(ork As String, username As String) As Task(Of TideResponse)
-  overload: Tide.Ork.Classes.SimulatorClient.GetVault*
+      type: System.Threading.Tasks.Task{System.String}
+    content.vb: Public Function Get(contract As String, table As String, scope As String, index As String) As Task(Of String)
+  overload: Tide.Ork.Classes.SimulatorClient.Get*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Classes.SimulatorClient.Get(System.String,System.String,System.String)
+  commentId: M:Tide.Ork.Classes.SimulatorClient.Get(System.String,System.String,System.String)
+  id: Get(System.String,System.String,System.String)
+  parent: Tide.Ork.Classes.SimulatorClient
+  langs:
+  - csharp
+  - vb
+  name: Get(String, String, String)
+  nameWithType: SimulatorClient.Get(String, String, String)
+  fullName: Tide.Ork.Classes.SimulatorClient.Get(System.String, System.String, System.String)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/SimulatorClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Get
+    path: ../../Tide.Ork/Classes/SimulatorClient.cs
+    startLine: 63
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: public Task<List<string>> Get(string contract, string table, string scope)
+    parameters:
+    - id: contract
+      type: System.String
+    - id: table
+      type: System.String
+    - id: scope
+      type: System.String
+    return:
+      type: System.Threading.Tasks.Task{System.Collections.Generic.List{System.String}}
+    content.vb: Public Function Get(contract As String, table As String, scope As String) As Task(Of List(Of String))
+  overload: Tide.Ork.Classes.SimulatorClient.Get*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Classes.SimulatorClient.Delete(System.String,System.String,System.String,System.String)
+  commentId: M:Tide.Ork.Classes.SimulatorClient.Delete(System.String,System.String,System.String,System.String)
+  id: Delete(System.String,System.String,System.String,System.String)
+  parent: Tide.Ork.Classes.SimulatorClient
+  langs:
+  - csharp
+  - vb
+  name: Delete(String, String, String, String)
+  nameWithType: SimulatorClient.Delete(String, String, String, String)
+  fullName: Tide.Ork.Classes.SimulatorClient.Delete(System.String, System.String, System.String, System.String)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Classes/SimulatorClient.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Delete
+    path: ../../Tide.Ork/Classes/SimulatorClient.cs
+    startLine: 75
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Classes
+  syntax:
+    content: public Task<bool> Delete(string contract, string table, string scope, string index)
+    parameters:
+    - id: contract
+      type: System.String
+    - id: table
+      type: System.String
+    - id: scope
+      type: System.String
+    - id: index
+      type: System.String
+    return:
+      type: System.Threading.Tasks.Task{System.Boolean}
+    content.vb: Public Function Delete(contract As String, table As String, scope As String, index As String) As Task(Of Boolean)
+  overload: Tide.Ork.Classes.SimulatorClient.Delete*
   modifiers.csharp:
   - public
   modifiers.vb:
@@ -468,21 +558,34 @@ references:
   name: String
   nameWithType: String
   fullName: System.String
-- uid: Tide.Ork.Classes.SimulatorClient.PostVault*
-  commentId: Overload:Tide.Ork.Classes.SimulatorClient.PostVault
-  name: PostVault
-  nameWithType: SimulatorClient.PostVault
-  fullName: Tide.Ork.Classes.SimulatorClient.PostVault
-- uid: System.Threading.Tasks.Task{Tide.Core.TideResponse}
-  commentId: T:System.Threading.Tasks.Task{Tide.Core.TideResponse}
+- uid: Tide.Encryption.Ecc.C25519Key
+  commentId: T:Tide.Encryption.Ecc.C25519Key
+  parent: Tide.Encryption.Ecc
+  isExternal: true
+  name: C25519Key
+  nameWithType: C25519Key
+  fullName: Tide.Encryption.Ecc.C25519Key
+- uid: Tide.Encryption.Ecc
+  commentId: N:Tide.Encryption.Ecc
+  isExternal: true
+  name: Tide.Encryption.Ecc
+  nameWithType: Tide.Encryption.Ecc
+  fullName: Tide.Encryption.Ecc
+- uid: Tide.Ork.Classes.SimulatorClient.Post*
+  commentId: Overload:Tide.Ork.Classes.SimulatorClient.Post
+  name: Post
+  nameWithType: SimulatorClient.Post
+  fullName: Tide.Ork.Classes.SimulatorClient.Post
+- uid: System.Threading.Tasks.Task{System.Boolean}
+  commentId: T:System.Threading.Tasks.Task{System.Boolean}
   parent: System.Threading.Tasks
   definition: System.Threading.Tasks.Task`1
-  name: Task<TideResponse>
-  nameWithType: Task<TideResponse>
-  fullName: System.Threading.Tasks.Task<Tide.Core.TideResponse>
-  nameWithType.vb: Task(Of TideResponse)
-  fullName.vb: System.Threading.Tasks.Task(Of Tide.Core.TideResponse)
-  name.vb: Task(Of TideResponse)
+  name: Task<Boolean>
+  nameWithType: Task<Boolean>
+  fullName: System.Threading.Tasks.Task<System.Boolean>
+  nameWithType.vb: Task(Of Boolean)
+  fullName.vb: System.Threading.Tasks.Task(Of System.Boolean)
+  name.vb: Task(Of Boolean)
   spec.csharp:
   - uid: System.Threading.Tasks.Task`1
     name: Task
@@ -492,10 +595,11 @@ references:
   - name: <
     nameWithType: <
     fullName: <
-  - uid: Tide.Core.TideResponse
-    name: TideResponse
-    nameWithType: TideResponse
-    fullName: Tide.Core.TideResponse
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
   - name: '>'
     nameWithType: '>'
     fullName: '>'
@@ -508,10 +612,11 @@ references:
   - name: '(Of '
     nameWithType: '(Of '
     fullName: '(Of '
-  - uid: Tide.Core.TideResponse
-    name: TideResponse
-    nameWithType: TideResponse
-    fullName: Tide.Core.TideResponse
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
   - name: )
     nameWithType: )
     fullName: )
@@ -560,8 +665,123 @@ references:
   name: System.Threading.Tasks
   nameWithType: System.Threading.Tasks
   fullName: System.Threading.Tasks
-- uid: Tide.Ork.Classes.SimulatorClient.GetVault*
-  commentId: Overload:Tide.Ork.Classes.SimulatorClient.GetVault
-  name: GetVault
-  nameWithType: SimulatorClient.GetVault
-  fullName: Tide.Ork.Classes.SimulatorClient.GetVault
+- uid: Tide.Ork.Classes.SimulatorClient.Get*
+  commentId: Overload:Tide.Ork.Classes.SimulatorClient.Get
+  name: Get
+  nameWithType: SimulatorClient.Get
+  fullName: Tide.Ork.Classes.SimulatorClient.Get
+- uid: System.Threading.Tasks.Task{System.String}
+  commentId: T:System.Threading.Tasks.Task{System.String}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<String>
+  nameWithType: Task<String>
+  fullName: System.Threading.Tasks.Task<System.String>
+  nameWithType.vb: Task(Of String)
+  fullName.vb: System.Threading.Tasks.Task(Of System.String)
+  name.vb: Task(Of String)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task{System.Collections.Generic.List{System.String}}
+  commentId: T:System.Threading.Tasks.Task{System.Collections.Generic.List{System.String}}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<List<String>>
+  nameWithType: Task<List<String>>
+  fullName: System.Threading.Tasks.Task<System.Collections.Generic.List<System.String>>
+  nameWithType.vb: Task(Of List(Of String))
+  fullName.vb: System.Threading.Tasks.Task(Of System.Collections.Generic.List(Of System.String))
+  name.vb: Task(Of List(Of String))
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Classes.SimulatorClient.Delete*
+  commentId: Overload:Tide.Ork.Classes.SimulatorClient.Delete
+  name: Delete
+  nameWithType: SimulatorClient.Delete
+  fullName: Tide.Ork.Classes.SimulatorClient.Delete

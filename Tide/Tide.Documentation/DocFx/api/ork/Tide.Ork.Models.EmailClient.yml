@@ -24,7 +24,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: EmailClient
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 25
+    startLine: 33
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -65,7 +65,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: SenderName
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 27
+    startLine: 35
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -100,7 +100,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: SenderEmail
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 28
+    startLine: 36
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -135,7 +135,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: SenderPassword
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 29
+    startLine: 37
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -170,7 +170,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: SenderHost
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 30
+    startLine: 38
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -205,7 +205,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: SenderPort
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 31
+    startLine: 39
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models

@@ -4,7 +4,17 @@ items:
   commentId: N:Tide.VendorSdk.Classes
   id: Tide.VendorSdk.Classes
   children:
+  - Tide.VendorSdk.Classes.ByteEncoder
+  - Tide.VendorSdk.Classes.Cipher
+  - Tide.VendorSdk.Classes.CvkClient
+  - Tide.VendorSdk.Classes.DCryptFlow
+  - Tide.VendorSdk.Classes.IdGenerator
+  - Tide.VendorSdk.Classes.IVendorRepo
   - Tide.VendorSdk.Classes.SimulatorClient
+  - Tide.VendorSdk.Classes.TideVendorRepo
+  - Tide.VendorSdk.Classes.VendorConfig
+  - Tide.VendorSdk.Classes.VendorRepo
+  - Tide.VendorSdk.Classes.VendorRepo.Account
   langs:
   - csharp
   - vb
@@ -15,8 +25,66 @@ items:
   assemblies:
   - Tide.VendorSdk
 references:
+- uid: Tide.VendorSdk.Classes.ByteEncoder
+  commentId: T:Tide.VendorSdk.Classes.ByteEncoder
+  name: ByteEncoder
+  nameWithType: ByteEncoder
+  fullName: Tide.VendorSdk.Classes.ByteEncoder
+- uid: Tide.VendorSdk.Classes.Cipher
+  commentId: T:Tide.VendorSdk.Classes.Cipher
+  name: Cipher
+  nameWithType: Cipher
+  fullName: Tide.VendorSdk.Classes.Cipher
+- uid: Tide.VendorSdk.Classes.CvkClient
+  commentId: T:Tide.VendorSdk.Classes.CvkClient
+  name: CvkClient
+  nameWithType: CvkClient
+  fullName: Tide.VendorSdk.Classes.CvkClient
+- uid: Tide.VendorSdk.Classes.DCryptFlow
+  commentId: T:Tide.VendorSdk.Classes.DCryptFlow
+  name: DCryptFlow
+  nameWithType: DCryptFlow
+  fullName: Tide.VendorSdk.Classes.DCryptFlow
+- uid: Tide.VendorSdk.Classes.IdGenerator
+  commentId: T:Tide.VendorSdk.Classes.IdGenerator
+  parent: Tide.VendorSdk.Classes
+  name: IdGenerator
+  nameWithType: IdGenerator
+  fullName: Tide.VendorSdk.Classes.IdGenerator
+- uid: Tide.VendorSdk.Classes.IVendorRepo
+  commentId: T:Tide.VendorSdk.Classes.IVendorRepo
+  parent: Tide.VendorSdk.Classes
+  name: IVendorRepo
+  nameWithType: IVendorRepo
+  fullName: Tide.VendorSdk.Classes.IVendorRepo
 - uid: Tide.VendorSdk.Classes.SimulatorClient
   commentId: T:Tide.VendorSdk.Classes.SimulatorClient
   name: SimulatorClient
   nameWithType: SimulatorClient
   fullName: Tide.VendorSdk.Classes.SimulatorClient
+- uid: Tide.VendorSdk.Classes.TideVendorRepo
+  commentId: T:Tide.VendorSdk.Classes.TideVendorRepo
+  name: TideVendorRepo
+  nameWithType: TideVendorRepo
+  fullName: Tide.VendorSdk.Classes.TideVendorRepo
+- uid: Tide.VendorSdk.Classes.VendorConfig
+  commentId: T:Tide.VendorSdk.Classes.VendorConfig
+  parent: Tide.VendorSdk.Classes
+  name: VendorConfig
+  nameWithType: VendorConfig
+  fullName: Tide.VendorSdk.Classes.VendorConfig
+- uid: Tide.VendorSdk.Classes.VendorRepo
+  commentId: T:Tide.VendorSdk.Classes.VendorRepo
+  name: VendorRepo
+  nameWithType: VendorRepo
+  fullName: Tide.VendorSdk.Classes.VendorRepo
+- uid: Tide.VendorSdk.Classes.VendorRepo.Account
+  commentId: T:Tide.VendorSdk.Classes.VendorRepo.Account
+  name: VendorRepo.Account
+  nameWithType: VendorRepo.Account
+  fullName: Tide.VendorSdk.Classes.VendorRepo.Account
+- uid: Tide.VendorSdk.Classes
+  commentId: N:Tide.VendorSdk.Classes
+  name: Tide.VendorSdk.Classes
+  nameWithType: Tide.VendorSdk.Classes
+  fullName: Tide.VendorSdk.Classes

@@ -28,7 +28,6 @@ items:
     content: 'public class SqlDatabase : IDatabase'
     content.vb: >-
       Public Class SqlDatabase
-
           Implements IDatabase
   inheritance:
   - System.Object

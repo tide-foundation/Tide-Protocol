@@ -20,7 +20,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Endpoints
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 14
+    startLine: 22
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -61,7 +61,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Simulator
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 16
+    startLine: 24
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models

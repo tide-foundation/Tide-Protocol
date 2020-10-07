@@ -1,4 +1,9 @@
 ### YamlMime:TableOfContent
+- uid: Microsoft.Extensions.DependencyInjection
+  name: Microsoft.Extensions.DependencyInjection
+  items:
+  - uid: Microsoft.Extensions.DependencyInjection.TideExtension
+    name: TideExtension
 - uid: Tide.VendorSdk
   name: Tide.VendorSdk
   items:
@@ -7,8 +12,28 @@
 - uid: Tide.VendorSdk.Classes
   name: Tide.VendorSdk.Classes
   items:
+  - uid: Tide.VendorSdk.Classes.ByteEncoder
+    name: ByteEncoder
+  - uid: Tide.VendorSdk.Classes.Cipher
+    name: Cipher
+  - uid: Tide.VendorSdk.Classes.CvkClient
+    name: CvkClient
+  - uid: Tide.VendorSdk.Classes.DCryptFlow
+    name: DCryptFlow
+  - uid: Tide.VendorSdk.Classes.IdGenerator
+    name: IdGenerator
+  - uid: Tide.VendorSdk.Classes.IVendorRepo
+    name: IVendorRepo
   - uid: Tide.VendorSdk.Classes.SimulatorClient
     name: SimulatorClient
+  - uid: Tide.VendorSdk.Classes.TideVendorRepo
+    name: TideVendorRepo
+  - uid: Tide.VendorSdk.Classes.VendorConfig
+    name: VendorConfig
+  - uid: Tide.VendorSdk.Classes.VendorRepo
+    name: VendorRepo
+  - uid: Tide.VendorSdk.Classes.VendorRepo.Account
+    name: VendorRepo.Account
 - uid: Tide.VendorSdk.Classes.Middleware
   name: Tide.VendorSdk.Classes.Middleware
   items:
@@ -32,3 +57,17 @@
     name: ITideConfiguration
   - uid: Tide.VendorSdk.Configuration.TideConfiguration
     name: TideConfiguration
+- uid: Tide.VendorSdk.Controllers
+  name: Tide.VendorSdk.Controllers
+  items:
+  - uid: Tide.VendorSdk.Controllers.VendorController
+    name: VendorController
+- uid: Tide.VendorSdk.Models
+  name: Tide.VendorSdk.Models
+  items:
+  - uid: Tide.VendorSdk.Models.ConfRespose
+    name: ConfRespose
+  - uid: Tide.VendorSdk.Models.SignupRequest
+    name: SignupRequest
+  - uid: Tide.VendorSdk.Models.SignupRsponse
+    name: SignupRsponse

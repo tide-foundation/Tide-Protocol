@@ -1,0 +1,1169 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1
+  commentId: T:Tide.Ork.Repo.SimulatorManagerBase`1
+  id: SimulatorManagerBase`1
+  parent: Tide.Ork.Repo
+  children:
+  - Tide.Ork.Repo.SimulatorManagerBase`1.#ctor(System.String,Tide.Ork.Classes.SimulatorClient,Tide.Encryption.AesMAC.AesKey)
+  - Tide.Ork.Repo.SimulatorManagerBase`1._client
+  - Tide.Ork.Repo.SimulatorManagerBase`1._key
+  - Tide.Ork.Repo.SimulatorManagerBase`1._orkId
+  - Tide.Ork.Repo.SimulatorManagerBase`1.Contract
+  - Tide.Ork.Repo.SimulatorManagerBase`1.Delete(System.Guid)
+  - Tide.Ork.Repo.SimulatorManagerBase`1.Exist(System.Guid)
+  - Tide.Ork.Repo.SimulatorManagerBase`1.GetAll
+  - Tide.Ork.Repo.SimulatorManagerBase`1.GetById(System.Guid)
+  - Tide.Ork.Repo.SimulatorManagerBase`1.IsEncrypted
+  - Tide.Ork.Repo.SimulatorManagerBase`1.SetOrUpdate(`0)
+  - Tide.Ork.Repo.SimulatorManagerBase`1.TableName
+  langs:
+  - csharp
+  - vb
+  name: SimulatorManagerBase<T>
+  nameWithType: SimulatorManagerBase<T>
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>
+  type: Class
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SimulatorManagerBase
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 10
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: >-
+      public abstract class SimulatorManagerBase<T>
+          where T : SerializableByteBase<T>, IGuid, new()
+    typeParameters:
+    - id: T
+    content.vb: Public MustInherit Class SimulatorManagerBase(Of T As {SerializableByteBase(Of T), IGuid, New})
+  inheritance:
+  - System.Object
+  derivedClasses:
+  - Tide.Ork.Repo.SimulatorCmkManager
+  - Tide.Ork.Repo.SimulatorCvkManager
+  - Tide.Ork.Repo.SimulatorKeyIdManager
+  - Tide.Ork.Repo.SimulatorRuleManager
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  nameWithType.vb: SimulatorManagerBase(Of T)
+  modifiers.csharp:
+  - public
+  - abstract
+  - class
+  modifiers.vb:
+  - Public
+  - MustInherit
+  - Class
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T)
+  name.vb: SimulatorManagerBase(Of T)
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1._client
+  commentId: F:Tide.Ork.Repo.SimulatorManagerBase`1._client
+  id: _client
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: _client
+  nameWithType: SimulatorManagerBase<T>._client
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>._client
+  type: Field
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: _client
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 12
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected readonly SimulatorClient _client
+    return:
+      type: Tide.Ork.Classes.SimulatorClient
+    content.vb: Protected ReadOnly _client As SimulatorClient
+  nameWithType.vb: SimulatorManagerBase(Of T)._client
+  modifiers.csharp:
+  - protected
+  - readonly
+  modifiers.vb:
+  - Protected
+  - ReadOnly
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T)._client
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1._key
+  commentId: F:Tide.Ork.Repo.SimulatorManagerBase`1._key
+  id: _key
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: _key
+  nameWithType: SimulatorManagerBase<T>._key
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>._key
+  type: Field
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: _key
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 13
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected readonly AesKey _key
+    return:
+      type: Tide.Encryption.AesMAC.AesKey
+    content.vb: Protected ReadOnly _key As AesKey
+  nameWithType.vb: SimulatorManagerBase(Of T)._key
+  modifiers.csharp:
+  - protected
+  - readonly
+  modifiers.vb:
+  - Protected
+  - ReadOnly
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T)._key
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1._orkId
+  commentId: F:Tide.Ork.Repo.SimulatorManagerBase`1._orkId
+  id: _orkId
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: _orkId
+  nameWithType: SimulatorManagerBase<T>._orkId
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>._orkId
+  type: Field
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: _orkId
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 14
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected readonly string _orkId
+    return:
+      type: System.String
+    content.vb: Protected ReadOnly _orkId As String
+  nameWithType.vb: SimulatorManagerBase(Of T)._orkId
+  modifiers.csharp:
+  - protected
+  - readonly
+  modifiers.vb:
+  - Protected
+  - ReadOnly
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T)._orkId
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.IsEncrypted
+  commentId: P:Tide.Ork.Repo.SimulatorManagerBase`1.IsEncrypted
+  id: IsEncrypted
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: IsEncrypted
+  nameWithType: SimulatorManagerBase<T>.IsEncrypted
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.IsEncrypted
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: IsEncrypted
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 16
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected virtual bool IsEncrypted { get; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Protected Overridable ReadOnly Property IsEncrypted As Boolean
+  overload: Tide.Ork.Repo.SimulatorManagerBase`1.IsEncrypted*
+  nameWithType.vb: SimulatorManagerBase(Of T).IsEncrypted
+  modifiers.csharp:
+  - protected
+  - virtual
+  - get
+  modifiers.vb:
+  - Protected
+  - Overridable
+  - ReadOnly
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).IsEncrypted
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.TableName
+  commentId: P:Tide.Ork.Repo.SimulatorManagerBase`1.TableName
+  id: TableName
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: TableName
+  nameWithType: SimulatorManagerBase<T>.TableName
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.TableName
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: TableName
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 18
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected abstract string TableName { get; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Protected MustOverride ReadOnly Property TableName As String
+  overload: Tide.Ork.Repo.SimulatorManagerBase`1.TableName*
+  nameWithType.vb: SimulatorManagerBase(Of T).TableName
+  modifiers.csharp:
+  - protected
+  - abstract
+  - get
+  modifiers.vb:
+  - Protected
+  - MustOverride
+  - ReadOnly
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).TableName
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.Contract
+  commentId: P:Tide.Ork.Repo.SimulatorManagerBase`1.Contract
+  id: Contract
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: Contract
+  nameWithType: SimulatorManagerBase<T>.Contract
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.Contract
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Contract
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 19
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: protected abstract string Contract { get; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Protected MustOverride ReadOnly Property Contract As String
+  overload: Tide.Ork.Repo.SimulatorManagerBase`1.Contract*
+  nameWithType.vb: SimulatorManagerBase(Of T).Contract
+  modifiers.csharp:
+  - protected
+  - abstract
+  - get
+  modifiers.vb:
+  - Protected
+  - MustOverride
+  - ReadOnly
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).Contract
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.#ctor(System.String,Tide.Ork.Classes.SimulatorClient,Tide.Encryption.AesMAC.AesKey)
+  commentId: M:Tide.Ork.Repo.SimulatorManagerBase`1.#ctor(System.String,Tide.Ork.Classes.SimulatorClient,Tide.Encryption.AesMAC.AesKey)
+  id: '#ctor(System.String,Tide.Ork.Classes.SimulatorClient,Tide.Encryption.AesMAC.AesKey)'
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: SimulatorManagerBase(String, SimulatorClient, AesKey)
+  nameWithType: SimulatorManagerBase<T>.SimulatorManagerBase(String, SimulatorClient, AesKey)
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.SimulatorManagerBase(System.String, Tide.Ork.Classes.SimulatorClient, Tide.Encryption.AesMAC.AesKey)
+  type: Constructor
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: .ctor
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 21
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public SimulatorManagerBase(string orkId, SimulatorClient client, AesKey key)
+    parameters:
+    - id: orkId
+      type: System.String
+    - id: client
+      type: Tide.Ork.Classes.SimulatorClient
+    - id: key
+      type: Tide.Encryption.AesMAC.AesKey
+    content.vb: Public Sub New(orkId As String, client As SimulatorClient, key As AesKey)
+  overload: Tide.Ork.Repo.SimulatorManagerBase`1.#ctor*
+  nameWithType.vb: SimulatorManagerBase(Of T).SimulatorManagerBase(String, SimulatorClient, AesKey)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).SimulatorManagerBase(System.String, Tide.Ork.Classes.SimulatorClient, Tide.Encryption.AesMAC.AesKey)
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.Exist(System.Guid)
+  commentId: M:Tide.Ork.Repo.SimulatorManagerBase`1.Exist(System.Guid)
+  id: Exist(System.Guid)
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: Exist(Guid)
+  nameWithType: SimulatorManagerBase<T>.Exist(Guid)
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.Exist(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Exist
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 27
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<bool> Exist(Guid id)
+    parameters:
+    - id: id
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{System.Boolean}
+    content.vb: Public Function Exist(id As Guid) As Task(Of Boolean)
+  overload: Tide.Ork.Repo.SimulatorManagerBase`1.Exist*
+  nameWithType.vb: SimulatorManagerBase(Of T).Exist(Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).Exist(System.Guid)
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.GetAll
+  commentId: M:Tide.Ork.Repo.SimulatorManagerBase`1.GetAll
+  id: GetAll
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: GetAll()
+  nameWithType: SimulatorManagerBase<T>.GetAll()
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.GetAll()
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetAll
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 31
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<List<T>> GetAll()
+    return:
+      type: System.Threading.Tasks.Task{System.Collections.Generic.List{{T}}}
+    content.vb: Public Function GetAll As Task(Of List(Of T))
+  overload: Tide.Ork.Repo.SimulatorManagerBase`1.GetAll*
+  nameWithType.vb: SimulatorManagerBase(Of T).GetAll()
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).GetAll()
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.GetById(System.Guid)
+  commentId: M:Tide.Ork.Repo.SimulatorManagerBase`1.GetById(System.Guid)
+  id: GetById(System.Guid)
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: GetById(Guid)
+  nameWithType: SimulatorManagerBase<T>.GetById(Guid)
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.GetById(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: GetById
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 37
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<T> GetById(Guid id)
+    parameters:
+    - id: id
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task{{T}}
+    content.vb: Public Function GetById(id As Guid) As Task(Of T)
+  overload: Tide.Ork.Repo.SimulatorManagerBase`1.GetById*
+  nameWithType.vb: SimulatorManagerBase(Of T).GetById(Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).GetById(System.Guid)
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.SetOrUpdate(`0)
+  commentId: M:Tide.Ork.Repo.SimulatorManagerBase`1.SetOrUpdate(`0)
+  id: SetOrUpdate(`0)
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: SetOrUpdate(T)
+  nameWithType: SimulatorManagerBase<T>.SetOrUpdate(T)
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.SetOrUpdate(T)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: SetOrUpdate
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 45
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task<TideResponse> SetOrUpdate(T entity)
+    parameters:
+    - id: entity
+      type: '{T}'
+    return:
+      type: System.Threading.Tasks.Task{Tide.Core.TideResponse}
+    content.vb: Public Function SetOrUpdate(entity As T) As Task(Of TideResponse)
+  overload: Tide.Ork.Repo.SimulatorManagerBase`1.SetOrUpdate*
+  nameWithType.vb: SimulatorManagerBase(Of T).SetOrUpdate(T)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).SetOrUpdate(T)
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.Delete(System.Guid)
+  commentId: M:Tide.Ork.Repo.SimulatorManagerBase`1.Delete(System.Guid)
+  id: Delete(System.Guid)
+  parent: Tide.Ork.Repo.SimulatorManagerBase`1
+  langs:
+  - csharp
+  - vb
+  name: Delete(Guid)
+  nameWithType: SimulatorManagerBase<T>.Delete(Guid)
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.Delete(System.Guid)
+  type: Method
+  source:
+    remote:
+      path: Tide/Tide.Ork/Repo/SimulatorManagerBase.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Delete
+    path: ../../Tide.Ork/Repo/SimulatorManagerBase.cs
+    startLine: 51
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Repo
+  syntax:
+    content: public Task Delete(Guid id)
+    parameters:
+    - id: id
+      type: System.Guid
+    return:
+      type: System.Threading.Tasks.Task
+    content.vb: Public Function Delete(id As Guid) As Task
+  overload: Tide.Ork.Repo.SimulatorManagerBase`1.Delete*
+  nameWithType.vb: SimulatorManagerBase(Of T).Delete(Guid)
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).Delete(System.Guid)
+references:
+- uid: Tide.Ork.Repo
+  commentId: N:Tide.Ork.Repo
+  name: Tide.Ork.Repo
+  nameWithType: Tide.Ork.Repo
+  fullName: Tide.Ork.Repo
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Tide.Ork.Classes.SimulatorClient
+  commentId: T:Tide.Ork.Classes.SimulatorClient
+  parent: Tide.Ork.Classes
+  name: SimulatorClient
+  nameWithType: SimulatorClient
+  fullName: Tide.Ork.Classes.SimulatorClient
+- uid: Tide.Ork.Classes
+  commentId: N:Tide.Ork.Classes
+  name: Tide.Ork.Classes
+  nameWithType: Tide.Ork.Classes
+  fullName: Tide.Ork.Classes
+- uid: Tide.Encryption.AesMAC.AesKey
+  commentId: T:Tide.Encryption.AesMAC.AesKey
+  parent: Tide.Encryption.AesMAC
+  isExternal: true
+  name: AesKey
+  nameWithType: AesKey
+  fullName: Tide.Encryption.AesMAC.AesKey
+- uid: Tide.Encryption.AesMAC
+  commentId: N:Tide.Encryption.AesMAC
+  isExternal: true
+  name: Tide.Encryption.AesMAC
+  nameWithType: Tide.Encryption.AesMAC
+  fullName: Tide.Encryption.AesMAC
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.IsEncrypted*
+  commentId: Overload:Tide.Ork.Repo.SimulatorManagerBase`1.IsEncrypted
+  name: IsEncrypted
+  nameWithType: SimulatorManagerBase<T>.IsEncrypted
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.IsEncrypted
+  nameWithType.vb: SimulatorManagerBase(Of T).IsEncrypted
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).IsEncrypted
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.TableName*
+  commentId: Overload:Tide.Ork.Repo.SimulatorManagerBase`1.TableName
+  name: TableName
+  nameWithType: SimulatorManagerBase<T>.TableName
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.TableName
+  nameWithType.vb: SimulatorManagerBase(Of T).TableName
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).TableName
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.Contract*
+  commentId: Overload:Tide.Ork.Repo.SimulatorManagerBase`1.Contract
+  name: Contract
+  nameWithType: SimulatorManagerBase<T>.Contract
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.Contract
+  nameWithType.vb: SimulatorManagerBase(Of T).Contract
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).Contract
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.#ctor*
+  commentId: Overload:Tide.Ork.Repo.SimulatorManagerBase`1.#ctor
+  name: SimulatorManagerBase
+  nameWithType: SimulatorManagerBase<T>.SimulatorManagerBase
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.SimulatorManagerBase
+  nameWithType.vb: SimulatorManagerBase(Of T).SimulatorManagerBase
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).SimulatorManagerBase
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.Exist*
+  commentId: Overload:Tide.Ork.Repo.SimulatorManagerBase`1.Exist
+  name: Exist
+  nameWithType: SimulatorManagerBase<T>.Exist
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.Exist
+  nameWithType.vb: SimulatorManagerBase(Of T).Exist
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).Exist
+- uid: System.Guid
+  commentId: T:System.Guid
+  parent: System
+  isExternal: true
+  name: Guid
+  nameWithType: Guid
+  fullName: System.Guid
+- uid: System.Threading.Tasks.Task{System.Boolean}
+  commentId: T:System.Threading.Tasks.Task{System.Boolean}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<Boolean>
+  nameWithType: Task<Boolean>
+  fullName: System.Threading.Tasks.Task<System.Boolean>
+  nameWithType.vb: Task(Of Boolean)
+  fullName.vb: System.Threading.Tasks.Task(Of System.Boolean)
+  name.vb: Task(Of Boolean)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.GetAll*
+  commentId: Overload:Tide.Ork.Repo.SimulatorManagerBase`1.GetAll
+  name: GetAll
+  nameWithType: SimulatorManagerBase<T>.GetAll
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.GetAll
+  nameWithType.vb: SimulatorManagerBase(Of T).GetAll
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).GetAll
+- uid: System.Threading.Tasks.Task{System.Collections.Generic.List{{T}}}
+  commentId: T:System.Threading.Tasks.Task{System.Collections.Generic.List{`0}}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<List<T>>
+  nameWithType: Task<List<T>>
+  fullName: System.Threading.Tasks.Task<System.Collections.Generic.List<T>>
+  nameWithType.vb: Task(Of List(Of T))
+  fullName.vb: System.Threading.Tasks.Task(Of System.Collections.Generic.List(Of T))
+  name.vb: Task(Of List(Of T))
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.GetById*
+  commentId: Overload:Tide.Ork.Repo.SimulatorManagerBase`1.GetById
+  name: GetById
+  nameWithType: SimulatorManagerBase<T>.GetById
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.GetById
+  nameWithType.vb: SimulatorManagerBase(Of T).GetById
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).GetById
+- uid: System.Threading.Tasks.Task{{T}}
+  commentId: T:System.Threading.Tasks.Task{`0}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<T>
+  nameWithType: Task<T>
+  fullName: System.Threading.Tasks.Task<T>
+  nameWithType.vb: Task(Of T)
+  fullName.vb: System.Threading.Tasks.Task(Of T)
+  name.vb: Task(Of T)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.SetOrUpdate*
+  commentId: Overload:Tide.Ork.Repo.SimulatorManagerBase`1.SetOrUpdate
+  name: SetOrUpdate
+  nameWithType: SimulatorManagerBase<T>.SetOrUpdate
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.SetOrUpdate
+  nameWithType.vb: SimulatorManagerBase(Of T).SetOrUpdate
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).SetOrUpdate
+- uid: '{T}'
+  commentId: '!:T'
+  definition: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: System.Threading.Tasks.Task{Tide.Core.TideResponse}
+  commentId: T:System.Threading.Tasks.Task{Tide.Core.TideResponse}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<TideResponse>
+  nameWithType: Task<TideResponse>
+  fullName: System.Threading.Tasks.Task<Tide.Core.TideResponse>
+  nameWithType.vb: Task(Of TideResponse)
+  fullName.vb: System.Threading.Tasks.Task(Of Tide.Core.TideResponse)
+  name.vb: Task(Of TideResponse)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: Tide.Core.TideResponse
+    name: TideResponse
+    nameWithType: TideResponse
+    fullName: Tide.Core.TideResponse
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: Tide.Core.TideResponse
+    name: TideResponse
+    nameWithType: TideResponse
+    fullName: Tide.Core.TideResponse
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: T
+  name: T
+  nameWithType: T
+  fullName: T
+- uid: Tide.Ork.Repo.SimulatorManagerBase`1.Delete*
+  commentId: Overload:Tide.Ork.Repo.SimulatorManagerBase`1.Delete
+  name: Delete
+  nameWithType: SimulatorManagerBase<T>.Delete
+  fullName: Tide.Ork.Repo.SimulatorManagerBase<T>.Delete
+  nameWithType.vb: SimulatorManagerBase(Of T).Delete
+  fullName.vb: Tide.Ork.Repo.SimulatorManagerBase(Of T).Delete
+- uid: System.Threading.Tasks.Task
+  commentId: T:System.Threading.Tasks.Task
+  parent: System.Threading.Tasks
+  isExternal: true
+  name: Task
+  nameWithType: Task
+  fullName: System.Threading.Tasks.Task
