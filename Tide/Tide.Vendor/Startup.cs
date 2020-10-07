@@ -51,7 +51,7 @@ namespace Tide.Vendor
             });
 
             services.AddSingleton<IVendorRepo, VendorRepo>();
-            services.AddTideEndpoint(settings.Keys.CreateVendorConfig());
+            services.AddTideEndpoint(settings.Keys);
             services.AddControllers();
         }
 

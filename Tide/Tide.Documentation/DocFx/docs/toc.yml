@@ -16,9 +16,15 @@
   items:
     - name: How It Works
       href: integration/how-it-works.md
-    - name: Getting Started
-      href: integration/getting-started.md
     - name: Server-Side
       href: integration/server-side.md
     - name: Client-Side
       href: integration/client-side.md
+- name: Authentication
+  items:
+    - name: Registration
+      href: authentication/registration.md
+    - name: Login
+      href: authentication/login.md
+    - name: Password Management
+      href: authentication/password-management.md

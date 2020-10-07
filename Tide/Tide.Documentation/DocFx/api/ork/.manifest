@@ -1,6 +1,7 @@
 {
   "Microsoft.Extensions.Logging": "Microsoft.Extensions.Logging.yml",
   "Microsoft.Extensions.Logging.Extension": "Microsoft.Extensions.Logging.Extension.yml",
+  "Microsoft.Extensions.Logging.Extension.FromBase64UrlString(System.String,System.Byte[]@)": "Microsoft.Extensions.Logging.Extension.yml",
   "Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ActionResult,System.String)": "Microsoft.Extensions.Logging.Extension.yml",
   "Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult)": "Microsoft.Extensions.Logging.Extension.yml",
   "Microsoft.Extensions.Logging.Extension.Log(Microsoft.Extensions.Logging.ILogger,Microsoft.AspNetCore.Mvc.ObjectResult,System.String)": "Microsoft.Extensions.Logging.Extension.yml",
@@ -163,6 +164,7 @@
   "Tide.Ork.Models.Settings.EmailClient": "Tide.Ork.Models.Settings.yml",
   "Tide.Ork.Models.Settings.Endpoints": "Tide.Ork.Models.Settings.yml",
   "Tide.Ork.Models.Settings.Instance": "Tide.Ork.Models.Settings.yml",
+  "Tide.Ork.Models.Settings.Memory": "Tide.Ork.Models.Settings.yml",
   "Tide.Ork.Program": "Tide.Ork.Program.yml",
   "Tide.Ork.Program.CreateHostBuilder(System.String[])": "Tide.Ork.Program.yml",
   "Tide.Ork.Program.Main(System.String[])": "Tide.Ork.Program.yml",
@@ -290,8 +292,5 @@
   "Tide.Ork.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)": "Tide.Ork.Startup.yml",
   "Tide.Ork.Startup.Configuration": "Tide.Ork.Startup.yml",
   "Tide.Ork.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)": "Tide.Ork.Startup.yml",
-  "Tide.Ork.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)": "Tide.Ork.Startup.yml",
-  "Tide.Ork.Startup.TestObject": "Tide.Ork.Startup.TestObject.yml",
-  "Tide.Ork.Startup.TestObject.Field1": "Tide.Ork.Startup.TestObject.yml",
-  "Tide.Ork.Startup.TestObject.Field2": "Tide.Ork.Startup.TestObject.yml"
+  "Tide.Ork.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)": "Tide.Ork.Startup.yml"
 }

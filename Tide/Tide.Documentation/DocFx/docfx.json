@@ -1,48 +1,38 @@
 {
-  "metadata": [
-    {
-      "src": [
-        {
-          "src": "../../",
-          "files": ["Tide.VendorSdk/**.csproj"],
-          "exclude": ["**/bin/**", "**/obj/**"]
-        }
-      ],
+  "metadata": [{
+      "src": [{
+        "src": "../../",
+        "files": ["Tide.VendorSdk/**.csproj"],
+        "exclude": ["**/bin/**", "**/obj/**"]
+      }],
       "dest": "api/vendor-sdk"
     },
     {
-      "src": [
-        {
-          "src": "../../",
-          "files": ["Tide.Ork/**.csproj"],
-          "exclude": ["**/bin/**", "**/obj/**"]
-        }
-      ],
+      "src": [{
+        "src": "../../",
+        "files": ["Tide.Ork/**.csproj"],
+        "exclude": ["**/bin/**", "**/obj/**"]
+      }],
       "dest": "api/ork"
     }
   ],
   "build": {
-    "content": [
-      {
+    "content": [{
         "files": ["api/vendor-sdk/**.yml", "api/ork/**.yml", "api/tide-js/**.yml", "api/index.md"]
       },
       {
         "files": ["docs/**.md", "docs/**/toc.yml", "toc.yml", "*.md"]
       }
     ],
-    "resource": [
-      {
-        "files": ["images/**"]
-      }
-    ],
-    "overwrite": [
-      {
-        "files": ["apidoc/**.md"],
-        "exclude": ["obj/**", "_site/**"]
-      }
-    ],
+    "resource": [{
+      "files": ["images/**"]
+    }],
+    "overwrite": [{
+      "files": ["apidoc/**.md"],
+      "exclude": ["obj/**", "build/**"]
+    }],
 
-    "dest": "_site",
+    "dest": "build",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": ["default", "templates/tide"],

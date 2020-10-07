@@ -1,35 +1,34 @@
 ### YamlMime:ManagedReference
 items:
-- uid: Tide.Ork.Startup
-  commentId: T:Tide.Ork.Startup
-  id: Startup
-  parent: Tide.Ork
+- uid: Tide.VendorSdk.Classes.AdminKeys
+  commentId: T:Tide.VendorSdk.Classes.AdminKeys
+  id: AdminKeys
+  parent: Tide.VendorSdk.Classes
   children:
-  - Tide.Ork.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)
-  - Tide.Ork.Startup.Configuration
-  - Tide.Ork.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  - Tide.Ork.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
+  - Tide.VendorSdk.Classes.AdminKeys.CreateVendorConfig
+  - Tide.VendorSdk.Classes.AdminKeys.PrivateKey
+  - Tide.VendorSdk.Classes.AdminKeys.SecretKey
   langs:
   - csharp
   - vb
-  name: Startup
-  nameWithType: Startup
-  fullName: Tide.Ork.Startup
+  name: AdminKeys
+  nameWithType: AdminKeys
+  fullName: Tide.VendorSdk.Classes.AdminKeys
   type: Class
   source:
     remote:
-      path: Tide/Tide.Ork/Startup.cs
+      path: Tide/Tide.VendorSdk/Classes/Settings.cs
       branch: master
       repo: https://github.com/tide-foundation/Tide-Protocol.git
-    id: Startup
-    path: ../../Tide.Ork/Startup.cs
-    startLine: 12
+    id: AdminKeys
+    path: ../../Tide.VendorSdk/Classes/Settings.cs
+    startLine: 8
   assemblies:
-  - Tide.Ork
-  namespace: Tide.Ork
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
   syntax:
-    content: public class Startup
-    content.vb: Public Class Startup
+    content: public class AdminKeys
+    content.vb: Public Class AdminKeys
   inheritance:
   - System.Object
   inheritedMembers:
@@ -46,148 +45,114 @@ items:
   modifiers.vb:
   - Public
   - Class
-- uid: Tide.Ork.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)
-  commentId: M:Tide.Ork.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)
-  id: '#ctor(Microsoft.Extensions.Configuration.IConfiguration)'
-  parent: Tide.Ork.Startup
+- uid: Tide.VendorSdk.Classes.AdminKeys.PrivateKey
+  commentId: P:Tide.VendorSdk.Classes.AdminKeys.PrivateKey
+  id: PrivateKey
+  parent: Tide.VendorSdk.Classes.AdminKeys
   langs:
   - csharp
   - vb
-  name: Startup(IConfiguration)
-  nameWithType: Startup.Startup(IConfiguration)
-  fullName: Tide.Ork.Startup.Startup(Microsoft.Extensions.Configuration.IConfiguration)
-  type: Constructor
-  source:
-    remote:
-      path: Tide/Tide.Ork/Startup.cs
-      branch: master
-      repo: https://github.com/tide-foundation/Tide-Protocol.git
-    id: .ctor
-    path: ../../Tide.Ork/Startup.cs
-    startLine: 13
-  assemblies:
-  - Tide.Ork
-  namespace: Tide.Ork
-  syntax:
-    content: public Startup(IConfiguration configuration)
-    parameters:
-    - id: configuration
-      type: Microsoft.Extensions.Configuration.IConfiguration
-    content.vb: Public Sub New(configuration As IConfiguration)
-  overload: Tide.Ork.Startup.#ctor*
-  modifiers.csharp:
-  - public
-  modifiers.vb:
-  - Public
-- uid: Tide.Ork.Startup.Configuration
-  commentId: P:Tide.Ork.Startup.Configuration
-  id: Configuration
-  parent: Tide.Ork.Startup
-  langs:
-  - csharp
-  - vb
-  name: Configuration
-  nameWithType: Startup.Configuration
-  fullName: Tide.Ork.Startup.Configuration
+  name: PrivateKey
+  nameWithType: AdminKeys.PrivateKey
+  fullName: Tide.VendorSdk.Classes.AdminKeys.PrivateKey
   type: Property
   source:
     remote:
-      path: Tide/Tide.Ork/Startup.cs
+      path: Tide/Tide.VendorSdk/Classes/Settings.cs
       branch: master
       repo: https://github.com/tide-foundation/Tide-Protocol.git
-    id: Configuration
-    path: ../../Tide.Ork/Startup.cs
-    startLine: 17
+    id: PrivateKey
+    path: ../../Tide.VendorSdk/Classes/Settings.cs
+    startLine: 10
   assemblies:
-  - Tide.Ork
-  namespace: Tide.Ork
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
   syntax:
-    content: public IConfiguration Configuration { get; }
+    content: public string PrivateKey { get; set; }
     parameters: []
     return:
-      type: Microsoft.Extensions.Configuration.IConfiguration
-    content.vb: Public ReadOnly Property Configuration As IConfiguration
-  overload: Tide.Ork.Startup.Configuration*
+      type: System.String
+    content.vb: Public Property PrivateKey As String
+  overload: Tide.VendorSdk.Classes.AdminKeys.PrivateKey*
   modifiers.csharp:
   - public
   - get
+  - set
   modifiers.vb:
   - Public
-  - ReadOnly
-- uid: Tide.Ork.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  commentId: M:Tide.Ork.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  id: ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  parent: Tide.Ork.Startup
+- uid: Tide.VendorSdk.Classes.AdminKeys.SecretKey
+  commentId: P:Tide.VendorSdk.Classes.AdminKeys.SecretKey
+  id: SecretKey
+  parent: Tide.VendorSdk.Classes.AdminKeys
   langs:
   - csharp
   - vb
-  name: ConfigureServices(IServiceCollection)
-  nameWithType: Startup.ConfigureServices(IServiceCollection)
-  fullName: Tide.Ork.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)
-  type: Method
+  name: SecretKey
+  nameWithType: AdminKeys.SecretKey
+  fullName: Tide.VendorSdk.Classes.AdminKeys.SecretKey
+  type: Property
   source:
     remote:
-      path: Tide/Tide.Ork/Startup.cs
+      path: Tide/Tide.VendorSdk/Classes/Settings.cs
       branch: master
       repo: https://github.com/tide-foundation/Tide-Protocol.git
-    id: ConfigureServices
-    path: ../../Tide.Ork/Startup.cs
-    startLine: 20
+    id: SecretKey
+    path: ../../Tide.VendorSdk/Classes/Settings.cs
+    startLine: 11
   assemblies:
-  - Tide.Ork
-  namespace: Tide.Ork
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
   syntax:
-    content: public void ConfigureServices(IServiceCollection services)
-    parameters:
-    - id: services
-      type: Microsoft.Extensions.DependencyInjection.IServiceCollection
-    content.vb: Public Sub ConfigureServices(services As IServiceCollection)
-  overload: Tide.Ork.Startup.ConfigureServices*
+    content: public string SecretKey { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property SecretKey As String
+  overload: Tide.VendorSdk.Classes.AdminKeys.SecretKey*
   modifiers.csharp:
   - public
+  - get
+  - set
   modifiers.vb:
   - Public
-- uid: Tide.Ork.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  commentId: M:Tide.Ork.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  id: Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
-  parent: Tide.Ork.Startup
+- uid: Tide.VendorSdk.Classes.AdminKeys.CreateVendorConfig
+  commentId: M:Tide.VendorSdk.Classes.AdminKeys.CreateVendorConfig
+  id: CreateVendorConfig
+  parent: Tide.VendorSdk.Classes.AdminKeys
   langs:
   - csharp
   - vb
-  name: Configure(IApplicationBuilder, IWebHostEnvironment)
-  nameWithType: Startup.Configure(IApplicationBuilder, IWebHostEnvironment)
-  fullName: Tide.Ork.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder, Microsoft.AspNetCore.Hosting.IWebHostEnvironment)
+  name: CreateVendorConfig()
+  nameWithType: AdminKeys.CreateVendorConfig()
+  fullName: Tide.VendorSdk.Classes.AdminKeys.CreateVendorConfig()
   type: Method
   source:
     remote:
-      path: Tide/Tide.Ork/Startup.cs
+      path: Tide/Tide.VendorSdk/Classes/Settings.cs
       branch: master
       repo: https://github.com/tide-foundation/Tide-Protocol.git
-    id: Configure
-    path: ../../Tide.Ork/Startup.cs
-    startLine: 42
+    id: CreateVendorConfig
+    path: ../../Tide.VendorSdk/Classes/Settings.cs
+    startLine: 13
   assemblies:
-  - Tide.Ork
-  namespace: Tide.Ork
+  - Tide.VendorSdk
+  namespace: Tide.VendorSdk.Classes
   syntax:
-    content: public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    parameters:
-    - id: app
-      type: Microsoft.AspNetCore.Builder.IApplicationBuilder
-    - id: env
-      type: Microsoft.AspNetCore.Hosting.IWebHostEnvironment
-    content.vb: Public Sub Configure(app As IApplicationBuilder, env As IWebHostEnvironment)
-  overload: Tide.Ork.Startup.Configure*
+    content: public VendorConfig CreateVendorConfig()
+    return:
+      type: Tide.VendorSdk.Classes.VendorConfig
+    content.vb: Public Function CreateVendorConfig As VendorConfig
+  overload: Tide.VendorSdk.Classes.AdminKeys.CreateVendorConfig*
   modifiers.csharp:
   - public
   modifiers.vb:
   - Public
 references:
-- uid: Tide.Ork
-  commentId: N:Tide.Ork
-  name: Tide.Ork
-  nameWithType: Tide.Ork
-  fullName: Tide.Ork
+- uid: Tide.VendorSdk.Classes
+  commentId: N:Tide.VendorSdk.Classes
+  name: Tide.VendorSdk.Classes
+  nameWithType: Tide.VendorSdk.Classes
+  fullName: Tide.VendorSdk.Classes
 - uid: System.Object
   commentId: T:System.Object
   parent: System
@@ -480,75 +445,31 @@ references:
   name: System
   nameWithType: System
   fullName: System
-- uid: Tide.Ork.Startup.#ctor*
-  commentId: Overload:Tide.Ork.Startup.#ctor
-  name: Startup
-  nameWithType: Startup.Startup
-  fullName: Tide.Ork.Startup.Startup
-- uid: Microsoft.Extensions.Configuration.IConfiguration
-  commentId: T:Microsoft.Extensions.Configuration.IConfiguration
-  parent: Microsoft.Extensions.Configuration
+- uid: Tide.VendorSdk.Classes.AdminKeys.PrivateKey*
+  commentId: Overload:Tide.VendorSdk.Classes.AdminKeys.PrivateKey
+  name: PrivateKey
+  nameWithType: AdminKeys.PrivateKey
+  fullName: Tide.VendorSdk.Classes.AdminKeys.PrivateKey
+- uid: System.String
+  commentId: T:System.String
+  parent: System
   isExternal: true
-  name: IConfiguration
-  nameWithType: IConfiguration
-  fullName: Microsoft.Extensions.Configuration.IConfiguration
-- uid: Microsoft.Extensions.Configuration
-  commentId: N:Microsoft.Extensions.Configuration
-  isExternal: true
-  name: Microsoft.Extensions.Configuration
-  nameWithType: Microsoft.Extensions.Configuration
-  fullName: Microsoft.Extensions.Configuration
-- uid: Tide.Ork.Startup.Configuration*
-  commentId: Overload:Tide.Ork.Startup.Configuration
-  name: Configuration
-  nameWithType: Startup.Configuration
-  fullName: Tide.Ork.Startup.Configuration
-- uid: Tide.Ork.Startup.ConfigureServices*
-  commentId: Overload:Tide.Ork.Startup.ConfigureServices
-  name: ConfigureServices
-  nameWithType: Startup.ConfigureServices
-  fullName: Tide.Ork.Startup.ConfigureServices
-- uid: Microsoft.Extensions.DependencyInjection.IServiceCollection
-  commentId: T:Microsoft.Extensions.DependencyInjection.IServiceCollection
-  parent: Microsoft.Extensions.DependencyInjection
-  isExternal: true
-  name: IServiceCollection
-  nameWithType: IServiceCollection
-  fullName: Microsoft.Extensions.DependencyInjection.IServiceCollection
-- uid: Microsoft.Extensions.DependencyInjection
-  commentId: N:Microsoft.Extensions.DependencyInjection
-  isExternal: true
-  name: Microsoft.Extensions.DependencyInjection
-  nameWithType: Microsoft.Extensions.DependencyInjection
-  fullName: Microsoft.Extensions.DependencyInjection
-- uid: Tide.Ork.Startup.Configure*
-  commentId: Overload:Tide.Ork.Startup.Configure
-  name: Configure
-  nameWithType: Startup.Configure
-  fullName: Tide.Ork.Startup.Configure
-- uid: Microsoft.AspNetCore.Builder.IApplicationBuilder
-  commentId: T:Microsoft.AspNetCore.Builder.IApplicationBuilder
-  parent: Microsoft.AspNetCore.Builder
-  isExternal: true
-  name: IApplicationBuilder
-  nameWithType: IApplicationBuilder
-  fullName: Microsoft.AspNetCore.Builder.IApplicationBuilder
-- uid: Microsoft.AspNetCore.Hosting.IWebHostEnvironment
-  commentId: T:Microsoft.AspNetCore.Hosting.IWebHostEnvironment
-  parent: Microsoft.AspNetCore.Hosting
-  isExternal: true
-  name: IWebHostEnvironment
-  nameWithType: IWebHostEnvironment
-  fullName: Microsoft.AspNetCore.Hosting.IWebHostEnvironment
-- uid: Microsoft.AspNetCore.Builder
-  commentId: N:Microsoft.AspNetCore.Builder
-  isExternal: true
-  name: Microsoft.AspNetCore.Builder
-  nameWithType: Microsoft.AspNetCore.Builder
-  fullName: Microsoft.AspNetCore.Builder
-- uid: Microsoft.AspNetCore.Hosting
-  commentId: N:Microsoft.AspNetCore.Hosting
-  isExternal: true
-  name: Microsoft.AspNetCore.Hosting
-  nameWithType: Microsoft.AspNetCore.Hosting
-  fullName: Microsoft.AspNetCore.Hosting
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: Tide.VendorSdk.Classes.AdminKeys.SecretKey*
+  commentId: Overload:Tide.VendorSdk.Classes.AdminKeys.SecretKey
+  name: SecretKey
+  nameWithType: AdminKeys.SecretKey
+  fullName: Tide.VendorSdk.Classes.AdminKeys.SecretKey
+- uid: Tide.VendorSdk.Classes.AdminKeys.CreateVendorConfig*
+  commentId: Overload:Tide.VendorSdk.Classes.AdminKeys.CreateVendorConfig
+  name: CreateVendorConfig
+  nameWithType: AdminKeys.CreateVendorConfig
+  fullName: Tide.VendorSdk.Classes.AdminKeys.CreateVendorConfig
+- uid: Tide.VendorSdk.Classes.VendorConfig
+  commentId: T:Tide.VendorSdk.Classes.VendorConfig
+  parent: Tide.VendorSdk.Classes
+  name: VendorConfig
+  nameWithType: VendorConfig
+  fullName: Tide.VendorSdk.Classes.VendorConfig

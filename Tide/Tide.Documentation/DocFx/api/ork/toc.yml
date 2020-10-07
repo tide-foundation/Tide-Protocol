@@ -11,8 +11,6 @@
     name: Program
   - uid: Tide.Ork.Startup
     name: Startup
-  - uid: Tide.Ork.Startup.TestObject
-    name: Startup.TestObject
 - uid: Tide.Ork.Classes
   name: Tide.Ork.Classes
   items:

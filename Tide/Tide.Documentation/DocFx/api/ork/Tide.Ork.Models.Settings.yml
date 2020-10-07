@@ -8,6 +8,7 @@ items:
   - Tide.Ork.Models.Settings.EmailClient
   - Tide.Ork.Models.Settings.Endpoints
   - Tide.Ork.Models.Settings.Instance
+  - Tide.Ork.Models.Settings.Memory
   langs:
   - csharp
   - vb
@@ -144,6 +145,41 @@ items:
       type: Tide.Ork.Models.EmailClient
     content.vb: Public Property EmailClient As EmailClient
   overload: Tide.Ork.Models.Settings.EmailClient*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: Tide.Ork.Models.Settings.Memory
+  commentId: P:Tide.Ork.Models.Settings.Memory
+  id: Memory
+  parent: Tide.Ork.Models.Settings
+  langs:
+  - csharp
+  - vb
+  name: Memory
+  nameWithType: Settings.Memory
+  fullName: Tide.Ork.Models.Settings.Memory
+  type: Property
+  source:
+    remote:
+      path: Tide/Tide.Ork/Models/Settings.cs
+      branch: master
+      repo: https://github.com/tide-foundation/Tide-Protocol.git
+    id: Memory
+    path: ../../Tide.Ork/Models/Settings.cs
+    startLine: 10
+  assemblies:
+  - Tide.Ork
+  namespace: Tide.Ork.Models
+  syntax:
+    content: public bool Memory { get; set; }
+    parameters: []
+    return:
+      type: System.Boolean
+    content.vb: Public Property Memory As Boolean
+  overload: Tide.Ork.Models.Settings.Memory*
   modifiers.csharp:
   - public
   - get
@@ -481,3 +517,15 @@ references:
   name: EmailClient
   nameWithType: EmailClient
   fullName: Tide.Ork.Models.EmailClient
+- uid: Tide.Ork.Models.Settings.Memory*
+  commentId: Overload:Tide.Ork.Models.Settings.Memory
+  name: Memory
+  nameWithType: Settings.Memory
+  fullName: Tide.Ork.Models.Settings.Memory
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean

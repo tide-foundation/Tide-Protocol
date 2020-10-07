@@ -4,6 +4,7 @@ items:
   commentId: N:Tide.VendorSdk.Classes
   id: Tide.VendorSdk.Classes
   children:
+  - Tide.VendorSdk.Classes.AdminKeys
   - Tide.VendorSdk.Classes.ByteEncoder
   - Tide.VendorSdk.Classes.Cipher
   - Tide.VendorSdk.Classes.CvkClient
@@ -57,6 +58,12 @@ references:
   name: IVendorRepo
   nameWithType: IVendorRepo
   fullName: Tide.VendorSdk.Classes.IVendorRepo
+- uid: Tide.VendorSdk.Classes.AdminKeys
+  commentId: T:Tide.VendorSdk.Classes.AdminKeys
+  parent: Tide.VendorSdk.Classes
+  name: AdminKeys
+  nameWithType: AdminKeys
+  fullName: Tide.VendorSdk.Classes.AdminKeys
 - uid: Tide.VendorSdk.Classes.SimulatorClient
   commentId: T:Tide.VendorSdk.Classes.SimulatorClient
   name: SimulatorClient

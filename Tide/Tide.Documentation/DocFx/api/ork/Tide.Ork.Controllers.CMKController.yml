@@ -435,7 +435,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Authenticate
     path: ../../Tide.Ork/Controllers/CMKController.cs
-    startLine: 87
+    startLine: 99
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Controllers
@@ -492,7 +492,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: ChangePrism
     path: ../../Tide.Ork/Controllers/CMKController.cs
-    startLine: 104
+    startLine: 128
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Controllers
@@ -567,7 +567,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Recover
     path: ../../Tide.Ork/Controllers/CMKController.cs
-    startLine: 131
+    startLine: 155
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Controllers
@@ -618,7 +618,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Confirm
     path: ../../Tide.Ork/Controllers/CMKController.cs
-    startLine: 144
+    startLine: 168
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Controllers

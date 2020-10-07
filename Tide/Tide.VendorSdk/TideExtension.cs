@@ -8,9 +8,9 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class TideExtension
     {
-        public static IMvcBuilder AddTideEndpoint(this IServiceCollection services, VendorConfig config)
+        public static IMvcBuilder AddTideEndpoint(this IServiceCollection services, AdminKeys keys)
         {
-            services.AddSingleton(config);
+            services.AddSingleton(keys.CreateVendorConfig());
 
             //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             //{

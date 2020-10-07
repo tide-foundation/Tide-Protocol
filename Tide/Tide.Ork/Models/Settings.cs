@@ -8,6 +8,7 @@ namespace Tide.Ork.Models {
         public Instance Instance { get; set; }
         public Endpoints Endpoints { get; set; }
         public EmailClient EmailClient { get; set; }
+        public bool Memory { get; set; }
     }
 
     public class Instance

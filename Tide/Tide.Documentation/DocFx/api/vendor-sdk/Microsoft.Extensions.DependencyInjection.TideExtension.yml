@@ -5,7 +5,7 @@ items:
   id: TideExtension
   parent: Microsoft.Extensions.DependencyInjection
   children:
-  - Microsoft.Extensions.DependencyInjection.TideExtension.AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection,Tide.VendorSdk.Classes.VendorConfig)
+  - Microsoft.Extensions.DependencyInjection.TideExtension.AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection,Tide.VendorSdk.Classes.AdminKeys)
   langs:
   - csharp
   - vb
@@ -44,17 +44,17 @@ items:
   modifiers.vb:
   - Public
   - Module
-- uid: Microsoft.Extensions.DependencyInjection.TideExtension.AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection,Tide.VendorSdk.Classes.VendorConfig)
-  commentId: M:Microsoft.Extensions.DependencyInjection.TideExtension.AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection,Tide.VendorSdk.Classes.VendorConfig)
-  id: AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection,Tide.VendorSdk.Classes.VendorConfig)
+- uid: Microsoft.Extensions.DependencyInjection.TideExtension.AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection,Tide.VendorSdk.Classes.AdminKeys)
+  commentId: M:Microsoft.Extensions.DependencyInjection.TideExtension.AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection,Tide.VendorSdk.Classes.AdminKeys)
+  id: AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection,Tide.VendorSdk.Classes.AdminKeys)
   isExtensionMethod: true
   parent: Microsoft.Extensions.DependencyInjection.TideExtension
   langs:
   - csharp
   - vb
-  name: AddTideEndpoint(IServiceCollection, VendorConfig)
-  nameWithType: TideExtension.AddTideEndpoint(IServiceCollection, VendorConfig)
-  fullName: Microsoft.Extensions.DependencyInjection.TideExtension.AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection, Tide.VendorSdk.Classes.VendorConfig)
+  name: AddTideEndpoint(IServiceCollection, AdminKeys)
+  nameWithType: TideExtension.AddTideEndpoint(IServiceCollection, AdminKeys)
+  fullName: Microsoft.Extensions.DependencyInjection.TideExtension.AddTideEndpoint(Microsoft.Extensions.DependencyInjection.IServiceCollection, Tide.VendorSdk.Classes.AdminKeys)
   type: Method
   source:
     remote:
@@ -68,18 +68,18 @@ items:
   - Tide.VendorSdk
   namespace: Microsoft.Extensions.DependencyInjection
   syntax:
-    content: public static IMvcBuilder AddTideEndpoint(this IServiceCollection services, VendorConfig config)
+    content: public static IMvcBuilder AddTideEndpoint(this IServiceCollection services, AdminKeys keys)
     parameters:
     - id: services
       type: Microsoft.Extensions.DependencyInjection.IServiceCollection
-    - id: config
-      type: Tide.VendorSdk.Classes.VendorConfig
+    - id: keys
+      type: Tide.VendorSdk.Classes.AdminKeys
     return:
       type: Microsoft.Extensions.DependencyInjection.IMvcBuilder
     content.vb: >-
       <ExtensionAttribute>
 
-      Public Shared Function AddTideEndpoint(services As IServiceCollection, config As VendorConfig) As IMvcBuilder
+      Public Shared Function AddTideEndpoint(services As IServiceCollection, keys As AdminKeys) As IMvcBuilder
   overload: Microsoft.Extensions.DependencyInjection.TideExtension.AddTideEndpoint*
   modifiers.csharp:
   - public
@@ -397,12 +397,12 @@ references:
   name: IServiceCollection
   nameWithType: IServiceCollection
   fullName: Microsoft.Extensions.DependencyInjection.IServiceCollection
-- uid: Tide.VendorSdk.Classes.VendorConfig
-  commentId: T:Tide.VendorSdk.Classes.VendorConfig
+- uid: Tide.VendorSdk.Classes.AdminKeys
+  commentId: T:Tide.VendorSdk.Classes.AdminKeys
   parent: Tide.VendorSdk.Classes
-  name: VendorConfig
-  nameWithType: VendorConfig
-  fullName: Tide.VendorSdk.Classes.VendorConfig
+  name: AdminKeys
+  nameWithType: AdminKeys
+  fullName: Tide.VendorSdk.Classes.AdminKeys
 - uid: Microsoft.Extensions.DependencyInjection.IMvcBuilder
   commentId: T:Microsoft.Extensions.DependencyInjection.IMvcBuilder
   parent: Microsoft.Extensions.DependencyInjection

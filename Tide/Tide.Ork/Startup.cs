@@ -31,9 +31,9 @@ namespace Tide.Ork {
             services.AddTransient<IEmailClient, MailKitClient>();
             services.AddTransient<OrkConfig>();
 
-            var inMemory = Configuration.GetValue<bool>("memory");
-            Console.WriteLine($"memory: {inMemory}");
-            if (inMemory)
+            //var inMemory = Configuration.GetValue<bool>("memory");
+            //Console.WriteLine($"memory: {inMemory}");
+            if (settings.Memory)
                 services.AddTransient<IKeyManagerFactory, MemoryFactory>();
             else
                 services.AddTransient<IKeyManagerFactory, SimulatorFactory>();

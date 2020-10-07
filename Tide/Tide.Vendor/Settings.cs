@@ -10,16 +10,5 @@ namespace Tide.Vendor {
         public string BearerKey { get; set; }
     }
 
-    public class AdminKeys
-    {
-        public string PrivateKey { get; set; }
-        public string SecretKey { get; set; }
-
-        public VendorConfig CreateVendorConfig() {
-            return new VendorConfig {
-                PrivateKey = C25519Key.Parse(Convert.FromBase64String(PrivateKey)),
-                SecretKey = AesKey.Parse(SecretKey)
-            };
-        }
-    }
+   
 }

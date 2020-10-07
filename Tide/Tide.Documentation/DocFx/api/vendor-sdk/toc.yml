@@ -12,6 +12,8 @@
 - uid: Tide.VendorSdk.Classes
   name: Tide.VendorSdk.Classes
   items:
+  - uid: Tide.VendorSdk.Classes.AdminKeys
+    name: AdminKeys
   - uid: Tide.VendorSdk.Classes.ByteEncoder
     name: ByteEncoder
   - uid: Tide.VendorSdk.Classes.Cipher

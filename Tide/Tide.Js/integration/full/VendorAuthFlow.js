@@ -1,4 +1,4 @@
-import Tide from "../../src/Sdk/Tide";
+import Tide from "../../src/Sdk/Tide-OLD";
 import request from "superagent";
 import Cipher from "../../src/Cipher";
 //import "../../dist/tide";

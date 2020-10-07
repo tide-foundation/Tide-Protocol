@@ -24,7 +24,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Instance
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 12
+    startLine: 13
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -65,7 +65,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: PrivateKey
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 14
+    startLine: 15
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -100,7 +100,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: SecretKey
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 15
+    startLine: 16
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -135,7 +135,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Username
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 16
+    startLine: 17
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -170,7 +170,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: GetPrivateKey
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 18
+    startLine: 19
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
@@ -202,7 +202,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: GetSecretKey
     path: ../../Tide.Ork/Models/Settings.cs
-    startLine: 19
+    startLine: 20
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork.Models
