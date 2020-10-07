@@ -69,11 +69,23 @@ namespace Tide.Ork.Controllers
         [HttpGet("prism/{uid}/{pass}")]
         public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string pass)
         {
-            var g = C25519Point.From(Convert.FromBase64String(pass.DecodeBase64Url()));
-            if (!g.IsValid) return BadRequest();
+            if (!pass.FromBase64UrlString(out byte[] bytesPass)) {
+                _logger.LogInformation($"Apply: Invalid pass for {uid}");
+                return BadRequest("Invalid parameters");
+            }
+            
+            var g = C25519Point.From(bytesPass);
+            if (!g.IsValid) {
+                _logger.LogInformation($"Apply: Invalid point for {uid}");
+                return BadRequest("Invalid parameters");
+            }
 
             var s = await _manager.GetPrism(uid);
-            if (s == BigInteger.Zero) return BadRequest("Invalid username.");
+            if (s == BigInteger.Zero) {
+                _logger.LogInformation($"Apply: Account {uid} does not exist");
+                return BadRequest("Invalid parameters");
+            }
+
             var gs = g * s;
 
             _logger.LogInformation($"Login attempt for {uid}", uid, pass);
@@ -88,17 +100,29 @@ namespace Tide.Ork.Controllers
         [HttpGet("auth/{uid}/{token}")]
         public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string token)
         {
-            var tran = TranToken.Parse(FromBase64(token));
+            if (!token.FromBase64UrlString(out byte[] bytesToken))
+            {
+                _logger.LogInformation($"Authenticate: Invalid token format for {uid}");
+                return Unauthorized();
+            }
 
+            var tran = TranToken.Parse(bytesToken);
             var account = await _manager.GetById(uid);
-            if (account == null || !tran.Check(account.PrismiAuth, uid.ToByteArray()))
-                return _logger.Log(Unauthorized($"Invalid account or signature"),
-                    $"Unsuccessful login for {uid} with {token}");
-            
-            if (!tran.OnTime)
-                return _logger.Log(StatusCode(418, new TranToken().ToString()), $"Expired token: {token}");
+            if (account == null || tran == null || !tran.Check(account.PrismiAuth, uid.ToByteArray())) {
+                if (account == null)
+                    _logger.LogInformation($"Authenticate: Account {uid} does not exist");
+                else
+                    _logger.LogInformation($"Authenticate: Invalid token for {uid}");
 
-            _logger.LogInformation($"Successful login for {uid}");
+                return Unauthorized("Invalid account or signature");
+            }
+            
+            if (!tran.OnTime) {
+                _logger.LogInformation($"Authenticate: Expired token for {uid}");
+                return StatusCode(418, new TranToken().ToString());
+            }
+
+            _logger.LogInformation($"Authenticate: Successful login for {uid}");
             return Ok(account.PrismiAuth.EncryptStr(account.Cmki.ToByteArray(true, true)));
         }
 

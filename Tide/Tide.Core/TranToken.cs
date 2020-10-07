@@ -63,6 +63,9 @@ namespace Tide.Core {
 
         public static TranToken Parse(IReadOnlyList<byte> bytes)
         {
+            if (bytes == null || bytes.Count != 32)
+                return null;
+            
             var id = BitConverter.ToUInt64(bytes.Take(8).ToArray());
             var ticks = BitConverter.ToInt64(bytes.Skip(8).Take(8).ToArray());
             var signature = bytes.Skip(16).ToArray();
