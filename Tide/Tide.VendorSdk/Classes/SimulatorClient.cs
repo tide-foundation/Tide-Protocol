@@ -43,8 +43,7 @@ namespace Tide.VendorSdk.Classes
 
         public (bool success, string error) ConfirmUser(string username)
         {
-           // if (!IsAuthenticated().Result) return (false, "Authentication failed");
-
+        
             var response = _client.GetAsync($"Simulator/ConfirmUser/{Helpers.GetTideId(username)}").Result;
 
             if (response.IsSuccessStatusCode) return (true, null);
@@ -53,7 +52,6 @@ namespace Tide.VendorSdk.Classes
 
         public (bool success, string error) RollbackUser(string username)
         {
-            // if (!IsAuthenticated().Result) return (false, "Authentication failed");
 
             var response = _client.GetAsync($"Simulator/RollbackUser/{Helpers.GetTideId(username)}").Result;
 
@@ -61,29 +59,5 @@ namespace Tide.VendorSdk.Classes
             return (false, response.Content.ReadAsStringAsync().Result);
         }
 
-
-        private async Task<bool> IsAuthenticated()
-        {
-            if (_client.DefaultRequestHeaders.Authorization == null)
-            {
-                var authResponse = await GetAuthResponse("Login");
-                if (!authResponse.Success)
-                {
-                    if (authResponse.Error == "Invalid Username") authResponse = await GetAuthResponse("Register");
-                    else return false;
-                }
-
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authResponse.Token);
-            }
-
-            return true;
-
-            async Task<AuthenticationResponse> GetAuthResponse(string path)
-            {
-                var r = await _client.PostAsync($"Authentication/{path}", new StringContent(JsonConvert.SerializeObject(_authRequest), Encoding.UTF8, "application/json"));
-                var j = await r.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<AuthenticationResponse>(j);
-            }
-        }
     }
 }

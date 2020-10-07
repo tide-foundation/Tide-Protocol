@@ -10,11 +10,12 @@ namespace Tide.Core {
 
         //}
 
-        public Transaction(string contract, string table, string scope, string index, object data)
+        public Transaction(string contract, string table, string scope, string index,string account, object data)
         {
             Id = Guid.NewGuid().ToString();
             DateCreated = DateTimeOffset.Now;
             Index = index;
+            Account = account;
             Data = data;
 
             Location = CreateLocation(contract, table, scope);
@@ -22,6 +23,9 @@ namespace Tide.Core {
 
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
+
+        [JsonProperty(PropertyName = "account")]
+        public string Account { get; set; }
 
         [JsonProperty(PropertyName = "location")]
         public string Location { get; set; }
@@ -38,6 +42,9 @@ namespace Tide.Core {
         // Payload
         [JsonProperty(PropertyName = "data")]
         public object Data { get; set; }
+
+        [JsonProperty(PropertyName = "sign")]
+        public byte[] Sign { get; set; }
 
 
 

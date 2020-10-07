@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SQLitePCL;
 using Tide.Core;
+using Tide.Encryption.Ecc;
 using Tide.Simulator.Classes;
 using Tide.Simulator.Models;
 // ReSharper disable InconsistentlySynchronizedField
@@ -20,10 +22,12 @@ namespace Tide.Simulator.Controllers {
         private readonly IBlockLayer _blockchain;
 
         private static readonly object WriteLock = new object();
+        private readonly IAuthentication _auth;
 
-        public SimulatorController(IBlockLayer blockchain)
+        public SimulatorController(IBlockLayer blockchain,IAuthentication auth)
         {
             _blockchain = blockchain;
+            _auth = auth;
         }
 
         [HttpGet("{contract}/{table}/{scope}")]
@@ -34,10 +38,6 @@ namespace Tide.Simulator.Controllers {
 
         [HttpGet("{contract}/{table}/{scope}/{index}")]
         public IActionResult Get([FromRoute] string contract, string table, string scope, string index) {
-
-          //  var tran =_blockchain.Read(contract, table, scope, index);
-          
-
             return Ok(_blockchain.Read(contract, table, scope, index));
         }
 
@@ -48,16 +48,31 @@ namespace Tide.Simulator.Controllers {
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Transaction payload)
-        {
+        public IActionResult Post([FromBody] Transaction transaction) {
+            var account = _auth.GetAccount(transaction.Account);
+            if (account == null) return Unauthorized("Account does not exist");
+
+            var serializedPayload = JsonConvert.SerializeObject(transaction.Data);
+
+            var publicKey = C25519Key.Parse(account.PublicKey);
+            if (!publicKey.Verify(Encoding.UTF8.GetBytes(serializedPayload), transaction.Sign)) return Unauthorized("Invalid signature");
+
             lock (WriteLock) {
-                return Ok(_blockchain.Write(payload));
+                return Ok(_blockchain.Write(transaction));
             }
         }
 
         [HttpDelete("{contract}/{table}/{scope}/{index}")]
-        public IActionResult Delete([FromRoute] string contract, string table, string scope, string index)
-        {
+        public IActionResult Delete([FromRoute] string contract, string table, string scope, string index) {
+
+            var sign = Convert.FromBase64String(Request.Headers.First(h => h.Key == "sign").Value);
+
+            var transaction = _blockchain.Read(contract, table, scope, index);
+            var account = _auth.GetAccount(transaction.Account);
+
+            var publicKey = C25519Key.Parse(account.PublicKey);
+            if (!publicKey.Verify(Encoding.UTF8.GetBytes(transaction.Id),sign)) return Unauthorized("Invalid signature");
+
             lock (WriteLock)
             {
                 return Ok(_blockchain.SetStale(contract, table, scope, index));

@@ -6,17 +6,18 @@
             // Used for deserialization
         }
 
-        public AuthenticationRequest(string username, string password) {
-            Username = username;
-            Password = password;
+        public AuthenticationRequest(string orkId, string publicKey) {
+            OrkId = orkId;
+            PublicKey = publicKey;
         }
-        public string Username { get; set; }
-        public string Password { get; set; }
+
+        
+        public string OrkId { get; set; }
+        public string PublicKey { get; set; }
     }
 
     public class AuthenticationResponse {
         public bool Success { get; set; }
-        public string Token { get; set; }
         public string Error { get; set; }
     }
 }

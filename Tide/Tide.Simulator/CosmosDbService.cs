@@ -12,13 +12,16 @@ using Tide.Simulator.Models;
 
 namespace Tide.Simulator {
     public class CosmosDbService : IBlockLayer {
-        private readonly Container _container;
+        private readonly Container _transactionContainer;
         private readonly IHubContext<SimulatorHub> _hub;
 
+        private const string TRANSACTION_CONTAINER = "Transactions";
+        private const string ACCOUNT_CONTAINER = "Accounts";
+       
         public CosmosDbService(Settings settings, IHubContext<SimulatorHub> hub) {
             _hub = hub;
             var db = settings.CosmosDbSettings.Database;
-            var container = settings.CosmosDbSettings.Container;
+        
             var client = new CosmosClientBuilder(settings.CosmosDbSettings.Connection)
                 .WithSerializerOptions(new CosmosSerializationOptions {
                     PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
@@ -26,9 +29,10 @@ namespace Tide.Simulator {
                 .Build();
 
             var database = client.CreateDatabaseIfNotExistsAsync(db).Result;
-            database.Database.CreateContainerIfNotExistsAsync(container, "/location").Wait();
 
-            _container = client.GetContainer(db, container);
+            database.Database.CreateContainerIfNotExistsAsync(TRANSACTION_CONTAINER, "/location").Wait();
+            _transactionContainer = client.GetContainer(db, TRANSACTION_CONTAINER);
+
         }
 
         public bool Write(Transaction block) {
@@ -37,7 +41,7 @@ namespace Tide.Simulator {
 
         public bool Write(List<Transaction> blocks)
         {
-            var batch = _container.CreateTransactionalBatch(new PartitionKey(blocks.First().Location));
+            var batch = _transactionContainer.CreateTransactionalBatch(new PartitionKey(blocks.First().Location));
             foreach (var transaction in blocks) {
                 batch = CreateStaleBatch(batch, transaction.Location, transaction.Index);
                 batch.CreateItem(transaction);
@@ -61,7 +65,7 @@ namespace Tide.Simulator {
         public List<Transaction> Read(string contract, string table, string scope, KeyValuePair<string,string> index)
         {
             var queryDefinition = new QueryDefinition($"select * from c where c.location = '{Transaction.CreateLocation(contract,table,scope)}' AND c.data['{index.Key}'] = '{index.Value}'");
-            var query = _container.GetItemQueryIterator<Transaction>(queryDefinition);
+            var query = _transactionContainer.GetItemQueryIterator<Transaction>(queryDefinition);
             var results = new List<Transaction>();
             while (query.HasMoreResults) results.AddRange(query.ReadNextAsync().Result);
             return results.ToList();
@@ -72,7 +76,7 @@ namespace Tide.Simulator {
         }
 
         public List<Transaction> Read(string contract, string table, string scope) {
-            return _container.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == Transaction.CreateLocation(contract, table, scope) && !t.Stale).ToList();
+            return _transactionContainer.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == Transaction.CreateLocation(contract, table, scope) && !t.Stale).ToList();
         }
 
         public bool SetStale(string contract, string table, string scope, string index) {
@@ -82,11 +86,11 @@ namespace Tide.Simulator {
 
         public List<Transaction> ReadHistoric(string contract, string table, string scope, string index)
         {
-            return _container.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == Transaction.CreateLocation(contract, table, scope) && t.Index == index).ToList();
+            return _transactionContainer.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == Transaction.CreateLocation(contract, table, scope) && t.Index == index).ToList();
         }
 
         public List<Transaction> ReadHistoric() {
-            return _container.GetItemLinqQueryable<Transaction>(true).ToList();
+            return _transactionContainer.GetItemLinqQueryable<Transaction>(true).ToList();
         }
 
         #region Helpers
@@ -96,12 +100,12 @@ namespace Tide.Simulator {
         }
 
         private Transaction Fetch(string location, string index) {
-            return _container.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == location && t.Index == index && !t.Stale).AsEnumerable().FirstOrDefault();
+            return _transactionContainer.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == location && t.Index == index && !t.Stale).AsEnumerable().FirstOrDefault();
         }
 
 
         private TransactionalBatch CreateStaleBatch(TransactionalBatch batch, string location, string index) {
-            if(batch == null) batch = _container.CreateTransactionalBatch(new PartitionKey(location));
+            if(batch == null) batch = _transactionContainer.CreateTransactionalBatch(new PartitionKey(location));
             var transaction = Fetch(location, index);
             if (transaction == null) return batch;
             transaction.Stale = true;

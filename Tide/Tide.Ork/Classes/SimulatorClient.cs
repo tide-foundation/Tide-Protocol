@@ -10,18 +10,41 @@ using System.Web;
 using Microsoft.Extensions.Logging;
 using Tide.Core;
 using Newtonsoft.Json;
+using Tide.Encryption.Ecc;
 using Tide.Ork.Controllers;
 
 namespace Tide.Ork.Classes {
     public class SimulatorClient {
         private readonly HttpClient _client;
+        private readonly C25519Key _private;
+        private readonly string _orkId;
+        private bool _registered;
 
-        public SimulatorClient(string url, string orkId, string password) {
+        public SimulatorClient(string url,string orkId, C25519Key privateKey) {
+            _private = privateKey;
+            _orkId = orkId;
             _client = new HttpClient {BaseAddress = new Uri(url)};
         }
 
+        private async Task<bool> Authenticated() {
+            if (_registered) return true;
+
+            var stringContent = new StringContent(JsonConvert.SerializeObject(new AuthenticationRequest(_orkId,_private.GetPublic().ToString())), Encoding.UTF8, "application/json");
+            var response = (await _client.PostAsync("Authentication", stringContent));
+
+            _registered = response.IsSuccessStatusCode;
+            if (!_registered) Console.Write($"Ork was not authorized to write transaction. Error: {await response.Content.ReadAsStringAsync()}");
+
+            return _registered;
+        }
+
         public async Task<bool> Post(string contract, string table, string scope, string index, object payload) {
-            var blockData = new Transaction(contract, table, scope, index, payload);
+            if (!await Authenticated()) return false;
+            var blockData = new Transaction(contract, table, scope, index, _orkId, payload);
+
+            var serializedPayload  = JsonConvert.SerializeObject(blockData.Data);
+            blockData.Sign = _private.Sign(Encoding.UTF8.GetBytes(serializedPayload));
+
             var stringContent = new StringContent(JsonConvert.SerializeObject(blockData), Encoding.UTF8, "application/json");
             var response = (await _client.PostAsync("Simulator", stringContent));
             
@@ -29,41 +52,48 @@ namespace Tide.Ork.Classes {
         }
 
         public async Task<string> Get(string contract, string table, string scope, string index) {
-            HttpResponseMessage response = null;
             try {
-                response = await _client.GetAsync(GeneratePath(contract, table, scope, index));
-                var transaction = JsonConvert.DeserializeObject<Transaction>(await response.Content.ReadAsStringAsync());
-                return transaction.Data.ToString();
+                return (await FetchTransaction<Transaction>(GeneratePath(contract, table, scope, index))).Data.ToString();
             }
-            catch (Exception) {
-                
-                Console.Write($"FAILED GATHERING DATA FOR: {GeneratePath(contract, table, scope, index)}. RESPONSE: {response.Content.ReadAsStringAsync().Result}");
+            catch (Exception e) {
+                Console.Write($"FAILED GATHERING DATA FOR: {GeneratePath(contract, table, scope, index)}. RESPONSE: {e.Message}");
                 return null;
             }
-          
         }
 
         public async Task<List<string>> Get(string contract, string table, string scope)
         {
             try {
-                var response = await _client.GetAsync(GeneratePath(contract, table, scope, null));
-                var transaction = JsonConvert.DeserializeObject<List<Transaction>>(await response.Content.ReadAsStringAsync());
-                return transaction.Select(t => t.Data.ToString()).ToList();
+                var transactions = await FetchTransaction<List<Transaction>>(GeneratePath(contract, table, scope,null));
+                return transactions.Select(t => t.Data.ToString()).ToList();
             }
-            catch (Exception) {
-                Console.Write($"FAILED GATHERING DATA FOR: {GeneratePath(contract, table, scope, null)}");
+            catch (Exception e) {
+                Console.Write($"FAILED GATHERING DATA FOR: {GeneratePath(contract, table, scope, null)}. RESPONSE: {e.Message}");
                 return null;
             }
-          
         }
 
         public async Task<bool> Delete(string contract, string table, string scope, string index)
         {
-            return (await _client.DeleteAsync(GeneratePath(contract,table,scope,index))).IsSuccessStatusCode;
+            if (!await Authenticated()) return false;
+
+            var transaction = await FetchTransaction<Transaction>(GeneratePath(contract, table, scope, index));
+            var sign = Convert.ToBase64String(_private.Sign(Encoding.UTF8.GetBytes(transaction.Id)));
+
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Delete, GeneratePath(contract, table, scope, index))) {
+                requestMessage.Headers.Add("sign", sign);
+                var result = await _client.SendAsync(requestMessage);
+                return result.IsSuccessStatusCode;
+            }
         }
 
         private string GeneratePath(string contract, string table, string scope, string index) {
             return $"Simulator/{contract}/{table}/{scope}{(string.IsNullOrEmpty(index) ? "" : $"/{index}")}";
+        }
+
+        private async Task<T> FetchTransaction<T>(string location) {
+            var response = await _client.GetAsync(location);
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
         }
     }
 }

@@ -39,8 +39,7 @@ namespace Tide.Simulator {
                     ValidateAudience = false
                 };
             });
-
-            services.AddDbContext<BlockchainContext>(options => { options.UseSqlServer(settings.Connection, builder => builder.CommandTimeout(6000)); });
+            services.AddDbContext<AccountContext>(options => options.UseSqlite(settings.AccountConnection));
             services.AddScoped<IAuthentication, Authentication>();
 
             // TODO: Ask Jose for help making this a factory implementation

@@ -12,14 +12,11 @@ namespace Tide.Simulator.Controllers {
             _auth = auth;
         }
 
-        [HttpPost("Register")]
-        public AuthenticationResponse Register([FromBody] AuthenticationRequest request) {
-            return _auth.Register(request);
-        }
-
-        [HttpPost("Login")]
-        public AuthenticationResponse Login([FromBody] AuthenticationRequest request) {
-            return _auth.Login(request);
+        [HttpPost]
+        public IActionResult Register([FromBody] AuthenticationRequest request) {
+            var result = _auth.Register(request);
+            if (result.success) return Ok();
+            return BadRequest(result.error);
         }
     }
 }
