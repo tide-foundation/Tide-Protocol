@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using Tide.Encryption.Tools;
 
 namespace Microsoft.Extensions.Logging
 {
@@ -23,5 +24,19 @@ namespace Microsoft.Extensions.Logging
             logger.LogInformation(message);
             return result;
         }
+
+        public static bool FromBase64UrlString(this string data, out byte[] bytes)
+        {
+            try
+            {
+                bytes = Convert.FromBase64String(data.DecodeBase64Url());
+                return true;
+            }
+            catch
+            {
+                bytes = null;
+                return false;
+            }
+        }        
     }
 }

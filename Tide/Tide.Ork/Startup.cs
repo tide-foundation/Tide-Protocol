@@ -29,12 +29,15 @@ namespace Tide.Ork {
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
             services.AddTransient<IEmailClient, MailKitClient>();
-            services.AddTransient<IKeyManagerFactory, MemoryFactory>();
             services.AddTransient<OrkConfig>();
 
-          
+            var inMemory = Configuration.GetValue<bool>("memory");
+            Console.WriteLine($"memory: {inMemory}");
+            if (inMemory)
+                services.AddTransient<IKeyManagerFactory, MemoryFactory>();
+            else
+                services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
         }
-
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
