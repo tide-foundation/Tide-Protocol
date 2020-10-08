@@ -48,6 +48,9 @@ namespace Tide.Ork.Classes {
             var stringContent = new StringContent(JsonConvert.SerializeObject(blockData), Encoding.UTF8, "application/json");
             var response = (await _client.PostAsync("Simulator", stringContent));
             
+            if (!response.IsSuccessStatusCode)
+                Console.Write($"FAILED POST DATA FOR: {contract} {table} {scope} {index} RESPONSE: {response.Content.ReadAsStringAsync()}");
+            
             return response.IsSuccessStatusCode;
         }
 
