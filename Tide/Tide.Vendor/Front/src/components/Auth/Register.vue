@@ -11,6 +11,13 @@
                 <input type="password" id="password" v-model="user.password" />
             </div>
             <div class="form-group">
+                <label>Ork Count</label>
+                <select v-model="orkCount">
+                    <option v-for="i in 20" :key="i" :value="i">{{ i }}</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <button type="submit">REGISTER</button>
             </div>
             <p>OR</p>
@@ -25,16 +32,29 @@ export default {
     data() {
         return {
             user: {
-                email: "thrakmar@gmail.com",
+                email: "john@wick.com",
                 password: "password",
             },
+            orkCount: 10,
         };
+    },
+    created() {
+        try {
+            this.orkCount = localStorage.getItem("count");
+        } catch (error) {}
+    },
+    watch: {
+        orkCount: function (val) {
+            localStorage.setItem("count", val);
+        },
     },
     methods: {
         async register() {
             try {
                 this.$loading(true, "Registering...");
-                var signUpResult = await this.$tide.register(this.user.email, this.user.password, this.user.email, this.$store.getters.tempOrksToUse);
+                const orks = await this.$store.dispatch("getTempOrks", this.orkCount);
+
+                var signUpResult = await this.$tide.register(this.user.email, this.user.password, this.user.email, orks);
 
                 var userData = {
                     id: signUpResult.vuid.toString(),

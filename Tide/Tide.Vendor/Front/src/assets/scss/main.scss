@@ -6,16 +6,19 @@ html,
 body {
   font-family: "Montserrat", sans-serif;
 }
+
 form {
   width: 100%;
   text-align: center;
 
   .form-group {
     width: 100%;
+
     label {
       text-align: left;
       display: block;
     }
+
     input {
       margin-bottom: 7px;
       height: $input-height;
@@ -24,8 +27,15 @@ form {
     }
 
     button {
-      width: 100%;
+      width: calc(100% + 10px);
       height: $input-height;
+      height: 27px;
+    }
+
+    select {
+      width: calc(100% + 10px);
+      height: 27px;
+      margin-bottom: 7px;
     }
   }
 }
@@ -33,6 +43,7 @@ form {
 .link {
   color: rgb(0, 132, 255);
   cursor: pointer;
+
   &:hover {
     color: rgb(255, 123, 0);
   }

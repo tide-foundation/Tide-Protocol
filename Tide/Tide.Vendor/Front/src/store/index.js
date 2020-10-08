@@ -5,19 +5,20 @@ import router from "../router";
 Vue.use(Vuex);
 
 var orks = [];
-for (let i = 0; i < 3; i++) {
+for (let i = 0; i < 20; i++) {
   orks.push({
     id: i,
+    url: `https://pdork${i + 1}.azurewebsites.net`,
     // url: `https://dork${i + 1}.azurewebsites.net`,
     // url: `https://ork-${i}.azurewebsites.net`,
-    url: `http://localhost:500${i + 1}`,
+    //url: `http://localhost:500${i + 1}`,
     cmk: false,
     cvk: false,
   });
 }
 
-//var vendorUrl = "https://tidevendor.azurewebsites.net";
-var vendorUrl = "http://127.0.0.1:6001";
+var vendorUrl = "https://tidevendor.azurewebsites.net";
+//var vendorUrl = "http://127.0.0.1:6001";
 
 export default new Vuex.Store({
   state: {
@@ -43,7 +44,9 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    getDeals(context, user) {},
+    getTempOrks(context, count) {
+      return context.state.orks.filter((o) => o.id < count).map((o) => o.url);
+    },
   },
   modules: {},
   getters: {

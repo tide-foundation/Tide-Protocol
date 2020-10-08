@@ -26,17 +26,17 @@ namespace Tide.Ork.Classes {
             _client = new HttpClient {BaseAddress = new Uri(url)};
         }
 
-        private async Task<bool> Authenticated() {
-            if (_registered) return true;
+        //private async Task<bool> Authenticated() {
+        //    if (_registered) return true;
 
-            var stringContent = new StringContent(JsonConvert.SerializeObject(new AuthenticationRequest(_orkId,_private.GetPublic().ToString())), Encoding.UTF8, "application/json");
-            var response = (await _client.PostAsync("Authentication", stringContent));
+        //    var stringContent = new StringContent(JsonConvert.SerializeObject(new AuthenticationRequest(_orkId,_private.GetPublic().ToString())), Encoding.UTF8, "application/json");
+        //    var response = (await _client.PostAsync("Authentication", stringContent));
 
-            _registered = response.IsSuccessStatusCode;
-            if (!_registered) Console.Write($"Ork was not authorized to write transaction. Error: {await response.Content.ReadAsStringAsync()}");
+        //    _registered = response.IsSuccessStatusCode;
+        //    if (!_registered) Console.Write($"Ork was not authorized to write transaction. Error: {await response.Content.ReadAsStringAsync()}");
 
-            return _registered;
-        }
+        //    return _registered;
+        //}
 
         public async Task<(bool success,string error)> Post(string contract, string table, string scope, string index, object payload) {
             //if (!await Authenticated()) return (false,"not authenticated");
