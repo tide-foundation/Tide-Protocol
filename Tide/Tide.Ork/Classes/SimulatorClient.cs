@@ -54,7 +54,7 @@ namespace Tide.Ork.Classes {
 
         public async Task<string> Get(string contract, string table, string scope, string index) {
             try {
-                return (await FetchTransaction<Transaction>(GeneratePath(contract, table, scope, index))).Data.ToString();
+                return (await FetchTransaction<Transaction>(GeneratePath(contract, table, scope, index))).Data;
             }
             catch (Exception e) {
                 Console.Write($"FAILED GATHERING DATA FOR: {GeneratePath(contract, table, scope, index)}. RESPONSE: {e.Message}");
@@ -66,7 +66,7 @@ namespace Tide.Ork.Classes {
         {
             try {
                 var transactions = await FetchTransaction<List<Transaction>>(GeneratePath(contract, table, scope,null));
-                return transactions.Select(t => t.Data.ToString()).ToList();
+                return transactions.Select(t => t.Data).ToList();
             }
             catch (Exception e) {
                 Console.Write($"FAILED GATHERING DATA FOR: {GeneratePath(contract, table, scope, null)}. RESPONSE: {e.Message}");
@@ -78,14 +78,15 @@ namespace Tide.Ork.Classes {
         {
            // if (!await Authenticated()) return false;
 
-            var transaction = await FetchTransaction<Transaction>(GeneratePath(contract, table, scope, index));
-            var sign = Convert.ToBase64String(_private.Sign(Encoding.UTF8.GetBytes(transaction.Id)));
+            //var transaction = await FetchTransaction<Transaction>(GeneratePath(contract, table, scope, index));
+            //var sign = Convert.ToBase64String(_private.Sign(Encoding.UTF8.GetBytes(transaction.Id)));
 
-            using (var requestMessage = new HttpRequestMessage(HttpMethod.Delete, GeneratePath(contract, table, scope, index))) {
-                requestMessage.Headers.Add("sign", sign);
-                var result = await _client.SendAsync(requestMessage);
-                return result.IsSuccessStatusCode;
-            }
+            //using (var requestMessage = new HttpRequestMessage(HttpMethod.Delete, GeneratePath(contract, table, scope, index))) {
+            //    requestMessage.Headers.Add("sign", sign);
+            //    var result = await _client.SendAsync(requestMessage);
+            //    return result.IsSuccessStatusCode;
+            //}
+            return false;
         }
 
         private string GeneratePath(string contract, string table, string scope, string index) {

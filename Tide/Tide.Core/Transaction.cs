@@ -12,7 +12,6 @@ namespace Tide.Core {
 
         public Transaction(string contract, string table, string scope, string index,string account, object data)
         {
-            Id = Guid.NewGuid().ToString();
             DateCreated = DateTimeOffset.Now;
             Index = index;
             Account = account;
@@ -22,7 +21,7 @@ namespace Tide.Core {
         }
 
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty(PropertyName = "account")]
         public string Account { get; set; }

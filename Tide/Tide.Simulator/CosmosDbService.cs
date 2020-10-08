@@ -109,7 +109,8 @@ namespace Tide.Simulator {
             if (transaction == null) return batch;
             transaction.Stale = true;
 
-            return batch.ReplaceItem(transaction.Id, transaction);
+            return null;
+           // return batch.ReplaceItem(transaction.Id, transaction);
         }
         #endregion
 

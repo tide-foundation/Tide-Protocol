@@ -49,7 +49,7 @@ namespace Tide.Simulator.Classes {
                     catch (Exception e)
                     {
                         transaction.Rollback();
-                        return (false,e.Message);
+                        return (false,e.InnerException.Message);
                     }
                 }
 

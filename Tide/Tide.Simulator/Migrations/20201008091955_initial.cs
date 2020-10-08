@@ -11,7 +11,8 @@ namespace Tide.Simulator.Migrations
                 name: "Transactions",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Account = table.Column<string>(nullable: true),
                     Location = table.Column<string>(nullable: true),
                     Index = table.Column<string>(nullable: true),

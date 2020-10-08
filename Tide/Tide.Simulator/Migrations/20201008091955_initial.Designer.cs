@@ -10,7 +10,7 @@ using Tide.Simulator;
 namespace Tide.Simulator.Migrations
 {
     [DbContext(typeof(BlockchainContext))]
-    [Migration("20201008085608_initial")]
+    [Migration("20201008091955_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,8 +23,10 @@ namespace Tide.Simulator.Migrations
 
             modelBuilder.Entity("Tide.Core.Transaction", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Account")
                         .HasColumnType("nvarchar(max)");
