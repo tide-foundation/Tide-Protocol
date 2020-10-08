@@ -6,119 +6,100 @@ using Tide.Core;
 using Tide.Simulator.Models;
 
 namespace Tide.Simulator.Classes {
-    //public class SqlBlockLayer : IBlockLayer
-    //{
-    //    private readonly BlockchainContext _context;
-    //    private readonly IHubContext<SimulatorHub> _hub;
+    public class SqlBlockLayer : IBlockLayer
+    {
+        private readonly BlockchainContext _context;
+      
+        public SqlBlockLayer(BlockchainContext context)
+        {
+            _context = context;
 
-    //    public SqlBlockLayer(BlockchainContext context, IHubContext<SimulatorHub> hub)
-    //    {
-    //        _context = context;
-    //        _hub = hub;
-    //    }
+        }
 
-    //    public bool Write(List<Transaction> blocks)
-    //    {
-    //        return false;
-    //        //var writtenBlocks = new List<Transaction>();
-    //        //using (var transaction = _context.Database.BeginTransaction())
-    //        //{
-    //        //    foreach (var blockData in blocks)
-    //        //    {
-    //        //        try
-    //        //        {
-    //        //            var currentData = _context.Data.FirstOrDefault(d =>
-    //        //                d.Index == blockData.Index &&
-    //        //                d.Contract == blockData.Contract &&
-    //        //                d.Table == blockData.Table &&
-    //        //                d.Scope == blockData.Scope &&
-    //        //                !d.Stale);
+        public (bool success, string error) Write(Transaction transaction) {
+            return Write(new List<Transaction>() { transaction });
+        }
 
-    //        //            if (currentData != null)
-    //        //            {
-    //        //                currentData.Stale = true;
-    //        //                _context.Update(currentData);
-    //        //            }
+        public (bool success, string error) Write(List<Transaction> transactions) {
+          
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                foreach (var blockData in transactions)
+                {
+                    try
+                    {
+                        var currentData = _context.Transactions.FirstOrDefault(d =>
+                            d.Index == blockData.Index &&
+                            d.Location == blockData.Location &&
+                            !d.Stale);
 
-    //        //            blockData.DateCreated = DateTimeOffset.Now;
-    //        //            blockData.Stale = false;
+                        if (currentData != null)
+                        {
+                            currentData.Stale = true;
+                            _context.Update(currentData);
+                        }
 
-    //        //            _context.Add(blockData);
+                        blockData.DateCreated = DateTimeOffset.Now;
+                        blockData.Stale = false;
 
-    //        //            _context.SaveChanges();
-    //        //            writtenBlocks.Add(blockData);
-    //        //        }
-    //        //        catch (Exception)
-    //        //        {
-    //        //            transaction.Rollback();
-    //        //            return false;
-    //        //        }
-    //        //    }
+                        _context.Add(blockData);
 
-    //        //    transaction.Commit();
+                        _context.SaveChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        return (false,e.Message);
+                    }
+                }
 
-    //        //    foreach (var blockData in writtenBlocks)
-    //        //    {
-    //        //        _hub.Clients.All.SendAsync("NewBlock", blockData);
-    //        //    }
+                transaction.Commit();
 
-    //        //    return true;
-    //        //}
-    //    }
+          
 
-    //    public bool Write(Transaction transaction)
-    //    {
-    //        return Write(new List<Transaction>() { transaction });
-    //    }
+                return (true,null);
+            }
+        }
 
-    //    public string Read(string contract, string table, string scope, string index)
-    //    {
-    //        return null;
-    //        //var currentData = _context.Data.FirstOrDefault(d =>
-    //        //    d.Index == index &&
-    //        //    d.Contract == contract &&
-    //        //    d.Table == table &&
-    //        //    d.Scope == scope &&
-    //        //    !d.Stale);
+        public Transaction Read(string contract, string table, string scope, string index) {
+            return _context.Transactions.FirstOrDefault(d =>
+                d.Index == index &&
+                d.Location == Transaction.CreateLocation(contract, table, scope) &&
+                !d.Stale);
+        }
 
-    //        //return currentData?.Data;
-    //    }
+        public List<Transaction> Read(string contract, string table, string scope) {
+            return _context.Transactions.Where(d =>
+                d.Location == Transaction.CreateLocation(contract, table, scope) &&
+                !d.Stale).ToList();
+        }
 
-    //    public List<string> Read(string contract, string table, string scope)
-    //    {
-    //        return null;
-    //        //return _context.Data.Where(d =>
-    //        //    d.Contract == contract &&
-    //        //    d.Table == table &&
-    //        //    d.Scope == scope &&
-    //        //    !d.Stale).Select(d => d.Data).ToList();
-    //    }
+        public List<Transaction> Read(string contract, string table, string scope, KeyValuePair<string, string> index) {
+            throw new NotImplementedException();
+        }
 
-    //    public bool SetStale(string contract, string table, string scope, string index)
-    //    {
-    //        return false;
-    //        //var currentData = _context.Data.FirstOrDefault(d =>
-    //        //    d.Index == index &&
-    //        //    d.Contract == contract &&
-    //        //    d.Table == table &&
-    //        //    d.Scope == scope &&
-    //        //    !d.Stale);
+        public bool SetStale(string contract, string table, string scope, string index) {
+            var currentData = _context.Transactions.FirstOrDefault(d =>
+                d.Index == index &&
+                d.Location == Transaction.CreateLocation(contract, table, scope) &&
+                !d.Stale);
 
-    //        //if (currentData == null) return false;
-    //        //currentData.Stale = true;
+            if (currentData == null) return false;
+            currentData.Stale = true;
 
-    //        //_context.SaveChanges();
-    //        //return true;
-    //    }
+            _context.SaveChanges();
+            return true;
+        }
 
-    //    public List<Transaction> ReadHistoric(string contract, string table, string scope, string index) {
-    //        return null;
-    //        //return _context.Data.Where(d =>
-    //        //    d.Index == index &&
-    //        //    d.Contract == contract &&
-    //        //    d.Table == table &&
-    //        //    d.Scope == scope).ToList();
-    //    }
-    //}
+        public List<Transaction> ReadHistoric(string contract, string table, string scope, string index) {
+            return _context.Transactions.Where(d =>
+                d.Index == index &&
+                d.Location == Transaction.CreateLocation(contract, table, scope)).ToList();
+        }
+
+        public List<Transaction> ReadHistoric() {
+            return _context.Transactions.ToList();
+        }
+    }
 
 }

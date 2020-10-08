@@ -5,10 +5,10 @@ namespace Tide.Core {
     public class Transaction
     {
 
-        //public Transaction()
-        //{
+        public Transaction()
+        {
 
-        //}
+        }
 
         public Transaction(string contract, string table, string scope, string index,string account, object data)
         {
@@ -16,7 +16,7 @@ namespace Tide.Core {
             DateCreated = DateTimeOffset.Now;
             Index = index;
             Account = account;
-            Data = data;
+            Data = JsonConvert.SerializeObject(data);
 
             Location = CreateLocation(contract, table, scope);
         }
@@ -41,7 +41,7 @@ namespace Tide.Core {
 
         // Payload
         [JsonProperty(PropertyName = "data")]
-        public object Data { get; set; }
+        public string Data { get; set; }
 
         [JsonProperty(PropertyName = "sign")]
         public byte[] Sign { get; set; }

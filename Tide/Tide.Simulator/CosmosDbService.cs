@@ -56,17 +56,7 @@ namespace Tide.Simulator {
                 return (false, e.Message);
          
             }
-          
-            //if (batch.ExecuteAsync().Result.IsSuccessStatusCode)
-            //{
-            //    foreach (var blockData in blocks)
-            //    {
-            //        _hub.Clients.All.SendAsync("NewBlock", blockData);
-            //    }
-            //    return true;
-            //}
 
-            //return false;
         }
 
    
