@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Tide.Encryption.AesMAC;
 using Tide.Vendor.Models;
 using Tide.VendorSdk.Classes;
 
@@ -31,6 +33,9 @@ namespace Tide.Vendor
 
         public void ConfigureServices(IServiceCollection services)
         {
+        
+
+
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
             services.AddSingleton(settings);

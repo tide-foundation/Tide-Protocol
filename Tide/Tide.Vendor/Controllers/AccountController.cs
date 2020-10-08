@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Vendor.Models;
 using Tide.VendorSdk.Classes;
@@ -26,11 +27,7 @@ namespace Tide.Vendor.Controllers
             _settings = settings;
         }
 
-        [HttpGet]
-        public bool Test() {
-            return true;
-        }
-
+    
         [HttpPost]
         public ActionResult CreateAccount([FromBody] User user) {
             Context.Add(user);
@@ -43,7 +40,11 @@ namespace Tide.Vendor.Controllers
 
         [HttpGet("{vuid}")]
         public ActionResult Login([FromRoute]string vuid) {
-            return Ok(GenerateToken(vuid)); // TODO: Encrypt this with the cvk pub
+            var account = Context.Users.First(u => u.Id == vuid);
+            var jwt = GenerateToken(vuid);
+            var pubKey = AesKey.Parse(account.VendorKey);
+
+            return Ok(pubKey.Encrypt("Hey matt")); // TODO: Encrypt this with the cvk pub
         }
 
         private string GenerateToken(string vuid)

@@ -38,8 +38,8 @@ namespace Tide.Ork.Classes {
             return _registered;
         }
 
-        public async Task<bool> Post(string contract, string table, string scope, string index, object payload) {
-            if (!await Authenticated()) return false;
+        public async Task<(bool success,string error)> Post(string contract, string table, string scope, string index, object payload) {
+            //if (!await Authenticated()) return (false,"not authenticated");
             var blockData = new Transaction(contract, table, scope, index, _orkId, payload);
 
             var serializedPayload  = JsonConvert.SerializeObject(blockData.Data);
@@ -47,11 +47,9 @@ namespace Tide.Ork.Classes {
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(blockData), Encoding.UTF8, "application/json");
             var response = (await _client.PostAsync("Simulator", stringContent));
-            
-            if (!response.IsSuccessStatusCode)
-                Console.Write($"FAILED POST DATA FOR: {contract} {table} {scope} {index} RESPONSE: {response.Content.ReadAsStringAsync()}");
-            
-            return response.IsSuccessStatusCode;
+
+            if (response.IsSuccessStatusCode) return (true, null);
+            return (false, await response.Content.ReadAsStringAsync());
         }
 
         public async Task<string> Get(string contract, string table, string scope, string index) {
@@ -78,7 +76,7 @@ namespace Tide.Ork.Classes {
 
         public async Task<bool> Delete(string contract, string table, string scope, string index)
         {
-            if (!await Authenticated()) return false;
+           // if (!await Authenticated()) return false;
 
             var transaction = await FetchTransaction<Transaction>(GeneratePath(contract, table, scope, index));
             var sign = Convert.ToBase64String(_private.Sign(Encoding.UTF8.GetBytes(transaction.Id)));

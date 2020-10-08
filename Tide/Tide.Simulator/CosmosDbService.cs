@@ -13,13 +13,12 @@ using Tide.Simulator.Models;
 namespace Tide.Simulator {
     public class CosmosDbService : IBlockLayer {
         private readonly Container _transactionContainer;
-        private readonly IHubContext<SimulatorHub> _hub;
-
+ 
         private const string TRANSACTION_CONTAINER = "Transactions";
         private const string ACCOUNT_CONTAINER = "Accounts";
        
-        public CosmosDbService(Settings settings, IHubContext<SimulatorHub> hub) {
-            _hub = hub;
+        public CosmosDbService(Settings settings) {
+        
             var db = settings.CosmosDbSettings.Database;
         
             var client = new CosmosClientBuilder(settings.CosmosDbSettings.Connection)
@@ -35,19 +34,29 @@ namespace Tide.Simulator {
 
         }
 
-        public bool Write(Transaction block) {
+        public (bool success, string error) Write(Transaction block) {
             return Write(new List<Transaction>() {block});
         }
 
-        public bool Write(List<Transaction> blocks)
+        public (bool success, string error) Write(List<Transaction> blocks)
         {
-            var batch = _transactionContainer.CreateTransactionalBatch(new PartitionKey(blocks.First().Location));
-            foreach (var transaction in blocks) {
-                batch = CreateStaleBatch(batch, transaction.Location, transaction.Index);
-                batch.CreateItem(transaction);
-            }
+            try {
+                var batch = _transactionContainer.CreateTransactionalBatch(new PartitionKey(blocks.First().Location));
+                foreach (var transaction in blocks)
+                {
+                    batch = CreateStaleBatch(batch, transaction.Location, transaction.Index);
+                    batch.CreateItem(transaction);
+                }
 
-            return batch.ExecuteAsync().Result.IsSuccessStatusCode;
+                if (batch.ExecuteAsync().Result.IsSuccessStatusCode) return (true, null);
+                return (false, batch.ExecuteAsync().Result.ErrorMessage);
+
+            }
+            catch (Exception e) {
+                return (false, e.Message);
+         
+            }
+          
             //if (batch.ExecuteAsync().Result.IsSuccessStatusCode)
             //{
             //    foreach (var blockData in blocks)

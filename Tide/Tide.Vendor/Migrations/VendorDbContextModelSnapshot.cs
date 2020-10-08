@@ -119,7 +119,7 @@ namespace Tide.Vendor.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PublicKey")
+                    b.Property<string>("VendorKey")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

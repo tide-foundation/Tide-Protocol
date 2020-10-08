@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -40,13 +39,11 @@ namespace Tide.Simulator {
                 };
             });
 
-            services.AddDbContext<AccountContext>(options => options.UseSqlite(settings.AccountConnection));
-            services.AddScoped<IAuthentication, Authentication>();
+           // services.AddDbContext<AccountContext>(options => options.UseSqlite(settings.AccountConnection));
+           // services.AddScoped<IAuthentication, Authentication>();
 
             // TODO: Ask Jose for help making this a factory implementation
             services.AddScoped<IBlockLayer, CosmosDbService>();
-
-            services.AddSignalR();
 
             services.AddControllers().AddNewtonsoftJson();
             services.AddCors();
@@ -76,7 +73,6 @@ namespace Tide.Simulator {
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
-                endpoints.MapHub<SimulatorHub>("/hub");
             });
         }
     }

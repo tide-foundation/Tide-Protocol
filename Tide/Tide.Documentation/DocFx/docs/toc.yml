@@ -28,3 +28,5 @@
       href: authentication/login.md
     - name: Password Management
       href: authentication/password-management.md
+    - name: Authorization
+      href: authentication/authorization.md

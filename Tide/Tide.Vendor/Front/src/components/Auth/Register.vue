@@ -38,10 +38,14 @@ export default {
 
                 var userData = {
                     id: signUpResult.vuid.toString(),
-                    publicKey: signUpResult.publicKey,
+                    vendorKey: signUpResult.vendorKey.toString(),
                 };
 
                 await request.post(`${this.$store.getters.vendorUrl}/account`).send(userData);
+
+                var jwt = await request.get(`${this.$store.getters.vendorUrl}/account/${userData.id}`);
+
+                var decrypt = this.$tide.decryptToken(jwt.body);
 
                 this.$parent.setUser(signUpResult);
             } catch (error) {

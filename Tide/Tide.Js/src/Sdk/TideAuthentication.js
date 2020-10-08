@@ -34,8 +34,8 @@ export default class TideAuthentication {
     return new Promise(async (resolve, reject) => {
       try {
         const flow = generateFlow(username, orks, this.config.serverUrl);
-        var { vuid, cvk } = await flow.signUp(password, email, orks.length);
-        this.account = new Account(username, vuid, cvk);
+        var { vuid, auth } = await flow.signUp(password, email, orks.length);
+        this.account = new Account(username, vuid, auth);
         return resolve(this.account);
       } catch (error) {
         reject(error);
@@ -58,8 +58,8 @@ export default class TideAuthentication {
     return new Promise(async (resolve, reject) => {
       try {
         const flow = generateFlow(username, getUserOrks(this.config), this.config.serverUrl);
-        var { vuid, cvk } = await flow.logIn(password);
-        this.account = new Account(username, vuid, cvk);
+        var { vuid, auth } = await flow.logIn(password);
+        this.account = new Account(username, vuid, auth);
         return resolve(this.account);
       } catch (error) {
         return reject(error);
@@ -92,6 +92,10 @@ export default class TideAuthentication {
         return reject(error);
       }
     });
+  }
+
+  decryptToken(cipher) {
+    return this.account.vendorKey.decryptStr(cipher);
   }
 }
 

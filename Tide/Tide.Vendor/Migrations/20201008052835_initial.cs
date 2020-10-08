@@ -12,9 +12,7 @@ namespace Tide.Vendor.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    Field1 = table.Column<string>(nullable: true),
-                    Field2 = table.Column<string>(nullable: true),
-                    CvkPub = table.Column<string>(nullable: true)
+                    VendorKey = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

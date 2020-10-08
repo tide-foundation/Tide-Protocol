@@ -10,8 +10,8 @@ using Tide.Vendor.Models;
 namespace Tide.Vendor.Migrations
 {
     [DbContext(typeof(VendorDbContext))]
-    [Migration("20201008025144_publickey")]
-    partial class publickey
+    [Migration("20201008052835_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,7 +121,7 @@ namespace Tide.Vendor.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PublicKey")
+                    b.Property<string>("VendorKey")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

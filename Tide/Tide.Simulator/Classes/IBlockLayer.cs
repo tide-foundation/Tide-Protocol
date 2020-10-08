@@ -18,8 +18,8 @@ namespace Tide.Simulator.Classes {
         /// <param name="index">The primary index for the data under the selected scope.</param>
         /// <param name="data">The payload you wish to save to the blockchain.</param>
         /// <returns>True if the write was successful</returns>
-        bool Write(Transaction block);
-        bool Write(List<Transaction> blocks);
+        (bool success,string error) Write(Transaction block);
+        (bool success, string error) Write(List<Transaction> blocks);
 
         /// <summary>
         ///     Read the newest version of this data block from the 'Blockchain'.

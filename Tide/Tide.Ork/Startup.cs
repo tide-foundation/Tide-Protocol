@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Tide.Core;
+using Tide.Encryption.AesMAC;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
@@ -30,6 +31,11 @@ namespace Tide.Ork {
             services.AddMemoryCache();
             services.AddTransient<IEmailClient, MailKitClient>();
             services.AddTransient<OrkConfig>();
+
+
+
+      
+
 
             //var inMemory = Configuration.GetValue<bool>("memory");
             //Console.WriteLine($"memory: {inMemory}");

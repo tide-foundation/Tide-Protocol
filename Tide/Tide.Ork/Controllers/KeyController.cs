@@ -46,10 +46,10 @@ namespace Tide.Ork.Controllers {
         public async Task<ActionResult> SetOrUpdate([FromBody] KeyIdVaultDTO key)
         {
             var result = await _manager.SetOrUpdate(key);
+            if(result.Success) _logger.LogInformation($"Key added for {key.KeyId}");
+            else _logger.LogError(result.Error);
 
-            _logger.LogInformation($"Key added for {key.KeyId}");
-
-            return result.Success ? Ok() : BadRequest() as ActionResult;
+            return result.Success ? Ok() : BadRequest(result.Error) as ActionResult;
         }
 
         [HttpDelete("{id}")]

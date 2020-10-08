@@ -23,7 +23,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Startup
     path: ../../Tide.Ork/Startup.cs
-    startLine: 12
+    startLine: 13
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork
@@ -64,7 +64,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: .ctor
     path: ../../Tide.Ork/Startup.cs
-    startLine: 13
+    startLine: 14
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork
@@ -97,7 +97,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Configuration
     path: ../../Tide.Ork/Startup.cs
-    startLine: 17
+    startLine: 18
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork
@@ -132,7 +132,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: ConfigureServices
     path: ../../Tide.Ork/Startup.cs
-    startLine: 20
+    startLine: 21
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork
@@ -165,7 +165,7 @@ items:
       repo: https://github.com/tide-foundation/Tide-Protocol.git
     id: Configure
     path: ../../Tide.Ork/Startup.cs
-    startLine: 42
+    startLine: 48
   assemblies:
   - Tide.Ork
   namespace: Tide.Ork

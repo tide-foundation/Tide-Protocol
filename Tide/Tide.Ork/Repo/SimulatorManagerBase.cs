@@ -45,8 +45,9 @@ namespace Tide.Ork.Repo {
 
         public async Task<TideResponse> SetOrUpdate(T entity)
         {
-            var ok = await _client.Post(Contract, TableName, _orkId, entity.Id.ToString(), Map(entity));
-            return new TideResponse() { Success = ok };
+            var result = await _client.Post(Contract, TableName, _orkId, entity.Id.ToString(), Map(entity));
+            if(result.success) return new TideResponse(true);
+            return new TideResponse(false,null,result.error);
         }
 
         public Task Delete(Guid id) => throw new NotImplementedException();
