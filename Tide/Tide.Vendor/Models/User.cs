@@ -8,9 +8,7 @@ namespace Tide.Vendor.Models
     public class User
     {
         public string Id { get; set; } // Vuid
-        public string Field1 { get; set; }
-        public string Field2 { get; set; }
-        public string CvkPub { get; set; }
+        public string PublicKey { get; set; }
 
         public List<RentalApplication> RentalApplications { get; set; }
     }

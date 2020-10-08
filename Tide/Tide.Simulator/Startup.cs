@@ -39,6 +39,7 @@ namespace Tide.Simulator {
                     ValidateAudience = false
                 };
             });
+
             services.AddDbContext<AccountContext>(options => options.UseSqlite(settings.AccountConnection));
             services.AddScoped<IAuthentication, Authentication>();
 

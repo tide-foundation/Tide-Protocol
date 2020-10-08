@@ -60,9 +60,9 @@ namespace Tide.VendorSdk.Classes
         public Task<List<string>> GetListOrks()
         {
             return Task.FromResult(new List<string> {
-                "http://localhost:5001",
-                "http://localhost:5002",
-                "http://localhost:5003"
+                "https://dork1.azurewebsites.net/discover",
+                "https://dork2.azurewebsites.net/discover",
+                "https://dork3.azurewebsites.net/discover"
             });
         }
 

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tide.Vendor.Models;
 
 namespace Tide.Vendor.Migrations
 {
     [DbContext(typeof(VendorDbContext))]
-    partial class VendorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201008025144_publickey")]
+    partial class publickey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

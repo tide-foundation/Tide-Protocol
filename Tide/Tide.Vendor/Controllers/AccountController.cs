@@ -26,7 +26,11 @@ namespace Tide.Vendor.Controllers
             _settings = settings;
         }
 
-      
+        [HttpGet]
+        public bool Test() {
+            return true;
+        }
+
         [HttpPost]
         public ActionResult CreateAccount([FromBody] User user) {
             Context.Add(user);
