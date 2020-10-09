@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
 
-$input-height: 23px;
+$input-height: 27px;
 
 html,
 body {
@@ -24,6 +24,7 @@ form {
       height: $input-height;
       width: 100%;
       padding-left: 5px;
+      border: 1px solid gray;
     }
 
     button {
@@ -37,7 +38,11 @@ form {
       height: 27px;
       margin-bottom: 7px;
     }
+
+
   }
+
+
 }
 
 .link {

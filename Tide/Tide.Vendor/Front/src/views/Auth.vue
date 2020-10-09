@@ -2,9 +2,8 @@
     <div id="auth">
         <div class="content">
             <span v-if="!$store.getters.loggedIn">
-                <Login v-if="mode == 'Login'"></Login>
-                <Register v-else-if="mode == 'Register'"></Register>
-                <Forgot v-else-if="mode == 'Forgot'"></Forgot>
+                <Login :user="user" v-if="mode == 'Login'"></Login>
+                <Register :user="user" v-else-if="mode == 'Register'"></Register>
 
                 <p>{{ status }}</p>
             </span>
@@ -14,7 +13,6 @@
 </template>
 
 <script>
-import Forgot from "../components/Auth/Forgot.vue";
 import Register from "../components/Auth/Register.vue";
 import Login from "../components/Auth/Login.vue";
 import Logout from "../components/Auth/Logout.vue";
@@ -22,7 +20,7 @@ export default {
     components: {
         Login,
         Register,
-        Forgot,
+
         Logout,
     },
 
@@ -30,7 +28,14 @@ export default {
         return {
             status: "",
             mode: "Login",
+            user: {
+                email: "",
+                password: "password",
+            },
         };
+    },
+    created() {
+        this.user.email = this.$store.getters.email;
     },
     methods: {
         setStatus(msg) {

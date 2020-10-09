@@ -1,5 +1,5 @@
 <template>
-  <div id="status">{{status}}</div>
+    <div id="status">{{ status }}</div>
 </template>
 
 <script>
@@ -25,7 +25,6 @@ export default {
 #status {
     color: red;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    bottom: 10px;
 }
 </style>

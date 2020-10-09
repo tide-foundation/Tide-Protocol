@@ -1,40 +1,40 @@
 <template>
-  <div>
-    <h1>Forgot Password</h1>
-    <div v-if="step ==0">
-      <h2>Send emails</h2>
-      <form @submit.prevent="sendEmails">
-        <div class="form-group">
-          <label for="email">Recovery Email</label>
-          <input type="text" id="email" required v-model="recoveryEmail" />
+    <div>
+        <h1>Forgot Password</h1>
+        <div v-if="step == 0">
+            <h2>Send emails</h2>
+            <form @submit.prevent="sendEmails">
+                <div class="form-group">
+                    <label for="email">Recovery Email</label>
+                    <input type="text" id="email" required v-model="recoveryEmail" />
+                </div>
+                <div class="form-group">
+                    <button type="submit">SEND EMAILS</button>
+                </div>
+                <p>OR</p>
+                <p class="link" @click="$parent.changeMode('Login')">Login</p>
+            </form>
         </div>
-        <div class="form-group">
-          <button type="submit">SEND EMAILS</button>
+        <div v-if="step == 1">
+            <h2>Combine Fragments</h2>
+            <form @submit.prevent="reconstruct">
+                <div class="form-group" v-for="i in 3" :key="i">
+                    <label :for="`email${i}`">Frag 1</label>
+                    <input type="text" :id="`email${i}`" required v-model="frags[`frag${i}`]" />
+                </div>
+                <hr />
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="text" id="new-password" required v-model="newPassword" />
+                </div>
+                <div class="form-group">
+                    <button type="submit">CONSTRUCT</button>
+                </div>
+                <p>OR</p>
+                <p class="link" @click="$parent.changeMode('Login')">Login</p>
+            </form>
         </div>
-        <p>OR</p>
-        <p class="link" @click="$parent.changeMode('Login')">Login</p>
-      </form>
     </div>
-    <div v-if="step ==1">
-      <h2>Combine Fragments</h2>
-      <form @submit.prevent="reconstruct">
-        <div class="form-group" v-for="i in 3" :key="i">
-          <label :for="`email${i}`">Frag 1</label>
-          <input type="text" :id="`email${i}`" required v-model="frags[`frag${i}`]" />
-        </div>
-        <hr />
-        <div class="form-group">
-          <label for="new-password">New Password</label>
-          <input type="text" id="new-password" required v-model="newPassword" />
-        </div>
-        <div class="form-group">
-          <button type="submit">CONSTRUCT</button>
-        </div>
-        <p>OR</p>
-        <p class="link" @click="$parent.changeMode('Login')">Login</p>
-      </form>
-    </div>
-  </div>
 </template>
 
 <script>

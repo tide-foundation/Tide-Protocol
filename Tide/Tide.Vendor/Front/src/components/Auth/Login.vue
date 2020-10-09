@@ -15,22 +15,13 @@
             </div>
             <p>OR</p>
             <p class="link" @click="$parent.changeMode('Register')">Register</p>
-            <p>OR</p>
-            <p class="link" @click="$parent.changeMode('Forgot')">Forgot Password</p>
         </form>
     </div>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            user: {
-                email: "john@wick.com",
-                password: "password",
-            },
-        };
-    },
+    props: ["user"],
     methods: {
         async login() {
             try {

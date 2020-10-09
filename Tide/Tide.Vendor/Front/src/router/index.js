@@ -33,8 +33,11 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.includes("auth") && !Store.getters.loggedIn) return next({ name: "Authenticate" });
-  else next();
+  if (to.meta.includes("auth") && !Store.getters.loggedIn) {
+    Vue.prototype.$bus.$emit("show-status", "Please login");
+
+    return next({ name: "Authenticate" });
+  } else next();
 });
 
 export default router;
