@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -46,7 +47,7 @@ namespace Tide.Ork {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings) {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
             //else
@@ -64,6 +65,18 @@ namespace Tide.Ork {
                     .AllowAnyMethod()
                     .AllowAnyOrigin()
                     .AllowAnyHeader());
+
+            app.Use((context, next) =>
+            {
+                context.Response.Headers["OrkId"] = settings.Instance.Username;
+
+                var version = typeof(Program).Assembly
+                    .GetCustomAttribute<AssemblyFileVersionAttribute>()
+                    ?.Version;
+
+                context.Response.Headers["User-Agent"] = $"Ork-Version:{version}";
+                return next.Invoke();
+            });
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
