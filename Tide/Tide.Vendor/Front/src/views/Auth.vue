@@ -29,13 +29,13 @@ export default {
             status: "",
             mode: "Login",
             user: {
-                email: "",
+                username: "",
                 password: "password",
             },
         };
     },
     created() {
-        this.user.email = this.$store.getters.email;
+        this.user.username = this.$store.getters.username;
     },
     methods: {
         setStatus(msg) {

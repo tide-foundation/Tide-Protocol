@@ -2771,7 +2771,7 @@ export default new Vuex.Store({
       active: false,
       text: "Loading...",
     },
-    email: `${names[Math.floor(Math.random() * names.length)]}.${names[Math.floor(Math.random() * names.length)]}${Math.floor(Math.random() * 10)}@mock.org`,
+    username: `${names[Math.floor(Math.random() * names.length)]}.${names[Math.floor(Math.random() * names.length)]}${Math.floor(Math.random() * 10)}`,
   },
   mutations: {
     UPDATE_MODE(state, newMode) {
@@ -2796,7 +2796,7 @@ export default new Vuex.Store({
     loggedIn: (state) => state.user != null,
     vendorUrl: (state) => state.vendorUrl,
     orks: (state) => state.orks,
-    email: (state) => state.email,
+    username: (state) => state.username,
     tempOrksToUse: (state) => state.orks.map((o) => o.url),
   },
 });

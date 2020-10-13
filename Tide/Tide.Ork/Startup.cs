@@ -68,7 +68,7 @@ namespace Tide.Ork {
 
             app.Use((context, next) =>
             {
-                context.Response.Headers["OrkId"] = settings.Instance.Username;
+                context.Response.Headers["Ork-Id"] = settings.Instance.Username;
 
                 var version = typeof(Program).Assembly
                     .GetCustomAttribute<AssemblyFileVersionAttribute>()
@@ -81,4 +81,7 @@ namespace Tide.Ork {
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
+
+
+
 }

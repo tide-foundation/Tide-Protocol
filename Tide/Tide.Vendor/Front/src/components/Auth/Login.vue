@@ -3,12 +3,13 @@
         <h1>Login</h1>
         <form @submit.prevent="login">
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="text" id="email" v-model="user.email" />
+                <label for="email">Username</label>
+                <input type="text" id="email" v-model="user.username" />
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" v-model="user.password" />
+                <div id="filler"></div>
             </div>
             <div class="form-group">
                 <button type="submit">LOGIN</button>
@@ -26,7 +27,7 @@ export default {
         async login() {
             try {
                 this.$loading(true, "Logging in...");
-                var user = await this.$tide.login(this.user.email, this.user.password);
+                var user = await this.$tide.login(this.user.username, this.user.password);
                 this.$parent.setUser(user);
             } catch (error) {
                 this.$bus.$emit("show-status", error);
@@ -39,4 +40,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#filler {
+    height: 6px;
+}
 </style>
