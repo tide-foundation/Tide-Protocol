@@ -42,10 +42,7 @@ namespace Tide.Ork {
                 services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
         }
 
-<<<<<<< Updated upstream
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-=======
->>>>>>> Stashed changes
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings) {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
@@ -68,7 +65,6 @@ namespace Tide.Ork {
                     .AllowAnyOrigin()
                     .AllowAnyHeader());
 
-<<<<<<< Updated upstream
             app.Use((context, next) =>
             {
                 context.Response.Headers["Ork-Id"] = settings.Instance.Username;
@@ -82,22 +78,6 @@ namespace Tide.Ork {
             });
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
-=======
-            app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
-
-                if (env.IsDevelopment() && settings.DevFront) {
-                    endpoints.MapToVueCliProxy(
-                        "{*path}",
-                        new SpaOptions { SourcePath = "Client" },
-                        npmScript: (System.Diagnostics.Debugger.IsAttached) ? "serve" : null,
-                        regex: "Compiled successfully"
-                    );
-                }
-            });
-
-            app.UseSpa(spa => spa.Options.SourcePath = "Client");
->>>>>>> Stashed changes
         }
     }
 

@@ -42,24 +42,19 @@ export default {
     setStatus(msg) {
       this.status = msg;
     },
-<<<<<<< Updated upstream:Tide/Tide.Vendor/Front/src/views/Auth.vue
 
     data() {
-        return {
-            status: "",
-            mode: "Login",
-            user: {
-                username: "",
-                password: "password",
-            },
-        };
+      return {
+        status: "",
+        mode: "Login",
+        user: {
+          username: "",
+          password: "password",
+        },
+      };
     },
     created() {
-        this.user.username = this.$store.getters.username;
-=======
-    changeMode(mode) {
-      this.mode = mode;
->>>>>>> Stashed changes:Tide/Tide.Vendor/Client/src/views/Auth.vue
+      this.user.username = this.$store.getters.username;
     },
     setUser(user) {
       this.$store.commit("SET_USER", user);
