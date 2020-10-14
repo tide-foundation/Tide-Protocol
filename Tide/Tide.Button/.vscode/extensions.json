@@ -1,6 +1,3 @@
 {
-	"recommendations": [
-		"ritwickdey.live-sass",
-		"ritwickdey.liveserver"
-	]
+  "recommendations": ["ritwickdey.live-sass", "ritwickdey.liveserver"]
 }
