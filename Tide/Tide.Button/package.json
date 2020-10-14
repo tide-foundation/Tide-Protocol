@@ -1,0 +1,28 @@
+{
+  "name": "tide-button",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/bundle.js",
+  "scripts": {
+    "start": "webpack serve"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^4.3.0",
+    "extract-loader": "^5.1.0",
+    "file-loader": "^6.1.1",
+    "postcss-loader": "^4.0.4",
+    "style-loader": "^2.0.0",
+    "webpack-cli": "^4.0.0"
+  },
+  "devDependencies": {
+    "sass": "^1.27.0",
+    "sass-loader": "^10.0.3",
+    "webpack": "^5.1.0"
+  }
+}

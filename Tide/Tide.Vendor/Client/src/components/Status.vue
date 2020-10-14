@@ -1,0 +1,30 @@
+<template>
+    <div id="status">{{ status }}</div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            status: "",
+        };
+    },
+    created() {
+        this.$bus.$on("show-status", (s) => {
+           
+            this.status = s;
+            setTimeout(async () => {
+                this.status = "";
+            }, 5000);
+        });
+    },
+};
+</script>
+
+<style>
+#status {
+    color: red;
+    position: absolute;
+    bottom: 10px;
+}
+</style>

@@ -12,7 +12,7 @@
     "Decentralized"
   ],
   "license": "MIT",
-  "version": "1.1.42",
+  "version": "1.1.45",
   "main": "tide.umd.js",
   "presets": [
     "@babel/preset-env"

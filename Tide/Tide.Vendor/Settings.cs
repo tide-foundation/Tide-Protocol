@@ -8,6 +8,7 @@ namespace Tide.Vendor {
     {
         public AdminKeys Keys { get; set; }
         public string BearerKey { get; set; }
+        public bool DevFront { get; set; }
     }
 
    

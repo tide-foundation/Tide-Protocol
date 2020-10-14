@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Tide.Encryption.AesMAC;
 using Tide.Vendor.Models;
 using Tide.VendorSdk.Classes;
+using VueCliMiddleware;
 
 namespace Tide.Vendor
 {
@@ -55,17 +57,22 @@ namespace Tide.Vendor
                     builder => builder.CommandTimeout(6000));
             });
 
+            services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
+
             services.AddSingleton<IVendorRepo, VendorRepo>();
             services.AddTideEndpoint(settings.Keys);
             services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseHttpsRedirection();
 
@@ -78,10 +85,22 @@ namespace Tide.Vendor
                     .AllowAnyOrigin()
                     .AllowAnyHeader());
 
-            app.UseEndpoints(endpoints =>
-            {
+        
+            app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
+
+                if (env.IsDevelopment() && settings.DevFront)
+                {
+                    endpoints.MapToVueCliProxy(
+                        "{*path}",
+                        new SpaOptions { SourcePath = "Client" },
+                        npmScript: (System.Diagnostics.Debugger.IsAttached) ? "serve" : null,
+                        regex: "Compiled successfully"
+                    );
+                }
             });
+
+            app.UseSpa(spa => spa.Options.SourcePath = "Client");
         }
     }
 }
