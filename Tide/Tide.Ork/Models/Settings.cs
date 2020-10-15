@@ -8,8 +8,19 @@ namespace Tide.Ork.Models {
         public Instance Instance { get; set; }
         public Endpoints Endpoints { get; set; }
         public EmailClient EmailClient { get; set; }
-        public bool Memory { get; set; }
+        public Features Features { get; set; }
         public bool DevFront { get; set; }
+
+        public Settings()
+        {
+            Features = new Features();
+        }
+    }
+
+    public class Features
+    {
+        public bool Memory { get; set; }
+        public bool Voucher { get; set; }
     }
 
     public class Instance

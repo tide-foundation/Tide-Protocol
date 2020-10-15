@@ -36,7 +36,7 @@ namespace Tide.Ork {
 
             services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
 
-            if (settings.Memory)
+            if (settings.Features.Memory)
                 services.AddTransient<IKeyManagerFactory, MemoryFactory>();
             else
                 services.AddTransient<IKeyManagerFactory, SimulatorFactory>();

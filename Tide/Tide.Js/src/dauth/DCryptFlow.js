@@ -58,7 +58,7 @@ export default class DCryptFlow {
   }
 
   /** @param {AESKey} cmkAuth */
-  async getKey(cmkAuth) {
+  async getKey(cmkAuth, noPublic = false) {
     var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
     const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
 
@@ -69,7 +69,7 @@ export default class DCryptFlow {
     var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
     var cvk = SecretShare.interpolate(ids, cvks, C25519Point.n);
 
-    return C25519Key.private(cvk);
+    return C25519Key.private(cvk, noPublic);
   }
 
   /**

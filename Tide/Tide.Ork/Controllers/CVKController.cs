@@ -17,7 +17,6 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tide.Core;
@@ -26,6 +25,7 @@ using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 using Tide.Ork.Classes.Rules;
+using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
 
@@ -40,15 +40,16 @@ namespace Tide.Ork.Controllers
         private readonly IRuleManager _ruleManager;
         private readonly IKeyIdManager _keyIdManager;
         private readonly OrkConfig _config;
+        private readonly Features _features;
 
-
-        public CVKController(IKeyManagerFactory factory, ILogger<CVKController> logger, OrkConfig config)
+        public CVKController(IKeyManagerFactory factory, ILogger<CVKController> logger, OrkConfig config, Settings settings)
         {
             _managerCvk = factory.BuildManagerCvk();
             _ruleManager = factory.BuildRuleManager();
             _keyIdManager = factory.BuildKeyIdManager();
             _logger = logger;
             _config = config;
+            _features = settings.Features;
         }
 
         //TODO: there is not verification if the account already exists
@@ -64,12 +65,15 @@ namespace Tide.Ork.Controllers
                 CvkiAuth = AesKey.Parse(FromBase64(data[2]))
             };
 
-            var signer = await _keyIdManager.GetById(keyId);
-            if (signer == null)
-                return BadRequest("Signer's key must be defined");
+            if (_features.Voucher) 
+            {
+                var signer = await _keyIdManager.GetById(keyId);
+                if (signer == null)
+                    return BadRequest("Signer's key must be defined");
 
-            if (!signer.Key.Verify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
-                return BadRequest("Signature is not valid ");
+                if (!signer.Key.Verify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
+                    return BadRequest("Signature is not valid ");
+            }
 
             _logger.LogInformation($"New cvk for {vuid} with share {data[1]}", vuid, data[0]);
 

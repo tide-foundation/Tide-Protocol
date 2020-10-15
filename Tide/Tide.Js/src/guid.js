@@ -10,6 +10,10 @@ import { randomBytes } from 'crypto';
 import { Hash } from 'cryptide';
 
 export default class Guid {
+    static get empty() {
+        return new Guid(new Uint8Array(16));
+    }
+
     /** @param {Uint8Array} data */
     constructor(data = null) {
         this.buffer = typeof data === 'undefined' || data === null ? randomBytes(16) : data;
