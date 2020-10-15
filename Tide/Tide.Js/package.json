@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "big-integer": "1.6.36",
-    "cryptide": "^2.0.0-alpha.11",
+    "cryptide": "2.0.1-0",
     "superagent": "^5.2.2",
     "webpack-merge": "^5.1.1"
   }
