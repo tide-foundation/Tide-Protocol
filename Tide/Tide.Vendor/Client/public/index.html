@@ -6,16 +6,19 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <title>
-      <%= htmlWebpackPlugin.options.title %>
+      VENDOR
     </title>
-    <script src="https://cdn.jsdelivr.net/npm/tide-js/tide.js"></script>
+    <script src="tide-button.js"></script>
 
+    <script>
+      const homeUrl = location.origin;
+      const serverUrl = "http://192.168.0.205:8080/";
+      const chosenOrk = "http://192.168.0.205:8080/";
+      Tide.init(homeUrl, serverUrl, chosenOrk);
+    </script>
   </head>
 
   <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>

@@ -1,4 +1,5 @@
 const path = require("path");
+const FileManagerPlugin = require("filemanager-webpack-plugin");
 
 module.exports = {
   mode: "production",
@@ -6,6 +7,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist/"),
     filename: "tide-button.js",
+    globalObject: "this",
     library: "Tide",
   },
   module: {
@@ -27,4 +29,16 @@ module.exports = {
     ],
   },
   resolve: { extensions: ["*", ".js", ".jsx", ".tsx", ".ts"] },
+  plugins: [
+    new FileManagerPlugin({
+      onEnd: {
+        copy: [
+          {
+            source: "./dist/tide-button.js",
+            destination: "../Tide.Vendor/Client/public/tide-button.js",
+          },
+        ],
+      },
+    }),
+  ],
 };

@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-import Finished from "../views/Finished.vue";
+import Initializing from "../views/Initializing.vue";
 import Store from "../store/";
 
 Vue.use(VueRouter);
@@ -9,26 +8,18 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
-    meta: [],
+    name: "Initializing",
+    component: Initializing,
   },
   {
     path: "/auth",
-    name: "Authenticate",
+    name: "Auth",
     component: () => import(/* webpackChunkName: "auth" */ "../views/Auth.vue"),
-    meta: [],
   },
   {
     path: "/finished",
     name: "Finished",
-    component: Finished, meta: [],
-  },
-  {
-    path: "/protected",
-    name: "Protected",
-    component: () => import(/* webpackChunkName: "protected" */ "../views/Protected.vue"),
-    meta: ["auth"],
+    component: () => import(/* webpackChunkName: "finished" */ "../views/Finished.vue"),
   },
 ];
 
@@ -39,10 +30,8 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.includes("auth") && !Store.getters.loggedIn) {
-    Vue.prototype.$bus.$emit("show-status", "Please login");
-
-    return next({ name: "Authenticate" });
+  if (to.path != "/" && !Store.getters.isInitialized) {
+    return next({ name: "Initializing" });
   } else next();
 });
 

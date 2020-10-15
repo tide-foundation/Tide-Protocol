@@ -2,11 +2,7 @@
     <div id="app">
         <Status></Status>
         <Loading></Loading>
-        <div id="nav">
-            <div v-for="(route, index) in routes" :key="index">
-                <router-link :class="{ active: $route.path == route.p }" :to="route.p">{{ route.n }}</router-link>
-            </div>
-        </div>
+
         <router-view />
     </div>
 </template>
@@ -22,13 +18,7 @@ export default {
         Status,
     },
     data() {
-        return {
-            routes: [
-                { n: "Home", p: "/" },
-                { n: "Protected", p: "/protected" },
-                { n: "Authenticate", p: "/auth" },
-            ],
-        };
+        return {};
     },
 };
 </script>
@@ -47,22 +37,5 @@ html {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    #nav {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        top: 10px;
-
-        a {
-            color: black;
-            text-decoration: none;
-            margin: 5px;
-            &.active {
-                color: orange;
-            }
-        }
-    }
 }
 </style>

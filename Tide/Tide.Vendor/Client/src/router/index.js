@@ -13,12 +13,6 @@ const routes = [
     meta: [],
   },
   {
-    path: "/auth",
-    name: "Authenticate",
-    component: () => import(/* webpackChunkName: "auth" */ "../views/Auth.vue"),
-    meta: [],
-  },
-  {
     path: "/validate",
     name: "Validate",
     component: () => import(/* webpackChunkName: "Validate" */ "../views/Validate.vue"),

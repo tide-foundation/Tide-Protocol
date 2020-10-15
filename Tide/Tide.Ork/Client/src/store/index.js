@@ -2763,10 +2763,12 @@ var vendorUrl = "https://tidevendor.azurewebsites.net";
 
 export default new Vuex.Store({
   state: {
+    initialized: false,
     mode: "Frontend",
     user: null,
     orks: orks,
     vendorUrl: vendorUrl,
+    tide: null,
     loading: {
       active: false,
       text: "Loading...",
@@ -2778,6 +2780,7 @@ export default new Vuex.Store({
       state.mode = newMode;
     },
     UPDATE_LOADING(state, data) {
+      console.log(data);
       state.loading = data;
     },
     SET_USER(state, user) {
@@ -2786,17 +2789,26 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    getDeals(context, user) {},
+    initializeTide(context, data) {
+      context.state.initialized = true;
+      context.state.vendorUrl = data.vendorUrl;
+      // Init tide here
+      // Call vendor for datetime token here
+      router.push("/auth");
+    },
+    finalizeAuthentication(context, data) {
+      window.opener.postMessage({ type: "tide-authenticated", data }, "http://192.168.0.205:8081/");
+    },
   },
   modules: {},
   getters: {
     mode: (state) => state.mode,
     user: (state) => state.user,
     loading: (state) => state.loading,
-    loggedIn: (state) => state.user != null,
     vendorUrl: (state) => state.vendorUrl,
     orks: (state) => state.orks,
     username: (state) => state.username,
+    isInitialized: (state) => state.initialized,
     tempOrksToUse: (state) => state.orks.map((o) => o.url),
   },
 });

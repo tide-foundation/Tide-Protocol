@@ -7,31 +7,33 @@
     height: 66px;
     color: white;
     border: 0px;
-    border-radius: 3px;
+    border-radius: 2px;
     z-index: 1;
+    outline:none;
+
+    &:hover {
+      #logo-back {
+        background: #316cca;
+      }
+    }
 
     #logo-back {
       position: absolute;
       background: #397ae4;
-      width: 0px;
+      width: 88px;
       height: 66px;
       left: 0px;
       border-radius: 3px;
       z-index: 2;
-      transition: width 0.3s;
+      transition: all 0.3s;
       transition-timing-function: ease-in-out;
 
       &.processing {
         background: #ff6c00;
-        width: 88px !important;
       }
     }
 
-    &:hover {
-      #logo-back {
-        width: 88px !important;
-      }
-    }
+    
 
     #tide-content {
       display: flex;

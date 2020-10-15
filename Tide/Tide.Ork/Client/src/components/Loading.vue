@@ -1,7 +1,7 @@
 <template>
-  <div class="loading" v-if="$store.getters.loading.active">
-    <h4>{{ $store.getters.loading.text }}</h4>
-  </div>
+    <div class="loading" v-if="$store.getters.loading.active">
+        <h4>{{ $store.getters.loading.text }}</h4>
+    </div>
 </template>
 
 <script>

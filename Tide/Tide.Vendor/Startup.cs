@@ -57,7 +57,7 @@ namespace Tide.Vendor
                     builder => builder.CommandTimeout(6000));
             });
 
-            services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
+           if(settings.DevFront) services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
 
             services.AddSingleton<IVendorRepo, VendorRepo>();
             services.AddTideEndpoint(settings.Keys);
@@ -72,7 +72,7 @@ namespace Tide.Vendor
             }
 
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+          
 
             app.UseHttpsRedirection();
 
@@ -100,7 +100,10 @@ namespace Tide.Vendor
                 }
             });
 
-            app.UseSpa(spa => spa.Options.SourcePath = "Client");
+            if (settings.DevFront) {
+                app.UseSpaStaticFiles();
+                app.UseSpa(spa => spa.Options.SourcePath = "Client");
+            }
         }
     }
 }

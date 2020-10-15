@@ -1,31 +1,29 @@
 import { btnHtml } from "./btn-html";
 
-var closeCheck:number;
-var win:Window;
-var btn:Element;
-var logo:Element;
-var logoBack:Element;
-const url:string = `http://172.26.17.60:8080/auth`; // Select a random ork
+var closeCheck: number;
+var win: Window;
+var btn: Element;
+var logo: Element;
+var logoBack: Element;
+var _chosenOrk: string;
+var _serverUrl: string;
+var _homeUrl: string;
 
-window.onload = function () {
-  createButton();
-};
+window.onload = () => createButton();
 
-function createButton(){
+function createButton() {
   btn = document.getElementById("tide");
   btn.innerHTML = btnHtml;
 
   logo = document.getElementById("tide-logo");
   logoBack = document.getElementById("logo-back");
 
-  btn.addEventListener("click", function () {
-    openAuth();
-  });
+  btn.addEventListener("click", () => openAuth());
 }
 
 function openAuth() {
   // Initialize
-  win = window.open(url, "auth", "width=500, height=501,top=200,right=100");
+  win = window.open(_chosenOrk, "auth", "width=500, height=501,top=0,right=0");
   if (win == null) return;
   updateStatus("Awaiting login");
   toggleProcessing(true);
@@ -36,17 +34,13 @@ function openAuth() {
   }, 100);
 
   // Listen for events from window
-  window.addEventListener(
-    "message",
-    (e) => {
-      const data = JSON.parse(e.data);
-      if (data.type == "authenticated") handleFinishAuthentication(data);
-    },
-    false
-  );
+  window.addEventListener("message", (e) => {
+    if (e.data.type == "tide-onload") win.postMessage({ type: "tide-init", _serverUrl, _homeUrl }, _chosenOrk);
+    if (e.data.type == "tide-authenticated") handleFinishAuthentication(e.data);
+  });
 }
 
-function updateStatus(msg:string) {
+function updateStatus(msg: string) {
   document.getElementById("status-text").innerHTML = msg;
 }
 
@@ -56,20 +50,22 @@ function handleCloseEarly() {
   toggleProcessing(false);
 }
 
-function handleFinishAuthentication(data:any) {
+function handleFinishAuthentication(data: any) {
   clearInterval(closeCheck);
   win.close();
   updateStatus("Finishing authentication");
   toggleProcessing(false);
   // Communicate with the vendor
+  updateStatus(`jwt: ${data.data.jwt}`);
 }
 
-function toggleProcessing(on:boolean){
-  if(on){
-    logo.classList.add("processing");
-    logoBack.classList.add("processing");
-  }else{
-    logo.classList.remove("processing");
-    logoBack.classList.remove("processing");
-  }
+function toggleProcessing(on: boolean) {
+  logo.classList[on ? "add" : "remove"]("processing");
+  logoBack.classList[on ? "add" : "remove"]("processing");
+}
+
+export function init(homeUrl: string, serverUrl: string, chosenOrk: string) {
+  _homeUrl = homeUrl;
+  _serverUrl = serverUrl;
+  _chosenOrk = chosenOrk;
 }

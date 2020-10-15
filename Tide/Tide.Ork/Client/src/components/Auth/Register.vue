@@ -31,20 +31,25 @@ export default {
         async register() {
             try {
                 this.$loading(true, "Registering...");
-                var signUpResult = await this.$tide.register(this.user.username, this.user.password, "admin@admin.com", this.$store.getters.tempOrksToUse);
 
-                var userData = {
-                    id: signUpResult.vuid.toString(),
-                    vendorKey: signUpResult.vendorKey.toString(),
-                };
+                setTimeout(() => {
+                    this.$store.dispatch("finalizeAuthentication", { jwt: "Give me a JoseWT" });
+                }, 2000);
 
-                await request.post(`${this.$store.getters.vendorUrl}/account`).send(userData);
+                // var signUpResult = await this.$tide.register(this.user.username, this.user.password, "admin@admin.com", this.$store.getters.tempOrksToUse);
 
-                this.$parent.setUser(signUpResult);
+                // var userData = {
+                //     id: signUpResult.vuid.toString(),
+                //     vendorKey: signUpResult.vendorKey.toString(),
+                // };
+
+                // await request.post(`${this.$store.getters.vendorUrl}/account`).send(userData);
+
+                // this.$parent.setUser(signUpResult);
             } catch (error) {
                 this.$bus.$emit("show-status", error);
             } finally {
-                this.$loading(false, "");
+                // this.$loading(false, "");
             }
         },
     },
@@ -52,6 +57,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h1 {
+    text-align: center;
+}
 .po-password-strength-bar {
     border-radius: 0px;
     transition: all 0.2s linear;
