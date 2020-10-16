@@ -1,0 +1,101 @@
+@startuml dauthOrkClass
+skinparam monochrome true
+
+title Ork Node
+
+interface "Stub" as stub <<Interface>>
+note top: Inbound Channel
+
+class "BlockChainChannel" as blockCh
+note top: Currently Simulator Client
+
+class "ORKChannel" as orkCh
+
+class "DiscoveryController" as discovery
+class "CVKController" as cvk
+class "CMKController" as cmk
+class "RuleController" as rule
+
+interface "IManagerFactory" as manager
+
+interface "ICVKRepo" as cvkRepo
+interface "ICMKRepo" as cmkRepo
+interface "IKeyRepo" as keyRepo
+interface "IRuleRepo" as ruleRepo
+
+class "SimulatorCVKRepo" as cvkRepoSim
+class "CacheCVKRepo" as cvkRepoCh
+class "MemoryCVKRepo" as cvkRepoMem
+
+class "SimulatorCMKRepo" as cmkRepoSim
+class "CacheCMKRepo" as cmkRepoCh
+class "MemoryCMKRepo" as cmkRepoMem
+
+class "SimulatorKeyRepo" as keyRepoSim
+class "CacheKeyRepo" as keyRepoCh
+class "MemoryKeyRepo" as keyRepoMem
+
+class "SimulatorRuleRepo" as ruleRepoSim
+class "CacheRuleRepo" as ruleRepoCh
+class "MemoryRuleRepo" as ruleRepoMem
+
+class "MemoryFactory" as memory
+class "SimulatorFactory" as simulator
+
+blockCh -- discovery
+blockCh -- cvk
+blockCh -- cmk
+blockCh -- rule
+
+stub -- discovery
+stub -- cvk
+stub -- cmk
+stub -- rule
+
+discovery *-- manager
+cvk *-- manager
+cmk *-- manager
+rule *-- manager
+
+manager -- cvkRepo
+manager -- cmkRepo
+manager -- keyRepo
+manager -- ruleRepo
+
+cvkRepo <|-- cvkRepoSim
+cvkRepo <|-- cvkRepoCh
+cvkRepo <|-- cvkRepoMem
+cmkRepo <|-- cmkRepoSim
+cmkRepo <|-- cmkRepoCh
+cmkRepo <|-- cmkRepoMem
+keyRepo <|-- keyRepoSim
+keyRepo <|-- keyRepoCh
+keyRepo <|-- keyRepoMem
+ruleRepo <|-- ruleRepoSim
+ruleRepo <|-- ruleRepoCh
+ruleRepo <|-- ruleRepoMem
+
+cvkRepoCh *-- cvkRepo
+cmkRepoCh *-- cmkRepo
+keyRepoCh *-- keyRepo
+ruleRepoCh *-- ruleRepo
+
+memory --|> manager
+simulator --|> manager
+
+
+cvkRepoMem -- memory
+cmkRepoMem -- memory
+keyRepoMem -- memory
+ruleRepoMem -- memory
+
+cvkRepoSim -- simulator
+cvkRepoMem -- simulator
+cmkRepoSim -- simulator
+cmkRepoMem -- simulator
+keyRepoSim -- simulator
+keyRepoMem -- simulator
+ruleRepoSim -- simulator
+ruleRepoMem -- simulator
+
+@enduml
