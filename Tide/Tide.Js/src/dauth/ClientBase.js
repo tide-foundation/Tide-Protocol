@@ -12,8 +12,7 @@
 // You should have received a copy of the Tide Community Open
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
-
-import superagent from "superagent";
+import * as superagent from "superagent";
 import IdGenerator from "../IdGenerator";
 import Guid from "../guid";
 import { C25519Key } from "cryptide";
@@ -23,9 +22,10 @@ export default class ClientBase {
    * @param {string|URL} url
    * @param {string|Guid} user
    */
-  constructor(url, user) {
+  constructor(url, user, memory = false) {
     const baseUrl = typeof url === "string" ? new URL(url) : url;
 
+    this.memory = memory;
     this.url = baseUrl.origin + "/api";
     /** @type {IdGenerator} */
     this._clientId = null;
@@ -76,20 +76,33 @@ export default class ClientBase {
   /** @param {string} path
    *  @protected */
   _get(path) {
-    return superagent.get(this.url + path);
+    return request('get', path);
   }
 
   /** @param {string} path
    *  @protected */
   _post(path) {
-    return superagent.post(this.url + path);
+    return request('post', path);
   }
 
   /** @param {string} path
    *  @protected */
   _put(path) {
-    return superagent.put(this.url + path);
+    return request('put', path);
   }
+}
+
+/**
+ * @returns {superagent.SuperAgentRequest}
+ * @param { 'get'|'post'|'put' } type
+ * @param {string} path
+ */
+function request(type, path) {
+  var req = superagent[type](this.url + path);
+  if (this.memory)
+    req.set('memory', 'true');
+
+  return req;
 }
 
 /** @param {string} text */

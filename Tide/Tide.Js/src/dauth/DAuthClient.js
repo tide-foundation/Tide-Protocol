@@ -22,8 +22,8 @@ export default class DAuthClient extends ClientBase {
    * @param {string|URL} url
    * @param {string} user
    */
-  constructor(url, user) {
-    super(url, user);
+  constructor(url, user, memory = false) {
+    super(url, user, memory);
   }
 
   /** @param {C25519Point} pass

@@ -73,8 +73,8 @@ export default class DAuthJwtFlow {
 
       const cvk = C25519Key.generate();
       const cvkJwt = CP256Key.private(cvk.x);
-      const flowCmk = this._getCmkFlow();
-      const flowCvk = this._getCvkFlow();
+      const flowCmk = this._getCmkFlow(true);
+      const flowCvk = this._getCvkFlow(true);
 
       //vendor
       const keyId = Guid.seed(this.vendorPub.toArray());
@@ -145,21 +145,21 @@ export default class DAuthJwtFlow {
   }
 
   /** @private */
-  _getCmkFlow() {
+  _getCmkFlow(memory = false) {
     if (this.cmkUrls === null || this.cmkUrls.length === 0) throw new Error("cmkUrls must not be empty");
 
-    if (this._cmkFlow === undefined) this._cmkFlow = new DAuthFlow(this.cmkUrls, this.user);
+    if (this._cmkFlow === undefined) this._cmkFlow = new DAuthFlow(this.cmkUrls, this.user, memory);
 
     return this._cmkFlow;
   }
 
   /** @private */
-  _getCvkFlow() {
+  _getCvkFlow(memory = false) {
     if (this.cvkUrls === null || this.cvkUrls.length === 0) throw new Error("cvkUrls must not be empty");
 
     if (this.vuid === null) throw new Error("vuid must not be empty");
 
-    if (this._cvkFlow === undefined) this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid);
+    if (this._cvkFlow === undefined) this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid, memory);
 
     return this._cvkFlow;
   }
