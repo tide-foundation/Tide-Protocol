@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="938px" preserveAspectRatio="none" style="width:920px;height:938px;" version="1.1" viewBox="0 0 920 938" width="920px" zoomAndPan="magnify"><defs><filter height="300%" id="fam999qegs3hh" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" textLength="202" x="360.25" y="30.6855">Client - Button - Ork Flow</text><rect fill="#FFFFFF" filter="url(#fam999qegs3hh)" height="612.3281" style="stroke: #383838; stroke-width: 1.0;" width="10" x="204" y="263.0625"/><rect fill="#FFFFFF" filter="url(#fam999qegs3hh)" height="612.3281" style="stroke: #383838; stroke-width: 1.0;" width="10" x="364.5" y="263.0625"/><rect fill="#FFFFFF" filter="url(#fam999qegs3hh)" height="188.1094" style="stroke: #383838; stroke-width: 1.0;" width="10" x="632.5" y="364.1172"/><rect fill="#FFFFFF" filter="url(#fam999qegs3hh)" height="255.4609" style="stroke: #383838; stroke-width: 1.0;" width="10" x="786.5" y="582.5781"/><rect fill="#FFFFFF" filter="url(#fam999qegs3hh)" height="164.7578" style="stroke: #000000; stroke-width: 2.0;" width="630" x="276" y="681.2813"/><rect fill="#FFFFFF" height="32.3516" style="stroke: none; stroke-width: 1.0;" width="630" x="276" y="813.6875"/><line style="stroke: #383838; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="68" x2="68" y1="78.25" y2="893.3906"/><line style="stroke: #383838; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="209" x2="209" y1="78.25" y2="893.3906"/><line style="stroke: #383838; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="369" x2="369" y1="78.25" y2="893.3906"/><line style="stroke: #383838; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="637.5" x2="637.5" y1="78.25" y2="893.3906"/><line style="stroke: #383838; stroke-width: 1.0; stroke-dasharray: 5.0,5.0;" x1="791.5" x2="791.5" y1="78.25" y2="893.3906"/><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="43" x="45" y="41.6406"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="29" x="52" y="63.1738">User</text><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="43" x="45" y="892.3906"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="29" x="52" y="913.9238">User</text><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="50" x="182" y="41.6406"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="36" x="189" y="63.1738">Client</text><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="50" x="182" y="892.3906"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="36" x="189" y="913.9238">Client</text><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="83" x="326" y="41.6406"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="69" x="333" y="63.1738">TideButton</text><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="83" x="326" y="892.3906"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="69" x="333" y="913.9238">TideButton</text><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="64" x="603.5" y="41.6406"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="50" x="610.5" y="63.1738">Enclave</text><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="64" x="603.5" y="892.3906"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="50" x="610.5" y="913.9238">Enclave</text><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="56" x="761.5" y="41.6406"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="42" x="768.5" y="63.1738">Server</text><rect fill="#F8F8F8" filter="url(#fam999qegs3hh)" height="31.6094" style="stroke: #383838; stroke-width: 1.5;" width="56" x="761.5" y="892.3906"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="42" x="768.5" y="913.9238">Server</text><rect fill="#FFFFFF" filter="url(#fam999qegs3hh)" height="612.3281" style="stroke: #383838; stroke-width: 1.0;" width="10" x="204" y="263.0625"/><rect fill="#FFFFFF" filter="url(#fam999qegs3hh)" height="612.3281" style="stroke: #383838; stroke-width: 1.0;" width="10" x="364.5" y="263.0625"/><rect fill="#FFFFFF" filter="url(#fam999qegs3hh)" height="188.1094" style="stroke: #383838; stroke-width: 1.0;" width="10" x="632.5" y="364.1172"/><rect fill="#FFFFFF" filter="url(#fam999qegs3hh)" height="255.4609" style="stroke: #383838; stroke-width: 1.0;" width="10" x="786.5" y="582.5781"/><path d="M89,107.25 L89,231.25 L325,231.25 L325,117.25 L315,107.25 L89,107.25 " fill="#ECECEC" filter="url(#fam999qegs3hh)" style="stroke: #383838; stroke-width: 1.0;"/><path d="M315,107.25 L315,117.25 L325,117.25 L315,107.25 " fill="#ECECEC" style="stroke: #383838; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="27" x="95" y="125.7451">c = {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="124" x="103" y="142.0967">origin = window.origin</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="207" x="103" y="158.4482">sign = sign(window.origin,ClientPriv)</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="135" x="103" y="174.7998">server = backendServer</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="151" x="103" y="191.1514">ork = chosenOrkForModal</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="106" x="103" y="207.5029">public = ClientPub</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="4" x="95" y="223.8545">}</text><polygon fill="#383838" points="352.5,259.0625,362.5,263.0625,352.5,267.0625,356.5,263.0625" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="214" x2="358.5" y1="263.0625" y2="263.0625"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="104" x="221" y="258.2061">new TideButton(c)</text><polygon fill="#383838" points="352.5,289.4141,362.5,293.4141,352.5,297.4141,356.5,293.4141" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="68.5" x2="358.5" y1="293.4141" y2="293.4141"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="75" x="75.5" y="288.5576">ClickButton()</text><path d="M293,306.4141 L293,332.4141 L713,332.4141 L713,316.4141 L703,306.4141 L293,306.4141 " fill="#ECECEC" filter="url(#fam999qegs3hh)" style="stroke: #383838; stroke-width: 1.0;"/><path d="M703,306.4141 L703,316.4141 L713,316.4141 L703,306.4141 " fill="#ECECEC" style="stroke: #383838; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="257" x="368.25" y="324.9092">win = new Window(url: c.ork, name: c.origin)</text><polygon fill="#383838" points="385.5,360.1172,375.5,364.1172,385.5,368.1172,381.5,364.1172" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="379.5" x2="631.5" y1="364.1172" y2="364.1172"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="177" x="391.5" y="359.2607">opener.postMessage("onload")</text><polygon fill="#383838" points="620.5,390.4688,630.5,394.4688,620.5,398.4688,624.5,394.4688" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="374.5" x2="626.5" y1="394.4688" y2="394.4688"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="234" x="381.5" y="389.6123">win.postMessage("init",c.server,c.public)</text><path d="M528,407.4688 L528,433.4688 L743,433.4688 L743,417.4688 L733,407.4688 L528,407.4688 " fill="#ECECEC" filter="url(#fam999qegs3hh)" style="stroke: #383838; stroke-width: 1.0;"/><path d="M733,407.4688 L733,417.4688 L743,417.4688 L733,407.4688 " fill="#ECECEC" style="stroke: #383838; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="194" x="534" y="425.9639">tide = new Tide(c.server, c.public)</text><polygon fill="#383838" points="620.5,461.1719,630.5,465.1719,620.5,469.1719,624.5,465.1719" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="68.5" x2="626.5" y1="465.1719" y2="465.1719"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="123" x="75.5" y="460.3154">ClickRegisterButton()</text><path d="M492,478.1719 L492,520.1719 L778,520.1719 L778,488.1719 L768,478.1719 L492,478.1719 " fill="#ECECEC" filter="url(#fam999qegs3hh)" style="stroke: #383838; stroke-width: 1.0;"/><path d="M768,478.1719 L768,488.1719 L778,488.1719 L768,478.1719 " fill="#ECECEC" style="stroke: #383838; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="172" x="498" y="496.667">cvk = tide.register(user,pass);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="265" x="498" y="513.0186">token = encode({vuid,datetimeCheck},cvk.priv)</text><polygon fill="#383838" points="385.5,548.2266,375.5,552.2266,385.5,556.2266,381.5,552.2266" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="379.5" x2="636.5" y1="552.2266" y2="552.2266"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="43" x="391.5" y="547.3701">OK(jwt)</text><polygon fill="#383838" points="774.5,578.5781,784.5,582.5781,774.5,586.5781,778.5,582.5781" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="374.5" x2="780.5" y1="582.5781" y2="582.5781"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="121" x="381.5" y="577.7217">authenticate(jwt,vuid)</text><path d="M721,595.5781 L721,621.5781 L858,621.5781 L858,605.5781 L848,595.5781 L721,595.5781 " fill="#ECECEC" filter="url(#fam999qegs3hh)" style="stroke: #383838; stroke-width: 1.0;"/><path d="M848,595.5781 L848,605.5781 L858,605.5781 L848,595.5781 " fill="#ECECEC" style="stroke: #383838; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="116" x="727" y="614.0732">user = getUser(vuid)</text><line style="stroke: #383838; stroke-width: 1.0;" x1="796.5" x2="838.5" y1="653.2813" y2="653.2813"/><line style="stroke: #383838; stroke-width: 1.0;" x1="838.5" x2="838.5" y1="653.2813" y2="666.2813"/><line style="stroke: #383838; stroke-width: 1.0;" x1="797.5" x2="838.5" y1="666.2813" y2="666.2813"/><polygon fill="#383838" points="807.5,662.2813,797.5,666.2813,807.5,670.2813,803.5,666.2813" style="stroke: #383838; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="107" x="803.5" y="648.4248">verify(jwt,user.pub)</text><path d="M276,681.2813 L337,681.2813 L337,689.2813 L327,699.2813 L276,699.2813 L276,681.2813 " fill="#EEEEEE" style="stroke: #000000; stroke-width: 1.0;"/><rect fill="none" height="164.7578" style="stroke: #000000; stroke-width: 2.0;" width="630" x="276" y="681.2813"/><text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="16" x="291" y="695.7764">alt</text><text fill="#000000" font-family="sans-serif" font-size="11" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="55" x="352" y="694.7002">[isValid ?]</text><path d="M687,704.6328 L687,730.6328 L892,730.6328 L892,714.6328 L882,704.6328 L687,704.6328 " fill="#ECECEC" filter="url(#fam999qegs3hh)" style="stroke: #383838; stroke-width: 1.0;"/><path d="M882,704.6328 L882,714.6328 L892,714.6328 L882,704.6328 " fill="#ECECEC" style="stroke: #383838; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="184" x="693" y="723.1279">vendorJwt = encode(vuid,bearer)</text><polygon fill="#383838" points="385.5,758.3359,375.5,762.3359,385.5,766.3359,381.5,762.3359" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="379.5" x2="785.5" y1="762.3359" y2="762.3359"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="83" x="391.5" y="757.4795">OK(vendorJwt)</text><line style="stroke: #383838; stroke-width: 1.0;" x1="374.5" x2="416.5" y1="792.6875" y2="792.6875"/><line style="stroke: #383838; stroke-width: 1.0;" x1="416.5" x2="416.5" y1="792.6875" y2="805.6875"/><line style="stroke: #383838; stroke-width: 1.0;" x1="375.5" x2="416.5" y1="805.6875" y2="805.6875"/><polygon fill="#383838" points="385.5,801.6875,375.5,805.6875,385.5,809.6875,381.5,805.6875" style="stroke: #383838; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="123" x="381.5" y="787.8311">setHeader(vendorJwt)</text><line style="stroke: #000000; stroke-width: 1.0; stroke-dasharray: 2.0,2.0;" x1="276" x2="906" y1="814.6875" y2="814.6875"/><polygon fill="#383838" points="385.5,834.0391,375.5,838.0391,385.5,842.0391,381.5,838.0391" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="379.5" x2="790.5" y1="838.0391" y2="838.0391"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="29" x="391.5" y="833.1826">401()</text><polygon fill="#383838" points="220,871.3906,210,875.3906,220,879.3906,216,875.3906" style="stroke: #383838; stroke-width: 1.0;"/><line style="stroke: #383838; stroke-width: 1.0;" x1="214" x2="368.5" y1="875.3906" y2="875.3906"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="93" x="226" y="870.5342">complete(result)</text><!--MD5=[6378f62ca50665692a3302bdee951bd8]
+@startuml tideButtonFlow
+skinparam monochrome true
+skinparam ParticipantPadding 40
+
+User -[hidden]> Client
+
+
+title Client - Button - Ork Flow
+note over Client
+c = {
+  origin = window.origin
+  sign = sign(window.origin,ClientPriv)
+  server = backendServer
+  ork = chosenOrkForModal
+  public = ClientPub
+}
+end note
+Client->TideButton: new TideButton(c)
+activate TideButton
+activate Client
+User->TideButton: ClickButton()
+
+note over TideButton, Enclave
+win = new Window(url: c.ork, name: c.origin)
+end note
+
+Enclave->TideButton: opener.postMessage("onload")
+activate Enclave
+TideButton->Enclave: win.postMessage("init",c.server,c.public)
+note over Enclave
+tide = new Tide(c.server, c.public)
+end note
+User->Enclave: ClickRegisterButton()
+note over Enclave
+cvk = tide.register(user,pass);
+token = encode({vuid,datetimeCheck},cvk.priv)
+end note
+Enclave->TideButton:OK(jwt)
+deactivate Enclave
+TideButton->Server:authenticate(jwt,vuid)
+note over Server
+user = getUser(vuid)
+end note
+activate Server
+Server->Server: verify(jwt,user.pub)
+alt isValid ?
+  note over Server
+  vendorJwt = encode(vuid,bearer)
+  end note
+  Server->TideButton:OK(vendorJwt)
+  TideButton->TideButton:setHeader(vendorJwt)
+    else
+  Server->TideButton:401()
+  deactivate Server
+end
+
+TideButton->Client:complete(result)
+deactivate TideButton
+deactivate Client
+
+
+' activate Enclave
+'   note over User, Enclave
+'      new Window(returnUrl, ClientId)
+' end note
+' Enclave->Ork:tide.login/register()
+' activate Ork
+' Ork->Enclave:success(cvk)
+' deactivate Ork
+'   note over  Enclave
+'     token = generateJWT(cvk.private)
+' end note
+'  alt openerDomainValid ?
+'      Enclave->User:postMessage(token)
+'  else
+'   Enclave->User:postMessage(invalid)
+'  end
+' deactivate Enclave
+'   alt isServerToken ?
+'      User->Client:getServerToken(token)
+'      activate Client
+'      Client->User:OK(generateServerJWT(token))
+'       note over User
+'   header.authorization = token
+'  end note
+'       User->Client:authorizedRequest()
+'  else
+'       note over User
+'   header.authorization = token
+'  end note
+'   User->Client:authorizedRequest()
+'  end
+' Client->User:OK(privateData)
+' deactivate Client
+
+' User->Ork :Register with Tide
+'     activate Ork
+' note over User, Ork
+'     new Window(returnUrl, ClientId)
+' end note
+' note over Ork
+'     cvk = tide.login/register()
+' end note
+' alt openerDomainValid ?
+'     Ork->User:postMessage(cvk)
+' else
+'  Ork->User:postMessage(invalid)
+' end
+' deactivate Ork
+' User->Client:requestLogin(vuid)
+'  activate Client
+'  alt UserExists ?
+'     note over Client
+' User = fetchUser(vuid)
+' token = generateJWT(User.vuid)
+' eToken = encrypt(token, User.ClientAuth)
+' end note
+' Client->User:OK(eToken)
+' else
+' Client->User:NOTFOUND()
+' end
+' deactivate Client 
+' note over User
+' token = decrypt(eToken,User.ClientAuth)
+' header.authorization = token
+' end note
+' activate Client
+' User->Client: authorizedRequest()
+' Client->User:OK()
+' deactivate Client 
+@enduml
+
+@startuml tideButtonFlow
+skinparam monochrome true
+skinparam ParticipantPadding 40
+
+User -[hidden]> Client
+
+
+title Client - Button - Ork Flow
+note over Client
+c = {
+  origin = window.origin
+  sign = sign(window.origin,ClientPriv)
+  server = backendServer
+  ork = chosenOrkForModal
+  public = ClientPub
+}
+end note
+Client->TideButton: new TideButton(c)
+activate TideButton
+activate Client
+User->TideButton: ClickButton()
+
+note over TideButton, Enclave
+win = new Window(url: c.ork, name: c.origin)
+end note
+
+Enclave->TideButton: opener.postMessage("onload")
+activate Enclave
+TideButton->Enclave: win.postMessage("init",c.server,c.public)
+note over Enclave
+tide = new Tide(c.server, c.public)
+end note
+User->Enclave: ClickRegisterButton()
+note over Enclave
+cvk = tide.register(user,pass);
+token = encode({vuid,datetimeCheck},cvk.priv)
+end note
+Enclave->TideButton:OK(jwt)
+deactivate Enclave
+TideButton->Server:authenticate(jwt,vuid)
+note over Server
+user = getUser(vuid)
+end note
+activate Server
+Server->Server: verify(jwt,user.pub)
+alt isValid ?
+  note over Server
+  vendorJwt = encode(vuid,bearer)
+  end note
+  Server->TideButton:OK(vendorJwt)
+  TideButton->TideButton:setHeader(vendorJwt)
+    else
+  Server->TideButton:401()
+  deactivate Server
+end
+
+TideButton->Client:complete(result)
+deactivate TideButton
+deactivate Client
+
+
+
+@enduml
+
+PlantUML version 1.2020.18(Thu Oct 01 05:40:44 AEST 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: en
+Country: US
+--></g></svg>
