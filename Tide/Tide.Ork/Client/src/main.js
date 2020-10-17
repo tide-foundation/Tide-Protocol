@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-import Tide from "../../../Tide.Js/src/sdk/TideAuthentication";
+import Tide from "../../../Tide.Js/src/Sdk/TideAuthentication";
 
 import "../src/assets/scss/main.scss";
 
