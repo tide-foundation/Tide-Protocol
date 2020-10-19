@@ -26,8 +26,8 @@ export default class DAuthFlow {
    * @param {string[]} urls
    * @param {string} user
    */
-  constructor(urls, user) {
-    this.clients = urls.map((url) => new DAuthClient(url, user));
+  constructor(urls, user, memory = false) {
+    this.clients = urls.map((url) => new DAuthClient(url, user, memory));
     this.user = user;
   }
 

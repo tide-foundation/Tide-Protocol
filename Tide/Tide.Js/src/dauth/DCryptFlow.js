@@ -26,8 +26,8 @@ export default class DCryptFlow {
    * @param {string[]} urls
    * @param {Guid} user
    */
-  constructor(urls, user) {
-    this.clients = urls.map((url) => new DCryptClient(url, user));
+  constructor(urls, user, memory = false) {
+    this.clients = urls.map((url) => new DCryptClient(url, user, memory));
     this.user = user;
   }
 

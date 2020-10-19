@@ -23,8 +23,8 @@ export default class DCryptClient extends ClientBase {
    * @param {string|URL} url
    * @param {Guid} user
    */
-  constructor(url, user) {
-    super(url, user);
+  constructor(url, user, memory = false) {
+    super(url, user, memory);
   }
 
   /**
