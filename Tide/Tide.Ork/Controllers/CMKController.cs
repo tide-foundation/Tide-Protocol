@@ -73,10 +73,19 @@ namespace Tide.Ork.Controllers
                 _logger.LogInformation($"Apply: Invalid pass for {uid}");
                 return BadRequest("Invalid parameters");
             }
-            
-            var g = C25519Point.From(bytesPass);
-            if (!g.IsValid) {
-                _logger.LogInformation($"Apply: Invalid point for {uid}");
+
+            C25519Point g;
+            try
+            {
+                g = C25519Point.From(bytesPass);
+                if (!g.IsValid) {
+                    _logger.LogInformation($"Apply: Invalid point for {uid}");
+                    return BadRequest("Invalid parameters");
+                }
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation($"Apply: Invalid point for {uid} with error");
                 return BadRequest("Invalid parameters");
             }
 
