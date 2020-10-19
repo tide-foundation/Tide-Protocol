@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,15 +44,6 @@ namespace Tide.Vendor
             Configuration.Bind("Settings", settings);
             services.AddSingleton(settings);
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(settings.BearerKey)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
 
             services.AddDbContext<VendorDbContext>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
@@ -63,6 +56,9 @@ namespace Tide.Vendor
             services.AddTideEndpoint(settings.Keys);
             services.AddControllers();
         }
+
+
+    
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings)
         {

@@ -1,6 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Initializing from "../views/Initializing.vue";
+import Auth from "../views/Auth.vue";
+import Finished from "../views/Finished.vue";
 import Store from "../store/";
 
 Vue.use(VueRouter);
@@ -14,12 +16,12 @@ const routes = [
   {
     path: "/auth",
     name: "Auth",
-    component: () => import(/* webpackChunkName: "auth" */ "../views/Auth.vue"),
+    component: Auth,
   },
   {
     path: "/finished",
     name: "Finished",
-    component: () => import(/* webpackChunkName: "finished" */ "../views/Finished.vue"),
+    component: Finished,
   },
 ];
 

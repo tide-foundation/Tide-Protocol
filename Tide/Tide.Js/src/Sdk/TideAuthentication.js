@@ -1,8 +1,10 @@
 // @ts-ignore
 import DAuthV2Flow from "../dauth/DAuthV2Flow";
+import DAuthJwtFlow from "../dauth/DAuthJwtFlow";
+import { CP256Key } from "cryptide";
 import Account from "./models/Account";
 import TideConfiguration from "./models/TideConfiguration";
-
+import { encode } from "../jwtToken";
 export default class TideAuthentication {
   /**
    * Tide Authentication Module
@@ -12,8 +14,8 @@ export default class TideAuthentication {
    * @param {string[]} homeOrks - The suggested initial point of contacts. At least 1 is required.
    *
    */
-  constructor(vendorId, serverUrl, homeOrks) {
-    this.config = new TideConfiguration(vendorId, serverUrl, homeOrks);
+  constructor(vendorId, serverUrl, homeOrks, vendorPublic) {
+    this.config = new TideConfiguration(vendorId, serverUrl, homeOrks, vendorPublic);
   }
 
   /**
@@ -34,8 +36,26 @@ export default class TideAuthentication {
     return new Promise(async (resolve, reject) => {
       try {
         const flow = generateFlow(username, orks, this.config.serverUrl);
+
         var { vuid, auth } = await flow.signUp(password, email, orks.length);
         this.account = new Account(username, vuid, auth);
+        return resolve(this.account);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  async registerJwt(username, password, email, orks) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
+        flow.vendorPub = CP256Key.from(this.config.vendorPublic);
+        var { vuid, cvk, auth } = await flow.signUp(password, email, orks.length);
+
+        const token = encode({ vuid, dateCheck: "Date from vendor" }, cvk);
+
+        this.account = new Account(username, vuid, token, auth);
         return resolve(this.account);
       } catch (error) {
         reject(error);
@@ -104,6 +124,15 @@ function generateFlow(username, orks, serverUrl) {
   flow.cmkUrls = orks;
   flow.cvkUrls = orks;
   flow.vendorUrl = serverUrl;
+  return flow;
+}
+
+function generateJwtFlow(username, orks, serverUrl, vendorPublic) {
+  var flow = new DAuthJwtFlow(username);
+  flow.cmkUrls = orks;
+  flow.cvkUrls = orks;
+  flow.vendorUrl = serverUrl;
+  flow.vendorPub = vendorPublic;
   return flow;
 }
 

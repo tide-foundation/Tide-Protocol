@@ -50,8 +50,7 @@ namespace Tide.Ork {
             //    app.UseHsts();
 
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-
+         
             app.UseDeveloperExceptionPage(); // TODO: Remove for production
 
             app.UseHttpsRedirection();
@@ -77,7 +76,27 @@ namespace Tide.Ork {
                 return next.Invoke();
             });
 
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
+    
+
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+
+                if (env.IsDevelopment() && settings.DevFront)
+                {
+                    endpoints.MapToVueCliProxy(
+                        "{*path}",
+                        new SpaOptions { SourcePath = "Client" },
+                        npmScript: (System.Diagnostics.Debugger.IsAttached) ? "serve" : null,
+                        regex: "Compiled successfully"
+                    );
+                }
+            });
+
+            if (settings.DevFront)
+            {
+                app.UseSpaStaticFiles();
+                app.UseSpa(spa => spa.Options.SourcePath = "Client");
+            }
         }
     }
 

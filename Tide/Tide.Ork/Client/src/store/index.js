@@ -2,6 +2,9 @@ import Vue from "vue";
 import Vuex from "vuex";
 import router from "../router";
 
+import Tide from "../../../../Tide.Js/src/sdk/TideAuthentication";
+import request from "superagent";
+
 Vue.use(Vuex);
 
 const names = [
@@ -2746,28 +2749,27 @@ const names = [
 ];
 
 var orks = [];
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 3; i++) {
   orks.push({
     id: i,
-    url: `https://pdork${i + 1}.azurewebsites.net`,
+    // url: `https://pdork${i + 1}.azurewebsites.net`,
     // url: `https://dork${i + 1}.azurewebsites.net`,
     // url: `https://ork-${i}.azurewebsites.net`,
-    //url: `http://localhost:500${i + 1}`,
+    url: `http://localhost:500${i + 1}`,
     cmk: false,
     cvk: false,
   });
 }
 
-var vendorUrl = "https://tidevendor.azurewebsites.net";
-//var vendorUrl = "http://127.0.0.1:6001";
-
 export default new Vuex.Store({
   state: {
     initialized: false,
     mode: "Frontend",
-    user: null,
     orks: orks,
-    vendorUrl: vendorUrl,
+    vendorUrl: null,
+    vendorPublic: null,
+    homeUrl: null,
+
     tide: null,
     loading: {
       active: false,
@@ -2780,30 +2782,39 @@ export default new Vuex.Store({
       state.mode = newMode;
     },
     UPDATE_LOADING(state, data) {
-      console.log(data);
       state.loading = data;
-    },
-    SET_USER(state, user) {
-      state.user = user;
-      router.push(user != null ? "/protected" : "/");
     },
   },
   actions: {
     initializeTide(context, data) {
       context.state.initialized = true;
       context.state.vendorUrl = data.vendorUrl;
-      // Init tide here
-      // Call vendor for datetime token here
+      context.state.vendorPublic = data.vendorPublic;
+
+      context.state.tide = new Tide("VendorId", data.vendorUrl, orks, data.vendorPublic);
+      // Do we need to get some kind of vendor test?
       router.push("/auth");
     },
-    finalizeAuthentication(context, data) {
-      window.opener.postMessage({ type: "tide-authenticated", data }, "http://192.168.0.205:8081/");
+    async registerAccount(context, user) {
+      var signUpResult = await context.state.tide.registerJwt(user.username, user.password, "admin@admin.com", context.getters.tempOrksToUse);
+      return signUpResult;
+    },
+    async finalizeAuthentication(context, data) {
+      // Communication with vendor?
+
+      // var userData = {
+      //   id: signUpResult.vendorKey.toString(),
+      //   vendorKey: signUpResult.vendorKey.public().toString(),
+      // };
+
+      // await request.post(`${vendorUrl}/account`).send(userData);
+
+      window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
     },
   },
   modules: {},
   getters: {
     mode: (state) => state.mode,
-    user: (state) => state.user,
     loading: (state) => state.loading,
     vendorUrl: (state) => state.vendorUrl,
     orks: (state) => state.orks,

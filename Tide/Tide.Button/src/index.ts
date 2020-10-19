@@ -5,9 +5,10 @@ var win: Window;
 var btn: Element;
 var logo: Element;
 var logoBack: Element;
-var _chosenOrk: string;
-var _serverUrl: string;
-var _homeUrl: string;
+var chosenOrk: string;
+var serverUrl: string;
+var homeUrl: string;
+var vendorPublic: string;
 
 window.onload = () => createButton();
 
@@ -23,7 +24,7 @@ function createButton() {
 
 function openAuth() {
   // Initialize
-  win = window.open(_chosenOrk, "auth", "width=500, height=501,top=0,right=0");
+  win = window.open(chosenOrk, homeUrl, "width=800, height=501,top=0,right=0"); // Using name as home url. This is a dirty way I found to feed in the return url initially
   if (win == null) return;
   updateStatus("Awaiting login");
   toggleProcessing(true);
@@ -35,7 +36,7 @@ function openAuth() {
 
   // Listen for events from window
   window.addEventListener("message", (e) => {
-    if (e.data.type == "tide-onload") win.postMessage({ type: "tide-init", _serverUrl, _homeUrl }, _chosenOrk);
+    if (e.data.type == "tide-onload") win.postMessage({ type: "tide-init", serverUrl, vendorPublic }, chosenOrk);
     if (e.data.type == "tide-authenticated") handleFinishAuthentication(e.data);
   });
 }
@@ -51,11 +52,14 @@ function handleCloseEarly() {
 }
 
 function handleFinishAuthentication(data: any) {
+  console.log(data.data.jwt);
   clearInterval(closeCheck);
-  win.close();
   updateStatus("Finishing authentication");
-  toggleProcessing(false);
+
   // Communicate with the vendor
+
+  win.close();
+  toggleProcessing(false);
   updateStatus(`jwt: ${data.data.jwt}`);
 }
 
@@ -64,8 +68,9 @@ function toggleProcessing(on: boolean) {
   logoBack.classList[on ? "add" : "remove"]("processing");
 }
 
-export function init(homeUrl: string, serverUrl: string, chosenOrk: string) {
-  _homeUrl = homeUrl;
-  _serverUrl = serverUrl;
-  _chosenOrk = chosenOrk;
+export function init(_homeUrl: string, _serverUrl: string, _chosenOrk: string, _vendorPublic: string) {
+  homeUrl = _homeUrl;
+  serverUrl = _serverUrl;
+  chosenOrk = _chosenOrk;
+  vendorPublic = _vendorPublic;
 }
