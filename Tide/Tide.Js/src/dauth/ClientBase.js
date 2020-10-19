@@ -76,19 +76,19 @@ export default class ClientBase {
   /** @param {string} path
    *  @protected */
   _get(path) {
-    return request('get', path);
+    return request('get', path, this);
   }
 
   /** @param {string} path
    *  @protected */
   _post(path) {
-    return request('post', path);
+    return request('post', path, this);
   }
 
   /** @param {string} path
    *  @protected */
   _put(path) {
-    return request('put', path);
+    return request('put', path, this);
   }
 }
 
@@ -96,10 +96,11 @@ export default class ClientBase {
  * @returns {superagent.SuperAgentRequest}
  * @param { 'get'|'post'|'put' } type
  * @param {string} path
+ * @param {ClientBase} cln
  */
-function request(type, path) {
-  var req = superagent[type](this.url + path);
-  if (this.memory)
+function request(type, path, cln) {
+  var req = superagent[type](cln.url + path);
+  if (cln.memory)
     req.set('memory', 'true');
 
   return req;
