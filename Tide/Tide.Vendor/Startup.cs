@@ -20,6 +20,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Tide.Encryption.AesMAC;
+using Tide.Vendor.Classes;
 using Tide.Vendor.Models;
 using Tide.VendorSdk.Classes;
 using VueCliMiddleware;
@@ -50,8 +51,24 @@ namespace Tide.Vendor
                     builder => builder.CommandTimeout(6000));
             });
 
-           if(settings.DevFront) services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = settings.Audience,
+                        ValidAudience = settings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.BearerKey))
+                    };
+                });
 
+
+            if (settings.DevFront) services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
+            services.AddSingleton<IAuthentication, Authentication>();
             services.AddSingleton<IVendorRepo, VendorRepo>();
             services.AddTideEndpoint(settings.Keys);
             services.AddControllers();
