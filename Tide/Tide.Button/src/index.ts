@@ -1,4 +1,5 @@
 import { btnHtml } from "./btn-html";
+import AuthResult from "./models/AuthResult";
 
 var closeCheck: number;
 var win: Window;
@@ -9,6 +10,7 @@ var chosenOrk: string;
 var serverUrl: string;
 var homeUrl: string;
 var vendorPublic: string;
+var callback: (result: AuthResult) => void;
 
 window.onload = () => createButton();
 
@@ -60,7 +62,9 @@ function handleFinishAuthentication(data: any) {
 
   win.close();
   toggleProcessing(false);
-  updateStatus(`jwt: ${data.data.jwt}`);
+
+  callback(new AuthResult(true, null, data.data.jwt));
+  updateStatus("Complete");
 }
 
 function toggleProcessing(on: boolean) {
@@ -68,9 +72,10 @@ function toggleProcessing(on: boolean) {
   logoBack.classList[on ? "add" : "remove"]("processing");
 }
 
-export function init(_homeUrl: string, _serverUrl: string, _chosenOrk: string, _vendorPublic: string) {
+export function init(_homeUrl: string, _serverUrl: string, _chosenOrk: string, _vendorPublic: string, _callback: (result: AuthResult) => void) {
   homeUrl = _homeUrl;
   serverUrl = _serverUrl;
   chosenOrk = _chosenOrk;
   vendorPublic = _vendorPublic;
+  callback = _callback;
 }

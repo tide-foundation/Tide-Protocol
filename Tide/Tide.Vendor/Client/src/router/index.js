@@ -19,9 +19,9 @@ const routes = [
     meta: [],
   },
   {
-    path: "/protected",
-    name: "Protected",
-    component: () => import(/* webpackChunkName: "protected" */ "../views/Protected.vue"),
+    path: "/dashboard",
+    name: "Dashboard",
+    component: () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue"),
     meta: ["auth"],
   },
 ];

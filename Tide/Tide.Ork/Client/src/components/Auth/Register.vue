@@ -37,6 +37,7 @@ export default {
         // }, 2000);
 
         var signUpResult = await this.$store.dispatch("registerAccount", this.user);
+
         await this.$store.dispatch("finalizeAuthentication", signUpResult);
       } catch (error) {
         this.$bus.$emit("show-status", error);

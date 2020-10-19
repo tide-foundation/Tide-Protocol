@@ -9,7 +9,7 @@ using Tide.Vendor.Classes;
 
 namespace Tide.Vendor.Controllers
 {
-    [Authorize]
+
     [ApiController]
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase

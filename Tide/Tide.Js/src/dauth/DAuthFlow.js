@@ -46,26 +46,12 @@ export default class DAuthFlow {
 
       var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
       var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-      var prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
-      var cmkAuths = idBuffers.map(buff => cmkAuth.derive(buff));
-      var [, cmks] = SecretShare.shareFromIds(
-        cmk,
-        ids,
-        threshold,
-        C25519Point.n
-      );
-      var [, prisms] = SecretShare.shareFromIds(
-        prism,
-        ids,
-        threshold,
-        C25519Point.n
-      );
+      var prismAuths = idBuffers.map((buff) => prismAuth.derive(buff));
+      var cmkAuths = idBuffers.map((buff) => cmkAuth.derive(buff));
+      var [, cmks] = SecretShare.shareFromIds(cmk, ids, threshold, C25519Point.n);
+      var [, prisms] = SecretShare.shareFromIds(prism, ids, threshold, C25519Point.n);
 
-      await Promise.all(
-        this.clients.map((cli, i) =>
-          cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], email)
-        )
-      );
+      await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], email)));
       return cmkAuth;
     } catch (err) {
       return Promise.reject(err);
@@ -75,16 +61,14 @@ export default class DAuthFlow {
   /** @param {string} password */
   async logIn(password) {
     try {
-      var [ prismAuth, token ] = await this.getPrismAuth(password);
+      var [prismAuth, token] = await this.getPrismAuth(password);
       var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-      var prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
+      var prismAuths = idBuffers.map((buff) => prismAuth.derive(buff));
 
       var tokens = this.clients.map((c, i) => token.copy().sign(prismAuths[i], c.userBuffer));
       var ciphers = await Promise.all(this.clients.map((cli, i) => cli.signIn(tokens[i])));
 
-      var cmks = prismAuths
-        .map((auth, i) => auth.decrypt(ciphers[i]))
-        .map((shr) => BigInt.fromArray(Array.from(shr), 256, false));
+      var cmks = prismAuths.map((auth, i) => auth.decrypt(ciphers[i])).map((shr) => BigInt.fromArray(Array.from(shr), 256, false));
 
       var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
       var cmk = SecretShare.interpolate(ids, cmks, C25519Point.n);
@@ -104,15 +88,11 @@ export default class DAuthFlow {
       var g = C25519Point.fromString(pass);
       var gR = g.multiply(r);
 
-      var ids = await Promise.all(this.clients.map(c => c.getClientId()));
+      var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
       var lis = ids.map((id) => SecretShare.getLi(id, ids, n));
 
-      var gRPrismis = await Promise.all(
-        this.clients.map((cli) => cli.ApplyPrism(gR))
-      );
-      var gRPrism = gRPrismis
-        .map(([ki], i) => ki.times(lis[i]))
-        .reduce((rki, sum) => rki.add(sum));
+      var gRPrismis = await Promise.all(this.clients.map((cli) => cli.ApplyPrism(gR)));
+      var gRPrism = gRPrismis.map(([ki], i) => ki.times(lis[i])).reduce((rki, sum) => rki.add(sum));
       var gPrism = gRPrism.times(r.modInv(n));
 
       return [AESKey.seed(gPrism.toArray()), gRPrismis[0][1]];
@@ -122,7 +102,7 @@ export default class DAuthFlow {
   }
 
   Recover() {
-    return Promise.all(this.clients.map(cli => cli.Recover()));
+    return Promise.all(this.clients.map((cli) => cli.Recover()));
   }
 
   /**
@@ -131,11 +111,13 @@ export default class DAuthFlow {
    * @param {number} threshold
    */
   async Reconstruct(textShares, newPass = null, threshold = null) {
-    var shares = textShares.replace(/( +?)|\[|\]/g, '')
-      .split(/\r?\n/).map(key => DAuthShare.from(key));
+    var shares = textShares
+      .replace(/( +?)|\[|\]/g, "")
+      .split(/\r?\n/)
+      .map((key) => DAuthShare.from(key));
 
-    var ids = shares.map(c => c.id);
-    var cmks = shares.map(c => c.share);
+    var ids = shares.map((c) => c.id);
+    var cmks = shares.map((c) => c.share);
 
     var cmk = SecretShare.interpolate(ids, cmks, C25519Point.n);
     var cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
@@ -154,7 +136,7 @@ export default class DAuthFlow {
    */
   async changePass(pass, newPass, threshold) {
     try {
-      var [ prismAuth ] = await this.getPrismAuth(pass);
+      var [prismAuth] = await this.getPrismAuth(pass);
       await this._changePass(prismAuth, newPass, threshold);
     } catch (err) {
       return Promise.reject(err);
@@ -171,7 +153,7 @@ export default class DAuthFlow {
   }
 
   confirm() {
-    return Promise.all(this.clients.map(c => c.confirm()));
+    return Promise.all(this.clients.map((c) => c.confirm()));
   }
 
   /**
@@ -186,22 +168,15 @@ export default class DAuthFlow {
       var prismAuth = AESKey.seed(g.times(prism).toArray());
 
       var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-      var prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
-      var keyAuths = idBuffers.map(buff => keyAuth.derive(buff));
+      var prismAuths = idBuffers.map((buff) => prismAuth.derive(buff));
+      var keyAuths = idBuffers.map((buff) => keyAuth.derive(buff));
 
       var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
-      var [, prisms] = SecretShare.shareFromIds(
-        prism,
-        ids,
-        threshold,
-        C25519Point.n
-      );
+      var [, prisms] = SecretShare.shareFromIds(prism, ids, threshold, C25519Point.n);
 
-      var tokens = this.clients.map((c, i) => new TranToken().sign(keyAuths[i],
-        concat(c.userBuffer, getArray(prisms[i]), prismAuths[i].toArray())));
+      var tokens = this.clients.map((c, i) => new TranToken().sign(keyAuths[i], concat(c.userBuffer, getArray(prisms[i]), prismAuths[i].toArray())));
 
-      await Promise.all(this.clients.map((cli, i) => 
-        cli.changePass(prisms[i], prismAuths[i], tokens[i], isCmk)));
+      await Promise.all(this.clients.map((cli, i) => cli.changePass(prisms[i], prismAuths[i], tokens[i], isCmk)));
     } catch (err) {
       return Promise.reject(err);
     }

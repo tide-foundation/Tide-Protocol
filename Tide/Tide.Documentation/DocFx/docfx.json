@@ -1,25 +1,7 @@
 {
-  "metadata": [{
-      "src": [{
-        "src": "../../",
-        "files": ["Tide.VendorSdk/**.csproj"],
-        "exclude": ["**/bin/**", "**/obj/**"]
-      }],
-      "dest": "api/vendor-sdk"
-    },
-    {
-      "src": [{
-        "src": "../../",
-        "files": ["Tide.Ork/**.csproj"],
-        "exclude": ["**/bin/**", "**/obj/**"]
-      }],
-      "dest": "api/ork"
-    }
-  ],
+
   "build": {
-    "content": [{
-        "files": ["api/vendor-sdk/**.yml", "api/ork/**.yml", "api/tide-js/**.yml", "api/index.md"]
-      },
+    "content": [
       {
         "files": ["docs/**.md", "docs/**/toc.yml", "toc.yml", "*.md"]
       }

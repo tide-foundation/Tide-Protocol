@@ -51,8 +51,9 @@ export default class TideAuthentication {
       try {
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
+        console.log("yo");
         var { vuid, cvk, auth } = await flow.signUp(password, email, orks.length);
-
+        console.log("hsdfddssssfd");
         const token = encode({ vuid, dateCheck: "Date from vendor" }, cvk);
 
         this.account = new Account(username, vuid, token, auth);
