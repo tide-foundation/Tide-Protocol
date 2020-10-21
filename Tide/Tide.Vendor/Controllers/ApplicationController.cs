@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,26 +18,27 @@ namespace Tide.Vendor.Controllers
         }
 
         [HttpGet]
-        public TideResponse GetApplication() {
-            var application = Context.Applications.FirstOrDefault(a => a.UserId == User.Id);
-            if (application == null) return new TideResponse(false,null,"Not Found");
+        public IActionResult GetApplication() {
+            var jwt = Request.Headers["Authorization"].ToString().Substring(7);
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwt);
 
-            return new TideResponse(true,application,null);
+            return Ok(token);
         }
 
-        [HttpPost]
-        public ActionResult SendApplication([FromBody] RentalApplication application)
-        {
-            try {
-                application.DateSubmitted = DateTimeOffset.Now;
-                User.RentalApplications.Add(application);
-                Context.Update(User);
-                Context.SaveChanges();
-                return Ok();
-            }
-            catch (Exception e) {
-                return BadRequest(e);
-            }
-        }
+        //[HttpPost]
+        //public ActionResult SendApplication([FromBody] RentalApplication application)
+        //{
+        //    try {
+        //        application.DateSubmitted = DateTimeOffset.Now;
+        //        User.RentalApplications.Add(application);
+        //        Context.Update(User);
+        //        Context.SaveChanges();
+        //        return Ok();
+        //    }
+        //    catch (Exception e) {
+        //        return BadRequest(e);
+        //    }
+        //}
     }
 }

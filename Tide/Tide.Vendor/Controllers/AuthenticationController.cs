@@ -9,41 +9,60 @@ using Tide.Vendor.Classes;
 
 namespace Tide.Vendor.Controllers
 {
-
+   
     [ApiController]
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthentication _auth;
+        public static Dictionary<string, VendorUser> Users = new Dictionary<string, VendorUser>();
 
         public AuthenticationController(IAuthentication auth)
         {
             _auth = auth;
         }
 
-        [AllowAnonymous]
+        
+        [HttpPost("Register")]
+        public IActionResult Register([FromBody] AuthRequest request)
+        {
+            return Ok(_auth.Register(request.TideToken, request.PublicKey));
+        }
+
         [HttpPost("Exchange")]
         public IActionResult Exchange([FromBody] AuthRequest request)
         {
-            var resp = _auth.Exchange(request.TideToken, request.Vuid);
-            if (resp.success) return Ok(resp.content);
-            return Unauthorized();
+            return Ok(_auth.Exchange(request.TideToken, request.Vuid));
         }
 
+       
         [HttpGet]
-        public bool Test() {
-            return true;
+        public IActionResult Get()
+        {
+            var user = _auth.GetUser(Request.Headers["Authorization"].ToString().Substring(7));
+            return Ok(user.Vuid);
         }
 
+      
+        [HttpGet("serverTime")]
+        public IActionResult GetServerTime() {
+            return Ok(DateTime.Now.AddMinutes(1).Ticks);
+        }
 
     }
 
     public class AuthRequest {
         public string Vuid { get; set; }
+        public string PublicKey { get; set; }
         public string TideToken { get; set; }
     }
 
     public class AuthResponse {
         public string Token { get; set; }
+    }
+
+    public class VendorUser {
+        public string Vuid { get; set; }
+        public string PublicKey { get; set; }
     }
 }

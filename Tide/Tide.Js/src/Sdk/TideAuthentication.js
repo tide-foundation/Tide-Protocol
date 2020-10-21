@@ -1,10 +1,11 @@
 // @ts-ignore
 import DAuthV2Flow from "../dauth/DAuthV2Flow";
 import DAuthJwtFlow from "../dauth/DAuthJwtFlow";
-import { CP256Key } from "cryptide";
+import { CP256Key, C25519Key, EcKeyFormat } from "cryptide";
 import Account from "./models/Account";
 import TideConfiguration from "./models/TideConfiguration";
 import { encode } from "../jwtToken";
+
 export default class TideAuthentication {
   /**
    * Tide Authentication Module
@@ -46,17 +47,33 @@ export default class TideAuthentication {
     });
   }
 
-  async registerJwt(username, password, email, orks) {
+  /**
+   * Create a new Tide account.
+   *
+   * This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).
+   *
+   * @param {string}  username - Plain text username of the new user
+   * @param {string} password - Plain text password of the new user
+   * @param  {string} email - The recovery email to be used by the user.
+   * @param  {string[]} orks - The desired ork nodes to be used for registration. An account can only be activated when all ork nodes have confirmed they have stored the shard.
+   *
+   * @returns  - The Tide user account
+   * @example
+   * var registerResult = await tide.register("myUsername", "pa$$w0rD", "john@wick.com",["ork-1","ork-2","ork-3"]);
+   */
+  async registerJwt(username, password, email, orks, serverTime) {
     return new Promise(async (resolve, reject) => {
       try {
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
-        console.log("yo");
-        var { vuid, cvk, auth } = await flow.signUp(password, email, orks.length);
-        console.log("hsdfddssssfd");
-        const token = encode({ vuid, dateCheck: "Date from vendor" }, cvk);
 
-        this.account = new Account(username, vuid, token, auth);
+        var { vuid, cvk } = await flow.signUp(password, email, orks.length);
+
+        const token = encode({ vuid: vuid.toString(), dateCheck: "Date from vendor", exp: serverTime }, cvk);
+
+        var cvkPublic = EcKeyFormat.PemPublic(cvk);
+
+        this.account = new Account(username, vuid, token, cvkPublic);
         return resolve(this.account);
       } catch (error) {
         reject(error);
@@ -115,8 +132,13 @@ export default class TideAuthentication {
     });
   }
 
-  decryptToken(cipher) {
-    return this.account.vendorKey.decryptStr(cipher);
+  validateReturnUrl(returnUrl, hashedReturnUrl) {
+    try {
+      var pubkey = C25519Key.from(this.config.vendorPublic);
+      return pubkey.verify(returnUrl, Buffer.from(hashedReturnUrl, "base64"));
+    } catch (error) {
+      return false;
+    }
   }
 }
 

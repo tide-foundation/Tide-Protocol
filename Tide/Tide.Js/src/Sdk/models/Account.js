@@ -7,14 +7,14 @@ export default class Account {
    *
    * @param {String} username - The plain text username of the Tide user
    * @param {Guid} vuid - The vendor user ID of the user/vendor pair
-   *  @param {String} jwt - The jwt used to authenticate the user with the vendor
-   * @param {AESKey} vendorKey - The key used for encryption/decryption of the vendor fields
+   *  @param {String} tideToken - The jwt used to authenticate the user with the vendor
+   * @param {String} cvkPublic - The public key of the users account
    *
    */
-  constructor(username, vuid, jwt, vendorKey) {
+  constructor(username, vuid, jwt, cvkPublic) {
     this.username = username;
     this.vuid = vuid;
-    this.jwt = jwt;
-    this.vendorKey = vendorKey;
+    this.tideToken = jwt;
+    this.cvkPublic = cvkPublic;
   }
 }

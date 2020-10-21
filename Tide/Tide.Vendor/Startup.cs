@@ -72,14 +72,14 @@ namespace Tide.Vendor
             services.AddSingleton<IVendorRepo, VendorRepo>();
             services.AddTideEndpoint(settings.Keys);
             services.AddControllers();
+
         }
 
 
-    
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || true)
             {
                 app.UseDeveloperExceptionPage();
             }

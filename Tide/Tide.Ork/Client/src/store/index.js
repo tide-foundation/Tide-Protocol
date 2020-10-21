@@ -2754,8 +2754,8 @@ for (let i = 0; i < 3; i++) {
     id: i,
     // url: `https://pdork${i + 1}.azurewebsites.net`,
     // url: `https://dork${i + 1}.azurewebsites.net`,
-    // url: `https://ork-${i}.azurewebsites.net`,
-    url: `http://localhost:500${i + 1}`,
+    url: `https://ork-${i + 1}.azurewebsites.net`,
+    // url: `http://localhost:500${i + 1}`,
     cmk: false,
     cvk: false,
   });
@@ -2768,6 +2768,7 @@ export default new Vuex.Store({
     orks: orks,
     vendorUrl: null,
     vendorPublic: null,
+    vendorServer: null,
     homeUrl: null,
 
     tide: null,
@@ -2786,29 +2787,28 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    initializeTide(context, data) {
+    async initializeTide(context, data) {
       context.state.initialized = true;
       context.state.vendorUrl = data.vendorUrl;
       context.state.vendorPublic = data.vendorPublic;
+      context.state.vendorServer = data.serverUrl;
 
       context.state.tide = new Tide("VendorId", data.vendorUrl, orks, data.vendorPublic);
+
+      if (!context.state.tide.validateReturnUrl(window.name, data.hashedReturnUrl)) {
+        return window.opener.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, window.name);
+      }
+
       // Do we need to get some kind of vendor test?
       router.push("/auth");
     },
     async registerAccount(context, user) {
-      var signUpResult = await context.state.tide.registerJwt(user.username, user.password, "admin@admin.com", context.getters.tempOrksToUse);
+      const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
+      var signUpResult = await context.state.tide.registerJwt(user.username, user.password, "admin@admin.com", context.getters.tempOrksToUse, serverTime);
       return signUpResult;
     },
     async finalizeAuthentication(context, data) {
-      // Communication with vendor?
-
-      // var userData = {
-      //   id: signUpResult.vendorKey.toString(),
-      //   vendorKey: signUpResult.vendorKey.public().toString(),
-      // };
-
-      // await request.post(`${vendorUrl}/account`).send(userData);
-
+      data.vuid = data.vuid.toString();
       window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
     },
   },

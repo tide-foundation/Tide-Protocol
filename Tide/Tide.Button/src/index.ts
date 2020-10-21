@@ -10,7 +10,7 @@ var chosenOrk: string;
 var serverUrl: string;
 var homeUrl: string;
 var vendorPublic: string;
-var callback: (result: AuthResult) => void;
+var hashedReturnUrl: string;
 
 window.onload = () => createButton();
 
@@ -38,8 +38,9 @@ function openAuth() {
 
   // Listen for events from window
   window.addEventListener("message", (e) => {
-    if (e.data.type == "tide-onload") win.postMessage({ type: "tide-init", serverUrl, vendorPublic }, chosenOrk);
+    if (e.data.type == "tide-onload") win.postMessage({ type: "tide-init", serverUrl, vendorPublic, hashedReturnUrl }, chosenOrk);
     if (e.data.type == "tide-authenticated") handleFinishAuthentication(e.data);
+    if (e.data.type == "tide-failed") handleTideFailed(e.data);
   });
 }
 
@@ -54,7 +55,6 @@ function handleCloseEarly() {
 }
 
 function handleFinishAuthentication(data: any) {
-  console.log(data.data.jwt);
   clearInterval(closeCheck);
   updateStatus("Finishing authentication");
 
@@ -62,9 +62,15 @@ function handleFinishAuthentication(data: any) {
 
   win.close();
   toggleProcessing(false);
+  window.dispatchEvent(new CustomEvent("tide-auth", { detail: data }));
 
-  callback(new AuthResult(true, null, data.data.jwt));
   updateStatus("Complete");
+}
+
+function handleTideFailed(data: any) {
+  clearInterval(closeCheck);
+  win.close();
+  updateStatus(data.data.error);
 }
 
 function toggleProcessing(on: boolean) {
@@ -72,10 +78,10 @@ function toggleProcessing(on: boolean) {
   logoBack.classList[on ? "add" : "remove"]("processing");
 }
 
-export function init(_homeUrl: string, _serverUrl: string, _chosenOrk: string, _vendorPublic: string, _callback: (result: AuthResult) => void) {
+export function init(_homeUrl: string, _serverUrl: string, _chosenOrk: string, _vendorPublic: string, _hashedReturnUrl: string) {
   homeUrl = _homeUrl;
   serverUrl = _serverUrl;
   chosenOrk = _chosenOrk;
   vendorPublic = _vendorPublic;
-  callback = _callback;
+  hashedReturnUrl = _hashedReturnUrl;
 }
