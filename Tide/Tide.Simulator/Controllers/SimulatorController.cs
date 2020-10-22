@@ -11,6 +11,8 @@ using Tide.Core;
 using Tide.Encryption.Ecc;
 using Tide.Simulator.Classes;
 using Tide.Simulator.Models;
+using Tide.Simulator.Contracts;
+
 // ReSharper disable InconsistentlySynchronizedField
 
 namespace Tide.Simulator.Controllers {
@@ -19,12 +21,13 @@ namespace Tide.Simulator.Controllers {
     public class SimulatorController : ControllerBase
     {
         private readonly IBlockLayer _blockchain;
-
+        private readonly ContractManager _contracts;
         private static readonly object WriteLock = new object();
  
         public SimulatorController(IBlockLayer blockchain)
         {
             _blockchain = blockchain;
+            _contracts = new ContractManager(blockchain, WriteLock);
     
         }
 
@@ -55,11 +58,8 @@ namespace Tide.Simulator.Controllers {
             //var publicKey = C25519Key.Parse(account.PublicKey);
             //if (!publicKey.Verify(Encoding.UTF8.GetBytes(serializedPayload), transaction.Sign)) return Unauthorized("Invalid signature");
 
-            lock (WriteLock) {
-                var result = _blockchain.Write(transaction);
-                if (result.success) return Ok();
-                return BadRequest(result.error);
-            }
+            
+            return _contracts.Process(transaction);
         }
 
         [HttpDelete("{contract}/{table}/{scope}/{index}")]

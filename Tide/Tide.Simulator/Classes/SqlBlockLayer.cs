@@ -61,6 +61,11 @@ namespace Tide.Simulator.Classes {
             }
         }
 
+        public Transaction Read(string location, string index) {
+            return _context.Transactions.FirstOrDefault(d => d.Index == index
+                && d.Location == location && !d.Stale);
+        }
+
         public Transaction Read(string contract, string table, string scope, string index) {
             return _context.Transactions.FirstOrDefault(d =>
                 d.Index == index &&

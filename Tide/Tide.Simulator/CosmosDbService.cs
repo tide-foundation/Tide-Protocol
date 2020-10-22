@@ -70,6 +70,11 @@ namespace Tide.Simulator {
             return results.ToList();
         }
 
+        public Transaction Read(string location, string index)
+        {
+            return Fetch(location, index);
+        }
+
         public Transaction Read(string contract, string table, string scope, string index) {
             return Fetch(contract,table,scope,index);
         }

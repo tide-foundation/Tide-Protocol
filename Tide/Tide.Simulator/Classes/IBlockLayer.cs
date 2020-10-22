@@ -25,6 +25,15 @@ namespace Tide.Simulator.Classes {
         ///     Read the newest version of this data block from the 'Blockchain'.
         /// </summary>
         /// <typeparam name="T">The Type you want to deserialize to.</typeparam>
+        /// <param name="location">The location of the resource.</param>
+        /// <param name="index">The primary index for the data under the selected scope.</param>
+        /// <returns>Serialized object</returns>
+        Transaction Read(string location, string index);
+
+        /// <summary>
+        ///     Read the newest version of this data block from the 'Blockchain'.
+        /// </summary>
+        /// <typeparam name="T">The Type you want to deserialize to.</typeparam>
         /// <param name="contract">The contract you want to read from.</param>
         /// <param name="table">The table you want to read from.</param>
         /// <param name="scope">
