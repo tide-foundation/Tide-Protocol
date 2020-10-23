@@ -2752,8 +2752,8 @@ var orks = [];
 for (let i = 0; i < 3; i++) {
   orks.push({
     id: i,
-    // url: `https://pdork${i + 1}.azurewebsites.net`,
-    url: `https://dork${i + 1}.azurewebsites.net`,
+    url: `https://pdork${i + 1}.azurewebsites.net`,
+    // url: `https://dork${i + 1}.azurewebsites.net`,
     // url: `https://ork-${i + 1}.azurewebsites.net`,
     // url: `http://localhost:500${i + 1}`,
     cmk: false,
@@ -2795,9 +2795,9 @@ export default new Vuex.Store({
 
       context.state.tide = new Tide("VendorId", data.vendorUrl, orks, data.vendorPublic);
 
-      if (!context.state.tide.validateReturnUrl(window.name, data.hashedReturnUrl)) {
-        return window.opener.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, window.name);
-      }
+      // if (!context.state.tide.validateReturnUrl(window.name, data.hashedReturnUrl)) {
+      //   return window.opener.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, window.name);
+      // }
 
       // Do we need to get some kind of vendor test?
       router.push("/auth");
