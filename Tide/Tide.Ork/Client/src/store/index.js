@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import router from "../router";
 
-import Tide from "../../../../Tide.Js/src/sdk/TideAuthentication";
+import Tide from "../../../../Tide.Js/src/Sdk/TideAuthentication";
 import request from "superagent";
 
 Vue.use(Vuex);
