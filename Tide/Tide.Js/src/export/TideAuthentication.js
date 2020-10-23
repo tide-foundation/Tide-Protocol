@@ -69,7 +69,7 @@ export default class TideAuthentication {
 
         var { vuid, cvk } = await flow.signUp(password, email, orks.length);
 
-        const token = encode({ vuid: vuid.toString(), dateCheck: "Date from vendor", exp: serverTime }, cvk);
+        const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
 
         var cvkPublic = EcKeyFormat.PemPublic(cvk);
 
@@ -77,6 +77,36 @@ export default class TideAuthentication {
         return resolve(this.account);
       } catch (error) {
         reject(error);
+      }
+    });
+  }
+
+  /**
+   * Login to a previously created Tide account. The account must be fully enabled by the vendor before use.
+   *
+   * This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).
+   *
+   * @param {string} username - Plain text username of the user
+   * @param {string} password - Plain text password of the user
+   *
+   * @returns {Account} - The Tide user account
+   */
+  async loginJwt(username, password, orks, serverTime) {
+    // Orks should be replaced in the future with a DNS call
+    return new Promise(async (resolve, reject) => {
+      try {
+        const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
+        flow.vendorPub = CP256Key.from(this.config.vendorPublic);
+
+        var { vuid, cvk } = await flow.logIn(password);
+        const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
+
+        var cvkPublic = EcKeyFormat.PemPublic(cvk);
+
+        this.account = new Account(username, vuid, token, cvkPublic);
+        return resolve(this.account);
+      } catch (error) {
+        return reject(error);
       }
     });
   }

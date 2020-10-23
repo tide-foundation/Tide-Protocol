@@ -2,11 +2,11 @@ import TideAuthentication from "../../src/sdk/TideAuthentication";
 import request from "superagent";
 import { CP256Key, EcKeyFormat, C25519Key, Hash, Utils } from "cryptide";
 
-// var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net/`);
-// var vendorUrl = "https://tidevendor.azurewebsites.net/";
+var orkUrls = [...Array(3)].map((_, i) => `https://dork${i + 1}.azurewebsites.net/`);
+var vendorUrl = "https://futureplaces.azurewebsites.net/";
 
-var orkUrls = [...Array(3)].map((_, i) => "http://localhost:500" + (i + 1));
-var vendorUrl = "http://127.0.0.1:6001";
+// var orkUrls = [...Array(3)].map((_, i) => "http://localhost:500" + (i + 1));
+// var vendorUrl = "http://127.0.0.1:6001";
 
 var auth = new TideAuthentication("VendorId", vendorUrl, orkUrls, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANvjzMxmyjGxse3fwkqajZxhf088eQRgS4l9wKsnm+A2+HRLt/4n6lA0cO6pmBqB9Le72HFSQ1s9cjv6HF3O2m");
 
@@ -22,8 +22,11 @@ var email = "tmp@tide.org";
 async function main() {
   try {
     test();
-    // var signUpResult = await auth.registerJwt(user, pass, email, orkUrls);
-    // console.log("Login Success");
+    var signUpResult = await auth.registerJwt(user, pass, email, orkUrls);
+    console.log("Register Success");
+
+    var loginResult = await auth.loginJwt(user, pass, orkUrls);
+    console.log("Login Success");
 
     const serverUrl = "dauth.me";
     const hashedReturnUrl = "D7RPSr7foQxZELrOT/a2CutCLer6uipjUBhNvYEPD5cCVokvAeFxLTGZkQbVsvIgZM125t6KJEThyoAPC/0KlA==";

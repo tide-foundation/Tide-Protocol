@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import router from "../router";
 
-import Tide from "../../../../Tide.Js/src/sdk/TideAuthentication";
+import Tide from "../../../../Tide.Js/src/export/TideAuthentication";
 import request from "superagent";
 
 Vue.use(Vuex);
@@ -2806,6 +2806,11 @@ export default new Vuex.Store({
       const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
       var signUpResult = await context.state.tide.registerJwt(user.username, user.password, "admin@admin.com", context.getters.tempOrksToUse, serverTime);
       return signUpResult;
+    },
+    async loginAccount(context, user) {
+      const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
+      var loginResult = await context.state.tide.loginJwt(user.username, user.password, context.getters.tempOrksToUse, serverTime);
+      return loginResult;
     },
     async finalizeAuthentication(context, data) {
       data.vuid = data.vuid.toString();
