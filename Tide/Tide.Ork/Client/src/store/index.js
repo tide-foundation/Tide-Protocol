@@ -2753,8 +2753,8 @@ for (let i = 0; i < 3; i++) {
   orks.push({
     id: i,
     // url: `https://pdork${i + 1}.azurewebsites.net`,
-    // url: `https://dork${i + 1}.azurewebsites.net`,
-    url: `https://ork-${i + 1}.azurewebsites.net`,
+    url: `https://dork${i + 1}.azurewebsites.net`,
+    // url: `https://ork-${i + 1}.azurewebsites.net`,
     // url: `http://localhost:500${i + 1}`,
     cmk: false,
     cvk: false,
