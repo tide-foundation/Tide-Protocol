@@ -29,10 +29,10 @@ namespace Tide.Vendor.Controllers
             return Ok(_auth.Register(request.TideToken, request.PublicKey));
         }
 
-        [HttpPost("Exchange")]
-        public IActionResult Exchange([FromBody] AuthRequest request)
+        [HttpPost("Login")]
+        public IActionResult Login([FromBody] AuthRequest request)
         {
-            return Ok(_auth.Exchange(request.TideToken, request.Vuid));
+            return Ok(_auth.Login(request.TideToken, request.Vuid));
         }
 
        

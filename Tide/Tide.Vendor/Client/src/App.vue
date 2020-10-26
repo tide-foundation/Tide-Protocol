@@ -32,8 +32,7 @@ export default {
   created() {
     window.addEventListener("tide-auth", async (e) => {
       var data = { vuid: e.detail.data.vuid, tideToken: e.detail.data.tideToken, publicKey: e.detail.data.cvkPublic };
-
-      this.jwt = (await request.post(`${this.config.serverUrl}/Authentication/register`).send(data)).text;
+      this.jwt = (await request.post(`${this.config.serverUrl}/Authentication/${e.detail.data.action}`).send(data)).text;
     });
     Tide.init(this.config);
   },
@@ -42,9 +41,9 @@ export default {
       try {
         this.error = false;
         this.protectedData = "";
-        var test = await request.get(`${this.config.serverUrl}/Authentication`).set("Authorization", `Bearer ${this.jwt}`);
+        var data = await request.get(`${this.config.serverUrl}/Authentication`).set("Authorization", `Bearer ${this.jwt}`);
 
-        this.protectedData = `Data successfully fetched for user: <strong> ${test.text}</strong>`;
+        this.protectedData = `Data successfully fetched for user: <strong> ${data.text}</strong>`;
       } catch (error) {
         this.error = true;
         this.protectedData = `Failed gathering data`;

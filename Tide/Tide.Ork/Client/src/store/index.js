@@ -2776,6 +2776,7 @@ export default new Vuex.Store({
       active: false,
       text: "Loading...",
     },
+    action: "",
     username: `${names[Math.floor(Math.random() * names.length)]}.${names[Math.floor(Math.random() * names.length)]}${Math.floor(Math.random() * 10)}`,
   },
   mutations: {
@@ -2803,18 +2804,21 @@ export default new Vuex.Store({
       router.push("/auth");
     },
     async registerAccount(context, user) {
+      this.action = "Register";
       const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
       var signUpResult = await context.state.tide.registerJwt(user.username, user.password, "admin@admin.com", context.getters.tempOrksToUse, serverTime);
       return signUpResult;
     },
     async loginAccount(context, user) {
+      this.action = "Login";
       const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
       var loginResult = await context.state.tide.loginJwt(user.username, user.password, context.getters.tempOrksToUse, serverTime);
       return loginResult;
     },
     async finalizeAuthentication(context, data) {
       data.vuid = data.vuid.toString();
-      window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
+      data.action = this.action;
+      data.action = window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
     },
   },
   modules: {},

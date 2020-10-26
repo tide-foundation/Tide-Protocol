@@ -30,7 +30,7 @@ namespace Tide.Vendor.Classes {
             return GenerateVendorToken(vuid);
         }
 
-        public string Exchange(string tideToken, string vuid) {
+        public string Login(string tideToken, string vuid) {
             if (_users.TryGetValue(vuid, out var user)) {
                 var key = GetPublicKey(user.PublicKey);
                 if (!ValidateTideToken(tideToken, key)) return null;
