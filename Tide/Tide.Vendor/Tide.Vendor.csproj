@@ -28,6 +28,8 @@
 
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Properties\ServiceDependencies\dAuthme - Web Deploy\" />
+    <Folder Include="Properties\ServiceDependencies\futureplaces - Web Deploy\" />
   </ItemGroup>
 
   
