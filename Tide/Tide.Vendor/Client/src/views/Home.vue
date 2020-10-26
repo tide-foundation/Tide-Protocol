@@ -9,6 +9,7 @@
   </div>
 </template>
 
+<script src="tide-button.js"></script>
 <script>
 import request from "superagent";
 export default {
@@ -26,8 +27,20 @@ export default {
 
       this.jwt = (await request.post(`https://futureplaces.azurewebsites.net/Authentication/register`).send(data)).text;
     });
+    this.init();
   },
   methods: {
+    init() {
+      const config = {
+        homeUrl: process.env.VUE_APP_RETURN_URL,
+        hashedReturnUrl: process.env.VUE_APP_RETURN_URL_HASH,
+        serverUrl: process.env.VUE_APP_SERVER_URL,
+        chosenOrk: process.env.VUE_APP_CHOSEN_ORK,
+        vendorPublic: process.env.VUE_APP_VENDOR_PUBLIC,
+      };
+      console.log(config);
+      Tide.init(config);
+    },
     async getProtected() {
       try {
         this.error = false;
