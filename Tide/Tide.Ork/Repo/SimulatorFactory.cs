@@ -50,7 +50,7 @@ namespace Tide.Ork.Repo {
 
         public IDnsManager BuildDnsManager()
         {
-            return new SimulatorDnsManager(_orkId, BuildClient());
+            return new SimulatorDnsManager(BuildClient());
         }
     }
 }
