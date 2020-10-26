@@ -34,6 +34,14 @@ namespace Tide.Ork.Repo {
             return Map(response);
         }
 
+        public async Task<TideResponse> Add(T entity)
+        {
+            if (await Exist(entity.Id))
+                return new TideResponse($"The entity [{entity.Id}] already exists");
+            
+            return await SetOrUpdate(entity);
+        }
+
         public async Task<TideResponse> SetOrUpdate(T entity)
         {
             var result = await _client.Post(Contract, TableName, _orkId, entity.Id.ToString(), Map(entity));

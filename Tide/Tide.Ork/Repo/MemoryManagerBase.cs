@@ -16,7 +16,7 @@ namespace Tide.Ork.Repo
             _items = new ConcurrentDictionary<Guid, string>();
         }
 
-        public Task Delete(Guid id)
+        public virtual Task Delete(Guid id)
         {
             if (_items.ContainsKey(id))
                 _items.Remove(id, out string elm);
@@ -24,17 +24,17 @@ namespace Tide.Ork.Repo
             return Task.CompletedTask;
         }
 
-        public Task<bool> Exist(Guid id)
+        public virtual Task<bool> Exist(Guid id)
         {
             return Task.FromResult(_items.ContainsKey(id));
         }
 
-        public Task<List<T>> GetAll()
+        public virtual Task<List<T>> GetAll()
         {
             return Task.FromResult(GetEnumerable().ToList());
         }
 
-        public Task<T> GetById(Guid id)
+        public virtual Task<T> GetById(Guid id)
         {
             if (!_items.ContainsKey(id))
                 return Task.FromResult<T>(default(T));
@@ -42,7 +42,16 @@ namespace Tide.Ork.Repo
             return Task.FromResult(Map(_items[id]));
         }
 
-        public Task<TideResponse> SetOrUpdate(T entity)
+        public virtual Task<TideResponse> Add(T entity)
+        {
+            if (_items.ContainsKey(entity.Id))
+                return Task.FromResult(new TideResponse($"The entity [{entity.Id}] already exists"));
+
+            _items[entity.Id] = Map(entity);
+            return Task.FromResult(new TideResponse());
+        }
+
+        public virtual Task<TideResponse> SetOrUpdate(T entity)
         {
             _items[entity.Id] = Map(entity);
             return Task.FromResult(new TideResponse());
