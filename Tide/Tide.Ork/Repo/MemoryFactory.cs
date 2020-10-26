@@ -7,6 +7,7 @@ namespace Tide.Ork.Repo {
         private static readonly ICvkManager _managerCvk = new MemoryCvkManager();
         private static readonly IKeyIdManager _keyIdManager = new MemoryKeyIdManager();
         private static readonly IRuleManager _memoryRuleManager = new MemoryRuleManager();
+        private static readonly IDnsManager _memoryDnsManager = new MemoryDnsManager();
         private readonly IMemoryCache _cache;
 
         public MemoryFactory(IMemoryCache cache)
@@ -21,5 +22,7 @@ namespace Tide.Ork.Repo {
         public IKeyIdManager BuildKeyIdManager() => _keyIdManager;
 
         public IRuleManager BuildRuleManager() => _memoryRuleManager; //new CacheRuleManager(_cache, _memoryRuleManager);
+
+        public IDnsManager BuildDnsManager() => _memoryDnsManager;
     }
 }

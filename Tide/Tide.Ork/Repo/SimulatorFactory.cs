@@ -47,5 +47,10 @@ namespace Tide.Ork.Repo {
             IRuleManager repo = new SimulatorRuleManager(_orkId, BuildClient(), _key);
             return IsCache ? new CacheRuleManager(_cache, repo) : repo;
         }
+
+        public IDnsManager BuildDnsManager()
+        {
+            return new SimulatorDnsManager(_orkId, BuildClient());
+        }
     }
 }

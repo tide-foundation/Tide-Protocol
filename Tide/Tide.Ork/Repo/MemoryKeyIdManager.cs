@@ -3,7 +3,7 @@ using Tide.Core;
 
 namespace Tide.Ork.Repo
 {
-    public class MemoryKeyIdManager : MemoryManagerBase<KeyIdVault>, IKeyIdManager
+    public class MemoryKeyIdManager : MemoryManagerBites<KeyIdVault>, IKeyIdManager
     {
     }
 }

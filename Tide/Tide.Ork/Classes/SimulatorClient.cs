@@ -18,7 +18,7 @@ namespace Tide.Ork.Classes {
         private readonly HttpClient _client;
         private readonly C25519Key _private;
         private readonly string _orkId;
-        private bool _registered;
+        //private bool _registered; //TODO: Ask matt why is not used
 
         public SimulatorClient(string url,string orkId, C25519Key privateKey) {
             _private = privateKey;
@@ -74,7 +74,7 @@ namespace Tide.Ork.Classes {
             }
         }
 
-        public async Task<bool> Delete(string contract, string table, string scope, string index)
+        public Task<bool> Delete(string contract, string table, string scope, string index)
         {
            // if (!await Authenticated()) return false;
 
@@ -86,7 +86,7 @@ namespace Tide.Ork.Classes {
             //    var result = await _client.SendAsync(requestMessage);
             //    return result.IsSuccessStatusCode;
             //}
-            return false;
+            return Task.FromResult(false);
         }
 
         private string GeneratePath(string contract, string table, string scope, string index) {

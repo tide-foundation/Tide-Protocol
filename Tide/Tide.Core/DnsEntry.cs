@@ -6,7 +6,7 @@ using Tide.Encryption.Tools;
 
 namespace Tide.Core
 {
-    public class DnsEntry : IGuid
+    public class DnsEntry : SerializableJson<DnsEntry, DnsEntry>, IGuid
     {
         [JsonIgnore]
         public Guid Id => UId;
@@ -17,7 +17,6 @@ namespace Tide.Core
         public string Signature { get; set; }
         public string[] Signatures { get; set; }
 
-        
         public bool VerifyForUId() {
             if (string.IsNullOrEmpty(Signature) || string.IsNullOrEmpty(Public))
                 return false;
@@ -33,24 +32,26 @@ namespace Tide.Core
             return Utils.Hash(JsonSerializer.Serialize(new { UId, Orks, Public, Modifided }, GetJsonOptions()));
         }
         
-        public override string ToString()
-        {
-            MessageSigned();
-            return JsonSerializer.Serialize(this, GetJsonOptions());
-        }
-
-        public static DnsEntry Parse(string data)
-        {
-            return JsonSerializer.Deserialize<DnsEntry>(data, GetJsonOptions());
-        }
-
-        private static JsonSerializerOptions GetJsonOptions()
+        protected override JsonSerializerOptions GetJsonOptions()
         {
             return new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
+                PropertyNameCaseInsensitive = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
+        }
+
+        protected override DnsEntry GetDto() => this;
+
+        protected override void MapDto(DnsEntry basic)
+        {
+            UId = basic.UId;
+            Orks = basic.Orks;
+            Public = basic.Public;
+            Modifided = basic.Modifided;
+            Signature = basic.Signature;
+            Signatures = basic.Signatures;
         }
     }
 }

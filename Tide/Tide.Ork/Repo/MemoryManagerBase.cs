@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tide.Core;
-using Tide.Encryption;
 
 namespace Tide.Ork.Repo
 {
-    public class MemoryManagerBase<T> : IManager<T> where T : SerializableByteBase<T>, IGuid, new()
+    public abstract class MemoryManagerBase<T> : IManager<T> where T : IGuid, new()
     {
         protected readonly ConcurrentDictionary<Guid, string> _items;
 
@@ -38,14 +37,14 @@ namespace Tide.Ork.Repo
         public Task<T> GetById(Guid id)
         {
             if (!_items.ContainsKey(id))
-                return Task.FromResult<T>(null);
+                return Task.FromResult<T>(default(T));
 
-            return Task.FromResult(SerializableByteBase<T>.Parse(_items[id]));
+            return Task.FromResult(Map(_items[id]));
         }
 
         public Task<TideResponse> SetOrUpdate(T entity)
         {
-            _items[entity.Id] = entity.ToString();
+            _items[entity.Id] = Map(entity);
             return Task.FromResult(new TideResponse());
         }
 
@@ -53,8 +52,12 @@ namespace Tide.Ork.Repo
         {
             foreach (KeyValuePair<Guid, string> entry in _items)
             {
-                yield return SerializableByteBase<T>.Parse(entry.Value);
+                yield return Map(entry.Value);
             }
         }
+
+        protected abstract T Map(string data);
+
+        protected abstract string Map(T entity);
     }
 }

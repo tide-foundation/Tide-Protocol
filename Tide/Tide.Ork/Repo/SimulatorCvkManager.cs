@@ -5,7 +5,7 @@ using Tide.Encryption.AesMAC;
 using Tide.Ork.Classes;
 
 namespace Tide.Ork.Repo {
-    public class SimulatorCvkManager : SimulatorManagerBase<CvkVault>, ICvkManager {
+    public class SimulatorCvkManager : SimulatorManagerCipherBase<CvkVault>, ICvkManager {
         protected override string TableName => "cvks";
         protected override string Contract => "Authentication";
 

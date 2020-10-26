@@ -39,7 +39,6 @@ namespace Tide.Ork.Controllers
 
             return new TideResponse(true,JsonConvert.SerializeObject(list),null);
 
-            return null;
             //var response = _client.GetData($"Simulator/getorks").Result;
             //var stringList = JsonConvert.DeserializeObject<List<string>>((string)response.Content) ;
             //response.Content = stringList.Select(JsonConvert.DeserializeObject<Core.OrkNode>).Take(amount);

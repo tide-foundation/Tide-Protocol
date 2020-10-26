@@ -6,7 +6,7 @@ using Tide.Core;
 
 namespace Tide.Ork.Repo
 {
-    public class MemoryRuleManager : MemoryManagerBase<RuleVault>, IRuleManager
+    public class MemoryRuleManager : MemoryManagerBites<RuleVault>, IRuleManager
     {
         public static Guid MaxID => Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff");
 
