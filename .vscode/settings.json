@@ -1,5 +1,20 @@
 {
     "plantuml.diagramsRoot": "diagrams/src",
     "plantuml.exportOutDir": "diagrams/out",
-    "plantuml.exportSubFolder": false
+    "plantuml.exportSubFolder": false,
+    "javascript.implicitProjectConfig.checkJs": true,
+    "files.exclude": {
+        "**/obj/**": true,
+        "**/bin/**": true,
+        "**/node_modules": true
+    },
+    "search.exclude": {
+        "**/.git": true
+    },
+    "files.watcherExclude": {
+        "**/obj/**": true,
+        "**/bin/**": true,
+        "**/dist/**": true,
+        "**/node_modules/**": true
+    }
 }
