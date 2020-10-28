@@ -1,4 +1,4 @@
-import TideAuthentication from "../../src/sdk/TideAuthentication";
+import TideAuthentication from "../../src/export/TideAuthentication";
 import request from "superagent";
 import { CP256Key, EcKeyFormat, C25519Key, Hash, Utils } from "cryptide";
 
@@ -22,16 +22,16 @@ var email = "tmp@tide.org";
 async function main() {
   try {
     test();
-    var signUpResult = await auth.registerJwt(user, pass, email, orkUrls);
-    console.log("Register Success");
+    // var signUpResult = await auth.registerJwt(user, pass, email, orkUrls);
+    // console.log("Register Success");
 
-    var loginResult = await auth.loginJwt(user, pass, orkUrls);
-    console.log("Login Success");
+    // var loginResult = await auth.loginJwt(user, pass, orkUrls);
+    // console.log("Login Success");
 
-    const serverUrl = "dauth.me";
-    const hashedReturnUrl = "D7RPSr7foQxZELrOT/a2CutCLer6uipjUBhNvYEPD5cCVokvAeFxLTGZkQbVsvIgZM125t6KJEThyoAPC/0KlA==";
+    // const serverUrl = "dauth.me";
+    // const hashedReturnUrl = "D7RPSr7foQxZELrOT/a2CutCLer6uipjUBhNvYEPD5cCVokvAeFxLTGZkQbVsvIgZM125t6KJEThyoAPC/0KlA==";
 
-    console.log(auth.validateReturnUrl(serverUrl, hashedReturnUrl));
+    // console.log(auth.validateReturnUrl(serverUrl, hashedReturnUrl));
     // var userData = {
     //   id: signUpResult.vendorKey.toString(),
     //   cvkPub: signUpResult.vendorKey.public().toString(),
@@ -54,7 +54,7 @@ async function main() {
 function test() {
   var prvKey = C25519Key.from("AC4wlcDNzlLGRPgne2Lr+3z0yLSWZwfxSmMrRLzAiRQNvjzMxmyjGxse3fwkqajZxhf088eQRgS4l9wKsnm+A2+HRLt/4n6lA0cO6pmBqB9Le72HFSQ1s9cjv6HF3O2m");
   var pubkey = prvKey.public();
-  var urls = ["https://futureplaces.azurewebsites.net"];
+  var urls = ["https://dauthme-staging.azurewebsites.net"];
   for (let i = 0; i < urls.length; i++) {
     var urlSigned = prvKey.sign(urls[i]);
     if (pubkey.verify(urls[i], urlSigned)) console.log(`${urls[i]} ${Buffer.from(urlSigned).toString("base64")}`);

@@ -39,14 +39,6 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
 
-  <!--<ItemGroup>
-    -->
-  <!-- Don't publish the SPA source files, but do show them in the project files list -->
-  <!--
-    <Content Remove="$(SpaRoot)**" />
-    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-  </ItemGroup>-->
-
   <ItemGroup>
     <Folder Include="Client\dist\css\" />
     <Folder Include="Client\dist\js\" />
@@ -72,7 +64,9 @@
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- Build Target: Run webpack dist build -->
     <Message Importance="high" Text="Running npm build..." />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+    <!--<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"   />-->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"   Condition=" '$(ASPNETCORE_ENVIRONMENT)' == 'production'"/>
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:staging"   Condition=" '$(ASPNETCORE_ENVIRONMENT)' == 'staging'"/>
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
