@@ -23,7 +23,7 @@ function createButton() {
 
 function openAuth() {
   // Initialize
-  win = window.open(config.chosenOrk, config.homeUrl, "width=800, height=501,top=0,right=0"); // Using name as home url. This is a dirty way I found to feed in the return url initially
+  win = window.open(config.chosenOrk, config.homeUrl, "width=550, height=650,top=0,right=0"); // Using name as home url. This is a dirty way I found to feed in the return url initially
   if (win == null) return;
   updateStatus("Awaiting login");
   toggleProcessing(true);
@@ -55,10 +55,9 @@ function handleFinishAuthentication(data: any) {
   clearInterval(closeCheck);
   updateStatus("Finishing authentication");
 
-  // Communicate with the vendor
-
-  win.close();
+  if (data.data.autoClose) win.close();
   toggleProcessing(false);
+  win = null;
   window.dispatchEvent(new CustomEvent("tide-auth", { detail: data }));
 
   updateStatus("Complete");

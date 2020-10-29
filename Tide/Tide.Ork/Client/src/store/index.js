@@ -2749,13 +2749,13 @@ const names = [
 ];
 
 var orks = [];
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 30; i++) {
   orks.push({
     id: i,
-    url: `https://pdork${i + 1}.azurewebsites.net`,
+    // url: `https://pdork${i + 1}.azurewebsites.net`,
     // url: `https://dork${i + 1}.azurewebsites.net`,
     // url: `https://ork-${i + 1}.azurewebsites.net`,
-    // url: `http://localhost:500${i + 1}`,
+    url: `http://localhost:500${i + 1}`,
     cmk: false,
     cvk: false,
   });
@@ -2777,7 +2777,9 @@ export default new Vuex.Store({
       text: "Loading...",
     },
     action: "",
-    username: `${names[Math.floor(Math.random() * names.length)]}.${names[Math.floor(Math.random() * names.length)]}${Math.floor(Math.random() * 10)}`,
+    goToDashboard: false,
+    username: "matt@tide.org", // `${names[Math.floor(Math.random() * names.length)]}.${names[Math.floor(Math.random() * names.length)]}${Math.floor(Math.random() * 10)}`,
+    account: null,
   },
   mutations: {
     UPDATE_MODE(state, newMode) {
@@ -2805,20 +2807,38 @@ export default new Vuex.Store({
     },
     async registerAccount(context, user) {
       this.action = "Register";
+      this.goToDashboard = user.goToDashboard;
       const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
-      var signUpResult = await context.state.tide.registerJwt(user.username, user.password, "admin@admin.com", context.getters.tempOrksToUse, serverTime);
-      return signUpResult;
+
+      const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      var isEmail = re.test(String(user.username).toLowerCase());
+
+      context.state.account = await context.state.tide.registerJwt(user.username, user.password, isEmail ? user.username : "noemail@noemail.com", context.getters.tempOrksToUse, serverTime);
+      return context.state.account;
     },
     async loginAccount(context, user) {
       this.action = "Login";
+      this.goToDashboard = user.goToDashboard;
       const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
-      var loginResult = await context.state.tide.loginJwt(user.username, user.password, context.getters.tempOrksToUse, serverTime);
-      return loginResult;
+      context.state.account = await context.state.tide.loginJwt(user.username, user.password, context.getters.tempOrksToUse, serverTime);
+      return context.state.account;
+    },
+    async sendRecoverEmails(context, user) {
+      await context.state.tide.recover(user.username, context.getters.tempOrksToUse);
+    },
+    async reconstructAccount(context, data) {
+      await context.state.tide.reconstruct(data.username, data.shares, data.newPass, context.getters.tempOrksToUse);
+    },
+    async changePassword(context, user) {
+      await context.state.tide.changePassword(user.password, user.newPassword, context.getters.tempOrksToUse);
     },
     async finalizeAuthentication(context, data) {
       data.vuid = data.vuid.toString();
       data.action = this.action;
+      data.autoClose = !this.goToDashboard;
       data.action = window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
+
+      if (this.goToDashboard) router.push("/dashboard");
     },
   },
   modules: {},
@@ -2829,6 +2849,7 @@ export default new Vuex.Store({
     orks: (state) => state.orks,
     username: (state) => state.username,
     isInitialized: (state) => state.initialized,
+    isLoggedIn: (state) => true,
     tempOrksToUse: (state) => state.orks.map((o) => o.url),
   },
 });

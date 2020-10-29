@@ -1,6 +1,6 @@
 <template>
   <div>
-    Finished Auth. It is safe to close this window.
+    <button @click="$parent.changeMode('Change')">Change Password</button>
   </div>
 </template>
 

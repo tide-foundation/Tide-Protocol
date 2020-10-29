@@ -2,8 +2,10 @@
   <div id="app">
     <Status></Status>
     <Loading></Loading>
-    <h1>THIS IS AN ORK NODE</h1>
-    <router-view />
+    <img class="logo" src="@/assets/img/tide-logo.svg" alt="tide logo" />
+    <div id="content">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -24,19 +26,16 @@ export default {
 </script>
 
 <style lang="scss">
-body,
-html {
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
 #app {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
+
+  .logo {
+    width: 150px;
+  }
 }
 </style>

@@ -112,23 +112,33 @@ export default class TideAuthentication {
   }
 
   /**
+   * Send a request to the ORK nodes used by the user to email them recovery shards. This is step 1 in a 2 step process to recover the user keys.
+   *
+   * @param {String} username - The username of the user who wishes to recover
+   * @param {string[]} orks - The orks used to register the account
+   */
+  async recover(username, orks) {
+    const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
+
+    await flow.Recover(username);
+  }
+
+  /**
    * Login to a previously created Tide account. The account must be fully enabled by the vendor before use.
    *
    * This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).
    *
-   * @param {string} username - Plain text username of the user
-   * @param {string} password - Plain text password of the user
-   *
-   * @returns {Account} - The Tide user account
+   * @param {String} username - Plain text username of the user
+   * @param {Array} shares - An array of shares sent to the users email(s)
+   * @param {String} newPass - The new password of the user
+   * @param {string[]} orks - The orks used to register the account
    */
-  async login(username, password) {
-    // Orks should be replaced in the future with a DNS call
+  reconstruct(username, shares, newPass, orks) {
     return new Promise(async (resolve, reject) => {
       try {
-        const flow = generateFlow(username, getUserOrks(this.config), this.config.serverUrl);
-        var { vuid, auth } = await flow.logIn(password);
-        this.account = new Account(username, vuid, auth);
-        return resolve(this.account);
+        var flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
+
+        return resolve(await flow.Reconstruct(shares, newPass, orks.length));
       } catch (error) {
         return reject(error);
       }
@@ -149,11 +159,11 @@ export default class TideAuthentication {
    * @param {string} newPass - The new password the user wishes to change to
    *
    */
-  async changePassword(pass, newPass) {
+  async changePassword(pass, newPass, orks) {
     // Threshold should be replaced in the future with a DNS call
     return new Promise(async (resolve, reject) => {
       try {
-        const flow = generateFlow(this.account.username, getUserOrks(this.config), this.config.serverUrl);
+        const flow = generateJwtFlow(this.account.username, orks, this.config.serverUrl, this.config.vendorPublic);
         await flow.changePass(pass, newPass, getUserOrks(this.config).length);
         return resolve();
       } catch (error) {

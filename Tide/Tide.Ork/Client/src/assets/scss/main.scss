@@ -1,55 +1,30 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+//@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap");
+@import url("https://use.typekit.net/pbh2uud.css");
+$input-height: 55px;
+$primary: #1ba1e2;
+$dark-primary: #1990cc;
+$content-width: 350px;
 
-$input-height: 27px;
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: acumin-pro, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  transition: 0.2s all;
+}
+
+#content {
+  width: $content-width;
+}
 
 html,
 body {
-  font-family: "Montserrat", sans-serif;
-}
-
-form {
-  width: 100%;
-  text-align: center;
-
-  .form-group {
-    width: 100%;
-
-    label {
-      text-align: left;
-      display: block;
-    }
-
-    input {
-      margin-bottom: 12px;
-      height: $input-height;
-      width: 100%;
-      padding-left: 5px;
-      border-radius: 0px;
-      border: 1px solid gray;
-      outline: none;
-
-      &:focus{
-        border: 1px solid orange;
-    }
-    }
-
-    button {
-      margin-top: 7px;
-      width: calc(100% + 10px);
-      height: $input-height;
-      height: 27px;
-    }
-
-    select {
-      width: calc(100% + 10px);
-      height: 27px;
-      margin-bottom: 7px;
-    }
-
-
-  }
-
-
+  border: 1px solid $primary;
+  width: calc(100% - 2px);
+  padding: 0;
+  margin: 0;
+  height: calc(100vh - 3px);
 }
 
 .link {
@@ -61,13 +36,177 @@ form {
   }
 }
 
-.content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 98%;
-  max-width: 400px;
+h2 {
+  text-align: center;
+  font-weight: 700;
+  user-select: none;
 }
 
+form {
+  input,
+  button {
+    width: 100%;
+    box-sizing: border-box;
+    height: $input-height;
+  }
 
+  input {
+    border: 1px solid #e6e6e6;
+
+    padding-left: 20px;
+    color: #aaa5a5;
+    font-size: 0.9rem;
+
+    &:hover {
+      border-color: orange;
+    }
+
+    &:focus {
+      border-color: rgb(207, 135, 0);
+    }
+
+    &::placeholder {
+      color: #d3d3d3;
+    }
+  }
+
+  button {
+    background: $primary;
+    border: 1px solid $primary;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: 600;
+
+    &:hover {
+      background-color: $dark-primary;
+      border-color: $dark-primary;
+    }
+  }
+
+  .action-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    p {
+      width: 130px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: $primary;
+
+      cursor: pointer;
+      &:hover {
+        color: orange;
+      }
+    }
+    button {
+      width: 130px;
+    }
+  }
+}
+
+.advanced-options {
+  position: absolute;
+  bottom: 5px;
+  left: 23px;
+  cursor: pointer;
+  p,
+  label {
+    color: #aaa5a5;
+    font-size: 0.9rem;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+}
+
+// Positioning
+.mt-10 {
+  margin-top: 10px;
+}
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mt-50 {
+  margin-top: 50px;
+}
+
+.mt-70 {
+  margin-top: 70px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  &:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+
+    &:checked ~ .checkmark {
+      background-color: #2196f3;
+    }
+
+    &:checked ~ .checkmark:after {
+      display: block;
+    }
+  }
+
+  /* Create a custom checkbox */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    transform: translate(0px, 1px);
+
+    &:after {
+      content: "";
+      position: absolute;
+      display: none;
+    }
+
+    &:after {
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+  }
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

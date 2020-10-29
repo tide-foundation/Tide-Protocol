@@ -28,7 +28,7 @@ async function main() {
     // var loginResult = await auth.loginJwt(user, pass, orkUrls);
     // console.log("Login Success");
 
-    // const serverUrl = "dauth.me";
+    // const serverUrl = "http://172.26.17.60:8080";
     // const hashedReturnUrl = "D7RPSr7foQxZELrOT/a2CutCLer6uipjUBhNvYEPD5cCVokvAeFxLTGZkQbVsvIgZM125t6KJEThyoAPC/0KlA==";
 
     // console.log(auth.validateReturnUrl(serverUrl, hashedReturnUrl));
@@ -54,7 +54,7 @@ async function main() {
 function test() {
   var prvKey = C25519Key.from("AC4wlcDNzlLGRPgne2Lr+3z0yLSWZwfxSmMrRLzAiRQNvjzMxmyjGxse3fwkqajZxhf088eQRgS4l9wKsnm+A2+HRLt/4n6lA0cO6pmBqB9Le72HFSQ1s9cjv6HF3O2m");
   var pubkey = prvKey.public();
-  var urls = ["https://dauthme-staging.azurewebsites.net"];
+  var urls = ["dauth.me"];
   for (let i = 0; i < urls.length; i++) {
     var urlSigned = prvKey.sign(urls[i]);
     if (pubkey.verify(urls[i], urlSigned)) console.log(`${urls[i]} ${Buffer.from(urlSigned).toString("base64")}`);

@@ -57,10 +57,6 @@ namespace Tide.Vendor.Controllers
         public string TideToken { get; set; }
     }
 
-    public class AuthResponse {
-        public string Token { get; set; }
-    }
-
     public class VendorUser {
         public string Vuid { get; set; }
         public string PublicKey { get; set; }
