@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Initializing from "../views/Initializing.vue";
 import Auth from "../views/Auth.vue";
-import Dashboard from "../views/Dashboard.vue";
+import Account from "../views/Account.vue";
 import Store from "../store/";
 
 Vue.use(VueRouter);
@@ -19,9 +19,9 @@ const routes = [
     component: Auth,
   },
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    component: Dashboard,
+    path: "/account",
+    name: "Account",
+    component: Account,
     meta: {
       requiresAuth: true,
     },

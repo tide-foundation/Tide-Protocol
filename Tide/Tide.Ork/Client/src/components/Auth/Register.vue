@@ -3,7 +3,7 @@
     <h2>Create your Account</h2>
     <form @submit.prevent="register">
       <input type="text" v-model="user.username" placeholder="Username" />
-      <div id="password-row" class="mt-10">
+      <div class="password-row mt-10">
         <input type="password" v-model="user.password" placeholder="Password" />
         <input type="password" v-model="user.confirm" placeholder="Confirm" />
       </div>
@@ -37,21 +37,18 @@ export default {
   created() {},
   methods: {
     async register() {
-      try {
-        this.$loading(true, "Registering...");
+      this.$loading(true, "Registering...");
+      this.$nextTick(async () => {
+        try {
+          var signUpResult = await this.$store.dispatch("registerAccount", this.user);
 
-        // setTimeout(() => {
-        //     this.$store.dispatch("finalizeAuthentication", { jwt: "Give me a JoseWT" });
-        // }, 2000);
-
-        var signUpResult = await this.$store.dispatch("registerAccount", this.user);
-
-        await this.$store.dispatch("finalizeAuthentication", signUpResult);
-      } catch (error) {
-        this.$bus.$emit("show-error", error);
-      } finally {
-        this.$loading(false, "");
-      }
+          await this.$store.dispatch("finalizeAuthentication", signUpResult);
+        } catch (error) {
+          this.$bus.$emit("show-error", error);
+        } finally {
+          this.$loading(false, "");
+        }
+      });
     },
   },
 };
@@ -61,26 +58,10 @@ export default {
 h1 {
   text-align: center;
 }
-.po-password-strength-bar {
-  border-radius: 0px;
-  transition: all 0.2s linear;
-  border: 1px solid #999999;
-  margin-bottom: 10px;
-  margin-right: -1px;
-  width: calc(100% - 2px);
-}
-
-#password-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  input {
-    width: 48.5%;
-  }
-}
 
 #recovery-emails {
+  max-height: 200px;
+  overflow-y: auto;
   .recovery-email {
     display: flex;
     flex-direction: row;

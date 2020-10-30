@@ -2749,13 +2749,13 @@ const names = [
 ];
 
 var orks = [];
-for (let i = 0; i < 30; i++) {
+for (let i = 0; i < 3; i++) {
   orks.push({
     id: i,
     // url: `https://pdork${i + 1}.azurewebsites.net`,
     // url: `https://dork${i + 1}.azurewebsites.net`,
-    // url: `https://ork-${i + 1}.azurewebsites.net`,
-    url: `http://localhost:500${i + 1}`,
+    url: `https://ork-${i + 1}.azurewebsites.net`,
+    // url: `http://localhost:500${i + 1}`,
     cmk: false,
     cvk: false,
   });
@@ -2805,6 +2805,10 @@ export default new Vuex.Store({
       // Do we need to get some kind of vendor test?
       router.push("/auth");
     },
+    async changeOrkWindow(context, newOrk) {
+      const data = { newOrk };
+      window.opener.postMessage({ type: "tide-change-ork", data }, window.name);
+    },
     async registerAccount(context, user) {
       this.action = "Register";
       this.goToDashboard = user.goToDashboard;
@@ -2821,6 +2825,7 @@ export default new Vuex.Store({
       this.goToDashboard = user.goToDashboard;
       const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
       context.state.account = await context.state.tide.loginJwt(user.username, user.password, context.getters.tempOrksToUse, serverTime);
+      console.log(context.state.account);
       return context.state.account;
     },
     async sendRecoverEmails(context, user) {
@@ -2838,7 +2843,7 @@ export default new Vuex.Store({
       data.autoClose = !this.goToDashboard;
       data.action = window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
 
-      if (this.goToDashboard) router.push("/dashboard");
+      if (this.goToDashboard) router.push("/account");
     },
   },
   modules: {},
@@ -2851,5 +2856,6 @@ export default new Vuex.Store({
     isInitialized: (state) => state.initialized,
     isLoggedIn: (state) => true,
     tempOrksToUse: (state) => state.orks.map((o) => o.url),
+    account: (state) => state.account,
   },
 });

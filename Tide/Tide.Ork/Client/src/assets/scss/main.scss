@@ -4,6 +4,7 @@ $input-height: 55px;
 $primary: #1ba1e2;
 $dark-primary: #1990cc;
 $content-width: 350px;
+$border-color: #bbbbbb;
 
 * {
   -webkit-font-smoothing: antialiased;
@@ -51,7 +52,8 @@ form {
   }
 
   input {
-    border: 1px solid #e6e6e6;
+    border: 1px solid $border-color;
+    transition: 0.1s;
 
     padding-left: 20px;
     color: #aaa5a5;
@@ -66,7 +68,7 @@ form {
     }
 
     &::placeholder {
-      color: #d3d3d3;
+      color: $border-color;
     }
   }
 
@@ -209,4 +211,58 @@ form {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.po-password-strength-bar {
+  border-radius: 0px;
+  transition: all 0.2s linear;
+  border: 1px solid #999999;
+  margin-bottom: 10px;
+  margin-right: -1px;
+  width: calc(100% - 2px);
+}
+
+.password-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  input {
+    width: 48.5%;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+.disclaimer {
+  color: orange;
+  font-weight: 600;
+  text-align: center;
+}
+
+.input-list {
+  overflow-y: auto;
+  max-height: 240px !important;
+  input {
+    margin: 0px 0px 10px 0;
+    height: 40px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgb(190, 190, 190);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(66, 66, 66);
+  }
 }

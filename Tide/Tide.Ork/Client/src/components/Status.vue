@@ -34,7 +34,7 @@ export default {
 #status {
   color: green;
   position: absolute;
-  bottom: 10px;
+  top: 10px;
   &.error {
     color: red;
   }

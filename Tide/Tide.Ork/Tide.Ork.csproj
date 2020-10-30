@@ -26,7 +26,9 @@
   </ItemGroup>-->
 
   <ItemGroup>
+    <Folder Include="Client\dist\" />
     <Folder Include="Client\dist\css\" />
+    <Folder Include="Client\dist\img\" />
     <Folder Include="Client\dist\js\" />
     <!--<Folder Exclude="Client\node_modules\**" />-->
   </ItemGroup>

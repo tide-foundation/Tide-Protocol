@@ -73,7 +73,7 @@ export default class TideAuthentication {
 
         var cvkPublic = EcKeyFormat.PemPublic(cvk);
 
-        this.account = new Account(username, vuid, token, cvkPublic);
+        this.account = new Account(username, vuid, token, cvkPublic, cvk);
         return resolve(this.account);
       } catch (error) {
         reject(error);

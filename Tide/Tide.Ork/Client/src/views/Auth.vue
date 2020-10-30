@@ -8,7 +8,9 @@
           <ChangeOrk :user="user" v-if="mode == 'ChangeOrk'"></ChangeOrk>
           <SelectOrks :user="user" v-if="mode == 'SelectOrks'"></SelectOrks>
           <Register :user="user" v-else-if="mode == 'Register'"></Register>
-          <Forgot :user="user" v-else-if="mode == 'Forgot'"></Forgot>
+          <ForgotSend :user="user" v-else-if="mode == 'ForgotSend'"></ForgotSend>
+          <ForgotReconstruct :user="user" v-else-if="mode == 'ForgotReconstruct'"></ForgotReconstruct>
+          <ForgotReset :user="user" v-else-if="mode == 'ForgotReset'"></ForgotReset>
         </transition>
 
         <p>{{ status }}</p>
@@ -25,7 +27,9 @@ import Register from "../components/Auth/Register.vue";
 import LoginUsername from "../components/Auth/LoginUsername.vue";
 import LoginPassword from "../components/Auth/LoginPassword.vue";
 import Logout from "../components/Auth/Logout.vue";
-import Forgot from "../components/Auth/Forgot.vue";
+import ForgotSend from "../components/Auth/ForgotSend.vue";
+import ForgotReconstruct from "../components/Auth/ForgotReconstruct.vue";
+import ForgotReset from "../components/Auth/ForgotReset.vue";
 export default {
   components: {
     ChangeOrk,
@@ -34,7 +38,9 @@ export default {
     LoginPassword,
     Register,
     Logout,
-    Forgot,
+    ForgotSend,
+    ForgotReconstruct,
+    ForgotReset,
   },
 
   data() {
@@ -49,12 +55,14 @@ export default {
         homeOrk: "http://172.26.17.60:8081/",
         recoveryEmails: ["matt@tide.org"],
         selectedOrks: [],
+        frags: [],
       },
     };
   },
   created() {
     this.user.username = this.$store.getters.username; // Populate from store with random name
     this.user.selectedOrks = this.$store.getters.tempOrksToUse;
+    this.user.frags = [...Array(this.$store.getters.tempOrksToUse.length)].map((_, i) => "");
   },
   methods: {
     setStatus(msg) {
@@ -70,12 +78,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-</style>
+<style lang="scss" scoped></style>

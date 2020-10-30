@@ -38,6 +38,7 @@ function openAuth() {
     if (e.data.type == "tide-onload") win.postMessage({ type: "tide-init", serverUrl: config.serverUrl, vendorPublic: config.vendorPublic, hashedReturnUrl: config.hashedReturnUrl }, config.chosenOrk);
     if (e.data.type == "tide-authenticated") handleFinishAuthentication(e.data);
     if (e.data.type == "tide-failed") handleTideFailed(e.data);
+    if (e.data.type == "tide-change-ork") handleChangeOrk(e.data);
   });
 }
 
@@ -67,6 +68,13 @@ function handleTideFailed(data: any) {
   clearInterval(closeCheck);
   win.close();
   updateStatus(data.data.error);
+}
+
+function handleChangeOrk(data: any) {
+  clearInterval(closeCheck);
+  win.close();
+  config.chosenOrk = data.newOrk;
+  openAuth();
 }
 
 function toggleProcessing(on: boolean) {
