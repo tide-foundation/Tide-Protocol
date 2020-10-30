@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="App.Metrics.AspNetCore" Version="4.1.0" />
+    <PackageReference Include="App.Metrics.AspNetCore.Endpoints" Version="4.1.0" />
+    <PackageReference Include="App.Metrics.AspNetCore.tracking" Version="4.1.0" />
+    <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.1.0" />
     <PackageReference Include="Cryptide.Core" Version="0.0.14" />
     <PackageReference Include="MailKit" Version="2.7.0" />
 

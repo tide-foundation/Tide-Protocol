@@ -12,6 +12,7 @@ using Tide.Ork.Classes;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using VueCliMiddleware;
+using App.Metrics.AspNetCore;
 
 namespace Tide.Ork {
     public class Startup {
@@ -36,6 +37,9 @@ namespace Tide.Ork {
 
             services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
 
+            if (settings.Features.Metrics)
+                services.AddMetrics();
+            
             if (settings.Features.Memory)
                 services.AddTransient<IKeyManagerFactory, MemoryFactory>();
             else
