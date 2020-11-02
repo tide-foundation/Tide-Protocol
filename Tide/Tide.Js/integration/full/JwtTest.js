@@ -1,19 +1,22 @@
 import TideAuthentication from "../../src/export/TideAuthentication";
-import request from "superagent";
-import { CP256Key, EcKeyFormat, C25519Key, Hash, Utils } from "cryptide";
 
-var orkUrls = [...Array(3)].map((_, i) => `https://dork${i + 1}.azurewebsites.net/`);
+import { C25519Key } from "cryptide";
+
+var orkUrls = [...Array(20)].map((_, i) => `https://pdork${i + 1}.azurewebsites.net/`);
+//var orkUrls = [...Array(5)].map((_, i) => `https://dork${i + 1}.azurewebsites.net/`);
 var vendorUrl = "https://futureplaces.azurewebsites.net/";
-
+import TemporaryDns from "../../src/export/TemporaryDns";
+console.log(orkUrls);
 // var orkUrls = [...Array(3)].map((_, i) => "http://localhost:500" + (i + 1));
 // var vendorUrl = "http://127.0.0.1:6001";
 
 var auth = new TideAuthentication("VendorId", vendorUrl, orkUrls, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANvjzMxmyjGxse3fwkqajZxhf088eQRgS4l9wKsnm+A2+HRLt/4n6lA0cO6pmBqB9Le72HFSQ1s9cjv6HF3O2m");
 
 var user = "admin";
+user = `User${Math.floor(Math.random() * 10000000 + 1)}`;
 var pass = "123456";
 var newPass = "987654321";
-var email = "tmp@tide.org";
+var email = `${user}@tide.org`;
 
 (async () => {
   await main();
@@ -21,30 +24,26 @@ var email = "tmp@tide.org";
 
 async function main() {
   try {
-    test();
-    // var signUpResult = await auth.registerJwt(user, pass, email, orkUrls);
-    // console.log("Register Success");
+    // test();
 
-    // var loginResult = await auth.loginJwt(user, pass, orkUrls);
-    // console.log("Login Success");
+    const shuffled = orkUrls.sort(() => 0.5 - Math.random());
+    let selectedOrks = shuffled.slice(0, 7);
 
+    var signUpResult = await auth.registerJwt(user, pass, email, selectedOrks);
+    console.log("Register Success");
+    var loginResult = await auth.loginJwt(user, pass, 123);
+    console.log("Login Success");
     // const serverUrl = "http://172.26.17.60:8080";
     // const hashedReturnUrl = "D7RPSr7foQxZELrOT/a2CutCLer6uipjUBhNvYEPD5cCVokvAeFxLTGZkQbVsvIgZM125t6KJEThyoAPC/0KlA==";
-
     // console.log(auth.validateReturnUrl(serverUrl, hashedReturnUrl));
     // var userData = {
     //   id: signUpResult.vendorKey.toString(),
     //   cvkPub: signUpResult.vendorKey.public().toString(),
     // };
-
     // await request.post(`${vendorUrl}/account`).send(userData);
-
     // var login = await auth.login(user, pass);
-
     // await tide.changePassword(pass, newPass);
-
     // var newLogin = await auth.login(user, newPass);
-
     // console.log("Done login");
   } catch (error) {
     console.log(error);
