@@ -1,4 +1,0 @@
-Install recommended extensions (ritwickdey.live-sass, ritwickdey.liveserver)
-Go to ./src/style.scss and click 'Watch Sass'
-Go to root and run webpack --watch 
-Go to ./dist/index.html and click 'Go Live'
