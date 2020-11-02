@@ -40,6 +40,9 @@ namespace Tide.Ork {
             if (settings.Features.Metrics)
                 services.AddMetrics();
             
+            if (settings.Features.Throttling)
+                services.ConfigureThrottling();
+
             if (settings.Features.Memory)
                 services.AddTransient<IKeyManagerFactory, MemoryFactory>();
             else

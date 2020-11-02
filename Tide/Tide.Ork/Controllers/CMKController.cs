@@ -66,6 +66,7 @@ namespace Tide.Ork.Controllers
             return await _manager.SetOrUpdate(account);
         }
 
+        [ThrottleAttribute("uid")]
         [HttpGet("prism/{uid}/{pass}")]
         public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string pass)
         {

@@ -22,6 +22,7 @@ namespace Tide.Ork.Models {
         public bool Memory { get; set; }
         public bool Voucher { get; set; }
         public bool Metrics { get; set; }
+        public bool Throttling { get; set; }
     }
 
     public class Instance

@@ -11,7 +11,7 @@
     <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.1.0" />
     <PackageReference Include="Cryptide.Core" Version="0.0.14" />
     <PackageReference Include="MailKit" Version="2.7.0" />
-
+    <PackageReference Include="LazyCache" Version="2.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.0.0" />
     <PackageReference Include="VueCliMiddleware" Version="3.0.0" />
