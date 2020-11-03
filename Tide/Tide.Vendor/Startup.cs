@@ -68,7 +68,7 @@ namespace Tide.Vendor
 
 
             if (settings.DevFront) services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
-            services.AddSingleton<IAuthentication, Authentication>();
+            services.AddScoped<IAuthentication, Authentication>();
             services.AddSingleton<IVendorRepo, VendorRepo>();
             services.AddTideEndpoint(settings.Keys);
             services.AddControllers();

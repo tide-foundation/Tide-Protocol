@@ -2805,6 +2805,9 @@ export default new Vuex.Store({
       // Do we need to get some kind of vendor test?
       router.push("/auth");
     },
+    async checkForValidUsername(context, username) {
+      return context.state.tide.checkForValidUsername(username);
+    },
     async changeOrkWindow(context, newOrk) {
       const data = { newOrk };
       window.opener.postMessage({ type: "tide-change-ork", data }, window.name);
@@ -2824,7 +2827,7 @@ export default new Vuex.Store({
       this.action = "Login";
       this.goToDashboard = user.goToDashboard;
       const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
-      context.state.account = await context.state.tide.loginJwt(user.username, user.password, context.getters.tempOrksToUse, serverTime);
+      context.state.account = await context.state.tide.loginJwt(user.username, user.password, serverTime);
       console.log(context.state.account);
       return context.state.account;
     },

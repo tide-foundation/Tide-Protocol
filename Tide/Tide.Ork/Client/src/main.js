@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import vueDebounce from "vue-debounce";
 
 import "../src/assets/scss/main.scss";
 
@@ -13,6 +14,8 @@ Vue.prototype.$loading = (a, m) =>
     active: a,
     text: m,
   });
+
+Vue.use(vueDebounce);
 
 new Vue({
   router,

@@ -10,7 +10,7 @@ using Tide.Vendor.Models;
 namespace Tide.Vendor.Migrations
 {
     [DbContext(typeof(VendorDbContext))]
-    [Migration("20201008052835_initial")]
+    [Migration("20201103053119_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,24 @@ namespace Tide.Vendor.Migrations
                 .HasAnnotation("ProductVersion", "3.1.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Tide.Vendor.Controllers.VendorUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("PublicKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Vuid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
 
             modelBuilder.Entity("Tide.Vendor.Models.RentalApplication", b =>
                 {
@@ -107,33 +125,11 @@ namespace Tide.Vendor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Applications");
-                });
-
-            modelBuilder.Entity("Tide.Vendor.Models.User", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VendorKey")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Tide.Vendor.Models.RentalApplication", b =>
-                {
-                    b.HasOne("Tide.Vendor.Models.User", null)
-                        .WithMany("RentalApplications")
-                        .HasForeignKey("UserId");
+                    b.ToTable("Applications");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,7 @@
 ﻿
 
 using Microsoft.EntityFrameworkCore;
+using Tide.Vendor.Controllers;
 
 namespace Tide.Vendor.Models
 {
@@ -11,8 +12,8 @@ namespace Tide.Vendor.Models
         {
         }
 
-
-        public DbSet<User> Users { get; set; }
+        public DbSet<VendorUser> Users { get; set; }
+      //  public DbSet<User> Users { get; set; }
         public DbSet<RentalApplication> Applications { get; set; }
     }
 }

@@ -65,7 +65,7 @@ export default class TideAuthentication {
   async registerJwt(username, password, email, orks, serverTime) {
     return new Promise(async (resolve, reject) => {
       try {
-        if (await TemporaryDns.doesUserExist(username)) throw new Error("That username exists");
+        if (await TemporaryDns.doesUserExist(username)) throw new Error("That username is unavailable");
 
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
@@ -101,7 +101,7 @@ export default class TideAuthentication {
     return new Promise(async (resolve, reject) => {
       try {
         const orks = await TemporaryDns.getUserOrks(username);
-        if (orks == null) throw new Error("Cannot locate DNS record");
+        if (orks == null) throw new Error("A user does not exist with that username/password");
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
@@ -186,6 +186,10 @@ export default class TideAuthentication {
     } catch (error) {
       return false;
     }
+  }
+
+  async checkForValidUsername(username) {
+    return !(await TemporaryDns.doesUserExist(username));
   }
 }
 

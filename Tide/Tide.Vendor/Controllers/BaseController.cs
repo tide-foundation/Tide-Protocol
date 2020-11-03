@@ -18,10 +18,10 @@ namespace Tide.Vendor.Controllers
             Context = context;
         }
         private User _user;
-        protected new User User
-        {
-            get { return _user ??= Context.Users.Include(u=>u.RentalApplications).FirstOrDefault(u => u.Id == HttpContext.User.Identity.Name); }
-            set => _user = value;
-        }
+        //protected new User User
+        //{
+        //    get { return _user ??= Context.Users.Include(u=>u.RentalApplications).FirstOrDefault(u => u.Id == HttpContext.User.Identity.Name); }
+        //    set => _user = value;
+        //}
     }
 }
