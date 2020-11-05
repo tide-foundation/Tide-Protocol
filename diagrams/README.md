@@ -11,3 +11,4 @@
 * [Rule](/../../raw/master/diagrams/out/ruleClass.svg)
 * [Ork](/../../raw/master/diagrams/out/dauthOrkClass.svg)
 * [Dauth Flow](/../../raw/master/diagrams/out/dAuthFlowClass.svg)
+* [Throttling](/diagrams/out/throttlingClass.svg)
