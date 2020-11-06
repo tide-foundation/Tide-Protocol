@@ -32,8 +32,10 @@ export default {
     created() {
         window.addEventListener("tide-auth", async (e) => {
             var data = { vuid: e.detail.data.vuid, tideToken: e.detail.data.tideToken, publicKey: e.detail.data.cvkPublic };
-            this.jwt = (await request.post(`${this.config.serverUrl}/Authentication/${e.detail.data.action}`).send(data)).text;
-            console.log(this.jwt);
+            console.log(data);
+            //this.jwt = (await request.post(`${this.config.serverUrl}/Authentication/${e.detail.data.action}`).send(data)).text;
+            const resp = await request.post(`${this.config.serverUrl}/tide/register`).send(data);
+            this.jwt = resp.headers["authorization"];
         });
         Tide.init(this.config);
     },
@@ -43,7 +45,7 @@ export default {
                 this.error = false;
                 this.protectedData = "";
 
-                var data = await request.get(`${this.config.serverUrl}/Authentication`).set("Authorization", `Bearer ${this.jwt}`);
+                var data = await request.get(`${this.config.serverUrl}/vendor`).set("Authorization", this.jwt);
 
                 this.protectedData = `Data successfully fetched for user: <strong> ${data.text}</strong>`;
             } catch (error) {
