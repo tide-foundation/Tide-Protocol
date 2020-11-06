@@ -2748,24 +2748,11 @@ const names = [
   "Zuriel",
 ];
 
-var orks = [];
-for (let i = 0; i < 20; i++) {
-  orks.push({
-    id: i,
-    url: `https://pdork${i + 1}.azurewebsites.net`,
-    // url: `https://dork${i + 1}.azurewebsites.net`,
-    //url: `https://ork-${i + 1}.azurewebsites.net`,
-    // url: `http://localhost:500${i + 1}`,
-    cmk: false,
-    cvk: false,
-  });
-}
-
 export default new Vuex.Store({
   state: {
     initialized: false,
     mode: "Frontend",
-    orks: orks,
+    orks: [],
     vendorUrl: null,
     vendorPublic: null,
     vendorServer: null,
@@ -2795,6 +2782,7 @@ export default new Vuex.Store({
       context.state.vendorUrl = data.vendorUrl;
       context.state.vendorPublic = data.vendorPublic;
       context.state.vendorServer = data.serverUrl;
+      context.state.orks = data.orks;
 
       context.state.tide = new Tide("VendorId", data.vendorUrl, orks, data.vendorPublic);
 
