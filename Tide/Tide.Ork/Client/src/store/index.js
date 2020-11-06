@@ -2748,24 +2748,11 @@ const names = [
   "Zuriel",
 ];
 
-var orks = [];
-for (let i = 0; i < 3; i++) {
-  orks.push({
-    id: i,
-    // url: `https://pdork${i + 1}.azurewebsites.net`,
-    // url: `https://dork${i + 1}.azurewebsites.net`,
-    url: `https://ork-${i + 1}.azurewebsites.net`,
-    // url: `http://localhost:500${i + 1}`,
-    cmk: false,
-    cvk: false,
-  });
-}
-
 export default new Vuex.Store({
   state: {
     initialized: false,
     mode: "Frontend",
-    orks: orks,
+    orks: [],
     vendorUrl: null,
     vendorPublic: null,
     vendorServer: null,
@@ -2795,6 +2782,7 @@ export default new Vuex.Store({
       context.state.vendorUrl = data.vendorUrl;
       context.state.vendorPublic = data.vendorPublic;
       context.state.vendorServer = data.serverUrl;
+      context.state.orks = data.orks;
 
       context.state.tide = new Tide("VendorId", data.vendorUrl, orks, data.vendorPublic);
 
@@ -2815,7 +2803,7 @@ export default new Vuex.Store({
     async registerAccount(context, user) {
       this.action = "Register";
       this.goToDashboard = user.goToDashboard;
-      const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
+      const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
 
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       var isEmail = re.test(String(user.username).toLowerCase());
@@ -2826,7 +2814,7 @@ export default new Vuex.Store({
     async loginAccount(context, user) {
       this.action = "Login";
       this.goToDashboard = user.goToDashboard;
-      const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
+      const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
       context.state.account = await context.state.tide.loginJwt(user.username, user.password, serverTime);
       console.log(context.state.account);
       return context.state.account;

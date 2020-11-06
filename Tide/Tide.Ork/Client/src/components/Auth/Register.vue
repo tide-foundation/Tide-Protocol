@@ -2,7 +2,9 @@
     <div>
         <h2>Create your Account</h2>
         <form @submit.prevent="register" id="register-form">
-            <div v-if="user.username != '' && user.username != null && checked" id="username-check"><i class="fas fa-check" :class="[valid ? 'valid fa-check' : 'invalid fa-times']"></i></div>
+            <transition name="fade" mode="out-in">
+                <div v-if="user.username != '' && user.username != null && checked" id="username-check"><i class="fas fa-check" :class="[valid ? 'valid fa-check' : 'invalid fa-times']"></i></div>
+            </transition>
             <input type="search" autocomplete="off" v-model="user.username" placeholder="Username" v-debounce:300ms="checkUsername" />
             <div class="password-row mt-10">
                 <input type="password" v-model="user.password" placeholder="Password" />
@@ -22,9 +24,8 @@
                 <p @click="$parent.changeMode('LoginUsername')">Sign in instead</p>
                 <button type="submit">REGISTER</button>
             </div>
-
-            <div class="advanced-options" @click="$parent.changeMode('SelectOrks')"><p>Advanced Options</p></div>
         </form>
+        <div class="advanced-options" @click="$parent.changeMode('SelectOrks')"><p>Advanced Options</p></div>
     </div>
 </template>
 
