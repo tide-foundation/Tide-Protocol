@@ -2815,7 +2815,7 @@ export default new Vuex.Store({
     async registerAccount(context, user) {
       this.action = "Register";
       this.goToDashboard = user.goToDashboard;
-      const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
+      const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
 
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       var isEmail = re.test(String(user.username).toLowerCase());
@@ -2826,7 +2826,7 @@ export default new Vuex.Store({
     async loginAccount(context, user) {
       this.action = "Login";
       this.goToDashboard = user.goToDashboard;
-      const serverTime = (await request.get(`${context.state.vendorServer}/Authentication/serverTime`)).text;
+      const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
       context.state.account = await context.state.tide.loginJwt(user.username, user.password, serverTime);
       console.log(context.state.account);
       return context.state.account;
