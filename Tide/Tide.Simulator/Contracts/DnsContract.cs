@@ -19,13 +19,13 @@ namespace Tide.Simulator.Contracts
         public bool Matchs(Transaction transaction)
         {
             var location = transaction.Location.ToLower();
-            return location.Contains("authentication/") && location.Contains("dns/") ;
+            return location.Contains("authentication") && location.Contains("dns") ;
         }
 
         public IActionResult Process(Transaction transaction)
         {
             var dns = DnsEntry.Parse(transaction.Data);
-            if (dns.VerifyForUId())
+            if (!dns.VerifyForUId())
                 return new BadRequestObjectResult("Client's signature is invalid");
             
             //TODO: Add ork signature verification

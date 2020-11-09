@@ -1,4 +1,5 @@
 using System;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tide.Encryption.Ecc;
@@ -29,7 +30,7 @@ namespace Tide.Core
         }
         
         public byte[] MessageSigned() {
-            return Utils.Hash(JsonSerializer.Serialize(new { UId, Orks, Public, Modifided }, GetJsonOptions()));
+            return Utils.Hash(JsonSerializer.Serialize(new { uid = UId, Orks, Public, Modifided }, GetJsonOptions()));
         }
         
         protected override JsonSerializerOptions GetJsonOptions()
@@ -38,7 +39,8 @@ namespace Tide.Core
             {
                 IgnoreNullValues = true,
                 PropertyNameCaseInsensitive = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
         }
 

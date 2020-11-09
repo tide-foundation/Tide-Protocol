@@ -90,7 +90,8 @@ namespace Tide.Ork.Classes {
         }
 
         private string GeneratePath(string contract, string table, string scope, string index) {
-            return $"Simulator/{contract}/{table}/{scope}{(string.IsNullOrEmpty(index) ? "" : $"/{index}")}";
+            return string.Join("/", new[] { "Simulator", contract, table, scope, index }
+                .Where(itm => !string.IsNullOrWhiteSpace(itm)));
         }
 
         private async Task<T> FetchTransaction<T>(string location) {

@@ -16,10 +16,11 @@
 import BigInt from "big-integer";
 import DAuthClient from "./DAuthClient";
 import DAuthShare from "./DAuthShare";
-import { SecretShare, Utils, C25519Point, AESKey } from "cryptide";
+import { SecretShare, Utils, C25519Point, AESKey, C25519Key } from "cryptide";
 import TranToken from "../TranToken";
 import { concat } from "../Helpers";
 import { getArray } from "cryptide/src/bnInput";
+import DnsEntry from "../DnsEnrty";
 
 export default class DAuthFlow {
   /**
@@ -35,6 +36,7 @@ export default class DAuthFlow {
    * @param {string} password
    * @param {string} email
    * @param {number} threshold
+   * @returns {Promise<AESKey>}
    */
   async signUp(password, email, threshold, cmk = random()) {
     try {
@@ -51,7 +53,19 @@ export default class DAuthFlow {
       var [, cmks] = SecretShare.shareFromIds(cmk, ids, threshold, C25519Point.n);
       var [, prisms] = SecretShare.shareFromIds(prism, ids, threshold, C25519Point.n);
 
-      await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], email)));
+      var signatures = await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], email)));
+      
+      var cmkKey = C25519Key.private(cmk);
+      var entry = new DnsEntry();
+      entry.uid = this.clients[0].userGuid;
+      entry.public = cmkKey.public()
+      entry.signatures = signatures.map(sig => sig.sign);
+      entry.orks = signatures.map(sig => sig.orkid);
+      entry.sign(cmkKey);
+
+      var cln = this.clients[Math.floor(Math.random() * this.clients.length)];
+      await cln.addDns(entry);
+
       return cmkAuth;
     } catch (err) {
       return Promise.reject(err);
