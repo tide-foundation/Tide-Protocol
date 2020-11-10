@@ -21,6 +21,7 @@ import TranToken from "../TranToken";
 import { concat } from "../Helpers";
 import { getArray } from "cryptide/src/bnInput";
 import DnsEntry from "../DnsEnrty";
+import DnsClient from "./DnsClient";
 
 export default class DAuthFlow {
   /**
@@ -54,22 +55,29 @@ export default class DAuthFlow {
       var [, prisms] = SecretShare.shareFromIds(prism, ids, threshold, C25519Point.n);
 
       var signatures = await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], email)));
-      
-      var cmkKey = C25519Key.private(cmk);
-      var entry = new DnsEntry();
-      entry.uid = this.clients[0].userGuid;
-      entry.public = cmkKey.public()
-      entry.signatures = signatures.map(sig => sig.sign);
-      entry.orks = signatures.map(sig => sig.orkid);
-      entry.sign(cmkKey);
-
-      var cln = this.clients[Math.floor(Math.random() * this.clients.length)];
-      await cln.addDns(entry);
+      await this.addDns(signatures, C25519Key.private(cmk));
 
       return cmkAuth;
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  /** @private 
+   * @param {{orkid: string, sign: string}[]} signatures 
+   * @param {C25519Key} key */
+  addDns(signatures, key) {
+    const cln = this.clients[Math.floor(Math.random() * this.clients.length)];
+    const dnsCln = new DnsClient(cln.url, cln.userGuid);
+    var entry = new DnsEntry();
+    
+    entry.id = cln.userGuid;
+    entry.public = key.public()
+    entry.signatures = signatures.map(sig => sig.sign);
+    entry.orks = signatures.map(sig => sig.orkid);
+    entry.sign(key);
+
+    return dnsCln.addDns(entry);
   }
 
   /** @param {string} password */

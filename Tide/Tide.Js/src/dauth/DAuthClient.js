@@ -42,33 +42,7 @@ export default class DAuthClient extends ClientBase {
     return fromBase64(res.text);
   }
 
-  /** @returns {Promise<DnsEntry|null>} */
-  async getDns() {
-    var resp = await this._get(`/dns/${this.userGuid}`);
-    if (resp.status === 404)
-      return null;
-    
-    if (!resp.ok || !resp.body && !resp.body.success) {
-      const error = !resp.ok || !resp.body ? resp.text : resp.body.error;
-      return Promise.reject(new Error(error));
-    }
-
-    return DnsEntry.from(resp.body)
-  }
-
-  /** @param {import("../DnsEnrty").default} entry */
-  async addDns(entry) {
-    var resp = await this._post(`/dns/`).set('Content-Type', 'application/json').send(entry.toString());
-
-    if (!resp.ok || !resp.body && !resp.body.success) {
-      const error = !resp.ok || !resp.body ? resp.text : resp.body.error;
-      return  Promise.reject(new Error(error));
-    }
-    
-    return Promise.resolve();
-  }
-
-  /**
+    /**
    * @param {bigInt.BigInteger} prismi
    * @param {bigInt.BigInteger} cmki
    * @param {AESKey} prismAuthi

@@ -49,7 +49,7 @@ namespace Tide.Ork.Controllers
         public async Task<ActionResult> SetOrUpdate([FromBody] DnsEntry entry)
         {
             var result = await _manager.SetOrUpdate(entry);
-            if (result.Success) _logger.LogInformation($"DnsEntry added for {entry.UId}");
+            if (result.Success) _logger.LogInformation($"DnsEntry added for {entry.Id}");
             else _logger.LogError(result.Error);
 
             return result.Success ? Ok() : BadRequest(result.Error) as ActionResult;

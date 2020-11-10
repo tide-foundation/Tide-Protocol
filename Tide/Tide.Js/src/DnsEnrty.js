@@ -1,18 +1,34 @@
-/**
- * Babel Starter Kit (https:
- *
- * Copyright © 2015-2016 Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+// Tide Protocol - Infrastructure for the Personal Data economy
+// Copyright (C) 2019 Tide Foundation Ltd
+//
+// This program is free software and is subject to the terms of
+// the Tide Community Open Source License as published by the
+// Tide Foundation Limited. You may modify it and redistribute
+// it in accordance with and subject to the terms of that License.
+// This program is distributed WITHOUT WARRANTY of any kind,
+// including without any implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.
+// See the Tide Community Open Source License for more details.
+// You should have received a copy of the Tide Community Open
+// Source License along with this program.
+// If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import Guid from "./guid";
 import { C25519Key, Hash } from "cryptide";
 
-export default class DnsEntry {
+/**
+ * @typedef {Object} JsonDnsEntry - creates a new type named 'SpecialType'
+ * @prop {string} id
+ * @prop {number} modifided
+ * @prop {string} signature
+ * @prop {string} public
+ * @prop {string[]} signatures
+ * @prop {string[]} orks
+ */
+
+ export default class DnsEntry {
   constructor() {
-    this.uid = new Guid();
+    this.id = new Guid();
     this.modifided = this.utcUnixSeconds();
     this.signature = "";
     /** @type {C25519Key} */
@@ -34,7 +50,7 @@ export default class DnsEntry {
 
   toString() {
     return JSON.stringify({ 
-      uid: this.uid.toString(),
+      id: this.id.toString(),
       orks: this.orks,
       public: this.public.toString(),
       modifided: this.modifided,
@@ -43,26 +59,28 @@ export default class DnsEntry {
     });
   }
 
+  /** @param {string|JsonDnsEntry} data */
   static from(data) {
     if (!data)
       throw Error("Null is not allowed to be parsed as a DnsEntry");
     
-    data = typeof data === "string" ? JSON.parse(data) : data;
+    /** @type {JsonDnsEntry} */
+    var json = typeof data === "string" ? JSON.parse(data) : data;
     var entry = new DnsEntry();
 
-    entry.uid = Guid.from(data["uid"] || data["uId"]);
-    entry.modifided = data.modifided;
-    entry.signature = data.signature;
-    entry.public = C25519Key.from(data.public);
-    entry.signatures = data.signatures;
-    entry.orks = data.orks;
+    entry.id = Guid.from(json.id);
+    entry.modifided = json.modifided;
+    entry.signature = json.signature;
+    entry.public = C25519Key.from(json.public);
+    entry.signatures = json.signatures;
+    entry.orks = json.orks;
 
     return entry;
   }
 
   /** @private */
   messageToSign() {
-    var message = { uid: this.uid.toString(), orks: this.orks, 
+    var message = { id: this.id.toString(), orks: this.orks, 
       public: this.public.toString(), modifided: this.modifided };
     
     return Hash.shaBuffer(JSON.stringify(message));

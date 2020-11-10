@@ -1,7 +1,6 @@
 using System;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 
@@ -9,9 +8,7 @@ namespace Tide.Core
 {
     public class DnsEntry : SerializableJson<DnsEntry, DnsEntry>, IGuid
     {
-        [JsonIgnore]
-        public Guid Id => UId;
-        public Guid UId { get; set; }
+        public Guid Id { get; set; }
         public string[] Orks { get; set; }
         public string Public { get; set; }
         public long Modifided { get; set; }
@@ -30,7 +27,7 @@ namespace Tide.Core
         }
         
         public byte[] MessageSigned() {
-            return Utils.Hash(JsonSerializer.Serialize(new { uid = UId, Orks, Public, Modifided }, GetJsonOptions()));
+            return Utils.Hash(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
         }
         
         protected override JsonSerializerOptions GetJsonOptions()
@@ -48,7 +45,7 @@ namespace Tide.Core
 
         protected override void MapDto(DnsEntry basic)
         {
-            UId = basic.UId;
+            Id = basic.Id;
             Orks = basic.Orks;
             Public = basic.Public;
             Modifided = basic.Modifided;
