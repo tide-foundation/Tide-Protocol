@@ -48,21 +48,20 @@ export default {
       status: "",
       mode: "LoginUsername",
       user: {
-        username: "matt@tide.org",
-        password: "password",
-        confirm: "password",
+        username: this.$store.getters.debug ? "matt@tide.org" : "",
+        password: this.$store.getters.debug ? "password" : "",
+        confirm: this.$store.getters.debug ? "password" : "",
         goToDashboard: false,
         homeOrk: "http://172.26.17.60:8081/",
-        recoveryEmails: ["matt@tide.org"],
+        recoveryEmails: [this.$store.getters.debug ? "matt@tide.org" : ""],
         selectedOrks: [],
         frags: [],
       },
     };
   },
   created() {
-    this.user.username = this.$store.getters.username; // Populate from store with random name
-    this.user.selectedOrks = this.$store.getters.tempOrksToUse;
-    this.user.frags = [...Array(this.$store.getters.tempOrksToUse.length)].map((_, i) => "");
+    this.user.selectedOrks = this.$store.getters.orks;
+    this.user.frags = [...Array(this.$store.getters.orks.length)].map((_, i) => "");
   },
   methods: {
     setStatus(msg) {

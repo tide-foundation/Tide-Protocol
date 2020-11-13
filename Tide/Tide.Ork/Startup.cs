@@ -16,8 +16,10 @@ using App.Metrics.AspNetCore;
 
 namespace Tide.Ork {
     public class Startup {
+        private string _version;
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
+            _version = typeof(Program).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
         }
 
         public IConfiguration Configuration { get; }
@@ -75,15 +77,11 @@ namespace Tide.Ork {
             {
                 context.Response.Headers["Ork-Id"] = settings.Instance.Username;
 
-                var version = typeof(Program).Assembly
-                    .GetCustomAttribute<AssemblyFileVersionAttribute>()
-                    ?.Version;
+                var version = _version;
 
                 context.Response.Headers["User-Agent"] = $"Ork-Version:{version}";
                 return next.Invoke();
             });
-
-    
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();

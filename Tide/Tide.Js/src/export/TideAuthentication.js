@@ -62,7 +62,7 @@ export default class TideAuthentication {
    * @example
    * var registerResult = await tide.register("myUsername", "pa$$w0rD", "john@wick.com",["ork-1","ork-2","ork-3"]);
    */
-  async registerJwt(username, password, email, orks, serverTime) {
+  async registerJwt(username, password, email, orks, serverTime, threshold = 20) {
     return new Promise(async (resolve, reject) => {
       try {
         if (await TemporaryDns.doesUserExist(username)) throw new Error("That username is unavailable");
@@ -70,7 +70,7 @@ export default class TideAuthentication {
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
-        var { vuid, cvk } = await flow.signUp(password, email, orks.length);
+        var { vuid, cvk } = await flow.signUp(password, email, threshold);
 
         const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
 
