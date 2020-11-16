@@ -14,10 +14,13 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tide.Core;
+using Tide.Ork.Classes;
+using Tide.Ork.Models;
 using Tide.Ork.Repo;
 
 namespace Tide.Ork.Controllers
@@ -28,21 +31,34 @@ namespace Tide.Ork.Controllers
     {
         private readonly ILogger _logger;
         private readonly IDnsManager _manager;
+        private readonly SimulatorOrkManager _orkManager;
+        private readonly string _orkId;
 
-        public DnsController(IKeyManagerFactory factory, ILogger<KeyController> logger)
+        public DnsController(IKeyManagerFactory factory, ILogger<KeyController> logger, Settings settings)
         {
             _manager = factory.BuildDnsManager();
             _logger = logger;
+            _orkId = settings.Instance.Username;
+
+            var cln = new SimulatorClient(settings.Endpoints.Simulator.Api, _orkId, settings.Instance.GetPrivateKey());
+            _orkManager = new SimulatorOrkManager(_orkId, cln);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<DnsEntry>> GetById([FromRoute] Guid id)
         {
-            var key = await _manager.GetById(id);
-            if (key == null)
+            var orksInfoTask = _orkManager.GetAll();
+            var entry = await _manager.GetById(id);
+            if (entry == null)
                 return NotFound();
 
-            return key;
+            var orksInfo = await orksInfoTask;
+            entry.Urls = (from orkId in entry.Orks
+                         join info in orksInfo on orkId equals info.Id into inf
+                         from defInf in inf.DefaultIfEmpty()
+                         select defInf?.Url).ToArray();
+            
+            return entry;
         }
 
         [HttpPost]

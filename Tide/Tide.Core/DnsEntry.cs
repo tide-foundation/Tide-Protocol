@@ -14,7 +14,6 @@ namespace Tide.Core
         public long Modifided { get; set; }
         public string Signature { get; set; }
         public string[] Signatures { get; set; }
-
         public string[] Urls { get; set; }
 
         public bool VerifyForUId() {
