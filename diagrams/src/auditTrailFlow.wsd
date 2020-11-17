@@ -1,4 +1,4 @@
-@startuml tideButtonFlow
+@startuml auditTrailFlow
 skinparam monochrome true
 
 title AuditTrail
@@ -7,7 +7,6 @@ actor Client
 participant Orks
 participant Simulator
 database BlockChain
-
 
 ...5 minutes later...
 Client -> Orks: Login(tranid, username, password)
