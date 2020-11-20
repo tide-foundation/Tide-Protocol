@@ -132,6 +132,13 @@ form {
 .mt-20 {
   margin-top: 20px;
 }
+.mt-30 {
+  margin-top: 30px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
 
 .mt-50 {
   margin-top: 50px;
@@ -265,4 +272,8 @@ form {
   &::-webkit-scrollbar-thumb {
     background-color: rgb(66, 66, 66);
   }
+}
+
+.bold {
+  font-weight: 700;
 }

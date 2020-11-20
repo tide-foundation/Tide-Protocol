@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -63,7 +64,16 @@ namespace Tide.Ork.Controllers
                 Email = HttpUtility.UrlDecode(email)
             };
 
-            return await _manager.SetOrUpdate(account);
+            var resp = await _manager.SetOrUpdate(account);
+            if (!resp.Success)
+                return resp;
+            
+            var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
+            //TODO: The ork should not send the orkid because the client should already know
+            var signature = Convert.ToBase64String(_config.PrivateKey.Sign(m));
+            resp.Content = new { orkid = _config.UserName, sign = signature };
+            
+            return resp;
         }
 
         [ThrottleAttribute("uid")]

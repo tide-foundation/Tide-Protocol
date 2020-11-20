@@ -23,7 +23,6 @@ export default new TemporaryDns();
 async function get(endpoint) {
   try {
     var resp = (await superagent.get(endpoint)).text;
-    console.log(resp);
     return JSON.parse(resp);
   } catch (error) {
     console.log(error.response.text);

@@ -13,8 +13,10 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import DAuthV2Flow from "../../src/dauth/DAuthV2Flow";
 import assert from "assert";
+import DAuthCmkJwtFlow from "../../src/dauth/DAuthCmkJwtFlow";
+import DAuthJwtFlow from "../../src/dauth/DAuthJwtFlow";
+import { CP256Key } from "cryptide";
 
 var threshold = 3;
 var user = "admin";
@@ -23,10 +25,10 @@ var newPass = "1234567";
 var email = "tmp@tide.org";
 
 var orkUrls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
-var vendorUrl = "http://127.0.0.1:6001";
+var vendorPub = CP256Key.generate();
 
-var orkUrls = [...Array(20)].map((_, i) => `https://pdork${i + 1}.azurewebsites.net/`);
-var vendorUrl = "https://dauth.me/";
+// var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
+// var vendorUrl = "https://tidevendor.azurewebsites.net/";
 
 (async () => {
   await signUp();
@@ -34,26 +36,26 @@ var vendorUrl = "https://dauth.me/";
 
 async function signUp() {
   try {
-    var flow = new DAuthV2Flow(user);
-    flow.cmkUrls = orkUrls;
-    flow.cvkUrls = orkUrls;
-    flow.vendorUrl = vendorUrl;
+    var flowCreate = new DAuthJwtFlow(user);
+    flowCreate.cmkUrls = orkUrls;
+    flowCreate.cvkUrls = orkUrls;
+    flowCreate.vendorPub = vendorPub;
 
-    var { auth: auth0 } = await flow.signUp(pass, email, threshold);
+    var { auth: auth0 } = await flowCreate.signUp(pass, email, threshold);
 
-    flow = new DAuthV2Flow(user);
-    flow.cmkUrls = orkUrls;
-    flow.cvkUrls = orkUrls;
-    flow.vendorUrl = vendorUrl;
+    var flowLogin = new DAuthCmkJwtFlow(user);
+    flowLogin.cvkUrls = orkUrls;
+    flowLogin.vendorPub = vendorPub;
+    flowLogin.cmk = flowCreate.cmk;
 
-    var { auth: auth1 } = await flow.logIn(pass);
+    var { auth: auth1 } = await flowLogin.logIn();
     assert.equal(auth0.toString(), auth1.toString());
 
-    await flow.changePass(pass, newPass, threshold);
-    var { auth: auth2 } = await flow.logIn(newPass);
+    await flowCreate.changePass(pass, newPass, threshold);
+    var { auth: auth2 } = await flowCreate.logIn(newPass);
     assert.equal(auth0.toString(), auth2.toString());
 
-    console.log(`all good for vuid ${flow.vuid}`);
+    console.log(`all good for vuid ${flowCreate.vuid}`);
   } catch (error) {
     console.log(error);
   }

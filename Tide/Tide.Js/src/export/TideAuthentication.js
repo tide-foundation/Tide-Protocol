@@ -1,11 +1,13 @@
 // @ts-ignore
 import DAuthV2Flow from "../dauth/DAuthV2Flow";
 import DAuthJwtFlow from "../dauth/DAuthJwtFlow";
+import DAuthCmkJwtFlow from "../dauth/DAuthCmkJwtFlow";
 import { CP256Key, C25519Key, EcKeyFormat } from "cryptide";
 import Account from "./models/Account";
 import TideConfiguration from "./models/TideConfiguration";
 import { encode } from "../jwtToken";
 import TemporaryDns from "./TemporaryDns";
+import BigInt from "big-integer";
 
 export default class TideAuthentication {
   /**
@@ -62,7 +64,7 @@ export default class TideAuthentication {
    * @example
    * var registerResult = await tide.register("myUsername", "pa$$w0rD", "john@wick.com",["ork-1","ork-2","ork-3"]);
    */
-  async registerJwt(username, password, email, orks, serverTime) {
+  async registerJwt(username, password, email, orks, serverTime, threshold = 20) {
     return new Promise(async (resolve, reject) => {
       try {
         if (await TemporaryDns.doesUserExist(username)) throw new Error("That username is unavailable");
@@ -70,7 +72,8 @@ export default class TideAuthentication {
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
-        var { vuid, cvk } = await flow.signUp(password, email, orks.length);
+        var { vuid, cvk } = await flow.signUp(password, email, threshold);
+        console.log("this is the cmk:", flow.cmk.toString());
 
         const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
 
@@ -106,6 +109,39 @@ export default class TideAuthentication {
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
         var { vuid, cvk } = await flow.logIn(password);
+        const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
+
+        var cvkPublic = EcKeyFormat.PemPublic(cvk);
+
+        this.account = new Account(username, vuid, token, cvkPublic);
+        return resolve(this.account);
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  }
+
+  /**
+   * Login to a previously created Tide account. The account must be fully enabled by the vendor before use.
+   *
+   * This will generate a new Tide user using the provided username and providing a keypaid to manage the account (user-secret).
+   *
+   * @param {string} username - Plain text username of the user
+   * @param {string} password - Plain text password of the user
+   *
+   * @returns {Account} - The Tide user account
+   */
+  async loginUsingCmkJwt(username, orks, cmk, serverTime) {
+    // Orks should be replaced in the future with a DNS call
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (orks == null) throw new Error("A user does not exist with that username/password");
+
+        const cmkKey = BigInt(cmk);
+
+        const flow = generateCvkLoginFlow(username, orks, CP256Key.from(this.config.vendorPublic), cmkKey);
+
+        var { vuid, cvk } = await flow.logIn();
         const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
 
         var cvkPublic = EcKeyFormat.PemPublic(cvk);
@@ -208,6 +244,14 @@ function generateJwtFlow(username, orks, serverUrl, vendorPublic) {
   flow.vendorUrl = serverUrl;
   flow.vendorPub = vendorPublic;
   return flow;
+}
+
+function generateCvkLoginFlow(username, orks, vendorPublic, cmk) {
+  var flowLogin = new DAuthCmkJwtFlow(username);
+  flowLogin.cvkUrls = orks;
+  flowLogin.vendorPub = vendorPublic;
+  flowLogin.cmk = cmk;
+  return flowLogin;
 }
 
 function getUserOrks(config) {

@@ -76,6 +76,7 @@ namespace Tide.Simulator {
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
+
             });
         }
     }

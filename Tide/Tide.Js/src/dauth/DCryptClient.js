@@ -33,6 +33,7 @@ export default class DCryptClient extends ClientBase {
    * @param {AESKey} cvkAuthi
    * @param {Guid} signedKeyId
    * @param {Uint8Array} signature
+   * @returns {Promise<{orkid: string, sign: string}>}
    */
   async register(cvkPub, cvki, cvkAuthi, signedKeyId, signature) {
     var body = [ urlEncode(cvkPub.toArray()),
@@ -40,7 +41,13 @@ export default class DCryptClient extends ClientBase {
       urlEncode(cvkAuthi.toArray()),
       urlEncode(signature) ];
     
-    await this._put(`/cvk/${this.userGuid}/${signedKeyId}`).send(body);
+    var resp = await this._put(`/cvk/${this.userGuid}/${signedKeyId}`).send(body);
+    if (!resp.ok || !resp.body && !resp.body.success) {
+      const error = !resp.ok || !resp.body ? resp.text : resp.body.error;
+      return  Promise.reject(new Error(error));
+    }
+    
+    return resp.body.content;
   }
 
   /**@param {AESKey} key */

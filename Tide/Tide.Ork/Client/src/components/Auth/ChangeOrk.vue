@@ -6,7 +6,7 @@
 
       <div class="action-row mt-50">
         <p @click="$parent.changeMode('LoginUsername')">Back to sign in</p>
-        <button type="submit">Done</button>
+        <button type="submit">Change</button>
       </div>
     </form>
   </span>
@@ -21,11 +21,12 @@ export default {
     };
   },
   created() {
-    this.homeOrk = window.location.protocol + "//" + window.location.host;
+    this.homeOrk = "http://172.26.17.60:8082"; //`${this.$store.getters.origin}`
   },
   methods: {
     changeOrk() {
-      window.location.href = this.homeOrk;
+      this.$store.dispatch("changeOrkWindow", this.homeOrk);
+      //   window.location.href = this.homeOrk;
     },
   },
 };
