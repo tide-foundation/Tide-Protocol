@@ -25,8 +25,8 @@ var email = "tmp@tide.org";
 var orkUrls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
 var vendorUrl = "http://127.0.0.1:6001";
 
-// var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
-// var vendorUrl = "https://tidevendor.azurewebsites.net/";
+var orkUrls = [...Array(20)].map((_, i) => `https://pdork${i + 1}.azurewebsites.net/`);
+var vendorUrl = "https://dauth.me/";
 
 (async () => {
   await signUp();

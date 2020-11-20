@@ -12,6 +12,7 @@
     <PackageReference Include="Cryptide.Core" Version="0.0.14" />
     <PackageReference Include="MailKit" Version="2.7.0" />
     <PackageReference Include="LazyCache" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.0.0" />
     <PackageReference Include="VueCliMiddleware" Version="3.0.0" />
@@ -35,6 +36,7 @@
     <Folder Include="Client\dist\css\" />
     <Folder Include="Client\dist\img\" />
     <Folder Include="Client\dist\js\" />
+    <Folder Include="Client\src\plugins\" />
     <!--<Folder Exclude="Client\node_modules\**" />-->
   </ItemGroup>
 

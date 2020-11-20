@@ -22,9 +22,11 @@ export default new Vuex.Store({
       active: false,
       text: "Loading...",
     },
-    action: "",
+    action: "Login",
     goToDashboard: false,
     account: null,
+    sessionId: null,
+    origin: `${window.location.protocol}//${window.location.host}`,
   },
   mutations: {
     UPDATE_MODE(state, newMode) {
@@ -32,6 +34,9 @@ export default new Vuex.Store({
     },
     UPDATE_LOADING(state, data) {
       state.loading = data;
+    },
+    UPDATE_SESSION_ID(state, sessionId) {
+      state.sessionId = sessionId;
     },
   },
   actions: {
@@ -42,6 +47,8 @@ export default new Vuex.Store({
       context.state.vendorServer = data.serverUrl;
       context.state.orks = data.orks;
       context.state.debug = data.debug;
+      context.state.vendorName = data.vendorName;
+      console.log(context.state.vendorName);
 
       context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
 
@@ -51,6 +58,7 @@ export default new Vuex.Store({
 
       router.push("/auth");
     },
+
     async checkForValidUsername(context, username) {
       return context.state.tide.checkForValidUsername(username);
     },
@@ -59,8 +67,8 @@ export default new Vuex.Store({
       window.opener.postMessage({ type: "tide-change-ork", data }, window.name);
     },
     async registerAccount(context, user) {
-      this.action = "Register";
-      this.goToDashboard = user.goToDashboard;
+      context.state.action = "Register";
+      context.state.goToDashboard = user.goToDashboard;
       const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
 
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -70,8 +78,8 @@ export default new Vuex.Store({
       return context.state.account;
     },
     async loginAccount(context, user) {
-      this.action = "Login";
-      this.goToDashboard = user.goToDashboard;
+      context.state.action = "Login";
+      context.state.goToDashboard = user.goToDashboard;
       const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
       context.state.account = await context.state.tide.loginJwt(user.username, user.password, serverTime);
       return context.state.account;
@@ -87,11 +95,11 @@ export default new Vuex.Store({
     },
     async finalizeAuthentication(context, data) {
       data.vuid = data.vuid.toString();
-      data.action = this.action;
-      data.autoClose = !this.goToDashboard;
+      data.action = context.state.action;
+      data.autoClose = !context.state.goToDashboard;
       data.action = window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
 
-      if (this.goToDashboard) router.push("/account");
+      if (context.state.goToDashboard) router.push("/account");
     },
   },
   modules: {},
@@ -105,5 +113,8 @@ export default new Vuex.Store({
     isLoggedIn: (state) => true,
     account: (state) => state.account,
     debug: (state) => state.debug,
+    qrData: (state) => `1|${state.vendorName}|${state.vendorServer}|${state.origin}|${state.vendorPublic}|${state.sessionId}`,
+    sessionId: (state) => state.sessionId,
+    origin: (state) => state.origin,
   },
 });

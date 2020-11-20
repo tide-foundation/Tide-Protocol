@@ -21,7 +21,7 @@ export default {
     };
   },
   created() {
-    this.homeOrk = "http://172.26.17.60:8082"; //window.location.protocol + "//" + window.location.host;
+    this.homeOrk = "http://172.26.17.60:8082"; //`${this.$store.getters.origin}`
   },
   methods: {
     changeOrk() {
