@@ -16,6 +16,7 @@
 import { C25519Point, AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
 import TranToken from "../TranToken";
+import DnsEntry from "../DnsEnrty";
 
 export default class DAuthClient extends ClientBase {
   /**
@@ -41,12 +42,13 @@ export default class DAuthClient extends ClientBase {
     return fromBase64(res.text);
   }
 
-  /**
+    /**
    * @param {bigInt.BigInteger} prismi
    * @param {bigInt.BigInteger} cmki
    * @param {AESKey} prismAuthi
    * @param {AESKey} cmkAuthi
    * @param {string} email
+   * @returns {Promise<{orkid: string, sign: string}>}
    */
   async signUp(prismi, cmki, prismAuthi, cmkAuthi, email) {
     var user = this.userGuid;
@@ -56,7 +58,13 @@ export default class DAuthClient extends ClientBase {
     var cmkAuth = urlEncode(cmkAuthi.toString());
     var mail = encodeURIComponent(email);
 
-    return (await this._put(`/cmk/${user}/${prism}/${cmk}/${prismAuth}/${cmkAuth}/${mail}`)).body;
+    var resp = (await this._put(`/cmk/${user}/${prism}/${cmk}/${prismAuth}/${cmkAuth}/${mail}`));
+    if (!resp.ok || !resp.body && !resp.body.success) {
+      const error = !resp.ok || !resp.body ? resp.text : resp.body.error;
+      return  Promise.reject(new Error(error));
+    }
+    
+    return resp.body.content;
   }
 
   /**

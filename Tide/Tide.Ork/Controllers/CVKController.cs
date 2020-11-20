@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -77,7 +78,16 @@ namespace Tide.Ork.Controllers
 
             _logger.LogInformation($"New cvk for {vuid} with share {data[1]}", vuid, data[0]);
 
-            return await _managerCvk.SetOrUpdate(account);
+            var resp = await _managerCvk.SetOrUpdate(account);
+            if (!resp.Success)
+                return resp;
+            
+            var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
+            //TODO: The ork should not send the orkid because the client should already know
+            var signOrk = Convert.ToBase64String(_config.PrivateKey.Sign(m));
+            resp.Content = new { orkid = _config.UserName, sign = signOrk };
+            
+            return resp;
         }
 
         [HttpGet("{vuid}/{token}")]

@@ -16,8 +16,10 @@ using App.Metrics.AspNetCore;
 
 namespace Tide.Ork {
     public class Startup {
+        private string _version;
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
+            _version = typeof(Program).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
         }
 
         public IConfiguration Configuration { get; }
@@ -34,6 +36,7 @@ namespace Tide.Ork {
             services.AddMemoryCache();
             services.AddTransient<IEmailClient, MailKitClient>();
             services.AddTransient<OrkConfig>();
+            services.AddSignalR();
 
             services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
 
@@ -47,12 +50,16 @@ namespace Tide.Ork {
                 services.AddTransient<IKeyManagerFactory, MemoryFactory>();
             else
                 services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings) {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
+            app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().WithOrigins(new[] { "http://localhost:8081"}).AllowCredentials());
+           // app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             //else
             //    app.UseHsts();
 
@@ -75,18 +82,15 @@ namespace Tide.Ork {
             {
                 context.Response.Headers["Ork-Id"] = settings.Instance.Username;
 
-                var version = typeof(Program).Assembly
-                    .GetCustomAttribute<AssemblyFileVersionAttribute>()
-                    ?.Version;
+                var version = _version;
 
                 context.Response.Headers["User-Agent"] = $"Ork-Version:{version}";
                 return next.Invoke();
             });
 
-    
-
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
+                endpoints.MapHub<EnclaveHub>("/enclave-hub");
 
                 if (env.IsDevelopment() && settings.DevFront)
                 {

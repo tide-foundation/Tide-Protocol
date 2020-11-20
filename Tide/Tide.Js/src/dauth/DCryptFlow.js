@@ -20,6 +20,8 @@ import Cipher from "../Cipher";
 import Guid from "../guid";
 import { concat } from "../Helpers";
 import TranToken from "../TranToken";
+import DnsEntry from "../DnsEnrty";
+import DnsClient from "./DnsClient";
 
 export default class DCryptFlow {
   /**
@@ -48,13 +50,32 @@ export default class DCryptFlow {
       var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
       const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
 
-      await Promise.all(this.clients.map((cli, i) => 
+      var orkSigns = await Promise.all(this.clients.map((cli, i) => 
         cli.register(cvk.public(), cvks[i].x, cvkAuths[i], signedKeyId, signatures[i])));
 
+      await this.addDns(orkSigns, cvk);
+        
       return cvk;
     } catch (err) {
       throw err;
     }
+  }
+
+  /** @private 
+   * @param {{orkid: string, sign: string}[]} signatures 
+   * @param {C25519Key} key */
+  addDns(signatures, key) {
+    const cln = this.clients[Math.floor(Math.random() * this.clients.length)];
+    const dnsCln = new DnsClient(cln.url, cln.userGuid);
+    var entry = new DnsEntry();
+    
+    entry.id = cln.userGuid;
+    entry.public = key.public()
+    entry.signatures = signatures.map(sig => sig.sign);
+    entry.orks = signatures.map(sig => sig.orkid);
+    entry.sign(key);
+
+    return dnsCln.addDns(entry);
   }
 
   /** @param {AESKey} cmkAuth */

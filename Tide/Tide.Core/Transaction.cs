@@ -16,7 +16,7 @@ namespace Tide.Core {
             DateCreated = DateTimeOffset.Now;
             Index = index;
             Account = account;
-            Data = JsonConvert.SerializeObject(data);
+            Data = data is string ? data as string : JsonConvert.SerializeObject(data);
 
             Location = CreateLocation(contract, table, scope);
         }
