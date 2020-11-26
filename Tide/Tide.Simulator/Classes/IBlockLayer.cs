@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Tide.Core;
-using Tide.Simulator.Models;
 
 namespace Tide.Simulator.Classes {
     public interface IBlockLayer
@@ -20,6 +20,12 @@ namespace Tide.Simulator.Classes {
         /// <returns>True if the write was successful</returns>
         (bool success,string error) Write(Transaction block);
         (bool success, string error) Write(List<Transaction> blocks);
+
+        List<AuthStateTran> SelectPendingLogs(IEnumerable<Guid> ids, int threshold);
+        List<Auth> SelectLogs(IEnumerable<Guid> ids);
+        void UpdateLogs(IEnumerable<Auth> logs);
+        void InsertLogs(IEnumerable<Auth> logs);
+        void InsertPendingLogs(IEnumerable<AuthPending> logs);
 
         /// <summary>
         ///     Read the newest version of this data block from the 'Blockchain'.
