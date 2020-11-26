@@ -22,6 +22,7 @@ import { concat } from "../Helpers";
 import { getArray } from "cryptide/src/bnInput";
 import DnsEntry from "../DnsEnrty";
 import DnsClient from "./DnsClient";
+import Guid from "../guid";
 
 export default class DAuthFlow {
   /**
@@ -87,8 +88,9 @@ export default class DAuthFlow {
       var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
       var prismAuths = idBuffers.map((buff) => prismAuth.derive(buff));
 
+      const tranid = new Guid();
       var tokens = this.clients.map((c, i) => token.copy().sign(prismAuths[i], c.userBuffer));
-      var ciphers = await Promise.all(this.clients.map((cli, i) => cli.signIn(tokens[i])));
+      var ciphers = await Promise.all(this.clients.map((cli, i) => cli.signIn(tranid, tokens[i])));
 
       var cmks = prismAuths.map((auth, i) => auth.decrypt(ciphers[i])).map((shr) => BigInt.fromArray(Array.from(shr), 256, false));
 

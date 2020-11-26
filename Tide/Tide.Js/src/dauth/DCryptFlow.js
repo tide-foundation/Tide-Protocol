@@ -83,7 +83,8 @@ export default class DCryptFlow {
     var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
     const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
 
-    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(cvkAuths[i])));
+    const tranid = new Guid();
+    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(tranid, cvkAuths[i])));
 
     var cvks = cvkAuths.map((auth, i) => auth.decrypt(cipherCvks[i])).map((shr) => BnInput.getBig(shr));
 

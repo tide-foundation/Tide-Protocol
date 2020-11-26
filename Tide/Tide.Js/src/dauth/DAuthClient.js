@@ -34,11 +34,12 @@ export default class DAuthClient extends ClientBase {
     return [ C25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
   }
 
-  /** @param {TranToken} token */
-  async signIn(token) {
+  /** @param { import("../Guid").default } tranid
+   * @param {TranToken} token */
+  async signIn(tranid, token) {
     var tkn = urlEncode(token.toArray());
 
-    var res = await this._get(`/cmk/auth/${this.userGuid}/${tkn}`);
+    var res = await this._get(`/cmk/auth/${this.userGuid}/${tkn}`).set('tranid', tranid.toString());
     return fromBase64(res.text);
   }
 
