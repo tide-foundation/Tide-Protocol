@@ -25,6 +25,7 @@ import KeyStore from "../keyStore";
 import Rule from "../rule";
 import Cipher from "../Cipher";
 import Guid from "../guid";
+import DnsClient from "./DnsClient";
 
 export default class DAuthV2Flow {
   /** @param {string} user */
@@ -131,6 +132,7 @@ export default class DAuthV2Flow {
       const flowCmk = this._getCmkFlow();
       this._setCmk(await flowCmk.logIn(password));
 
+      await this._setCvkUrlFromDns();
       const flowCvk = this._getCvkFlow();
       const cvk = await flowCvk.getKey(this.cmkAuth);
 
@@ -164,6 +166,16 @@ export default class DAuthV2Flow {
    */
   async changePass(pass, newPass, threshold) {
     await this._getCmkFlow().changePass(pass, newPass, threshold);
+  }
+  
+  /** @private */
+  async _setCvkUrlFromDns() {
+    if (this.cvkUrls && this.cvkUrls.length > 0)
+      return;
+
+    const dnsCln = new DnsClient(this.cmkUrls[0], this.vuid);
+    const [cvkUrls] = await dnsCln.getInfoOrks();
+    this.cvkUrls = cvkUrls;
   }
 
   _getVendorClient() {

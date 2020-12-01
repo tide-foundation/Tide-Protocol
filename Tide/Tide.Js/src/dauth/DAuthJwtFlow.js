@@ -18,6 +18,7 @@ import DAuthFlow from "./DAuthFlow";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
 import Guid from "../guid";
+import DnsClient from "./DnsClient";
 
 export default class DAuthJwtFlow {
   /** @param {string} user */
@@ -109,6 +110,7 @@ export default class DAuthJwtFlow {
       const flowCmk = this._getCmkFlow();
       this._setCmk(await flowCmk.logIn(password));
 
+      await this._setCvkUrlFromDns();
       const flowCvk = this._getCvkFlow();
       const cvk = await flowCvk.getKey(this.cmkAuth, true);
       const cvkJwt = CP256Key.private(cvk.x);
@@ -120,6 +122,16 @@ export default class DAuthJwtFlow {
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+  
+  /** @private */
+  async _setCvkUrlFromDns() {
+    if (this.cvkUrls && this.cvkUrls.length > 0)
+      return;
+
+    const dnsCln = new DnsClient(this.cmkUrls[0], this.vuid);
+    const [cvkUrls] = await dnsCln.getInfoOrks();
+    this.cvkUrls = cvkUrls;
   }
 
   async Recover() {

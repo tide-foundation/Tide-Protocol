@@ -17,11 +17,15 @@ import { AESKey, CP256Key } from "cryptide";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
 import Guid from "../guid";
+import DnsClient from "./DnsClient";
 
 export default class DAuthCmkJwtFlow {
   /** @param {string} user */
   constructor(user) {
     this.user = user;
+
+    /** @type {string} */
+    this.homeUrl = null;
 
     /** @type {string[]} */
     this.cvkUrls = null;
@@ -58,6 +62,8 @@ export default class DAuthCmkJwtFlow {
     if (!this.cmkAuth) throw new Error("cmk must not be empty");
 
     try {
+      await this._setCvkUrlFromDns();
+      
       const flowCvk = this._getCvkFlow();
       const cvk = await flowCvk.getKey(this.cmkAuth, true);
       const cvkJwt = CP256Key.private(cvk.x);
@@ -69,6 +75,19 @@ export default class DAuthCmkJwtFlow {
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  /** @private */
+  async _setCvkUrlFromDns() {
+    if (this.cvkUrls && this.cvkUrls.length > 0)
+      return;
+    
+    if (!this.homeUrl)
+      throw new Error('homeUrl must be provided');
+
+    const dnsCln = new DnsClient(this.homeUrl, this.vuid);
+    const [cvkUrls] = await dnsCln.getInfoOrks();
+    this.cvkUrls = cvkUrls;
   }
 
   /** @private */

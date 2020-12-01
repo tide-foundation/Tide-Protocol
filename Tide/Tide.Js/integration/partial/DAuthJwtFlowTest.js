@@ -44,7 +44,7 @@ async function signUp() {
     var { auth: auth0 } = await flowCreate.signUp(pass, email, threshold);
 
     var flowLogin = new DAuthCmkJwtFlow(user);
-    flowLogin.cvkUrls = orkUrls;
+    flowLogin.homeUrl = orkUrls[0];
     flowLogin.vendorPub = vendorPub;
     flowLogin.cmk = flowCreate.cmk;
 

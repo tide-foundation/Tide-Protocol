@@ -14,9 +14,12 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Tide.Encryption.Tools;
+using Tide.Core;
 using Tide.Ork.Classes;
+using Tide.Ork.Models;
+using Tide.Ork.Repo;
 
 namespace Tide.Ork.Controllers
 {
@@ -25,13 +28,27 @@ namespace Tide.Ork.Controllers
     public class IndexController : ControllerBase
     {
         private readonly OrkConfig _config;
-
-        public IndexController(OrkConfig config)
+        private readonly SimulatorOrkManager _orkManager;
+        
+        public IndexController(OrkConfig config, Settings settings)
         {
             _config = config;
+            _orkManager = new SimulatorOrkManager(config.UserName, settings.BuildClient());
         }
  
        [HttpGet("public")]
         public ActionResult<string> GetPublic() => _config.PrivateKey.GetPublic().ToString();
+
+        #if DEBUG
+        [HttpGet("register")]
+        public async Task Register()
+        {
+            await _orkManager.Add(new OrkNode {
+                Id = _config.UserName,
+                Url = $"{Request.Scheme}://{Request.Host}",
+                PubKey = _config.PrivateKey.GetPublic().ToString()
+            });
+        }
+        #endif
     }
 }

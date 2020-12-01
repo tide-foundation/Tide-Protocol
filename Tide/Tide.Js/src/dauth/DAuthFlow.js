@@ -69,7 +69,7 @@ export default class DAuthFlow {
    * @param {C25519Key} key */
   addDns(signatures, key) {
     const cln = this.clients[Math.floor(Math.random() * this.clients.length)];
-    const dnsCln = new DnsClient(cln.url, cln.userGuid);
+    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
     var entry = new DnsEntry();
     
     entry.id = cln.userGuid;

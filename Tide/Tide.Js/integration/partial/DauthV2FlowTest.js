@@ -43,7 +43,6 @@ async function signUp() {
 
     flow = new DAuthV2Flow(user);
     flow.cmkUrls = orkUrls;
-    flow.cvkUrls = orkUrls;
     flow.vendorUrl = vendorUrl;
 
     var { auth: auth1 } = await flow.logIn(pass);
