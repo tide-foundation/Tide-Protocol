@@ -62,9 +62,7 @@ export default class DAuthCmkJwtFlow {
     if (!this.cmkAuth) throw new Error("cmk must not be empty");
 
     try {
-      await this._setCvkUrlFromDns();
-      
-      const flowCvk = this._getCvkFlow();
+      const flowCvk = await this._getCvkFlow();
       const cvk = await flowCvk.getKey(this.cmkAuth, true);
       const cvkJwt = CP256Key.private(cvk.x);
 
@@ -78,26 +76,20 @@ export default class DAuthCmkJwtFlow {
   }
 
   /** @private */
-  async _setCvkUrlFromDns() {
+  async _getCvkFlow(memory = false) {
+    if (!this.vuid) throw new Error("vuid must not be empty");
+
+    if (this._cvkFlow) return this._cvkFlow;
+
+    if ((!this.cvkUrls || !this.cvkUrls.length) && this.homeUrl) {
+      const dnsCln = new DnsClient(this.homeUrl, this.vuid);
+      const [cvkUrls] = await dnsCln.getInfoOrks();
+      this.cvkUrls = cvkUrls;
+    }
+
     if (this.cvkUrls && this.cvkUrls.length > 0)
-      return;
-    
-    if (!this.homeUrl)
-      throw new Error('homeUrl must be provided');
+      return this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid, memory);
 
-    const dnsCln = new DnsClient(this.homeUrl, this.vuid);
-    const [cvkUrls] = await dnsCln.getInfoOrks();
-    this.cvkUrls = cvkUrls;
-  }
-
-  /** @private */
-  _getCvkFlow(memory = false) {
-    if (this.cvkUrls === null || this.cvkUrls.length === 0) throw new Error("cvkUrls must not be empty");
-
-    if (this.vuid === null) throw new Error("vuid must not be empty");
-
-    if (this._cvkFlow === undefined) this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid, memory);
-
-    return this._cvkFlow;
+    throw new Error("homeUrl must be provided");
   }
 }
