@@ -32,6 +32,9 @@ export default class DAuthV2Flow {
   constructor(user, newCvk = false) {
     this.user = user;
 
+    /** @type {string} */
+    this.homeUrl = null;
+
     /** @type {string[]} */
     this.cmkUrls = null;
 
@@ -78,8 +81,8 @@ export default class DAuthV2Flow {
 
       const cvk = C25519Key.generate();
 
-      const flowCmk = this._getCmkFlow();
-      const flowCvk = this._getCvkFlow();
+      const flowCmk = await this._getCmkFlow();
+      const flowCvk = await this._getCvkFlow();
       const vendorCln = this._getVendorClient();
       const ruleCln = new RuleClientSet(this.cmkUrls, this.vuid);
       const keyCln = new KeyClientSet(this.cmkUrls);
@@ -129,11 +132,11 @@ export default class DAuthV2Flow {
   /** @param {string} password */
   async logIn(password) {
     try {
-      const flowCmk = this._getCmkFlow();
+      const flowCmk = await this._getCmkFlow();
       this._setCmk(await flowCmk.logIn(password));
 
       await this._setCvkUrlFromDns();
-      const flowCvk = this._getCvkFlow();
+      const flowCvk = await this._getCvkFlow();
       const cvk = await flowCvk.getKey(this.cmkAuth);
 
       const vendorCln = this._getVendorClient();
@@ -147,7 +150,7 @@ export default class DAuthV2Flow {
   }
 
   async Recover() {
-    await this._getCmkFlow().Recover();
+    await (await this._getCmkFlow()).Recover();
   }
 
   /**
@@ -156,7 +159,7 @@ export default class DAuthV2Flow {
    * @param {number} threshold
    */
   async Reconstruct(textShares, newPass = null, threshold = null) {
-    await this._getCmkFlow().Reconstruct(textShares, newPass, threshold);
+    await (await this._getCmkFlow()).Reconstruct(textShares, newPass, threshold);
   }
 
   /**
@@ -165,7 +168,7 @@ export default class DAuthV2Flow {
    * @param {number} threshold
    */
   async changePass(pass, newPass, threshold) {
-    await this._getCmkFlow().changePass(pass, newPass, threshold);
+    await (await this._getCmkFlow()).changePass(pass, newPass, threshold);
   }
   
   /** @private */
@@ -186,21 +189,35 @@ export default class DAuthV2Flow {
     return this._vendorClient;
   }
 
-  _getCmkFlow() {
-    if (this.cmkUrls === null || this.cmkUrls.length === 0) throw new Error("cmkUrls must not be empty");
+  async _getCmkFlow(memory = false) {
+    if (this._cmkFlow) return this._cmkFlow;
 
-    if (this._cmkFlow === undefined) this._cmkFlow = new DAuthFlow(this.cmkUrls, this.user);
+    if (this.homeUrl && (!this.cmkUrls || !this.cmkUrls.length)) {
+      const dnsCln = new DnsClient(this.homeUrl, this.userid);
+      const [cmkUrls] = await dnsCln.getInfoOrks();
+      this.cmkUrls = cmkUrls;
+    }
 
-    return this._cmkFlow;
+    if (this.cmkUrls && this.cmkUrls.length > 0)
+      return this._cmkFlow = new DAuthFlow(this.cmkUrls, this.user, memory);
+
+    throw new Error("cmkUrls or homeUrl must be provided");
   }
 
-  _getCvkFlow() {
-    if (this.cvkUrls === null || this.cvkUrls.length === 0) throw new Error("cvkUrls must not be empty");
+  async _getCvkFlow(memory = false) {
+    if (!this.vuid) throw new Error("vuid must not be empty");
 
-    if (this.vuid === null) throw new Error("vuid must not be empty");
+    if (this._cvkFlow) return this._cvkFlow;
 
-    if (this._cvkFlow === undefined) this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid);
+    if ((!this.cvkUrls || !this.cvkUrls.length) && (this.homeUrl || (this.cmkUrls && this.cmkUrls.length))) {
+      const dnsCln = new DnsClient(this.homeUrl || this.cmkUrls[0], this.vuid);
+      const [cvkUrls] = await dnsCln.getInfoOrks();
+      this.cvkUrls = cvkUrls;
+    }
 
-    return this._cvkFlow;
+    if (this.cvkUrls && this.cvkUrls.length > 0)
+      return this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid, memory);
+
+    throw new Error("cvkUrls must not be empty");
   }
 }
