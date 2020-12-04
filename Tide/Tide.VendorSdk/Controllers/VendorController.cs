@@ -113,9 +113,13 @@ namespace Tide.VendorSdk.Controllers {
 
         private async Task<byte[]> Decrypt(Guid vuid, byte[] cipher)
         {
-            var uris = (await Repo.GetListOrks(vuid)).Select(url => new Uri(url)).ToList();
-            var flow = new DCryptFlow(vuid, uris);
-
+            var dnsUrls = (await Repo.GetListOrks()).Select(url => new Uri(url)).First();
+            var dnsClient = new DnsClient(dnsUrls);
+            var (orkUrls, _) = await dnsClient.GetInfo(vuid);
+            if (!orkUrls.Any())
+                throw new Exception("Invalid ID or orks not configured");
+            
+            var flow = new DCryptFlow(vuid, orkUrls);
             return await flow.Decrypt(cipher, Config.PrivateKey);
         }
 
