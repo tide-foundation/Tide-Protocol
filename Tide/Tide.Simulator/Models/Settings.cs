@@ -4,6 +4,11 @@
         public string BearerKey { get; set; }
         public string AccountConnection { get; set; }
         public CosmosDbSettings CosmosDbSettings { get; set; }
+        public int Threshold { get; set; }
+
+        public Settings() {
+            Threshold = 20;
+        }
     }
 
     public class CosmosDbSettings {

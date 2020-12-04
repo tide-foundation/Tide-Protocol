@@ -66,7 +66,7 @@ export default class DCryptFlow {
    * @param {C25519Key} key */
   addDns(signatures, key) {
     const cln = this.clients[Math.floor(Math.random() * this.clients.length)];
-    const dnsCln = new DnsClient(cln.url, cln.userGuid);
+    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
     var entry = new DnsEntry();
     
     entry.id = cln.userGuid;
@@ -83,7 +83,8 @@ export default class DCryptFlow {
     var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
     const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
 
-    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(cvkAuths[i])));
+    const tranid = new Guid();
+    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(tranid, cvkAuths[i])));
 
     var cvks = cvkAuths.map((auth, i) => auth.decrypt(cipherCvks[i])).map((shr) => BnInput.getBig(shr));
 

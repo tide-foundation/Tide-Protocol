@@ -13,22 +13,25 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
+import { C25519Key } from "cryptide";
 import superagent from "superagent";
 import DnsEntry from "../DnsEnrty";
+import Guid from "../guid";
 
 export default class DnsClient {
   /**
-   * @param {string} url
-   * @param {import("../guid").default} user
+   * @param {string|URL} url
+   * @param {Guid|string} user
    */
   constructor(url, user) {
-    this.url = url + "/dns/";
-    this.guid = user;
+    const baseUrl = typeof url === "string" ? new URL(url) : url;
+    this.url = baseUrl.origin + "/api/dns/";
+    this.guid = typeof user === 'string'? Guid.seed(user) : user;
   }
 
   /** @returns {Promise<DnsEntry|null>} */
   async getDns() {
-    var resp = await superagent.get(this.url + this.guid);
+    var resp = await superagent.get(this.url + this.guid).ok(res => res.ok || res.status === 404);
     if (resp.status === 404)
       return null;
     
@@ -40,7 +43,7 @@ export default class DnsClient {
     return DnsEntry.from(resp.body)
   }
 
-  /** @param {import("../DnsEnrty").default} entry */
+  /** @param {DnsEntry} entry */
   async addDns(entry) {
     var resp = await superagent.post(this.url).set('Content-Type', 'application/json').send(entry.toString());
 
@@ -50,5 +53,20 @@ export default class DnsClient {
     }
     
     return Promise.resolve();
+  }
+
+  /** @returns { Promise<[string[], C25519Key[]]> } */
+  async getInfoOrks() {
+    const entry = await this.getDns();
+    if (!entry) return [[], []];
+    
+    const pubs = entry.publics.filter(pub => pub).map(pub => C25519Key.from(pub));
+    const urls = entry.urls.filter(url => url);
+
+    return [urls, pubs];
+  }
+
+  async exist() {
+    return (await this.getDns()) != null;
   }
 }

@@ -26,6 +26,7 @@ export default class ClientBase {
     const baseUrl = typeof url === "string" ? new URL(url) : url;
 
     this.memory = memory;
+    this.baseUrl = baseUrl.origin;
     this.url = baseUrl.origin + "/api";
     /** @type {IdGenerator} */
     this._clientId = null;

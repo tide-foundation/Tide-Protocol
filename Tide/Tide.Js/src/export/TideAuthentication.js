@@ -6,7 +6,7 @@ import { CP256Key, C25519Key, EcKeyFormat } from "cryptide";
 import Account from "./models/Account";
 import TideConfiguration from "./models/TideConfiguration";
 import { encode } from "../jwtToken";
-import TemporaryDns from "./TemporaryDns";
+import DnsClient from "../dauth/DnsClient";
 import BigInt from "big-integer";
 
 export default class TideAuthentication {
@@ -67,7 +67,8 @@ export default class TideAuthentication {
   async registerJwt(username, password, email, orks, serverTime, threshold = 20) {
     return new Promise(async (resolve, reject) => {
       try {
-        if (await TemporaryDns.doesUserExist(username)) throw new Error("That username is unavailable");
+        const dnsCln = new DnsClient(orks[0], username);
+        if (!(await dnsCln.exist())) throw new Error("That username is unavailable");
 
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
@@ -78,8 +79,6 @@ export default class TideAuthentication {
         const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
 
         var cvkPublic = EcKeyFormat.PemPublic(cvk);
-
-        await TemporaryDns.setUserOrks(username, orks);
 
         this.account = new Account(username, vuid, token, cvkPublic, cvk);
         return resolve(this.account);
@@ -103,8 +102,10 @@ export default class TideAuthentication {
     // Orks should be replaced in the future with a DNS call
     return new Promise(async (resolve, reject) => {
       try {
-        const orks = await TemporaryDns.getUserOrks(username);
-        if (orks == null) throw new Error("A user does not exist with that username/password");
+        const dnsCln = new DnsClient(this.config.homeOrks[0], username);
+        const [orks] = await dnsCln.getInfoOrks();
+        if (!orks || !orks.length) throw new Error("A user does not exist with that username/password");
+
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
@@ -225,7 +226,8 @@ export default class TideAuthentication {
   }
 
   async checkForValidUsername(username) {
-    return !(await TemporaryDns.doesUserExist(username));
+    const dnsCln = new DnsClient(this.config.homeOrks[0], username);
+    return !(await dnsCln.exist());
   }
 }
 
