@@ -98,6 +98,7 @@ namespace Tide.Ork.Components.AuditTrail
                     lock (lockState)
                     {
                         if (File.Exists(sendingFile)) {
+                            this.LogInformation(0, "Dending the audit trail");
                             manager.Report(File.ReadAllText(sendingFile)).GetAwaiter().GetResult();
                         }
 
@@ -105,6 +106,7 @@ namespace Tide.Ork.Components.AuditTrail
                         File.Create(this.workingFile).Close();
                     }
                 }
+                catch (Exception e) { this.LogError(0, e, "There was an error sending the audit trail"); }
                 finally { Interlocked.Exchange(ref lockState.Sending, 0); }
             });
         }
@@ -127,13 +129,17 @@ namespace Tide.Ork.Components.AuditTrail
         private Task Write(string message)
         {
             return Task.Run(() => {
-                lock (lockState)
+                try
                 {
-                    using (StreamWriter stream = File.AppendText(workingFile))
+                    lock (lockState)
                     {
-                        stream.WriteLine(message);
+                        using (StreamWriter stream = File.AppendText(workingFile))
+                        {
+                            stream.WriteLine(message);
+                        }
                     }
                 }
+                catch (Exception e) { this.LogError(0, e, "There was an error writing the audit trail"); }
             });
         }
 
