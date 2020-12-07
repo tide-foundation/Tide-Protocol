@@ -2,12 +2,7 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
-RUN apt update -y && apt install nano curl -y \
-    && curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh \
-    && bash nodesource_setup.sh \
-    && apt install nodejs
-
+FROM tideorg/dotnet-node-sdk:3-12 AS build
 WORKDIR /src
 COPY ["Tide/Tide.Ork/Tide.Ork.csproj", "Tide/Tide.Ork/"]
 COPY ["Tide/Tide.Core/Tide.Core.csproj", "Tide/Tide.Core/"]

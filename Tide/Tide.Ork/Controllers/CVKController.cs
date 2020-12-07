@@ -74,7 +74,7 @@ namespace Tide.Ork.Controllers
                     return BadRequest("Signer's key must be defined");
 
                 if (!signer.Key.Verify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
-                    return BadRequest("Signature is not valid ");
+                    return BadRequest("Signature is not valid");
             }
 
             _logger.LogInformation($"New cvk for {vuid} with share {data[1]}", vuid, data[0]);
