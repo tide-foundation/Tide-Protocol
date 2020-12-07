@@ -18,7 +18,7 @@ namespace Tide.Ork.Components.AuditTrail
             DeniedLevel = 4001;
             Path = System.IO.Path.GetTempPath();
             MaxEntries = 300;
-            MaxDiff = TimeSpan.TicksPerMinute * 5;
+            MaxDiff = TimeSpan.TicksPerMinute;
         }
     }
 }

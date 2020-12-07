@@ -98,10 +98,11 @@ namespace Tide.Ork.Components.AuditTrail
                     lock (lockState)
                     {
                         if (File.Exists(sendingFile)) {
-                            this.LogInformation(0, "Dending the audit trail");
+                            this.LogInformation(0, "Sending the audit trail");
                             manager.Report(File.ReadAllText(sendingFile)).GetAwaiter().GetResult();
                         }
 
+                        this.LogInformation(0, "Preparing package for the next audit trail");
                         File.Copy(this.workingFile, sendingFile, true);
                         File.Create(this.workingFile).Close();
                     }
