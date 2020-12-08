@@ -50,14 +50,15 @@ export default class DCryptClient extends ClientBase {
     return resp.body.content;
   }
 
-  /**@param {AESKey} key */
-  async getCvk(key) {
+  /** @param { Guid } tranid
+   * @param {AESKey} key */
+  async getCvk(tranid, key) {
     let token = new TranToken().sign(key, this.userBuffer);
     
     for (let i = 0; i < 2; i++) {
       try {
         const tkn = urlEncode(token.toArray());
-        const res = await this._get(`/cvk/${this.userGuid}/${tkn}`);
+        const res = await this._get(`/cvk/${this.userGuid}/${tkn}`).set('tranid', tranid.toString());
 
         return fromBase64(res.text);
       } catch (error) {

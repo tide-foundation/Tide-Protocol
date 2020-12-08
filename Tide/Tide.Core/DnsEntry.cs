@@ -15,6 +15,7 @@ namespace Tide.Core
         public string Signature { get; set; }
         public string[] Signatures { get; set; }
         public string[] Urls { get; set; }
+        public string[] Publics { get; set; }
 
         public bool VerifyForUId() {
             if (string.IsNullOrEmpty(Signature) || string.IsNullOrEmpty(Public))

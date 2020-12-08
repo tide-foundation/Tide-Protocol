@@ -62,7 +62,7 @@ namespace Tide.Vendor
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = settings.Audience,
                         ValidAudience = settings.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.BearerKey))
+                        IssuerSigningKey = new SymmetricSecurityKey(settings.Keys.CreateVendorConfig().SecretKey.ToByteArray())
                     };
                 });
 

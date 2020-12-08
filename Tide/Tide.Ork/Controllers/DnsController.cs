@@ -52,11 +52,13 @@ namespace Tide.Ork.Controllers
             if (entry == null)
                 return NotFound();
 
-            var orksInfo = await orksInfoTask;
-            entry.Urls = (from orkId in entry.Orks
-                         join info in orksInfo on orkId equals info.Id into inf
-                         from defInf in inf.DefaultIfEmpty()
-                         select defInf?.Url).ToArray();
+            var infOrks = (from orkId in entry.Orks
+                           join info in (await orksInfoTask) on orkId equals info.Id into inf
+                           from defInf in inf.DefaultIfEmpty()
+                           select defInf).ToArray();
+
+            entry.Urls = infOrks.Select(inf => inf?.Url ?? string.Empty).ToArray();
+            entry.Publics = infOrks.Select(inf => inf?.PubKey ?? string.Empty).ToArray();
             
             return entry;
         }

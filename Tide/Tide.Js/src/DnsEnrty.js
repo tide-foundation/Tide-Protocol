@@ -24,6 +24,8 @@ import { C25519Key, Hash } from "cryptide";
  * @prop {string} public
  * @prop {string[]} signatures
  * @prop {string[]} orks
+ * @prop {string[]} urls
+ * @prop {string[]} publics
  */
 
  export default class DnsEntry {
@@ -37,7 +39,11 @@ import { C25519Key, Hash } from "cryptide";
     this.signatures = [];
     /** @type { string[] } */
     this.orks = [];
-  }
+    /** @type { string[] } */
+    this.urls = [];
+    /** @type { string[] } */
+    this.publics = [];
+}
 
   /** @param {C25519Key} key */
   sign(key) {
@@ -74,6 +80,8 @@ import { C25519Key, Hash } from "cryptide";
     entry.public = C25519Key.from(json.public);
     entry.signatures = json.signatures;
     entry.orks = json.orks;
+    entry.urls = json.urls || entry.urls;
+    entry.publics = json.publics || entry.publics;
 
     return entry;
   }

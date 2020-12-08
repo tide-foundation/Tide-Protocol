@@ -26,6 +26,7 @@ using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 using Tide.Ork.Classes.Rules;
+using Tide.Ork.Components.AuditTrail;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
@@ -36,7 +37,7 @@ namespace Tide.Ork.Controllers
     [Route("api/cvk")]
     public class CVKController : ControllerBase
     {
-        private readonly ILogger _logger;
+        private readonly LoggerPipe _logger;
         private readonly ICvkManager _managerCvk;
         private readonly IRuleManager _ruleManager;
         private readonly IKeyIdManager _keyIdManager;
@@ -48,7 +49,7 @@ namespace Tide.Ork.Controllers
             _managerCvk = factory.BuildManagerCvk();
             _ruleManager = factory.BuildRuleManager();
             _keyIdManager = factory.BuildKeyIdManager();
-            _logger = logger;
+            _logger = new LoggerPipe(logger, settings, new LoggerConfig());
             _config = config;
             _features = settings.Features;
         }
@@ -73,7 +74,7 @@ namespace Tide.Ork.Controllers
                     return BadRequest("Signer's key must be defined");
 
                 if (!signer.Key.Verify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
-                    return BadRequest("Signature is not valid ");
+                    return BadRequest("Signature is not valid");
             }
 
             _logger.LogInformation($"New cvk for {vuid} with share {data[1]}", vuid, data[0]);
@@ -91,19 +92,22 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("{vuid}/{token}")]
-        public async Task<ActionResult<byte[]>> GetCvk([FromRoute] Guid vuid, [FromRoute] string token)
+        public async Task<ActionResult<byte[]>> GetCvk([FromRoute] Guid vuid, [FromRoute] string token, [FromHeader] Guid tranid)
         {
             var tran = TranToken.Parse(FromBase64(token));
 
             var account = await _managerCvk.GetById(vuid);
-            if (account == null || !tran.Check(account.CvkiAuth, vuid.ToByteArray()))
-                return _logger.Log(Unauthorized($"Invalid account or signature"),
-                    $"Unsuccessful login for {vuid} with {token}");
+            if (account == null || !tran.Check(account.CvkiAuth, vuid.ToByteArray())) {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Unsuccessful login for {vuid} with {token}");
+                return Unauthorized($"Invalid account or signature");
+            }
 
-            if (!tran.OnTime)
-                return _logger.Log(StatusCode(408, new TranToken().ToString()), $"Expired token: {token}");
+            if (!tran.OnTime) {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Expired token: {token}");
+                return StatusCode(408, new TranToken().ToString());
+            }
 
-            _logger.LogInformation($"Returning cvk from {vuid}", vuid, token);
+            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Returning cvk from {vuid}");
             return account.CvkiAuth.Encrypt(account.CVKi.ToByteArray(true, true));
         }
 

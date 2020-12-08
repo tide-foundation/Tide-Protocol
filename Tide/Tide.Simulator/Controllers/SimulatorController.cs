@@ -12,7 +12,7 @@ using Tide.Encryption.Ecc;
 using Tide.Simulator.Classes;
 using Tide.Simulator.Models;
 using Tide.Simulator.Contracts;
-
+using Microsoft.Extensions.Logging;
 // ReSharper disable InconsistentlySynchronizedField
 
 namespace Tide.Simulator.Controllers {
@@ -24,10 +24,10 @@ namespace Tide.Simulator.Controllers {
         private readonly ContractManager _contracts;
         private static readonly object WriteLock = new object();
  
-        public SimulatorController(IBlockLayer blockchain)
+        public SimulatorController(IBlockLayer blockchain, Settings settings, ILogger<ContractManager> logger)
         {
             _blockchain = blockchain;
-            _contracts = new ContractManager(blockchain, WriteLock);
+            _contracts = new ContractManager(blockchain, WriteLock, settings, logger);
     
         }
 

@@ -10,6 +10,11 @@ class "CMKFlow" as cmkFlow
 class "CVKFlow" as cvkFlow
 class "RuleClientSet" as ruleSet
 class "DAuthFlow" as dauth
+class "DAuthCmkJwtFlow" as dcmk
+class "DAuthJwtFlow" as djwt
+class "TideAuthentication" as tide
+class "DnsClient" as dns
+class "VendorClient" as vendor
 
 com --* cvk
 com --* cmk
@@ -19,9 +24,47 @@ cmk --* "*" cmkFlow
 cvk --* "*" cvkFlow
 rule --* "*" ruleSet
 
- cmkFlow --* dauth
- cvkFlow --* dauth
- ruleSet --* dauth
+cmkFlow --* dauth
+cvkFlow --* dauth
+ruleSet --* dauth
+
+cmkFlow --* djwt
+cvkFlow --* djwt
+
+cvkFlow --* dcmk
+
+djwt -- tide
+dcmk -- tide
+dauth -- tide
+dns -- tide
+vendor -- tide
+
+class dns {
+  getOrks(uid)
+}
+
+class djwt {
+  signUp(password, email, threshold)
+  logIn(password)
+  Recover()
+  Reconstruct(textShares, newPass, threshold)
+  changePass(pass, newPass, threshold)
+}
+
+class dcmk {
+  logIn()
+}
+
+class tide {
+  register(username, password, email)
+  registerJwt(username, password, email, serverTime, threshold)
+  loginJwt(username, password, serverTime)
+  loginUsingCmkJwt(username, cmk, serverTime)
+  recover(username)
+  reconstruct(username, shares, newPass)
+  logout()
+  changePassword(pass, newPass)
+}
 
 class cmk {
   -communicator

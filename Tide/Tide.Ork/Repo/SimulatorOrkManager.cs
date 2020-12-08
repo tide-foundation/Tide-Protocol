@@ -31,9 +31,9 @@ namespace Tide.Ork.Repo {
             return Map(response);
         }
 
-        public async Task<bool> Exist() => await GetById(_orkId) == null;
+        public async Task<bool> Exist() => await GetById(_orkId) != null;
 
-        public async Task<bool> Exist(string id) => await GetById(id) == null;
+        public async Task<bool> Exist(string id) => await GetById(id) != null;
 
         public async Task<List<OrkNode>> GetAll()
         {
