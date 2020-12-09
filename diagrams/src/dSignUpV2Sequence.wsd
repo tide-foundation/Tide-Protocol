@@ -1,0 +1,170 @@
+@startuml dSignUpV2Sequence
+skinparam monochrome true
+
+title dSignUpV2
+
+actor Consumer 
+participant Vendor
+participant mORKx
+participant vORKx
+database Blockchain as Block
+
+group Precondition
+note over Consumer
+    username = Consumer username
+    password [private] = Consumer's password
+end note
+note over Vendor
+    vId, skVen, pubVen
+end note
+note over mORKx
+    mIdOrki, mSkOrki, mPubOrki
+end note
+note over vORKx
+    vIdOrki, vSkOrki, vPubOrki
+end note
+end
+
+Consumer->Vendor: GetConfig()
+activate Vendor
+
+Vendor-->Consumer: pubVen, List(vOrk)
+deactivate Vendor
+
+note over Consumer
+    userId = hash(username)
+    
+    CMK = random
+    PubCMK = g * CMK
+    CMKAuth = hash(CMK)
+
+    gPass = point(hash(password))
+    PRISM = random
+    PRISMAuth = hash(gPass * PRISM)
+
+    CMKi = share(CMK, mIdOrki)
+    PRISMi = share(PRISM, mIdOrki)
+
+    CMKAuthi = hmac(mIdOrki, CMKAuth)
+    PRISMAuthi = hmac(mIdOrki, PRISMAuth)
+
+    mOrki = List(mOrk)
+end note
+    
+note over Consumer
+    CVK = random
+    PubCVK = g * CVK
+    CVKi = share(CVK, vIdOrki)
+
+    VUID = hmac(pubVen, CMKAuth)
+    CVKAuth = hash(pubVen * CMK)
+
+    CVKAuthi = hmac(vIdOrki, CVKAuth)
+    VUIDAuth = hmac(vid, CVK)
+
+    vOrki = List(vOrk)
+end note
+
+
+Consumer -> Vendor: GetVoucher(VUID, VUIDAuth, PubCVK, vOrki)
+activate Vendor
+
+alt vOrki ∉ List(vOrk)
+    Vendor --> Consumer: Error("Selected ORKs are not in the given list")
+else
+    note over Vendor
+        Voucher = GenVoucherKey()
+        pubVoucher = g * Voucher
+        signi = Sign(VUID|PubCVK|vOrki, Voucher)
+    end note
+
+    Vendor --> Consumer: signi, pubVoucher
+    deactivate Vendor
+end
+
+Consumer -> mORKx: Signup(userId, PubCMK, CMKi, PRISMi, CMKAuthi, PRISMAuthi, email)
+activate mORKx
+
+Consumer -> vORKx: Signup(VUID, PubCVK, CVKi, CVKAuthi, vOrki, signi, pubVoucher)
+activate vORKx
+
+alt !(Verify(VUID|PubCVK|vOrki, signi, pubVoucher))
+    vORKx --> Consumer: Error("Invalid voucher")
+else
+    vORKx --> vORKx: StoreMemory(VUID, PubCVK,\n CVKi, CVKAuthi, vOrki)
+    
+    vORKx --> Consumer: OK
+    deactivate vORKx
+end
+
+mORKx -> mORKx: StoreMemory(userId, PubCMK, CMKi,\n PRISMi, CMKAuthi, PRISMAuthi, email)
+
+mORKx --> Consumer: OK
+deactivate mORKx
+
+note over Consumer
+    VUIDTag = hash("VUID")
+    VUIDRule = allow(VUID, VUIDTag, PubVen)
+    VUIDCipher = encrypt(VUID, VUIDTag, CVK)
+end note
+
+Consumer -> vORKx: AddRule(VUIDRule)
+activate vORKx
+vORKx --> Consumer: OK
+deactivate vORKx
+
+group dSignInFlow
+    Consumer -> mORKx: SignIn()
+    activate mORKx
+    Consumer -> vORKx: SignIn()
+    activate vORKx
+
+    mORKx --> Consumer: OK
+    deactivate mORKx
+    vORKx --> Consumer: OK
+    deactivate vORKx
+end
+
+Consumer -> Vendor: SignUp(VUID, VUIDAuth, vOrki, VUIDCipher)
+activate Vendor
+
+group tDecryptionFlow
+    Vendor -> vORKx: tDecrypt(VUIDCipher)
+    activate vORKx
+    vORKx --> Vendor: VUIDPlain
+    deactivate vORKx
+end
+
+alt VUIDPlain != VUID
+    Vendor --> Consumer: Error("Threshold description must be allowed")
+else
+    Vendor --> Consumer: OK
+    deactivate Vendor
+end
+
+
+Consumer -> mORKx: Commit(userId)
+activate mORKx
+mORKx -> Block: Store(userId, PubCMK, CMKi, PRISMi, CMKAuthi, PRISMAuthi, email)
+activate Block
+
+Consumer -> vORKx: Commit(VUID)
+activate vORKx
+
+
+vORKx -> Block: Store(VUID, PubCVK, CVKi, CVKAuthi, vOrki)
+activate Block
+
+Block --> vORKx: OK
+deactivate Block
+
+Block --> mORKx: OK
+deactivate Block
+
+mORKx --> Consumer: OK
+deactivate mORKx
+
+vORKx --> Consumer: OK
+deactivate vORKx
+
+@enduml
