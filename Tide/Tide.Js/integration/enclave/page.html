@@ -6,14 +6,13 @@
     <title>Document</title>
 </head>
 <body>
-    <iframe id="iframe" src="enclave.html"></iframe>
+    <iframe id="iframe" src="enclave.html" style="height:200px;width:300px;" ></iframe>
     <script>
-        window.addEventListener('message', (e) => console.log('wujuuuu'), false);
-
+        window.addEventListener('message', (e) => console.log('action', e.data), false);
+        const model = {pass: '123456', user: 'jose'};
+        
         const iframe = document.getElementById('iframe');
-        iframe.onload = () => {
-            iframe.contentWindow.postMessage('wujuuu');
-        };
+        iframe.onload = () => iframe.contentWindow.postMessage({ type: "create", model });
     </script>
 </body>
 </html>

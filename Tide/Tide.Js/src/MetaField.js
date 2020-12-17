@@ -14,7 +14,7 @@ import Num64 from "./Num64";
 /** @typedef {'bool'|'date'|'datetime'|'string'|'number'} MetaType */
 
 export default class MetaField {
-  get value() { return this._value; } 
+  get value() { return this._value; }
   set value(val) { 
     if (this._isEncrypted)
       throw new Error('Value cannot be modified if it is encrypted')
@@ -22,6 +22,9 @@ export default class MetaField {
     this._value = val;
   } 
 
+  get isEncrypted() { return this._isEncrypted; }
+
+  //
   /**
    * @private
    * @param {string} field
@@ -90,44 +93,41 @@ export default class MetaField {
   }
 
   /**
-  * @param {string} field
-  * @param {string} value
-  * @returns {MetaField}
-  **/
-  static fromCipher(field, value) {
+   * @param {string} field
+   * @param {string} value
+   * @param {boolean} isEncrypted
+   * @returns {MetaField}
+   */
+  static fromText(field, value, isEncrypted) {
     if (!value) return null;
 
-    return new MetaField(field, value, true);
+    return new MetaField(field, value, isEncrypted);
   }
 
   /**
-  * @param {string} field
-  * @param {string} value
-  * @returns {MetaField}
-  **/
-  static fromPlain(field, value) {
-    if (!value) return null;
-
-    return new MetaField(field, value, false);
-  }
-
-  /**
-  * @param {object} obj
+  * @param {object} data
+  * @param {boolean} encrypted
   * @returns {MetaField[]}
-  **/
-  static fromCipherObject(obj) {
-    if (!obj) return [];
-
-    return Object.keys(obj).map(key => MetaField.fromCipher(key, String(obj[key])));
+  */
+  static fromModel(data, encrypted) {
+    if (!data) return [];
+    
+    return Object.keys(data).map(field => 
+      MetaField.fromText(field, data[field], encrypted));
   }
 
   /**
-  * @param {object} obj
-  * @returns {MetaField[]}
-  **/
-  static fromPlainObject(obj) {
-    if (!obj) return [];
+   * @param {MetaField[]} fields
+   * @returns {object}
+   */
+  static buildModel(fields) {
+    if (!fields || !fields.length) throw new Error('It cannot build a model with empty fields');
+    if (fields.some(field => !field._isEncrypted)) throw new Error('All fields must be encrypted');
 
-    return Object.keys(obj).map(key => MetaField.fromPlain(key, String(obj[key])));
+    const model = {};
+    for (const field of fields) {
+        model[field.field] = field.value;
+    }
+    return model;
   }
 }

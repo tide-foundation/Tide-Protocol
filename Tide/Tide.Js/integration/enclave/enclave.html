@@ -7,27 +7,27 @@
 </head>
 <body>
     <div id="app">
-        <h1>{{ state }}</h1>
-        <table>
-            <tr v-for="fld in fields">
-                <td>{{ fld.field }}</td>
-                <td><input v-model="fld.value"></td>
-            </tr>
-        </table>
+        <h1 v-if="!rendered">Empty</h1>
+        <div v-else>
+            <h1>
+                <span>Form</span>
+                <input type="button" value="decrypt" v-show="encrypted" v-on:click="decrypt">
+                <input type="button" value="encrypt" v-show="!encrypted" v-on:click="encrypt">
+            </h1>
+            <table v-if="rendered">
+                <tr v-for="fld in fields">
+                    <td>{{ fld.field }}</td>
+                    <td><input v-model="fld.value" :disabled="fld.isEncrypted"></td>
+                </tr>
+            </table>
+            <div>
+                <input type="button" value="save" v-on:click="save">
+                <input type="button" value="cancel" v-on:click="cancel">
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script>
-        var model = { state: 'ini', fields: [{ field: 'pass', value: '123456' }, { field: 'user', value: 'jose' }] };
-        
-        window.addEventListener('message', (e) => {
-            model.state = 'started';
-            console.log(e);
-            e.source.postMessage('Message received', e.origin);
-        }, false);
-        
-
-        var app6 = new Vue({ el: '#app', data: model })
-    </script>
+    <script src="enclave.js"></script>
 </body>
 </html>
