@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h1>{{ state }}</h1>
+        <table>
+            <tr v-for="fld in fields">
+                <td>{{ fld.field }}</td>
+                <td><input v-model="fld.value"></td>
+            </tr>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        var model = { state: 'ini', fields: [{ field: 'pass', value: '123456' }, { field: 'user', value: 'jose' }] };
+        
+        window.addEventListener('message', (e) => {
+            model.state = 'started';
+            console.log(e);
+            e.source.postMessage('Message received', e.origin);
+        }, false);
+        
+
+        var app6 = new Vue({ el: '#app', data: model })
+    </script>
+</body>
+</html>

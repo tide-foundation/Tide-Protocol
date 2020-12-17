@@ -21,10 +21,10 @@ test2();
 function test2() {
     var key = C25519Key.generate();
 
-    var field = MetaField.fromPlain('this is my secret message 🥵');
+    var field = MetaField.fromPlain('message', 'this is my secret message 🥵');
     field.encrypt(key);
     
-    const fieldTag = MetaField.fromCipher(field.value);
+    const fieldTag = MetaField.fromCipher(field.field, field.value);
 
     field.decrypt(key);
     fieldTag.decrypt(key);

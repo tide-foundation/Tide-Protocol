@@ -22,9 +22,13 @@ export default class MetaField {
     this._value = val;
   } 
 
-  /** @private */
-  constructor() {
-    this.field = '';
+  /**
+   * @private
+   * @param {string} field
+   * @param {string} value
+   **/
+  constructor(field, value, isEncrypted = false) {
+    this.field = field;
     
     /**@type {MetaType}*/
     this.type = 'string';
@@ -39,10 +43,10 @@ export default class MetaField {
     this.classifications = [];
     
     /**@private*/
-    this._value = '';
+    this._value = value;
 
     /**@private*/
-    this._isEncrypted = false;
+    this._isEncrypted = isEncrypted;
 
     /**@private*/
     this._previous = new Uint8Array();
@@ -85,21 +89,45 @@ export default class MetaField {
     this._isEncrypted = false;
   }
 
-  /** @param {string} text */
-  static fromCipher(text) {
-    var field = new MetaField();
-    field._value = text;
-    field._isEncrypted = true;
+  /**
+  * @param {string} field
+  * @param {string} value
+  * @returns {MetaField}
+  **/
+  static fromCipher(field, value) {
+    if (!value) return null;
 
-    return field;
+    return new MetaField(field, value, true);
   }
 
-  /** @param {string} text */
-  static fromPlain(text) {
-    var field = new MetaField();
-    field._value = text;
-    field._isEncrypted = false;
+  /**
+  * @param {string} field
+  * @param {string} value
+  * @returns {MetaField}
+  **/
+  static fromPlain(field, value) {
+    if (!value) return null;
 
-    return field;
+    return new MetaField(field, value, false);
+  }
+
+  /**
+  * @param {object} obj
+  * @returns {MetaField[]}
+  **/
+  static fromCipherObject(obj) {
+    if (!obj) return [];
+
+    return Object.keys(obj).map(key => MetaField.fromCipher(key, String(obj[key])));
+  }
+
+  /**
+  * @param {object} obj
+  * @returns {MetaField[]}
+  **/
+  static fromPlainObject(obj) {
+    if (!obj) return [];
+
+    return Object.keys(obj).map(key => MetaField.fromPlain(key, String(obj[key])));
   }
 }
