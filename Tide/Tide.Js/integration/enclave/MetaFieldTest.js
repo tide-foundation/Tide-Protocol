@@ -14,7 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import C25519Key from "cryptide/src/c25519Key";
-import MetaField from "../../src/MetaField";
+import MetaField from "./MetaField";
 
 test2();
 

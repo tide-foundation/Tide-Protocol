@@ -7,9 +7,9 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import Cipher from "./Cipher";
+import Cipher from "../../src/Cipher";
+import Num64 from "../../src/Num64";
 import {verify} from "./MetaValidation";
-import Num64 from "./Num64";
 
 /** @typedef {'bool'|'date'|'datetime'|'string'|'number'} MetaType */
 
