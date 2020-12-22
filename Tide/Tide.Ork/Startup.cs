@@ -67,8 +67,8 @@ namespace Tide.Ork {
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings) {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().WithOrigins(new[] { "http://localhost:8081", "http://172.26.17.60:8080" }).AllowCredentials());
-           // app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            //app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().WithOrigins(new[] { "http://localhost:8081", "http://172.26.17.60:8080" }).AllowCredentials());
+            app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             //else
             //    app.UseHsts();
 
