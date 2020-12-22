@@ -3,7 +3,7 @@
     <Status></Status>
     <Loading></Loading>
     <img class="logo" src="@/assets/img/tide-logo.svg" alt="tide logo" />
-    <div id="content" v-if="$store.getters.sessionId != null">
+    <div id="content" v-if="!useTwoFactor || $store.getters.sessionId != null">
       <router-view />
     </div>
   </div>
@@ -21,25 +21,23 @@ export default {
   data() {
     return {
       hub: null,
+      useTwoFactor: false,
     };
   },
   async created() {
-    this.hub = await this.createHub();
-
-    // Collect the sessionId
-    this.hub.on("openSession", (id) => {
-      this.$store.commit("UPDATE_SESSION_ID", id);
-    });
-
-    // Collect the generated token
-    this.hub.on("deliver", async (data) => {
-      console.log("TOKEN DELIVERED", data);
-
-      await this.$store.dispatch("finalizeAuthentication", JSON.parse(data));
-    });
-
-    // Request an open session
-    this.hub.invoke("RequestSession");
+    if (this.useTwoFactor) {
+      this.hub = await this.createHub();
+      // Collect the sessionId
+      this.hub.on("openSession", (id) => {
+        this.$store.commit("UPDATE_SESSION_ID", id);
+      });
+      // Collect the generated token
+      this.hub.on("deliver", async (data) => {
+        await this.$store.dispatch("finalizeAuthentication", JSON.parse(data));
+      });
+      // Request an open session
+      this.hub.invoke("RequestSession");
+    }
   },
   methods: {
     async createHub() {

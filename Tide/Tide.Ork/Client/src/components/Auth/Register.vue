@@ -3,7 +3,9 @@
     <h2>Create your Account</h2>
     <form @submit.prevent="register" id="register-form">
       <transition name="fade" mode="out-in">
-        <div v-if="user.username != '' && user.username != null && checked" id="username-check"><i class="fas fa-check" :class="[valid ? 'valid fa-check' : 'invalid fa-times']"></i></div>
+        <div v-if="user.username != '' && user.username != null && checked" id="username-check">
+          <i class="fas fa-check" :class="[valid ? 'valid fa-check' : 'invalid fa-times']"></i>
+        </div>
       </transition>
       <input type="search" autocomplete="off" v-model="user.username" placeholder="Username" v-debounce:300ms="checkUsername" ref="focus" />
       <div class="password-row mt-10">
@@ -15,7 +17,8 @@
 
       <div id="recovery-emails">
         <div class="recovery-email mb-10" v-for="(email, index) in user.recoveryEmails" :key="index">
-          <input type="email" :placeholder="`Recovery Email Address ${index + 1}`" required v-model="user.recoveryEmails[index]" /> <i v-if="index == 0" class="fas fa-plus" @click="user.recoveryEmails.push('')"></i>
+          <input type="email" :placeholder="`Recovery Email Address ${index + 1}`" required v-model="user.recoveryEmails[index]" />
+          <i v-if="index == 0" class="fas fa-plus" @click="user.recoveryEmails.push('')"></i>
           <i v-if="index != 0" class="fas fa-minus" @click="user.recoveryEmails.splice(index, 1)"></i>
         </div>
       </div>
@@ -56,7 +59,8 @@ export default {
   methods: {
     async checkUsername() {
       this.checked = false;
-      this.valid = await this.$store.dispatch("checkForValidUsername", this.user.username);
+      // this.valid = await this.$store.dispatch("checkForValidUsername", this.user.username);
+      this.valid = true;
       this.checked = true;
     },
     async register() {
@@ -67,6 +71,7 @@ export default {
 
           await this.$store.dispatch("finalizeAuthentication", signUpResult);
         } catch (error) {
+          console.log(error);
           this.$bus.$emit("show-error", error);
         } finally {
           this.$loading(false, "");
