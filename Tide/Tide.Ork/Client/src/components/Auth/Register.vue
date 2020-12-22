@@ -5,7 +5,7 @@
       <transition name="fade" mode="out-in">
         <div v-if="user.username != '' && user.username != null && checked" id="username-check"><i class="fas fa-check" :class="[valid ? 'valid fa-check' : 'invalid fa-times']"></i></div>
       </transition>
-      <input type="search" autocomplete="off" v-model="user.username" placeholder="Username" v-debounce:300ms="checkUsername" />
+      <input type="search" autocomplete="off" v-model="user.username" placeholder="Username" v-debounce:300ms="checkUsername" ref="focus" />
       <div class="password-row mt-10">
         <input type="password" v-model="user.password" placeholder="Password" />
         <input type="password" v-model="user.confirm" placeholder="Confirm" />
@@ -44,6 +44,9 @@ export default {
   },
   created() {
     this.checkUsername();
+  },
+  mounted() {
+    this.$refs.focus.focus();
   },
   watch: {
     "user.username": function(newVal, oldVal) {

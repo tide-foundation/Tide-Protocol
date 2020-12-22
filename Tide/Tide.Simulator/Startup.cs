@@ -50,6 +50,11 @@ namespace Tide.Simulator {
             services.AddScoped<IBlockLayer, SqlBlockLayer>();
             services.AddControllers().AddNewtonsoftJson();
             services.AddCors();
+
+
+
+          
+
         }
 
    

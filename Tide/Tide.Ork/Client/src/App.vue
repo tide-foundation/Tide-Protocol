@@ -29,7 +29,6 @@ export default {
     // Collect the sessionId
     this.hub.on("openSession", (id) => {
       this.$store.commit("UPDATE_SESSION_ID", id);
-      console.log(id);
     });
 
     // Collect the generated token
@@ -44,8 +43,10 @@ export default {
   },
   methods: {
     async createHub() {
+      var location = process.env.NODE_ENV == "development" ? process.env.VUE_APP_SOCKET_ENDPOINT : this.$store.getters.origin;
+
       const connection = new HubConnectionBuilder()
-        .withUrl(`${this.$store.getters.origin}/enclave-hub`)
+        .withUrl(`${location}/enclave-hub`)
         .configureLogging(LogLevel.Information)
         .build();
 
