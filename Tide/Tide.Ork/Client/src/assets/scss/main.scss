@@ -64,7 +64,8 @@ form {
     }
 
     &:focus {
-      border-color: rgb(207, 135, 0);
+      border-color: $primary;
+      outline: 0px;
     }
 
     &::placeholder {

@@ -23,10 +23,10 @@ var newPass = "1234567";
 var email = "tmp@tide.org";
 
 var orkUrls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
-var vendorUrl = "http://127.0.0.1:6001";
+//var vendorUrl = "http://127.0.0.1:6001";
 
-var orkUrls = [...Array(20)].map((_, i) => `https://pdork${i + 1}.azurewebsites.net/`);
-var vendorUrl = "https://dauth.me/";
+// var orkUrls = [...Array(20)].map((_, i) => `https://pdork${i + 1}.azurewebsites.net/`);
+var vendorUrl = "http://localhost:44384";
 
 (async () => {
   await signUp();

@@ -22,7 +22,6 @@ export default {
       this.$loading(true, "Sending emails...");
       this.$nextTick(async () => {
         try {
-          console.log(this.user);
           await this.$store.dispatch("sendRecoverEmails", this.user);
           this.$parent.changeMode("ForgotReconstruct");
         } catch (error) {

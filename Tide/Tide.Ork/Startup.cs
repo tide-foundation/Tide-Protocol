@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,7 @@ using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using VueCliMiddleware;
 using App.Metrics.AspNetCore;
+using Tide.Encryption.Ecc;
 
 namespace Tide.Ork {
     public class Startup {
@@ -52,14 +54,21 @@ namespace Tide.Ork {
                 services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
 
             services.AddCors();
+
+            var privString = "AOAxMtmYfyI98Tr5jiQ77kZGA3goBctEWnDFTWnSOzol3pIbKWvLkkW83s55zJNczOxcbKXdeRSheFXmlDeQWS+KTCkfERyiI5J1i8Xlwe4clgY10LAfV0Ds9xP4QOhK";
+
+            var priv = C25519Key.Parse(privString);
+            var pubString = priv.GetPublic().ToString();
         }
+
+     
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings) {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().WithOrigins(new[] { "http://localhost:8081"}).AllowCredentials());
-           // app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            //app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().WithOrigins(new[] { "http://localhost:8081", "http://172.26.17.60:8080" }).AllowCredentials());
+            app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             //else
             //    app.UseHsts();
 
