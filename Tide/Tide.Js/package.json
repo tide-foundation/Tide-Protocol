@@ -24,6 +24,7 @@
     "test": "mocha",
     "clean": "rm -rf dist && rm -rf .cache",
     "intest": "npm run build && cp dist/tide.js '../Tide.Usecase/Basic Page/js/tide.js' && cp dist/tide.js.map '../Tide.Usecase/Basic Page/js/tide.js.map'",
+    "enclave": "npm run clean && parcel ./integration/enclave/page.html",
     "integration": "npm run clean && parcel ./integration/partial/index.html",
     "conf:dev": "npm rm -S cryptide && npm i file:../../../cryptide-js -S",
     "conf:prd": "npm rm -S cryptide && npm i cryptide -S",

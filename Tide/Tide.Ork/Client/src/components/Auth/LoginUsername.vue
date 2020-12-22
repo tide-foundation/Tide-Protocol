@@ -7,7 +7,7 @@
     </div>
     <span class="center bold">OR</span>
     <form @submit.prevent="$parent.changeMode('LoginPassword')">
-      <input type="text" required class="mt-30" v-model="user.username" placeholder="Username" />
+      <input type="text" required class="mt-30" v-model="user.username" placeholder="Username" ref="focus" />
 
       <div class="action-row mt-20">
         <p @click="$parent.changeMode('Register')">Create Account</p>
@@ -24,10 +24,12 @@ var QRCode = require("qrcode");
 
 export default {
   props: ["user"],
+
   mounted() {
     var canvas = document.getElementById("canvas");
-    console.log(this.$store.getters.qrData);
     QRCode.toCanvas(canvas, this.$store.getters.qrData, { color: {}, margin: 0, errorCorrectionLevel: "L" });
+
+    this.$refs.focus.focus();
   },
   methods: {
     async login() {

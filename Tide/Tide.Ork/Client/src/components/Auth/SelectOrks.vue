@@ -3,7 +3,7 @@
     <h2>Select my ORKs</h2>
     <form @submit.prevent="clickedDone">
       <div class="input-list">
-        <input type="text" class="mt-50" v-for="(ork, index) in orks" :key="index" v-model="orks[index]" :placeholder="`ORK ${index + 1}`" />
+        <input type="text" class="mt-50" v-for="(ork, index) in orks" :key="index" v-model="orks[index].url" :placeholder="`ORK ${index + 1}`" />
       </div>
       <div class="center">
         <button type="button" @click="$bus.$emit('show-status', 'Lets get a global ork list going before I do this (:')" id="random-button" class="mt-20">Randomise All</button>

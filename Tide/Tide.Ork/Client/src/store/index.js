@@ -27,6 +27,7 @@ export default new Vuex.Store({
     account: null,
     sessionId: null,
     origin: `${window.location.protocol}//${window.location.host}`,
+    formData: null,
   },
   mutations: {
     UPDATE_MODE(state, newMode) {
@@ -48,7 +49,8 @@ export default new Vuex.Store({
       context.state.orks = data.orks;
       context.state.debug = data.debug;
       context.state.vendorName = data.vendorName;
-      console.log(context.state.vendorName);
+      context.state.formData = data.formData;
+      console.log("Vendor name: " + context.state.vendorName);
 
       context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
 
@@ -56,7 +58,13 @@ export default new Vuex.Store({
       //   return window.opener.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, window.name);
       // }
 
+      // TESTING DECRYPT
       router.push("/auth");
+      // if (context.state.formData != null) {
+      //   router.push("/form");
+      // } else {
+      //   router.push("/auth");
+      // }
     },
 
     async checkForValidUsername(context, username) {
@@ -74,7 +82,15 @@ export default new Vuex.Store({
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       var isEmail = re.test(String(user.username).toLowerCase());
 
-      context.state.account = await context.state.tide.registerJwt(user.username, user.password, isEmail ? user.username : "noemail@noemail.com", context.state.orks, serverTime, Math.floor((context.state.orks / 3) * 2));
+      context.state.account = await context.state.tide.registerJwt(
+        user.username,
+        user.password,
+        isEmail ? user.username : "noemail@noemail.com",
+        context.state.orks,
+        serverTime,
+        context.state.orks.length
+      );
+
       return context.state.account;
     },
     async loginAccount(context, user) {
@@ -116,5 +132,6 @@ export default new Vuex.Store({
     qrData: (state) => `1|${state.vendorName}|${state.vendorServer}|${state.origin}|${state.vendorPublic}|${state.sessionId}`,
     sessionId: (state) => state.sessionId,
     origin: (state) => state.origin,
+    formData: (state) => state.formData,
   },
 });

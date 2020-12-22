@@ -4,7 +4,7 @@
     <h2>Hi {{ user.username }}</h2>
 
     <form @submit.prevent="login">
-      <input type="password" class="mt-50" v-model="user.password" placeholder="Enter Password" />
+      <input type="password" class="mt-50" v-model="user.password" placeholder="Enter Password" ref="focus" />
 
       <div class="action-row mt-50">
         <p @click="$parent.changeMode('ForgotSend')">Forgot Password?</p>
@@ -25,6 +25,9 @@
 <script>
 export default {
   props: ["user"],
+  mounted() {
+    this.$refs.focus.focus();
+  },
   methods: {
     async login() {
       this.$loading(true, "Logging in...");

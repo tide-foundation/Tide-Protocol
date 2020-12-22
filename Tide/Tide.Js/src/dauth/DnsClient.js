@@ -45,14 +45,7 @@ export default class DnsClient {
 
   /** @param {DnsEntry} entry */
   async addDns(entry) {
-    var resp = await superagent.post(this.url).set('Content-Type', 'application/json').send(entry.toString());
-
-    if (!resp.ok || !resp.body && !resp.body.success) {
-      const error = !resp.ok || !resp.body ? resp.text : resp.body.error;
-      return  Promise.reject(new Error(error));
-    }
-    
-    return Promise.resolve();
+    await superagent.post(this.url).set('Content-Type', 'application/json').send(entry.toString());
   }
 
   /** @returns { Promise<[string[], C25519Key[]]> } */

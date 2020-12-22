@@ -117,6 +117,12 @@ export default class Cipher {
   static cipherFromAsymmetric(data) {
     return C25519Cipher.from(data.slice(0, 32 * 3));
   }
+
+  /** @param {Uint8Array} data */
+  static tag(data) {
+    const asymmetricEnd = headEnd(data) + 32 * 3; //head + cipher
+    return Num64.from(data.slice(asymmetricEnd, asymmetricEnd + 8));
+  }
 }
 
 /** @param {Uint8Array} data */
@@ -136,7 +142,7 @@ function dimensionBuffer(size) {
     : Buffer.concat([Buffer.from([(1 << 7) | buffer.length]), buffer]);
 }
 
-/*cipher + signature + tag*/
+/*cipher + tag + signature*/
 function asymmetricSize() {
   return 32 * 3 * 2 + 8;
 }

@@ -68,7 +68,7 @@ export default class TideAuthentication {
     return new Promise(async (resolve, reject) => {
       try {
         const dnsCln = new DnsClient(orks[0], username);
-        if (!(await dnsCln.exist())) throw new Error("That username is unavailable");
+        if (await dnsCln.exist()) throw new Error("That username is unavailable");
 
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
