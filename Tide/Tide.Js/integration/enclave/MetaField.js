@@ -9,7 +9,7 @@
 
 import Cipher from "../../src/Cipher";
 import Num64 from "../../src/Num64";
-import {verify} from "./MetaValidation";
+import Validator from "validatorjs";
 
 /** @typedef {'bool'|'date'|'datetime'|'string'|'number'} MetaType */
 
@@ -24,6 +24,12 @@ export default class MetaField {
 
   get isEncrypted() { return this._isEncrypted; }
 
+  get isValid() {
+    if (this._isEncrypted || !this.valRules) return true;
+
+    return new Validator({val: this._value} , {val: this.valRules}).passes();
+  }
+
   //
   /**
    * @private
@@ -36,8 +42,8 @@ export default class MetaField {
     /**@type {MetaType}*/
     this.type = 'string';
 
-    /**@type {string[]}*/
-    this.valRules = [];
+    /**@type {string}*/
+    this.valRules = null;
 
     /**@type {string[]}*/
     this.classRules = [];
@@ -53,13 +59,6 @@ export default class MetaField {
 
     /**@private*/
     this._previous = new Uint8Array();
-  }
-
-  isValid() {
-    if (this._isEncrypted)
-      true;
-
-    return verify(this._value, this.valRules);
   }
 
   classify() {
@@ -107,13 +106,19 @@ export default class MetaField {
   /**
   * @param {object} data
   * @param {boolean} encrypted
+  * @param {object} [validation]
   * @returns {MetaField[]}
   */
-  static fromModel(data, encrypted) {
+  static fromModel(data, encrypted, validation) {
     if (!data) return [];
     
-    return Object.keys(data).map(field => 
-      MetaField.fromText(field, data[field], encrypted));
+    return Object.keys(data).map(field => {
+      var fld = MetaField.fromText(field, data[field].toString(), encrypted);
+      
+      if (validation && validation[field]) fld.valRules = validation[field];
+      
+      return fld;
+    });
   }
 
   /**
