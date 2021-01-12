@@ -10,9 +10,10 @@
     <script>
         window.addEventListener('message', (e) => console.log('action', e.data), false);
         const model = {pass: '123456', user: 'jose'};
+        const validation = {pass: 'required|min:5', user: 'required'};
         
         const iframe = document.getElementById('iframe');
-        iframe.onload = () => iframe.contentWindow.postMessage({ type: "create", model });
+        iframe.onload = () => iframe.contentWindow.postMessage({ type: "create", model, validation });
     </script>
 </body>
 </html>
