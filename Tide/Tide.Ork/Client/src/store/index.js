@@ -28,6 +28,7 @@ export default new Vuex.Store({
     sessionId: null,
     origin: `${window.location.protocol}//${window.location.host}`,
     formData: null,
+    keepOpen: false,
   },
   mutations: {
     UPDATE_MODE(state, newMode) {
@@ -49,8 +50,7 @@ export default new Vuex.Store({
       context.state.orks = data.orks;
       context.state.debug = data.debug;
       context.state.vendorName = data.vendorName;
-      context.state.formData = data.formData;
-      console.log("Vendor name: " + context.state.vendorName);
+      context.state.keepOpen = data.keepOpen;
 
       context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
 
@@ -76,7 +76,7 @@ export default new Vuex.Store({
     },
     async registerAccount(context, user) {
       context.state.action = "Register";
-      context.state.goToDashboard = user.goToDashboard;
+      context.state.goToDashboard = user.goToDashboard || context.state.keepOpen;
       const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
 
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -95,7 +95,7 @@ export default new Vuex.Store({
     },
     async loginAccount(context, user) {
       context.state.action = "Login";
-      context.state.goToDashboard = user.goToDashboard;
+      context.state.goToDashboard = user.goToDashboard || context.state.keepOpen;
       const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
       context.state.account = await context.state.tide.loginJwt(user.username, user.password, serverTime);
       return context.state.account;
@@ -112,10 +112,17 @@ export default new Vuex.Store({
     async finalizeAuthentication(context, data) {
       data.vuid = data.vuid.toString();
       data.action = context.state.action;
-      data.autoClose = !context.state.goToDashboard;
+      data.autoClose = !context.state.goToDashboard && !context.state.keepOpen;
       data.action = window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
 
       if (context.state.goToDashboard) router.push("/account");
+      //  else if (context.state.formData) router.push("/form");
+    },
+    async postData(context, data) {
+      window.opener.postMessage({ type: "tide-send", data }, window.name);
+    },
+    closeWindow(context) {
+      window.opener.postMessage({ type: "tide-close" }, window.name);
     },
   },
   modules: {},

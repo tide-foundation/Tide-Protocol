@@ -14,22 +14,23 @@
 
 <script>
 import MetaField from "../assets/js/MetaField";
-import C25519Key from "cryptide/src/c25519Key";
 export default {
   data() {
     return {
       fields: [],
-      key: C25519Key.generate(),
     };
   },
   created() {
-    this.fields = MetaField.fromModel(this.$store.getters.formData, false);
+    this.fields = MetaField.fromModel(this.$store.getters.formData.data, false);
   },
   methods: {
-    update() {
+    async update() {
       for (const field of this.fields) {
-        field.encrypt(this.key);
+        //  field.encrypt(this.key);
       }
+
+      await this.$store.dispatch("postData", this.fields);
+      // if (this.$store.getters.formData.closeAfter) this.$store.dispatch("closeWindow");
     },
   },
 };
