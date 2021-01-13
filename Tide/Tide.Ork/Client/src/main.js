@@ -34,21 +34,20 @@ window.addEventListener(
 );
 
 window.onload = function() {
-  console.log(window.parent);
   window.opener.postMessage({ type: "tide-onload", isDone: true }, window.name);
 };
 
-window.addEventListener("message", handleMessage, false);
+// window.addEventListener("message", handleMessage, false);
 
-function handleMessage(e) {
-  console.log("got this", e);
-  // // Reference to element for data display
-  // var el = document.getElementById('display');
-  // // Check origin
-  // if ( e.origin === 'http://www.example.com' ) {
-  //     // Retrieve data sent in postMessage
-  //     el.innerHTML = e.data;
-  //     // Send reply to source of message
-  //     e.source.postMessage('Message received', e.origin);
-  // }
-}
+// function handleMessage(e) {
+//   console.log("got this", e);
+//   // // Reference to element for data display
+//   // var el = document.getElementById('display');
+//   // // Check origin
+//   // if ( e.origin === 'http://www.example.com' ) {
+//   //     // Retrieve data sent in postMessage
+//   //     el.innerHTML = e.data;
+//   //     // Send reply to source of message
+//   //     e.source.postMessage('Message received', e.origin);
+//   // }
+// }

@@ -60,10 +60,7 @@ export default {
     };
   },
   created() {
-    console.log(this.$store.getters.loggedIn);
-
     this.user.selectedOrks = this.$store.getters.orks;
-    // this.user.frags = [...Array(this.$store.getters.orks.length)].map((_, i) => "");
   },
   methods: {
     setStatus(msg) {

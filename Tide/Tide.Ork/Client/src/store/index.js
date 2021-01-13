@@ -51,7 +51,8 @@ export default new Vuex.Store({
       context.state.debug = data.debug;
       context.state.vendorName = data.vendorName;
       context.state.keepOpen = data.keepOpen;
-
+      context.state.formData = data.formData;
+      console.log(context.state.formData.data);
       context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
 
       // if (!context.state.tide.validateReturnUrl(window.name, data.hashedReturnUrl)) {
@@ -91,6 +92,8 @@ export default new Vuex.Store({
         context.state.orks.length
       );
 
+      console.log("Account:", context.state.account);
+
       return context.state.account;
     },
     async loginAccount(context, user) {
@@ -114,8 +117,9 @@ export default new Vuex.Store({
       data.action = context.state.action;
       data.autoClose = !context.state.goToDashboard && !context.state.keepOpen;
       data.action = window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
-
-      if (context.state.goToDashboard) router.push("/account");
+      console.log(context.state.formData);
+      if (context.state.formData) router.push("/form");
+      else if (context.state.goToDashboard) router.push("/account");
       //  else if (context.state.formData) router.push("/form");
     },
     async postData(context, data) {
