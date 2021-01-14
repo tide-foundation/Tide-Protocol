@@ -4,7 +4,7 @@
     <form id="update-form" @submit.prevent="update">
       <div class="form-field" v-for="(field, index) in fields" :key="index">
         <label for="">{{ field.field }}</label>
-        <input class="mt-10" type="text" v-model="field.value" :placeholder="field.field" />
+        <input class="mt-10" type="text" v-model="field.value" required :placeholder="field.field" />
       </div>
 
       <button class="mt-20" type="submit">UPDATE DETAILS</button>
@@ -18,18 +18,35 @@ export default {
   data() {
     return {
       fields: [],
+      encrypted: true,
+      formData: this.$store.getters.formData,
+      account: this.$store.getters.account,
     };
   },
   created() {
-    this.fields = MetaField.fromModel(this.$store.getters.formData.data, false);
+    this.encrypted = this.formData.type == "modify";
+
+    this.fields = MetaField.fromModel(this.formData.data, this.encrypted);
+
+    if (this.encrypted) {
+      for (const field of this.fields) {
+        field.decrypt(this.account.encryptionKey);
+      }
+    }
   },
   methods: {
     async update() {
-      for (const field of this.fields) {
-        //  field.encrypt(this.key);
-      }
+      this.$loading(true, "Encrypting your data and returning it to the vendor");
+      setTimeout(async () => {
+        for (const field of this.fields) {
+          field.encrypt(this.account.encryptionKey);
+        }
 
-      await this.$store.dispatch("postData", this.fields);
+        await this.$store.dispatch("postData", MetaField.buildModel(this.fields));
+
+        this.$store.dispatch("closeWindow");
+      }, 50);
+
       // if (this.$store.getters.formData.closeAfter) this.$store.dispatch("closeWindow");
     },
   },
@@ -41,7 +58,7 @@ export default {
   position: relative;
   label {
     position: absolute;
-    top: 7px;
+    top: 10px;
     left: 5px;
     font-size: 12px;
     color: gray;

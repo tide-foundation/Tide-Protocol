@@ -51,8 +51,9 @@ export default new Vuex.Store({
       context.state.debug = data.debug;
       context.state.vendorName = data.vendorName;
       context.state.keepOpen = data.keepOpen;
+
       context.state.formData = data.formData;
-      console.log(context.state.formData.data);
+      // console.log(context.state.formData.data);
       context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
 
       // if (!context.state.tide.validateReturnUrl(window.name, data.hashedReturnUrl)) {
@@ -60,7 +61,9 @@ export default new Vuex.Store({
       // }
 
       // TESTING DECRYPT
-      router.push("/auth");
+
+      if (data.formData != null) router.push("/auth?mode=form");
+      else router.push("/auth");
       // if (context.state.formData != null) {
       //   router.push("/form");
       // } else {
@@ -117,13 +120,12 @@ export default new Vuex.Store({
       data.action = context.state.action;
       data.autoClose = !context.state.goToDashboard && !context.state.keepOpen;
       data.action = window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
-      console.log(context.state.formData);
+
       if (context.state.formData) router.push("/form");
       else if (context.state.goToDashboard) router.push("/account");
-      //  else if (context.state.formData) router.push("/form");
     },
     async postData(context, data) {
-      window.opener.postMessage({ type: "tide-send", data }, window.name);
+      window.opener.postMessage({ type: "tide-form", data }, window.name);
     },
     closeWindow(context) {
       window.opener.postMessage({ type: "tide-close" }, window.name);

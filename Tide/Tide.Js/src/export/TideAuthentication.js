@@ -110,11 +110,14 @@ export default class TideAuthentication {
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
         var { vuid, cvk } = await flow.logIn(password);
+
+        var encryptionKey = C25519Key.private(cvk.x);
+
         const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
 
         var cvkPublic = EcKeyFormat.PemPublic(cvk);
 
-        this.account = new Account(username, vuid, token, cvkPublic);
+        this.account = new Account(username, vuid, token, cvkPublic, encryptionKey);
         return resolve(this.account);
       } catch (error) {
         return reject(error);

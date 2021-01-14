@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    <iframe id="iframe" src="enclave.html" style="height:200px;width:300px;" ></iframe>
+  </head>
+  <body>
+    <iframe id="iframe" src="enclave.html" style="height: 200px; width: 300px"></iframe>
     <script>
-        window.addEventListener('message', (e) => console.log('action', e.data), false);
-        const model = {pass: '123456', user: 'jose'};
-        const validation = {pass: 'required|min:5', user: 'required'};
-        
-        const iframe = document.getElementById('iframe');
-        iframe.onload = () => iframe.contentWindow.postMessage({ type: "create", model, validation });
+      window.addEventListener("message", (e) => console.log("action", e.data), false);
+      const model = { pass: "", user: "" };
+      const validation = { pass: "required|min:5", user: "required" };
+
+      const iframe = document.getElementById("iframe");
+      iframe.onload = () => iframe.contentWindow.postMessage({ type: "create", model, validation });
     </script>
-</body>
+  </body>
 </html>
