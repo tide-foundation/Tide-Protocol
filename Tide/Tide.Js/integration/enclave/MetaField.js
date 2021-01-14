@@ -98,9 +98,7 @@ export default class MetaField {
    * @returns {MetaField}
    */
   static fromText(field, value, isEncrypted) {
-    if (!value) return null;
-
-    return new MetaField(field, value, isEncrypted);
+    return new MetaField(field, value || '', isEncrypted);
   }
 
   /**
