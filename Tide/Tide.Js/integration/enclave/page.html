@@ -11,7 +11,7 @@
       window.addEventListener("message", (e) => console.log("action", e.data), false);
       const model = { pass: "", user: "", ethnicity: "", dateOfBirth: "" };
       const validation = { pass: "required|min:5", user: "required", dateOfBirth: "date" };
-      const classification = { ethnicity: "ethnicity:2", dateOfBirth: "age" };
+      const classification = { ethnicity: "ethnicity", dateOfBirth: "age" };
 
       const iframe = document.getElementById("iframe");
       iframe.onload = () => iframe.contentWindow.postMessage({ type: "create", model, validation, classification });

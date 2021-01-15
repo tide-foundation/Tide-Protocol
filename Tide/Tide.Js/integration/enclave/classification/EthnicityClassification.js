@@ -13,8 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-const rx = /^ethnicity:(\d)$/;
-
+const rx = /^ethnicity(?:\:(\d))?$/;
 export default class EthnicityClassification {
     /**
      * @param {string} type 
@@ -30,7 +29,7 @@ export default class EthnicityClassification {
      */
     constructor(field, type) {
         this.field = field;
-        this.level = parseInt(rx.exec(type)[1]);
+        this.level = parseInt(rx.exec(type)[1] || 2);
         if (this.level < 1 || this.level > 2) throw new Error('Level invalid for Ethnicity');
     }
 
