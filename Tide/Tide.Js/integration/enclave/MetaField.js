@@ -10,8 +10,10 @@
 import Cipher from "../../src/Cipher";
 import Num64 from "../../src/Num64";
 import Validator from "validatorjs";
+import classificator, { EmptyClassification } from "./classification";
 
 /** @typedef {'bool'|'date'|'datetime'|'string'|'number'} MetaType */
+/** @typedef {{value: string; text: string;}} MetaOption */
 
 export default class MetaField {
   get value() { return this._value; }
@@ -30,6 +32,10 @@ export default class MetaField {
     return new Validator({val: this._value} , {val: this.valRules}).passes();
   }
 
+  /**@type {MetaOption[]}*/
+  get options() { return this._class.options(); }
+  get isInput() { return this._class.fieldType === 'input'; }
+  get isSelect() { return this._class.fieldType === 'select'; }
   //
   /**
    * @private
@@ -38,19 +44,13 @@ export default class MetaField {
    **/
   constructor(field, value, isEncrypted = false) {
     this.field = field;
-    
+
     /**@type {MetaType}*/
     this.type = 'string';
 
     /**@type {string}*/
     this.valRules = null;
 
-    /**@type {string[]}*/
-    this.classRules = [];
-
-    /**@type {string[]}*/
-    this.classifications = [];
-    
     /**@private*/
     this._value = value;
 
@@ -59,10 +59,13 @@ export default class MetaField {
 
     /**@private*/
     this._previous = new Uint8Array();
+
+    /**@private*/
+    this._class = new EmptyClassification();
   }
 
   classify() {
-    throw new Error('Method not implemented');
+    return this._class.classify();
   }
 
   /**
@@ -105,15 +108,17 @@ export default class MetaField {
   * @param {object} data
   * @param {boolean} encrypted
   * @param {object} [validation]
+  * @param {object} [classification]
   * @returns {MetaField[]}
   */
-  static fromModel(data, encrypted, validation) {
+  static fromModel(data, encrypted, validation, classification) {
     if (!data) return [];
     
     return Object.keys(data).map(field => {
       var fld = MetaField.fromText(field, data[field].toString(), encrypted);
       
       if (validation && validation[field]) fld.valRules = validation[field];
+      if (classification && classification[field]) fld._class = classificator(fld, classification[field]);
       
       return fld;
     });
@@ -129,8 +134,28 @@ export default class MetaField {
 
     const model = {};
     for (const field of fields) {
-        model[field.field] = field.value;
+      model[field.field] = field.value;
     }
     return model;
+  }
+
+  /**
+   * @param {MetaField[]} fields
+   * @returns {object}
+   */
+  static buildClassification(fields) {
+    if (!fields || !fields.length || fields.some(field => field._isEncrypted)) return null;
+
+    let count = 0;
+    const model = {};
+    for (const field of fields) {
+      const classification = field.classify();
+      if (classification !== null) {
+        model[field.field] = classification;
+        count++;
+      }
+    }
+    
+    return count > 0 ? model : null;
   }
 }

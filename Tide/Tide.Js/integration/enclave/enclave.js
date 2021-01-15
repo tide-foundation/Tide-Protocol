@@ -26,7 +26,7 @@ import MetaField from "./MetaField";
             return;
         
         model.encrypted = e.data.type === 'modify';
-        model.fields = MetaField.fromModel(e.data.model, model.encrypted, e.data.validation);
+        model.fields = MetaField.fromModel(e.data.model, model.encrypted, e.data.validation, e.data.classification);
         model.rendered = true;
         source = e.source;
     }, false);
@@ -39,8 +39,10 @@ import MetaField from "./MetaField";
                 if (!source || !source.postMessage) return;
                 if (model.fields.some(itm => !itm.isValid)) return;
                 
+                const classification = MetaField.buildClassification(model.fields);
                 if (!this.encrypted) this.encrypt();
-                source.postMessage({type: 'save', model: MetaField.buildModel(model.fields)});
+
+                source.postMessage({type: 'save', model: MetaField.buildModel(model.fields), class: classification});
             },
             cancel: function() {
                 if (source && source.postMessage)
