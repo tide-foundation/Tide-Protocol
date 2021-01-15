@@ -1,11 +1,11 @@
 <template>
   <span>
     <h2>Sign in</h2>
-    <div id="qr">
+    <!-- <div id="qr">
       <canvas id="canvas"></canvas>
       <p>Scan with <strong class="link bold">Tide Shield</strong> to instantly login</p>
     </div>
-    <span class="center bold">OR</span>
+    <span class="center bold">OR</span> -->
     <form @submit.prevent="$parent.changeMode('LoginPassword')">
       <input type="text" required class="mt-30" v-model="user.username" placeholder="Username" ref="focus" />
 
@@ -14,7 +14,7 @@
         <button>Next</button>
       </div>
 
-      <div class="advanced-options" @click="$parent.changeMode('ChangeOrk')"><p>Advanced Options</p></div>
+      <!-- <div class="advanced-options" @click="$parent.changeMode('ChangeOrk')"><p>Advanced Options</p></div> -->
     </form>
   </span>
 </template>

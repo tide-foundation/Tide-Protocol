@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vueDebounce from "vue-debounce";
+import { getHashParams } from "./assets/js/helpers";
 
 import "../src/assets/scss/main.scss";
 
@@ -33,21 +34,9 @@ window.addEventListener(
   false
 );
 
-window.onload = function() {
-  window.opener.postMessage({ type: "tide-onload", isDone: true }, window.name);
-};
+var isIframe = window.self !== window.top;
 
-// window.addEventListener("message", handleMessage, false);
+Vue.prototype.$bus.source = isIframe ? window.top : window.opener;
+Vue.prototype.$bus.origin = isIframe ? getHashParams().origin : window.name;
 
-// function handleMessage(e) {
-//   console.log("got this", e);
-//   // // Reference to element for data display
-//   // var el = document.getElementById('display');
-//   // // Check origin
-//   // if ( e.origin === 'http://www.example.com' ) {
-//   //     // Retrieve data sent in postMessage
-//   //     el.innerHTML = e.data;
-//   //     // Send reply to source of message
-//   //     e.source.postMessage('Message received', e.origin);
-//   // }
-// }
+Vue.prototype.$bus.source.postMessage({ type: "tide-onload", isDone: true }, Vue.prototype.$bus.origin);

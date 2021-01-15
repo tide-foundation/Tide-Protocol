@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       status: "",
-      mode: this.$route.query.mode == "form" ? "LoginPassword" : "Register",
+      mode: this.$route.query.mode == "form" ? "LoginPassword" : "LoginUsername",
       user: {
         username: this.$store.getters.debug ? /* `matt${Math.round(Math.random() * (90000 - 1) + 1)}@tide.org`*/ "matttest@tide.org" : "",
         password: this.$store.getters.debug ? "password" : "",
