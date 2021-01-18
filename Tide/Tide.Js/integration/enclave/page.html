@@ -6,12 +6,12 @@
     <title>Document</title>
   </head>
   <body>
-    <iframe id="iframe" src="enclave.html" style="height: 200px; width: 300px"></iframe>
+    <iframe id="iframe" src="enclave.html" style="height: 230px; width: 350px"></iframe>
     <script>
       window.addEventListener("message", (e) => console.log("action", e.data), false);
-      const model = { pass: "", user: "", ethnicity: "" };
-      const validation = { pass: "required|min:5", user: "required" };
-      const classification = { ethnicity: "ethnicity:2" };
+      const model = { pass: "", user: "", ethnicity: "", dateOfBirth: "" };
+      const validation = { pass: "required|min:5", user: "required", dateOfBirth: "date" };
+      const classification = { ethnicity: "ethnicity", dateOfBirth: "age" };
 
       const iframe = document.getElementById("iframe");
       iframe.onload = () => iframe.contentWindow.postMessage({ type: "create", model, validation, classification });

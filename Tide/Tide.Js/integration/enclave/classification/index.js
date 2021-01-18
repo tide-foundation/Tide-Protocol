@@ -1,7 +1,8 @@
 import EthnicityClassification from "./EthnicityClassification";
+import AgeClassification from "./AgeClassification";
 
 /** @type {{isType: (type:string) => boolean; }[]} */
-const classifications = [EthnicityClassification];
+const classifications = [EthnicityClassification, AgeClassification];
 
 /**
  * @param {import('../MetaField').default} field
