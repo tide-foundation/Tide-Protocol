@@ -26,7 +26,7 @@ import MetaField from "./MetaField";
             return;
         
         model.encrypted = e.data.type === 'modify';
-        model.fields = MetaField.fromModel(e.data.model, model.encrypted, e.data.validation, e.data.classification);
+        model.fields = MetaField.fromModel(e.data.model, model.encrypted, e.data.validation, e.data.classification, e.data.tags);
         model.rendered = true;
         source = e.source;
     }, false);

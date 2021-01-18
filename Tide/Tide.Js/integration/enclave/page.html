@@ -10,11 +10,13 @@
     <script>
       window.addEventListener("message", (e) => console.log("action", e.data), false);
       const model = { pass: "", user: "", ethnicity: "", dateOfBirth: "" };
+
       const validation = { pass: "required|min:5", user: "required", dateOfBirth: "date" };
       const classification = { ethnicity: "ethnicity", dateOfBirth: "age" };
+      const tags = { pass: "default", user: "default", ethnicity: "default", dateOfBirth: "default" };
 
       const iframe = document.getElementById("iframe");
-      iframe.onload = () => iframe.contentWindow.postMessage({ type: "create", model, validation, classification });
+      iframe.onload = () => iframe.contentWindow.postMessage({ type: "create", model, validation, classification, tags });
     </script>
   </body>
 </html>

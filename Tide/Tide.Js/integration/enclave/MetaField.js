@@ -48,6 +48,8 @@ export default class MetaField {
     /**@type {MetaType}*/
     this.type = 'string';
 
+    this.tag = new Num64(0);
+
     /**@type {string}*/
     this.valRules = null;
 
@@ -68,16 +70,14 @@ export default class MetaField {
     return this._class.classify();
   }
 
-  /**
-   * @param {import("cryptide").C25519Key} key
-   * @param {Num64} tag
-   */
-  encrypt(key, tag = null) {
+  /** @param {import("cryptide").C25519Key} key */
+  encrypt(key) {
     if (this._isEncrypted)
       throw new Error(`Data is already encrypted`);
 
-    const tagCipher = tag ||
-      (this._previous.length && Cipher.tag(this._previous)) || new Num64(0);
+    const tagCipher = (!this.tag.isZero && this.tag)
+      || (this._previous.length && Cipher.tag(this._previous))
+      || new Num64(0);
     
     this._value = Cipher.encrypt(this._value, tagCipher, key).toString('base64');
     this._isEncrypted = true;
@@ -109,9 +109,10 @@ export default class MetaField {
   * @param {boolean} encrypted
   * @param {object} [validation]
   * @param {object} [classification]
+  * @param {object} [tags]
   * @returns {MetaField[]}
   */
-  static fromModel(data, encrypted, validation, classification) {
+  static fromModel(data, encrypted, validation, classification, tags) {
     if (!data) return [];
     
     return Object.keys(data).map(field => {
@@ -119,6 +120,7 @@ export default class MetaField {
       
       if (validation && validation[field]) fld.valRules = validation[field];
       if (classification && classification[field]) fld._class = classificator(fld, classification[field]);
+      if (tags && tags[field]) fld.tag = Num64.seed(tags[field]);
       
       return fld;
     });

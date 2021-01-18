@@ -11,6 +11,8 @@ import { Hash } from "cryptide";
 import BN from 'bn.js';
 
 export default class Num64 {
+    get isZero() { return this.num.isZero(); }
+    
     /** @param {number|BN} num */
     constructor(num=0) {
         this.num = getBN(num);
