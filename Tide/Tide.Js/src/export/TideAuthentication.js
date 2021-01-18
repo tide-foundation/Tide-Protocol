@@ -73,14 +73,14 @@ export default class TideAuthentication {
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
-        var { vuid, cvk } = await flow.signUp(password, email, threshold);
+        var { vuid, cvk: jwtCvk } = await flow.signUp(password, email, threshold);
         console.log("this is the cmk:", flow.cmk.toString());
 
-        const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
+        const token = encode({ vuid: vuid.toString(), exp: serverTime }, jwtCvk);
 
-        var cvkPublic = EcKeyFormat.PemPublic(cvk);
+        var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
 
-        this.account = new Account(username, vuid, token, cvkPublic, cvk);
+        this.account = new Account(username, vuid, token, cvkPublic, jwtCvk);
         return resolve(this.account);
       } catch (error) {
         reject(error);
@@ -109,15 +109,15 @@ export default class TideAuthentication {
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
-        var { vuid, cvk } = await flow.logIn(password);
+        var { vuid, cvk: jwtCvk } = await flow.logIn(password);
 
-        var encryptionKey = C25519Key.private(cvk.x);
+        var cvk = C25519Key.private(jwtCvk.x);
 
-        const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
+        const token = encode({ vuid: vuid.toString(), exp: serverTime }, jwtCvk);
 
-        var cvkPublic = EcKeyFormat.PemPublic(cvk);
+        var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
 
-        this.account = new Account(username, vuid, token, cvkPublic, encryptionKey);
+        this.account = new Account(username, vuid, token, cvkPublic, cvk);
         return resolve(this.account);
       } catch (error) {
         return reject(error);
