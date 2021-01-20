@@ -48,7 +48,7 @@ export default class DCryptFlow {
 
       const cvks = cvk.share(threshold, ids, true);
       var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-      const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
+      const cvkAuths = idBuffers.map(buff => concat(buff, this.user.buffer)).map(buff => cmkAuth.derive(buff));
 
       var orkSigns = await Promise.all(this.clients.map((cli, i) => 
         cli.register(cvk.public(), cvks[i].x, cvkAuths[i], signedKeyId, signatures[i])));
@@ -81,7 +81,7 @@ export default class DCryptFlow {
   /** @param {AESKey} cmkAuth */
   async getKey(cmkAuth, noPublic = false) {
     var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-    const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
+    const cvkAuths = idBuffers.map(buff => concat(buff, this.user.buffer)).map(buff => cmkAuth.derive(buff));
 
     const tranid = new Guid();
     const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(tranid, cvkAuths[i])));

@@ -27,11 +27,10 @@ import Guid from "../guid";
 export default class DAuthFlow {
   /**
    * @param {string[]} urls
-   * @param {string} user
+   * @param {string|Guid} user
    */
   constructor(urls, user, memory = false) {
     this.clients = urls.map((url) => new DAuthClient(url, user, memory));
-    this.user = user;
   }
 
   /**

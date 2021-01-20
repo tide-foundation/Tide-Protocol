@@ -21,7 +21,7 @@ import TranToken from "../TranToken";
 export default class DCryptClient extends ClientBase {
   /**
    * @param {string|URL} url
-   * @param {Guid} user
+   * @param {string|Guid} user
    */
   constructor(url, user, memory = false) {
     super(url, user, memory);

@@ -20,10 +20,8 @@ import Guid from "../guid";
 import DnsClient from "./DnsClient";
 
 export default class DAuthCmkJwtFlow {
-  /** @param {string} user */
+  /** @param {string|Guid} user */
   constructor(user) {
-    this.user = user;
-
     /** @type {string} */
     this.homeUrl = null;
 
@@ -43,7 +41,7 @@ export default class DAuthCmkJwtFlow {
     /** @type {CP256Key} */
     this.vendorPub = null;
 
-    this.userid = IdGenerator.seed(this.user).guid;
+    this.userid = typeof user === "string" ? Guid.seed(user) : user;
   }
 
   /** @returns {bigInt.BigInteger} */
@@ -53,7 +51,7 @@ export default class DAuthCmkJwtFlow {
   set cmk(key) {
     this._cmk = key;
     this.cmkAuth = AESKey.seed(Buffer.from(key.toArray(256).value))
-    this.vuid = IdGenerator.seed(this.user, this.cmkAuth).guid;
+    this.vuid = IdGenerator.seed(this.userid.buffer, this.cmkAuth).guid;
   }
 
   /** @returns {Promise<{ vuid: Guid; cvk: CP256Key; auth: AESKey; }>} */

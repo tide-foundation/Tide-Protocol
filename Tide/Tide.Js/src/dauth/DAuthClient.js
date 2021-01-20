@@ -16,12 +16,11 @@
 import { C25519Point, AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
 import TranToken from "../TranToken";
-import DnsEntry from "../DnsEnrty";
 
 export default class DAuthClient extends ClientBase {
   /**
    * @param {string|URL} url
-   * @param {string} user
+   * @param {string|import("../guid").default} user
    */
   constructor(url, user, memory = false) {
     super(url, user, memory);
@@ -34,8 +33,10 @@ export default class DAuthClient extends ClientBase {
     return [ C25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
   }
 
-  /** @param { import("../Guid").default } tranid
-   * @param {TranToken} token */
+  /**
+   * @param { import("../guid").default } tranid
+   * @param {TranToken} token
+   **/
   async signIn(tranid, token) {
     var tkn = urlEncode(token.toArray());
 
