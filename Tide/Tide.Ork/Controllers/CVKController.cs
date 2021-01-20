@@ -120,11 +120,13 @@ namespace Tide.Ork.Controllers
             var token = TranToken.Generate(account.CvkiAuth);
 
             var keyPub = await _keyIdManager.GetById(keyId);
-            if (keyPub == null)
+            if (keyPub == null) {
+                _logger.LogInformation("Decryption challenge denied for vuid {0} with keyId {1}: keyId not found.", vuid, keyId);
                 return Deny($"Denied Challenge for {keyId}");
+            }
 
+            _logger.LogInformation("Decryption challenge granted for vuid {0} with keyId {1}", vuid, keyId);
             var cipher = keyPub.Key.Encrypt(token.GenKey(account.CvkiAuth));
-
             return Ok(new { Token = token.ToString(), Challenge = cipher.ToString() });
         }
 
@@ -135,35 +137,50 @@ namespace Tide.Ork.Controllers
             var account = await _managerCvk.GetById(vuid);
 
             var tran = TranToken.Parse(Convert.FromBase64String(token.DecodeBase64Url()));
-            if (!tran.Check(account.CvkiAuth)) return Deny(msgErr);
+            if (!tran.Check(account.CvkiAuth)) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid token.", vuid, keyId);
+                return Deny(msgErr);
+            }
 
             var keyPub = await _keyIdManager.GetById(keyId);
-            if (keyPub == null)
+            if (keyPub == null) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: keyId not found.", vuid, keyId);
                 return Deny(msgErr);
+            }
 
             var dataBuffer = Convert.FromBase64String(data.DecodeBase64Url());
-            if (!Cipher.CheckAsymmetric(dataBuffer, account.CvkPub))
+            if (!Cipher.CheckAsymmetric(dataBuffer, account.CvkPub)) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid asymmetric data.", vuid, keyId);
                 return Deny(msgErr);
+            }
 
             var tag = Cipher.GetTag(dataBuffer);
             var rules = await _ruleManager.GetSetBy(account.VuId, tag, keyPub.Id);
-            if (!rules.Any(rule => new RuleConditionEval(rule).Run() && rule.Action == RuleAction.Allow))
+            if (!rules.Any(rule => new RuleConditionEval(rule).Run() && rule.Action == RuleAction.Allow)) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: No rule to allow decryption.", vuid, keyId);
                 return Deny(msgErr);
+            }
 
-            if (rules.Any(rule => new RuleConditionEval(rule).Run() && rule.Action == RuleAction.Deny))
+            if (rules.Any(rule => new RuleConditionEval(rule).Run() && rule.Action == RuleAction.Deny)) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Denied by rule", vuid, keyId);
                 return Deny(msgErr);
-
+            }
 
             var bufferSign = Convert.FromBase64String(sign.DecodeBase64Url());
             var sessionKey = tran.GenKey(account.CvkiAuth);
-            if (!Utils.Equals(sessionKey.Hash(dataBuffer), bufferSign)) return Deny(msgErr);
+            if (!Utils.Equals(sessionKey.Hash(dataBuffer), bufferSign)) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid symmetric data signature.", vuid, keyId);
+                return Deny(msgErr);
+            }
 
             var c1 = Cipher.GetCipherC1(dataBuffer);
-            if (!c1.IsValid) return Deny(msgErr);
+            if (!c1.IsValid) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid data point.", vuid, keyId);
+                return Deny(msgErr);
+            }
 
+            _logger.LogInformation("Decryption granted for vuid {0} with keyId {1}", vuid, keyId);
             var cipher = sessionKey.Encrypt((c1 * account.CVKi).ToByteArray());
-
-            _logger.LogInformation($"Decrypt data belonging to {vuid}", vuid, data, token);
             return Ok(Convert.ToBase64String(cipher));
         }
 
