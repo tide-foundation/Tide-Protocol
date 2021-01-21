@@ -79,11 +79,11 @@ namespace Tide.VendorSdk.Classes
 
         public async Task<byte[]> Decrypt(Guid viud, Guid keyId, byte[] data, byte[] token, byte[] sign)
         {
-            var dta = WebEncoders.Base64UrlEncode(data);
+            var body = new StringContent($"\"{Convert.ToBase64String(data)}\"", Encoding.UTF8, "application/json");
             var tkn = WebEncoders.Base64UrlEncode(token);
             var sgn = WebEncoders.Base64UrlEncode(sign);
 
-            var response = await _client.GetAsync($"api/cvk/plaintext/{viud}/{keyId}/{dta}/{tkn}/{sgn}");
+            var response = await _client.PostAsync($"api/cvk/plaintext/{viud}/{keyId}/{tkn}/{sgn}", body);
 
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new HttpRequestException(response.ToString());

@@ -95,36 +95,53 @@ export default class DCryptFlow {
   }
 
   /**
-   * @param {Uint8Array} cipher
+   * @param {Uint8Array[]} ciphers
    * @param {C25519Key} prv
+   * @returns {Promise<Uint8Array[]>}
    */
-  async decrypt(cipher, prv) {
+  async decryptBulk(ciphers, prv) {
     try {
       const keyId = new KeyStore(prv.public()).keyId;
       const challenges = await Promise.all(this.clients.map((cli) => cli.challenge(keyId)));
 
-      const asymmetric = Cipher.asymmetric(cipher);
+      const asymmetrics = ciphers.map(cph => Cipher.asymmetric(cph));
       const sessionKeys = challenges.map((ch) => prv.decryptKey(ch.challenge));
-      const signs = sessionKeys.map((key) => key.hash(asymmetric));
+      const signs = sessionKeys.map(key => key.hash(concat(...asymmetrics)));
 
-      const ciphers = await Promise.all(this.clients.map((cli, i) => cli.decrypt(asymmetric, keyId, challenges[i].token, signs[i])));
+      const cipherPartials = await Promise.all(this.clients.map((cli, i) => cli.decryptBulk(asymmetrics, keyId, challenges[i].token, signs[i])));
 
-      const ciph = Cipher.cipherFromAsymmetric(asymmetric);
-      const partials = ciphers.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph))).map((pnt) => new C25519Cipher(pnt, ciph.c2));
+      const ciphs = asymmetrics.map(asy => Cipher.cipherFromAsymmetric(asy));
+      const ids = await Promise.all(this.clients.map(c => c.getClientId()));
 
-      const ids = await Promise.all(this.clients.map((c) => c.getClientId()));
-      const plain = C25519Cipher.decryptShares(partials, ids);
+      /** @type {Uint8Array[]} */
+      const plains = new Array(ciphers.length);
+      for (let j = 0; j < ciphers.length; j++) {
+        const partials = cipherPartials.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph[j]))).map(pnt => new C25519Cipher(pnt, ciphs[j].c2));
+        const plain = C25519Cipher.decryptShares(partials, ids);
+  
+        const symmetric = Cipher.symmetric(ciphers[j]);
+        if (symmetric.length == 0) {
+          plains[j] = C25519Cipher.unpad(plain);
+          continue;
+        }
 
-      var symmetric = Cipher.symmetric(cipher);
-      if (symmetric.length == 0) {
-        return C25519Cipher.unpad(plain);
+        const symmetricKey = AesSherableKey.from(plain);
+        plains[j] = symmetricKey.decrypt(symmetric);
       }
 
-      const symmetricKey = AesSherableKey.from(plain);
-      return symmetricKey.decrypt(symmetric);
+      return plains;
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  /**
+   * @param {Uint8Array]} cipher
+   * @param {C25519Key} prv
+   * @returns {Promise<Uint8Array>}
+   */
+  async decrypt(cipher, prv) {
+    return (await this.decryptBulk([cipher], prv))[0];
   }
 
   confirm() {

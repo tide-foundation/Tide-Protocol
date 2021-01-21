@@ -84,12 +84,30 @@ export default class DCryptClient extends ClientBase {
    * @param {Uint8Array} sign
    */
   async decrypt(data, keyId, token, sign) {
-    var cipher = urlEncode(data);
+    var cipher = Buffer.from(data).toString("base64");
     var tkn = urlEncode(token);
     var sgn = urlEncode(sign);
 
-    var res = await this._get(`/cvk/plaintext/${this.userGuid}/${keyId}/${cipher}/${tkn}/${sgn}`);
+    var res = await this._post(`/cvk/plaintext/${this.userGuid}/${keyId}/${tkn}/${sgn}`)
+      .set("Content-Type", "application/json").send(JSON.stringify(cipher));
     return fromBase64(res.text);
+  }
+
+  /**
+   * @param {Uint8Array[]} data
+   * @param {Guid} keyId
+   * @param {string} token
+   * @param {Uint8Array} sign
+   */
+  async decryptBulk(data, keyId, token, sign) {
+    var cipher = data.map(dta => Buffer.from(dta).toString("base64")).join('\n');
+    var tkn = urlEncode(token);
+    var sgn = urlEncode(sign);
+
+    var res = await this._post(`/cvk/plaintext/${this.userGuid}/${keyId}/${tkn}/${sgn}`)
+      .set("Content-Type", "application/json").send(JSON.stringify(cipher));
+    
+    return res.text.split(/\r?\n/).map(txt => fromBase64(txt));
   }
 
   async confirm() {

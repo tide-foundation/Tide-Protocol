@@ -74,7 +74,6 @@ export default class TideAuthentication {
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
         var { vuid, cvk: jwtCvk } = await flow.signUp(password, email, threshold);
-        console.log("this is the cmk:", flow.cmk.toString());
 
         const token = encode({ vuid: vuid.toString(), exp: serverTime }, jwtCvk);
 

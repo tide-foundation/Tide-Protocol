@@ -29,5 +29,12 @@ namespace Tide.Ork.Repo {
                 && (rule.Tag == tag || rule.Tag == ulong.MaxValue)
                 && (rule.KeyId == keyId || rule.KeyId == MaxID)).ToList();
         }
+
+        public async Task<List<RuleVault>> GetSetBy(Guid ownerId, ICollection<ulong> tags, Guid keyId)
+        {
+            return (await GetAll()).Where(rule => rule.OwnerId == ownerId
+                && (tags.Contains(rule.Tag) || rule.Tag == ulong.MaxValue)
+                && (rule.KeyId == keyId || rule.KeyId == MaxID)).ToList();
+        }
     }
 }
