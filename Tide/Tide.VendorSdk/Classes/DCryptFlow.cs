@@ -22,7 +22,7 @@ namespace Tide.VendorSdk.Classes
             _userId = new IdGenerator(guid);
         }
 
-        public async Task<C25519Key> SignUp(AesKey cmkAuth, int threshold, Guid keyId, List<byte[]> signatures)
+        public async Task<C25519Key> SignUp(AesKey cmkAuth, int threshold, Guid keyId, IReadOnlyList<byte[]> signatures)
         {
             var cvk = new C25519Key();
             var ids = await Task.WhenAll(Clients.Select(cln => cln.GetId()));
@@ -38,35 +38,47 @@ namespace Tide.VendorSdk.Classes
             return cvk;
         }
 
-        public async Task<byte[]> Decrypt(byte[] cipher, C25519Key prv)
+        public async Task<byte[]> Decrypt(C25519Key prv, byte[] cipher)
+            => (await this.DecryptBulk(prv, new List<byte[]>() { cipher })).First();
+
+        public async Task<byte[][]> DecryptBulk(C25519Key prv, params byte[][] ciphers)
+            => await DecryptBulk(prv, ciphers as IReadOnlyList<byte[]>);
+
+        public async Task<byte[][]> DecryptBulk(C25519Key prv, IReadOnlyList<byte[]> ciphers)
         {
             var keyId = IdGenerator.Seed(prv.GetPublic().ToByteArray()).Guid;
-
             var challenges = await Task.WhenAll(Clients.Select(cli => cli.Challenge(VuId, keyId)));
 
-            var asymmetric = Cipher.Asymmetric(cipher);
+            var asymmetrics = ciphers.Select(cph => Cipher.Asymmetric(cph)).ToList();
             var sessionKeys = challenges.Select(ch => prv.DecryptKey(ch.Challenge)).ToList();
-            var signs = sessionKeys.Select(key => key.Hash(asymmetric)).ToList();
+            var allCipher = asymmetrics.SelectMany(asy => asy).ToArray();
+            var signs = sessionKeys.Select(key => key.Hash(allCipher)).ToList();
 
-            var ciphers = await Task.WhenAll(Clients.Select((cli, i) =>
-                cli.Decrypt(VuId, keyId, asymmetric, challenges[i].Token, signs[i])));
+            var cipherPartials = await Task.WhenAll(Clients.Select((cli, i) =>
+                cli.DecryptBulk(VuId, keyId, asymmetrics, challenges[i].Token, signs[i])));
 
-            var ciph = Cipher.CipherFromAsymmetric(asymmetric);
-            var partials = ciphers.Select((cph, i) => C25519Point.From(sessionKeys[i].Decrypt(cph)))
-                .Select(pnt => new C25519Cipher(pnt, ciph.C2)).ToList();
-
+            var ciphs = asymmetrics.Select(asy => Cipher.CipherFromAsymmetric(asy)).ToList();
             var ids = await Task.WhenAll(Clients.Select(cln => cln.GetId()));
 
-            var plain = C25519Cipher.DecryptShares(partials, ids);
-
-            var symmetric = Cipher.Symmetric(cipher);
-            if (symmetric.Length == 0)
+            var plains = new byte[ciphers.Count][];
+            for (var j = 0; j < ciphers.Count; j++)
             {
-                return Cipher.UnPad32(plain);
+                var partials = cipherPartials.Select((cph, i) => C25519Point.From(sessionKeys[i].Decrypt(cph[j])))
+                    .Select(pnt => new C25519Cipher(pnt, ciphs[j].C2)).ToList();
+
+                var plain = C25519Cipher.DecryptShares(partials, ids);
+
+                var symmetric = Cipher.Symmetric(ciphers[j]);
+                if (symmetric.Length == 0) {
+                    plains[j] = Cipher.UnPad32(plain);
+                    continue;
+                }
+
+                var symmetricKey = AesSherableKey.Parse(plain);
+                plains[j] = symmetricKey.Decrypt(symmetric);
             }
 
-            var symmetricKey = AesSherableKey.Parse(plain);
-            return symmetricKey.Decrypt(symmetric);
+            return plains;
         }
     }
 }

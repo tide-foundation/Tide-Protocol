@@ -9,6 +9,8 @@ using Tide.Encryption.Ecc;
 using System.Net;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Tide.VendorSdk.Classes
 {
@@ -75,6 +77,21 @@ namespace Tide.VendorSdk.Classes
 
             var res = JsonSerializer.Deserialize<Dictionary<string, byte[]>>(await response.Content.ReadAsStringAsync());
             return (res["token"], C25519Cipher.Parse(res["challenge"]));
+        }
+
+        public async Task<List<byte[]>> DecryptBulk(Guid viud, Guid keyId, IEnumerable<byte[]> data, byte[] token, byte[] sign)
+        {
+            var bodyContent = string.Join("\\n", data.Select(dta => Convert.ToBase64String(dta)));
+            var body = new StringContent($"\"{bodyContent}\"", Encoding.UTF8, "application/json");
+            var tkn = WebEncoders.Base64UrlEncode(token);
+            var sgn = WebEncoders.Base64UrlEncode(sign);
+
+            var response = await _client.PostAsync($"api/cvk/plaintext/{viud}/{keyId}/{tkn}/{sgn}", body);
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new HttpRequestException(response.ToString());
+
+            return Regex.Split(await response.Content.ReadAsStringAsync(), @"\r?\n")
+                .Select(res => Convert.FromBase64String(res.Trim())).ToList();
         }
 
         public async Task<byte[]> Decrypt(Guid viud, Guid keyId, byte[] data, byte[] token, byte[] sign)

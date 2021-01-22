@@ -120,7 +120,7 @@ namespace Tide.VendorSdk.Controllers {
                 throw new Exception("Invalid ID or orks not configured");
             
             var flow = new DCryptFlow(vuid, orkUrls);
-            return await flow.Decrypt(cipher, Config.PrivateKey);
+            return await flow.Decrypt(Config.PrivateKey, cipher);
         }
 
         private byte[] FromBase64(string input)
