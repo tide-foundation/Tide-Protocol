@@ -14,7 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import { AESKey, Hash, Utils, C25519Point, C25519Key } from "cryptide";
-import Num64 from "../Num64";
+import Tags from "../tags";
 import DAuthFlow from "./DAuthFlow";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
@@ -103,7 +103,7 @@ export default class DAuthV2Flow {
       await flowCvk.signUp(this.cmkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
 
       // allow vendor to partial decrypt
-      const tokenTag = Num64.seed("token");
+      const tokenTag = Tags.vendor;
       const allowTokenToVendor = Rule.allow(this.vuid, tokenTag, vendorPubStore);
 
       await ruleCln.setOrUpdate(allowTokenToVendor);

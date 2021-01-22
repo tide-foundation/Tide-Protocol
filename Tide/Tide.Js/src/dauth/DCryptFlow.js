@@ -116,7 +116,8 @@ export default class DCryptFlow {
       /** @type {Uint8Array[]} */
       const plains = new Array(ciphers.length);
       for (let j = 0; j < ciphers.length; j++) {
-        const partials = cipherPartials.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph[j]))).map(pnt => new C25519Cipher(pnt, ciphs[j].c2));
+        const partials = cipherPartials.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph[j])))
+          .map(pnt => new C25519Cipher(pnt, ciphs[j].c2));
         const plain = C25519Cipher.decryptShares(partials, ids);
   
         const symmetric = Cipher.symmetric(ciphers[j]);
