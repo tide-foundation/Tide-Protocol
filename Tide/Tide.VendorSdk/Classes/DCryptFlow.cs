@@ -70,12 +70,12 @@ namespace Tide.VendorSdk.Classes
 
                 var symmetric = Cipher.Symmetric(ciphers[j]);
                 if (symmetric.Length == 0) {
-                    plains[j] = Cipher.UnPad32(plain);
+                    plains.Add(Cipher.UnPad32(plain));
                     continue;
                 }
 
                 var symmetricKey = AesSherableKey.Parse(plain);
-                plains[j] = symmetricKey.Decrypt(symmetric);
+                plains.Add(symmetricKey.Decrypt(symmetric));
             }
 
             return plains;

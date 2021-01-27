@@ -15,7 +15,7 @@ namespace Tide.VendorSdk.Classes
         private readonly C25519Key _prv;
         private readonly Regex _rxBase64 = new Regex("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$", RegexOptions.Compiled);
 
-        private DCryptFlowBulk(C25519Key @private, Uri homeOrk)
+        public DCryptFlowBulk(C25519Key @private, Uri homeOrk)
         {
             _prv = @private;
             _dns = new DnsClient(homeOrk);
@@ -23,6 +23,16 @@ namespace Tide.VendorSdk.Classes
 
         private async Task<List<DCryptFlow>> GetFlows(IEnumerable<Guid> vuids) {
             return (await _dns.GetEntries(vuids)).Select(entry => new DCryptFlow(entry.Id, entry.GetUrls())).ToList();
+        }
+
+        public async Task<List<byte[]>> Decrypt(IReadOnlyCollection<Guid> vuids, IReadOnlyCollection<byte[]> fields) {
+            if (vuids == null || fields == null || !vuids.Any() || !fields.Any())
+                throw new Exception("Vuid and fields must be provided");
+            
+            if (vuids.Count != fields.Count) throw new Exception("The number of vuid and fields must be the same");
+
+            var plains = await Decrypt(vuids, fields.Select(fld => new List<byte[]> { fld }).ToList());
+            return plains.Select(pln => pln.FirstOrDefault()).ToList();
         }
 
         public async Task<List<List<byte[]>>> Decrypt(IReadOnlyCollection<Guid> vuids, List<List<byte[]>> fields) {
