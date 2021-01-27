@@ -16,10 +16,10 @@ namespace Tide.VendorSdk.Classes
         public BigInteger UserId { get => _userId.Id; }
         public Guid VuId { get => _userId.Guid; }
 
-        public DCryptFlow(Guid guid, IEnumerable<Uri> uris)
+        public DCryptFlow(Guid vuid, IEnumerable<Uri> uris)
         {
             Clients = uris.Select(uris => new CvkClient(uris)).ToList();
-            _userId = new IdGenerator(guid);
+            _userId = new IdGenerator(vuid);
         }
 
         public async Task<C25519Key> SignUp(AesKey cmkAuth, int threshold, Guid keyId, IReadOnlyList<byte[]> signatures)
@@ -41,10 +41,10 @@ namespace Tide.VendorSdk.Classes
         public async Task<byte[]> Decrypt(C25519Key prv, byte[] cipher)
             => (await this.DecryptBulk(prv, new List<byte[]>() { cipher })).First();
 
-        public async Task<byte[][]> DecryptBulk(C25519Key prv, params byte[][] ciphers)
+        public async Task<List<byte[]>> DecryptBulk(C25519Key prv, params byte[][] ciphers)
             => await DecryptBulk(prv, ciphers as IReadOnlyList<byte[]>);
 
-        public async Task<byte[][]> DecryptBulk(C25519Key prv, IReadOnlyList<byte[]> ciphers)
+        public async Task<List<byte[]>> DecryptBulk(C25519Key prv, IReadOnlyList<byte[]> ciphers)
         {
             var keyId = IdGenerator.Seed(prv.GetPublic().ToByteArray()).Guid;
             var challenges = await Task.WhenAll(Clients.Select(cli => cli.Challenge(VuId, keyId)));
@@ -60,7 +60,7 @@ namespace Tide.VendorSdk.Classes
             var ciphs = asymmetrics.Select(asy => Cipher.CipherFromAsymmetric(asy)).ToList();
             var ids = await Task.WhenAll(Clients.Select(cln => cln.GetId()));
 
-            var plains = new byte[ciphers.Count][];
+            var plains = new List<byte[]>(ciphers.Count);
             for (var j = 0; j < ciphers.Count; j++)
             {
                 var partials = cipherPartials.Select((cph, i) => C25519Point.From(sessionKeys[i].Decrypt(cph[j])))
