@@ -25,19 +25,19 @@ export default {
     };
   },
   async created() {
-    if (this.useTwoFactor) {
-      this.hub = await this.createHub();
-      // Collect the sessionId
-      this.hub.on("openSession", (id) => {
-        this.$store.commit("UPDATE_SESSION_ID", id);
-      });
-      // Collect the generated token
-      this.hub.on("deliver", async (data) => {
-        await this.$store.dispatch("finalizeAuthentication", JSON.parse(data));
-      });
-      // Request an open session
-      this.hub.invoke("RequestSession");
-    }
+    // if (this.useTwoFactor) {
+    //   this.hub = await this.createHub();
+    //   // Collect the sessionId
+    //   this.hub.on("openSession", (id) => {
+    //     this.$store.commit("UPDATE_SESSION_ID", id);
+    //   });
+    //   // Collect the generated token
+    //   this.hub.on("deliver", async (data) => {
+    //     await this.$store.dispatch("finalizeAuthentication", JSON.parse(data));
+    //   });
+    //   // Request an open session
+    //   this.hub.invoke("RequestSession");
+    // }
   },
   methods: {
     async createHub() {

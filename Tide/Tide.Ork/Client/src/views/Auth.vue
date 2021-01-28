@@ -48,7 +48,7 @@ export default {
       status: "",
       mode: this.$route.query.mode == "form" ? "LoginUsername" : "LoginUsername",
       user: {
-        username: this.$store.getters.debug ? /* `matt${Math.round(Math.random() * (90000 - 1) + 1)}@tide.org`*/ "matttest@tide.org" : "",
+        username: this.$store.getters.debug ? /* `matt${Math.round(Math.random() * (90000 - 1) + 1)}@tide.org`*/ "matttest4@tide.org" : "",
         password: this.$store.getters.debug ? "password" : "",
         confirm: this.$store.getters.debug ? "password" : "",
         goToDashboard: false,
