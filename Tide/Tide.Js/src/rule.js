@@ -9,7 +9,6 @@
 
 import Guid from "./guid";
 import Num64 from "./Num64";
-import KeyStore from "./keyStore";
 
 export default class Rule {
   constructor() {
@@ -41,19 +40,19 @@ export default class Rule {
   /**
    * @param {Guid} ownerId
    * @param {Num64} tag
-   * @param {KeyStore} key
+   * @param {Guid} keyId
    */
-  static allow(ownerId, tag, key, condition = "true") {
-    return defaultRule(ownerId, tag, key, "allow", condition);
+  static allow(ownerId, tag, keyId, condition = "true") {
+    return defaultRule(ownerId, tag, keyId, "allow", condition);
   }
 
   /**
    * @param {Guid} ownerId
    * @param {Num64} tag
-   * @param {KeyStore} key
+   * @param {Guid} keyId
    */
-  static deny(ownerId, tag, key, condition = "true") {
-    return defaultRule(ownerId, tag, key, "deny", condition);
+  static deny(ownerId, tag, keyId, condition = "true") {
+    return defaultRule(ownerId, tag, keyId, "deny", condition);
   }
 
   /** @param {{ ruleId: string; ownerId: string; tag: number; keyId: string; condition: string; action: 'allow'|'deny'; }} data */
@@ -73,17 +72,17 @@ export default class Rule {
 /**
  * @param {Guid} ownerId
  * @param {Num64} tag
- * @param {KeyStore} key
+ * @param {Guid} keyId
  * @param {'allow' | 'deny'} action
  * @param {string} condition
  */
-function defaultRule(ownerId, tag, key, action, condition) {
+function defaultRule(ownerId, tag, keyId, action, condition) {
   const rl = new Rule();
 
   rl.ruleId = new Guid();
   rl.ownerId = ownerId;
   rl.tag = tag;
-  rl.keyId = key.keyId;
+  rl.keyId = keyId;
   rl.condition = condition;
   rl.action = action;
 

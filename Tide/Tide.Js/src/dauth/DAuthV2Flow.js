@@ -19,10 +19,8 @@ import DAuthFlow from "./DAuthFlow";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
 import VendorClient from "../VendorClient";
-import RuleClientSet from "./RuleClientSet";
 import KeyClientSet from "./keyClientSet";
 import KeyStore from "../keyStore";
-import Rule from "../rule";
 import Cipher from "../Cipher";
 import Guid from "../guid";
 import DnsClient from "./DnsClient";
@@ -82,7 +80,6 @@ export default class DAuthV2Flow {
       const flowCmk = await this._getCmkFlow();
       const flowCvk = await this._getCvkFlow();
       const vendorCln = this._getVendorClient();
-      const ruleCln = new RuleClientSet(this.cmkUrls, this.vuid);
       const keyCln = new KeyClientSet(this.cmkUrls);
 
       // add vendor pub key
@@ -102,15 +99,9 @@ export default class DAuthV2Flow {
       // register cvk
       await flowCvk.signUp(this.cmkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
 
-      // allow vendor to partial decrypt
-      const tokenTag = Tags.vendor;
-      const allowTokenToVendor = Rule.allow(this.vuid, tokenTag, vendorPubStore);
-
-      await ruleCln.setOrUpdate(allowTokenToVendor);
-
       //user encrypt vendor token
       const hashToken = Hash.shaBuffer(vendorToken.toArray());
-      const cipher = Cipher.encrypt(hashToken, tokenTag, cvk);
+      const cipher = Cipher.encrypt(hashToken, Tags.vendor, cvk);
 
       //test dauth and dcrypt
       const { auth: vuidAuthTag } = await this.logIn(password);

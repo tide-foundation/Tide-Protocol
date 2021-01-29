@@ -19,9 +19,11 @@ import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
 import Guid from "../guid";
 import { concat } from "../Helpers";
-import TranToken from "../TranToken";
 import DnsEntry from "../DnsEnrty";
 import DnsClient from "./DnsClient";
+import RuleClientSet from "./RuleClientSet";
+import Rule from "../rule";
+import Tags from "../tags";
 
 export default class DCryptFlow {
   /**
@@ -31,6 +33,7 @@ export default class DCryptFlow {
   constructor(urls, user, memory = false) {
     this.clients = urls.map((url) => new DCryptClient(url, user, memory));
     this.user = user;
+    this.ruleCln = new RuleClientSet(urls, user);
   }
 
   /**
@@ -53,8 +56,9 @@ export default class DCryptFlow {
       var orkSigns = await Promise.all(this.clients.map((cli, i) => 
         cli.register(cvk.public(), cvks[i].x, cvkAuths[i], signedKeyId, signatures[i])));
 
-      await this.addDns(orkSigns, cvk);
-        
+      await Promise.all([this.addDns(orkSigns, cvk),
+        this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId))]);
+
       return cvk;
     } catch (err) {
       throw err;
