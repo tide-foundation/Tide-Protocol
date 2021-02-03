@@ -1,11 +1,17 @@
-/**
- * Babel Starter Kit (https:
- *
- * Copyright © 2015-2016 Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+// Tide Protocol - Infrastructure for the Personal Data economy
+// Copyright (C) 2019 Tide Foundation Ltd
+//
+// This program is free software and is subject to the terms of
+// the Tide Community Open Source License as published by the
+// Tide Foundation Limited. You may modify it and redistribute
+// it in accordance with and subject to the terms of that License.
+// This program is distributed WITHOUT WARRANTY of any kind,
+// including without any implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.
+// See the Tide Community Open Source License for more details.
+// You should have received a copy of the Tide Community Open
+// Source License along with this program.
+// If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import Cipher from "../../src/Cipher";
 import Num64 from "../../src/Num64";
@@ -116,7 +122,8 @@ export default class MetaField {
     if (!data) return [];
     
     return Object.keys(data).map(field => {
-      var fld = MetaField.fromText(field, data[field].toString(), encrypted);
+      var val = typeof(data[field]) !== "undefined" && data[field] !== null ? data[field].toString() : '';
+      var fld = MetaField.fromText(field, val, encrypted);
       
       if (validation && validation[field]) fld.valRules = validation[field];
       if (classification && classification[field]) fld._class = classificator(fld, classification[field]);

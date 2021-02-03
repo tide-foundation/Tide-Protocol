@@ -14,6 +14,7 @@
     "qrcode": "^1.4.4",
     "superagent": "^5.2.2",
     "tide-js": "^1.1.45",
+    "validatorjs": "^3.22.1",
     "vue": "^2.6.11",
     "vue-debounce": "^2.5.7",
     "vue-router": "^3.4.6",

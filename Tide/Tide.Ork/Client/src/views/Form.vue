@@ -26,7 +26,7 @@ export default {
   created() {
     this.encrypted = this.formData.type == "modify";
 
-    this.fields = MetaField.fromModel(this.formData.data, this.encrypted);
+    this.fields = MetaField.fromModel(this.formData.data, this.encrypted, this.formData.validation, this.formData.classification, this.formData.tags);
 
     if (this.encrypted) {
       for (const field of this.fields) {
