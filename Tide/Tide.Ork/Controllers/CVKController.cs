@@ -162,7 +162,7 @@ namespace Tide.Ork.Controllers
             var tags = buffers.Select(bff => Cipher.GetTag(bff)).Distinct().ToList();
             var rules = (await _ruleManager.GetSetBy(account.VuId, tags, keyPub.Id)).Where(rl => rl.Eval()).ToList();
             if (!tags.All(tag => rules.Where(rule => tag == rule.Tag).Any(rule => rule.IsAllowed))) {
-                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: No rule to allow decryption.", vuid, keyId);
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: No rule to allow decryption. Tags: " + string.Join(' ', tags), vuid, keyId);
                 return BadRequest(msgErr);
             }
 

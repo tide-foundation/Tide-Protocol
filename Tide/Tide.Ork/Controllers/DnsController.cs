@@ -57,13 +57,13 @@ namespace Tide.Ork.Controllers
         [HttpPost("ids")]
         public async Task<List<DnsEntry>> GetByIds([FromBody] Guid[] ids)
         {
-            var orksInfoTask = _orkManager.GetAll();
+            var orksInfoTask = await _orkManager.GetAll();
             var entries = await _manager.GetByIds(ids);
 
             foreach (var entry in entries)
             {
                 var infOrks = (from orkId in entry.Orks
-                               join info in (await orksInfoTask) on orkId equals info.Id into inf
+                               join info in (orksInfoTask) on orkId equals info.Id into inf
                                from defInf in inf.DefaultIfEmpty()
                                select defInf).ToArray();
 
