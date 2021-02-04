@@ -15,10 +15,36 @@
 
 import C25519Key from "cryptide/src/c25519Key";
 import MetaField from "./MetaField";
+import Validator from "validatorjs";
 
-test2();
+testEncryption();
+testValidation();
 
-function test2() {
+function testValidation() {
+    const model = {
+        message: 'this is my secret message 🥵',
+        age: 10,
+        date: '2021/12/30',
+    };
+
+    const validation = {
+        message: 'required',
+        age: 'required|numeric|digits:2',
+        date: 'required|date',
+    };
+
+    const fields = MetaField.fromModel(model, false, validation);
+    
+    console.log(fields.every(itm => itm.isValid));
+
+    fields[0].value = '';
+    fields[1].value = '';
+    fields[2].value = '';
+    
+    console.log(fields.every(itm => !itm.isValid));
+}
+
+function testEncryption() {
     var key = C25519Key.generate();
 
     var field = MetaField.fromText('message', 'this is my secret message 🥵', false);

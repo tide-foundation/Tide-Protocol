@@ -24,10 +24,10 @@ import Cipher from "../../src/Cipher";
 import IdGenerator from "../../src/IdGenerator";
 
 var threshold = 3;
-var user = "admin";
+var user = Math.random().toString();
 var cmkAuth = AESKey.from("AhATyXYow4qdCw7nFGVFu87JICzd7w9PbzAyp7M4r6PiHS7h0RTUNSP5XmcOVUmsvPKe");
-//var urls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
-var urls = [...Array(10)].map((_, i) => `https://ork-${i}.azurewebsites.net/`);
+var urls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
+//var urls = [...Array(10)].map((_, i) => `https://ork-${i}.azurewebsites.net/`);
 
 const userId = IdGenerator.seed(user, cmkAuth).guid;
 const flow = new DCryptFlow(urls, userId);
@@ -35,31 +35,69 @@ const ruleCln = new RuleClientSet(urls, userId);
 const keyCln = new KeyClientSet(urls);
 
 (async () => {
-  await main();
+  await bulkDecryption();
+  //await singleDecryption();
 })();
 
-async function main() {
+async function singleDecryption() {
   try {
-    var vendorKey = C25519Key.fromString("DeXSP3DBdA2mlgkxGEWxq7lIJO6gyd0pUcqM3c71TLAAQbUNuNbGAR7dM9Pc2083PQ8JxydPhGNM8M37eVnOZUI9eL2HtqSbhEo3wYVnflW0xNvlUs8YMaBuK0yydCHK");
-    //var secret = new AesSherableKey().toArray();
-    var secret = Buffer.from("😀😀😀 this is large!!!! wuju !!!! 😀😀😀");
+    const vendorKey = C25519Key.fromString("DeXSP3DBdA2mlgkxGEWxq7lIJO6gyd0pUcqM3c71TLAAQbUNuNbGAR7dM9Pc2083PQ8JxydPhGNM8M37eVnOZUI9eL2HtqSbhEo3wYVnflW0xNvlUs8YMaBuK0yydCHK");
 
-    const tag = Num64.seed("key");
+    const secret1 = Buffer.from("😃The magical realist style and thematic substance of One Hundred Years of Solitude😄");
+    const secret2 = Buffer.from("established it as");
+
     const keyStore = new KeyStore(vendorKey.public());
+    const tag = Num64.seed("default");
     const rule = Rule.allow(userId, tag, keyStore);
 
-    await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule)]);
+    await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule) ]);
 
-    var ids = await Promise.all(flow.clients.map((cln) => cln.getClientBuffer()));
-    var signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
+    const ids = await Promise.all(flow.clients.map(cln => cln.getClientBuffer()));
+    const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
 
-    var cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
-    var cipher = Cipher.encrypt(secret, tag, cvk);
+    const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
 
-    var plain = await flow.decrypt(cipher, vendorKey);
+    const cipher1 = Cipher.encrypt(secret1, tag, cvk);
+    const cipher2 = Cipher.encrypt(secret2, tag, cvk);
 
-    console.log(secret.toString());
-    console.log(plain.toString());
+    let plains = await Promise.all([flow.decrypt(cipher1, vendorKey), flow.decrypt(cipher2, vendorKey)]);
+    console.log(plains.map(itm => itm.toString()).join('\n'));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+async function bulkDecryption() {
+  try {
+    const vendorKey = C25519Key.fromString("DeXSP3DBdA2mlgkxGEWxq7lIJO6gyd0pUcqM3c71TLAAQbUNuNbGAR7dM9Pc2083PQ8JxydPhGNM8M37eVnOZUI9eL2HtqSbhEo3wYVnflW0xNvlUs8YMaBuK0yydCHK");
+
+    const secret1 = Buffer.from("😃The magical realist style and thematic substance of One Hundred Years of Solitude😄");
+    const secret2 = Buffer.from("established it as");
+    const secret3 = Buffer.from("😁an important representative novel of the literary Latin American Boom of the 1960s and 1970s😆");
+
+    const keyStore = new KeyStore(vendorKey.public());
+    const tag1 = Num64.seed("large");
+    const tag2 = Num64.seed("short");
+    const rule1 = Rule.allow(userId, tag1, keyStore);
+    const rule2 = Rule.allow(userId, tag2, keyStore);
+
+    await Promise.all([keyCln.setOrUpdate(keyStore), 
+      ruleCln.setOrUpdate(rule1), ruleCln.setOrUpdate(rule2)
+    ]);
+
+    const ids = await Promise.all(flow.clients.map((cln) => cln.getClientBuffer()));
+    const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
+
+    const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
+
+    const cipher1 = Cipher.encrypt(secret1, tag1, cvk);
+    const cipher2 = Cipher.encrypt(secret2, tag2, cvk);
+    const cipher3 = Cipher.encrypt(secret3, tag1, cvk);
+
+    const plain = await flow.decryptBulk([cipher1, cipher2, cipher3], vendorKey);
+
+    console.log(plain.map(itm => itm.toString()).join(' \n'));
   } catch (error) {
     console.log(error);
   }

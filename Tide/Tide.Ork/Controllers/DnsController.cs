@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -47,20 +48,30 @@ namespace Tide.Ork.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<DnsEntry>> GetById([FromRoute] Guid id)
         {
-            var orksInfoTask = _orkManager.GetAll();
-            var entry = await _manager.GetById(id);
-            if (entry == null)
-                return NotFound();
-
-            var infOrks = (from orkId in entry.Orks
-                           join info in (await orksInfoTask) on orkId equals info.Id into inf
-                           from defInf in inf.DefaultIfEmpty()
-                           select defInf).ToArray();
-
-            entry.Urls = infOrks.Select(inf => inf?.Url ?? string.Empty).ToArray();
-            entry.Publics = infOrks.Select(inf => inf?.PubKey ?? string.Empty).ToArray();
+            var entry = (await GetByIds(new[] { id })).FirstOrDefault();
+            if (entry == null) return NotFound();
             
             return entry;
+        }
+
+        [HttpPost("ids")]
+        public async Task<List<DnsEntry>> GetByIds([FromBody] Guid[] ids)
+        {
+            var orksInfoTask = await _orkManager.GetAll();
+            var entries = await _manager.GetByIds(ids);
+
+            foreach (var entry in entries)
+            {
+                var infOrks = (from orkId in entry.Orks
+                               join info in (orksInfoTask) on orkId equals info.Id into inf
+                               from defInf in inf.DefaultIfEmpty()
+                               select defInf).ToArray();
+
+                entry.Urls = infOrks.Select(inf => inf?.Url ?? string.Empty).ToArray();
+                entry.Publics = infOrks.Select(inf => inf?.PubKey ?? string.Empty).ToArray();
+            }
+
+            return entries;
         }
 
         [HttpPost]

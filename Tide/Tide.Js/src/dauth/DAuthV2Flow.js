@@ -14,24 +14,20 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import { AESKey, Hash, Utils, C25519Point, C25519Key } from "cryptide";
-import Num64 from "../Num64";
+import Tags from "../tags";
 import DAuthFlow from "./DAuthFlow";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
 import VendorClient from "../VendorClient";
-import RuleClientSet from "./RuleClientSet";
 import KeyClientSet from "./keyClientSet";
 import KeyStore from "../keyStore";
-import Rule from "../rule";
 import Cipher from "../Cipher";
 import Guid from "../guid";
 import DnsClient from "./DnsClient";
 
 export default class DAuthV2Flow {
-  /** @param {string} user */
+  /** @param {string|Guid} user */
   constructor(user, newCvk = false) {
-    this.user = user;
-
     /** @type {string} */
     this.homeUrl = null;
 
@@ -53,7 +49,7 @@ export default class DAuthV2Flow {
     /** @type {Guid} */
     this.vuid = null;
 
-    this.userid = IdGenerator.seed(this.user).guid;
+    this.userid = typeof user === "string" ? Guid.seed(user) : user;
 
     if (newCvk) this.generateCvk();
   }
@@ -66,7 +62,7 @@ export default class DAuthV2Flow {
   /** @param {AESKey} key */
   _setCmk(key) {
     this.cmkAuth = key;
-    this.vuid = IdGenerator.seed(this.user, key).guid;
+    this.vuid = IdGenerator.seed(this.userid.buffer, key).guid;
   }
 
   /**
@@ -84,7 +80,6 @@ export default class DAuthV2Flow {
       const flowCmk = await this._getCmkFlow();
       const flowCvk = await this._getCvkFlow();
       const vendorCln = this._getVendorClient();
-      const ruleCln = new RuleClientSet(this.cmkUrls, this.vuid);
       const keyCln = new KeyClientSet(this.cmkUrls);
 
       // add vendor pub key
@@ -104,15 +99,9 @@ export default class DAuthV2Flow {
       // register cvk
       await flowCvk.signUp(this.cmkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
 
-      // allow vendor to partial decrypt
-      const tokenTag = Num64.seed("token");
-      const allowTokenToVendor = Rule.allow(this.vuid, tokenTag, vendorPubStore);
-
-      await ruleCln.setOrUpdate(allowTokenToVendor);
-
       //user encrypt vendor token
       const hashToken = Hash.shaBuffer(vendorToken.toArray());
-      const cipher = Cipher.encrypt(hashToken, tokenTag, cvk);
+      const cipher = Cipher.encrypt(hashToken, Tags.vendor, cvk);
 
       //test dauth and dcrypt
       const { auth: vuidAuthTag } = await this.logIn(password);
@@ -199,7 +188,7 @@ export default class DAuthV2Flow {
     }
 
     if (this.cmkUrls && this.cmkUrls.length > 0)
-      return this._cmkFlow = new DAuthFlow(this.cmkUrls, this.user, memory);
+      return this._cmkFlow = new DAuthFlow(this.cmkUrls, this.userid, memory);
 
     throw new Error("cmkUrls or homeUrl must be provided");
   }

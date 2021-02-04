@@ -11,13 +11,13 @@
         <button>LOGIN</button>
       </div>
 
-      <div class="advanced-options">
+      <!-- <div class="advanced-options">
         <label class="checkbox-container">
           Enter account settings after sign in
           <input type="checkbox" v-model="user.goToDashboard" />
           <span class="checkmark"></span>
         </label>
-      </div>
+      </div> -->
     </form>
   </span>
 </template>

@@ -17,7 +17,12 @@
             <table v-if="rendered">
                 <tr v-for="fld in fields">
                     <td>{{ fld.field }}</td>
-                    <td><input v-model="fld.value" :disabled="fld.isEncrypted"></td>
+                    <td>
+                        <input v-if="fld.isInput" v-model="fld.value" :disabled="fld.isEncrypted" :class="{'invalid': !fld.isValid}">
+                        <select v-if="fld.isSelect" v-model="fld.value" :disabled="fld.isEncrypted" :class="{'invalid': !fld.isValid}">
+                            <option v-for="option in fld.options" v-bind:value="option.value">{{option.text}}</option>
+                        </select>
+                    </td>
                 </tr>
             </table>
             <div>
@@ -29,5 +34,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="enclave.js"></script>
+    <style type="text/css">.invalid { border-color: #800000; background-color: #ffdddd; }</style>
 </body>
 </html>

@@ -17,9 +17,10 @@ import assert from "assert";
 import DAuthCmkJwtFlow from "../../src/dauth/DAuthCmkJwtFlow";
 import DAuthJwtFlow from "../../src/dauth/DAuthJwtFlow";
 import { CP256Key } from "cryptide";
+import Guid from "../../src/guid";
 
 var threshold = 3;
-var user = "admin";
+var user = Guid.seed("admin");
 var pass = "123456";
 var newPass = "1234567";
 var email = "tmp@tide.org";

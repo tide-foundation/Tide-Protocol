@@ -34,6 +34,12 @@ namespace Tide.Ork.Repo {
             return Map(response);
         }
 
+        public async Task<List<T>> GetByIds(IEnumerable<Guid> ids)
+        {
+            var response = await _client.Get(Contract, TableName, _orkId, ids.Select(id => id.ToString()));
+            return response.Select(Map).ToList();
+        }
+
         public async Task<TideResponse> Add(T entity)
         {
             if (await Exist(entity.Id))

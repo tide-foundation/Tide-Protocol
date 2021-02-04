@@ -1,0 +1,5 @@
+Authenticate in enclave -> vendor notified of Authentication
+Show encrypted data on vendor. Show button to decrypt
+When clicked -> send form data to open enclave. Form shows up and auto decrypted.
+User can edit data -> encrypt -> send message back to vendor 'tide-send'
+Vendor updated in db

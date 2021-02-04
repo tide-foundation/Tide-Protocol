@@ -42,6 +42,11 @@ namespace Tide.Ork.Repo
             return Task.FromResult(Map(_items[id]));
         }
 
+        public virtual Task<List<T>> GetByIds(IEnumerable<Guid> ids)
+        {
+            return Task.FromResult<List<T>>(ids.Where(id => _items.ContainsKey(id)).Select(id => Map(_items[id])).ToList());
+        }
+
         public virtual Task<TideResponse> Add(T entity)
         {
             if (_items.ContainsKey(entity.Id))

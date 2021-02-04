@@ -70,6 +70,10 @@ namespace Tide.Simulator {
             return Fetch(location, index);
         }
 
+        public List<Transaction> Read(string location, ICollection<string> index) {
+            return _transactionContainer.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == location && !t.Stale && index.Contains(t.Index)).ToList();
+        }
+
         public Transaction Read(string contract, string table, string scope, string index) {
             return Fetch(contract,table,scope,index);
         }
@@ -137,6 +141,7 @@ namespace Tide.Simulator {
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
     }

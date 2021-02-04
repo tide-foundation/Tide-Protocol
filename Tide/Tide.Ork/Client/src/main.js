@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vueDebounce from "vue-debounce";
+import { getHashParams } from "./assets/js/helpers";
 
 import "../src/assets/scss/main.scss";
 
@@ -33,6 +34,9 @@ window.addEventListener(
   false
 );
 
-window.onload = function() {
-  window.opener.postMessage({ type: "tide-onload", isDone: true }, window.name);
-};
+var isIframe = window.self !== window.top;
+
+Vue.prototype.$bus.source = isIframe ? window.top : window.opener;
+Vue.prototype.$bus.origin = isIframe ? getHashParams().origin : window.name;
+
+Vue.prototype.$bus.source.postMessage({ type: "tide-onload", isDone: true }, Vue.prototype.$bus.origin);

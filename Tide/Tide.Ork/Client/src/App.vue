@@ -2,7 +2,7 @@
   <div id="app">
     <Status></Status>
     <Loading></Loading>
-    <img class="logo" src="@/assets/img/tide-logo.svg" alt="tide logo" />
+    <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/5/51/RMIT_University_Logo.svg" alt="tide logo" />
     <div id="content" v-if="!useTwoFactor || $store.getters.sessionId != null">
       <router-view />
     </div>
@@ -25,19 +25,19 @@ export default {
     };
   },
   async created() {
-    if (this.useTwoFactor) {
-      this.hub = await this.createHub();
-      // Collect the sessionId
-      this.hub.on("openSession", (id) => {
-        this.$store.commit("UPDATE_SESSION_ID", id);
-      });
-      // Collect the generated token
-      this.hub.on("deliver", async (data) => {
-        await this.$store.dispatch("finalizeAuthentication", JSON.parse(data));
-      });
-      // Request an open session
-      this.hub.invoke("RequestSession");
-    }
+    // if (this.useTwoFactor) {
+    //   this.hub = await this.createHub();
+    //   // Collect the sessionId
+    //   this.hub.on("openSession", (id) => {
+    //     this.$store.commit("UPDATE_SESSION_ID", id);
+    //   });
+    //   // Collect the generated token
+    //   this.hub.on("deliver", async (data) => {
+    //     await this.$store.dispatch("finalizeAuthentication", JSON.parse(data));
+    //   });
+    //   // Request an open session
+    //   this.hub.invoke("RequestSession");
+    // }
   },
   methods: {
     async createHub() {
