@@ -65,6 +65,11 @@ namespace Tide.Simulator.Classes {
                 && d.Location == location && !d.Stale);
         }
 
+        public List<Transaction> Read(string location, ICollection<string> index) {
+            return _context.Transactions.Where(d => index.Contains(d.Index)
+                && location == d.Location && !d.Stale).ToList();
+        }
+
         public Transaction Read(string contract, string table, string scope, string index) {
             return _context.Transactions.FirstOrDefault(d =>
                 d.Index == index &&

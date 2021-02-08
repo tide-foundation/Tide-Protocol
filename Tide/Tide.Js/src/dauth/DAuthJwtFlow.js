@@ -21,10 +21,8 @@ import Guid from "../guid";
 import DnsClient from "./DnsClient";
 
 export default class DAuthJwtFlow {
-  /** @param {string} user */
+  /** @param {string|Guid} user */
   constructor(user, newCvk = false) {
-    this.user = user;
-
     /** @type {string} */
     this.homeUrl = null;
 
@@ -46,7 +44,7 @@ export default class DAuthJwtFlow {
     /** @type {CP256Key} */
     this.vendorPub = null;
 
-    this.userid = IdGenerator.seed(this.user).guid;
+    this.userid = typeof user === "string" ? Guid.seed(user) : user;
 
     if (newCvk) this.generateCvk();
   }
@@ -60,7 +58,7 @@ export default class DAuthJwtFlow {
    * @private */
   _setCmk(key) {
     this.cmkAuth = key;
-    this.vuid = IdGenerator.seed(this.user, key).guid;
+    this.vuid = IdGenerator.seed(this.userid.buffer, key).guid;
   }
 
   /**
@@ -159,7 +157,7 @@ export default class DAuthJwtFlow {
     }
 
     if (this.cmkUrls && this.cmkUrls.length > 0)
-      return this._cmkFlow = new DAuthFlow(this.cmkUrls, this.user, memory);
+      return this._cmkFlow = new DAuthFlow(this.cmkUrls, this.userid, memory);
 
     throw new Error("cmkUrls or homeUrl must be provided");
   }

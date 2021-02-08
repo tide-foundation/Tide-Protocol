@@ -15,9 +15,10 @@
 
 import assert from "assert";
 import DAuthFlow from "../../src/dauth/DAuthFlow";
+import Guid from "../../src/guid";
 
 var threshold = 3;
-var user = "admin";
+var user = Guid.seed("admin");
 var pass = "123456";
 var newPass = "1234567";
 var urls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));

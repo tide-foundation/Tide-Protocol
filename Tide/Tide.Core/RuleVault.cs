@@ -15,7 +15,10 @@ namespace Tide.Core
         public ulong Tag { get; set; }
         public Guid KeyId { get; set; }
         public string Condition { get; set; }
+
         public RuleAction Action { get; set; }
+        public bool IsAllowed => Action == RuleAction.Allow;
+        public bool IsDenied => Action == RuleAction.Deny;
 
         public RuleVault() : base(1) { 
             Condition = string.Empty;

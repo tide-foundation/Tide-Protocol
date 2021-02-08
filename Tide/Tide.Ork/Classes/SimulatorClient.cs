@@ -62,6 +62,22 @@ namespace Tide.Ork.Classes {
             }
         }
 
+        public async Task<List<string>> Get(string contract, string table, string scope, IEnumerable<string> index) {
+            try
+            {
+                var body = new StringContent(JsonConvert.SerializeObject(index), Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(GeneratePath(contract, table, scope, null), body);
+                var transactions = JsonConvert.DeserializeObject<List<Transaction>>(await response.Content.ReadAsStringAsync());
+
+                return transactions.Select(t => t.Data).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.Write($"FAILED GATHERING DATA FOR POST: {GeneratePath(contract, table, scope, null)}. RESPONSE: {e.Message}");
+                return null;
+            }
+        }
+
         public async Task<List<string>> Get(string contract, string table, string scope)
         {
             try {

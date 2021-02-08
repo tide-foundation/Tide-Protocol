@@ -41,5 +41,15 @@ namespace Tide.Ork.Repo
             return Task.WhenAll(GetEnumerable().Where(rule => rule.OwnerId == ownerId)
                 .Select(rule => Confirm(rule.Id)));
         }
+
+        public async Task<List<RuleVault>> GetSetBy(Guid ownerId, ICollection<ulong> tags, Guid keyId)
+        {
+            var fromRemote =   await _manager.GetSetBy(ownerId, tags, keyId);
+            var fromLocal = GetEnumerable().Where(rule => rule.OwnerId == ownerId
+                && (tags.Contains(rule.Tag) || rule.Tag == ulong.MaxValue)
+                && (rule.KeyId == keyId || rule.KeyId == MaxID));
+
+            return fromLocal.Concat(fromRemote).ToList();
+        }
     }
 }

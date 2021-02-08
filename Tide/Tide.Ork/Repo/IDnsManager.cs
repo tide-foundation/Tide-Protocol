@@ -25,6 +25,7 @@ namespace Tide.Ork.Repo
     {
         Task<bool> Exist(Guid id);
         Task<DnsEntry> GetById(Guid id);
+        Task<List<DnsEntry>> GetByIds(IEnumerable<Guid> ids);
         Task<List<DnsEntry>> GetAll();
         Task<TideResponse> Add(DnsEntry entity);
         Task<TideResponse> SetOrUpdate(DnsEntry entity);

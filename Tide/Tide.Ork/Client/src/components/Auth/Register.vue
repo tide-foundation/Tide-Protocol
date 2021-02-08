@@ -28,7 +28,7 @@
         <button type="submit">REGISTER</button>
       </div>
     </form>
-    <div class="advanced-options" @click="$parent.changeMode('SelectOrks')"><p>Advanced Options</p></div>
+    <!-- <div class="advanced-options" @click="$parent.changeMode('SelectOrks')"><p>Advanced Options</p></div> -->
   </div>
 </template>
 

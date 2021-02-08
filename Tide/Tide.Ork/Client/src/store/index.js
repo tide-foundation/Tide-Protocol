@@ -28,6 +28,10 @@ export default new Vuex.Store({
     sessionId: null,
     origin: `${window.location.protocol}//${window.location.host}`,
     formData: null,
+    keepOpen: false,
+    source: null,
+    origin: null,
+    event: null,
   },
   mutations: {
     UPDATE_MODE(state, newMode) {
@@ -39,6 +43,15 @@ export default new Vuex.Store({
     UPDATE_SESSION_ID(state, sessionId) {
       state.sessionId = sessionId;
     },
+    UPDATE_SOURCE(state, source) {
+      state.source = source;
+    },
+    UPDATE_ORIGIN(state, origin) {
+      state.origin = origin;
+    },
+    UPDATE_EVENT(state, event) {
+      state.event = event;
+    },
   },
   actions: {
     async initializeTide(context, data) {
@@ -49,17 +62,20 @@ export default new Vuex.Store({
       context.state.orks = data.orks;
       context.state.debug = data.debug;
       context.state.vendorName = data.vendorName;
-      context.state.formData = data.formData;
-      console.log("Vendor name: " + context.state.vendorName);
+      context.state.keepOpen = data.keepOpen;
 
+      context.state.formData = data.formData;
+      // console.log(context.state.formData.data);
       context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
 
-      // if (!context.state.tide.validateReturnUrl(window.name, data.hashedReturnUrl)) {
-      //   return window.opener.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, window.name);
+      // if (!context.state.tide.validateReturnUrl(Vue.prototype.$bus.origin, data.hashedReturnUrl)) {
+      //   return Vue.prototype.$bus.source.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, Vue.prototype.$bus.origin);
       // }
 
       // TESTING DECRYPT
-      router.push("/auth");
+
+      if (data.formData != null) router.push("/auth?mode=form");
+      else router.push("/auth");
       // if (context.state.formData != null) {
       //   router.push("/form");
       // } else {
@@ -72,11 +88,11 @@ export default new Vuex.Store({
     },
     async changeOrkWindow(context, newOrk) {
       const data = { newOrk };
-      window.opener.postMessage({ type: "tide-change-ork", data }, window.name);
+      Vue.prototype.$bus.source.postMessage({ type: "tide-change-ork", data }, Vue.prototype.$bus.origin);
     },
     async registerAccount(context, user) {
       context.state.action = "Register";
-      context.state.goToDashboard = user.goToDashboard;
+      context.state.goToDashboard = user.goToDashboard || context.state.keepOpen;
       const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
 
       const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -91,11 +107,13 @@ export default new Vuex.Store({
         context.state.orks.length
       );
 
+      console.log("Account:", context.state.account);
+
       return context.state.account;
     },
     async loginAccount(context, user) {
       context.state.action = "Login";
-      context.state.goToDashboard = user.goToDashboard;
+      context.state.goToDashboard = user.goToDashboard || context.state.keepOpen;
       const serverTime = (await request.get(`${context.state.vendorServer}/tide-utility/servertime`)).text;
       context.state.account = await context.state.tide.loginJwt(user.username, user.password, serverTime);
       return context.state.account;
@@ -112,10 +130,17 @@ export default new Vuex.Store({
     async finalizeAuthentication(context, data) {
       data.vuid = data.vuid.toString();
       data.action = context.state.action;
-      data.autoClose = !context.state.goToDashboard;
-      data.action = window.opener.postMessage({ type: "tide-authenticated", data }, window.name);
+      data.autoClose = !context.state.goToDashboard && !context.state.keepOpen;
+      data.action = Vue.prototype.$bus.source.postMessage({ type: "tide-authenticated", data }, Vue.prototype.$bus.origin);
 
-      if (context.state.goToDashboard) router.push("/account");
+      if (context.state.formData) router.push("/form");
+      else if (context.state.goToDashboard) router.push("/account");
+    },
+    async postData(context, data) {
+      Vue.prototype.$bus.source.postMessage({ type: "tide-form", data }, Vue.prototype.$bus.origin);
+    },
+    closeWindow(context) {
+      Vue.prototype.$bus.source.postMessage({ type: "tide-close" }, Vue.prototype.$bus.origin);
     },
   },
   modules: {},
@@ -131,7 +156,9 @@ export default new Vuex.Store({
     debug: (state) => state.debug,
     qrData: (state) => `1|${state.vendorName}|${state.vendorServer}|${state.origin}|${state.vendorPublic}|${state.sessionId}`,
     sessionId: (state) => state.sessionId,
-    origin: (state) => state.origin,
+    // origin: (state) => state.origin,
     formData: (state) => state.formData,
+    source: (state) => state.source,
+    origin: (state) => state.origin,
   },
 });

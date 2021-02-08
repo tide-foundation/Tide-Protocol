@@ -37,6 +37,11 @@ namespace Tide.Simulator.Controllers {
             return Ok(_blockchain.Read(contract, table, scope));
         }
 
+        [HttpPost("{contract}/{table}/{scope}")]
+        public IActionResult Get([FromRoute] string contract, string table, string scope, [FromBody] string[] index) {
+            return Ok(_blockchain.Read(Transaction.CreateLocation(contract, table, scope), index));
+        }
+
         [HttpGet("{contract}/{table}/{scope}/{index}")]
         public IActionResult Get([FromRoute] string contract, string table, string scope, string index) {
             return Ok(_blockchain.Read(contract, table, scope, index));
