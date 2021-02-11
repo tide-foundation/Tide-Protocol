@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using App.Metrics.AspNetCore;
 using App.Metrics.Formatters.Prometheus;
+using Microsoft.Extensions.Configuration;
+using Tide.Ork.Models;
+using System.Linq;
+using Tide.Ork.Repo;
+using Tide.Core;
 
 namespace Tide.Ork {
     public class Program {
@@ -22,6 +27,20 @@ namespace Tide.Ork {
                     endpoint.EnvironmentInfoEndpointEnabled = false;
                 });  
             }
+
+            builder.ConfigureServices((hostContext, services) =>
+            {
+                var settings = hostContext.Configuration.GetSection("Settings").Get<Settings>();
+                
+                if(args.Any(arg => arg == "--register") && args.Length == 2) {
+                    var client = new SimulatorOrkManager(settings.Instance.Username, settings.BuildClient());
+                    client.Add(new OrkNode {
+                        Id = settings.Instance.Username,
+                        Url = args[1],
+                        PubKey = settings.Instance.GetPrivateKey().GetPublic().ToString()
+                    }).GetAwaiter().GetResult();
+                }
+            });
 
             return builder.ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
         }
