@@ -1,0 +1,112 @@
+version: '3.4'
+
+services: 
+  db_host:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - '1433:1433'
+    environment:
+        SA_PASSWORD: 'P@ssw0rd'
+        ACCEPT_EULA: 'Y'
+
+  db_migration:
+    build:
+      context: .
+      dockerfile: ./Tide.Simulator/migration.Dockerfile
+    environment:
+      SA_PASSWORD: 'P@ssw0rd'
+      SA_HOST: 'db_host'
+    links:
+      - db_host
+    depends_on:
+      - 'db_host'
+    restart: on-failure:3
+
+  simulator:
+    build:
+      context: .
+      dockerfile: ./Tide.Simulator/Dockerfile
+    ports:
+      - '7000:80'
+    command: ['./wait-for-it.sh', 'db_migration:80', '--strict', '--', 'dotnet', 'Tide.Simulator.dll']
+    environment:
+      Settings__BearerKey: '5Fs4D8rzmI6eUur3zbw27ZeQ'
+      Settings__Connection: 'Server=db_host;Database=db;User Id=sa;Password=P@ssw0rd;'
+      Settings__Threshold: '3'
+    links:
+      - 'db_host'
+      - 'db_migration'
+    depends_on:
+      - 'db_host'
+      - 'db_migration'
+    restart: on-failure:3
+
+  ork1:
+    build:
+      context: .
+      dockerfile: ./Tide.Ork/Dockerfile
+    ports:
+      - '8001:80'
+    command: [ './wait-for-it.sh', 'simulator:80', '--strict', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork1']
+    environment:
+      Settings__Endpoints__Simulator__Api: 'http://simulator:80/simulator'
+      Settings__Endpoints__Simulator__Password: 'Password'
+      Settings__Instance__PrivateKey: 'CBHaP68zFuCHJHMpoNatSi1Ea43nJD2aN4hzznfRaF9epxsm/Ly4U1koay26BJ2KYbUBXTwV5sG7XbJh8Fi/e3AO1S+fr9VPSm8oG2TIQZdntg7V50hkYj5pt/SsLsL3'
+      Settings__Instance__SecretKey: 'AhDaAyMV+S5kqDA2GcNC1u9RIPFA0470RdxjEuEKjHhBgCQrsqR2Ik81gcSd06wIWoDH'
+      Settings__Instance__Username: 'ork1'
+    links:
+      - simulator
+    depends_on:
+      - 'simulator'
+    restart: on-failure:3
+
+  ork2:
+    build:
+      context: .
+      dockerfile: ./Tide.Ork/Dockerfile
+    ports:
+      - '8002:80'
+    command: [ './wait-for-it.sh', 'simulator:80', '--strict', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork2']
+    environment:
+      Settings__Endpoints__Simulator__Api: 'http://simulator:80/simulator'
+      Settings__Endpoints__Simulator__Password: 'Password'
+      Settings__Instance__PrivateKey: 'AOb+bNal/0M0bT4jFC0K6+YuEBwwR5nBMaps7kZR64JFKCrU63/BQWasFCgIlgtlSOv5jzQfMjFBfsud/veC0ljtUScANNgwqmitEl6ChDOSyWBzA57sFmWAX2pe8fGR'
+      Settings__Instance__SecretKey: 'AhC9OpCHalVMzgDc8LAyky05IKY92xhE2SmmCJ1RgzC0hkgDMkVa8W0cdsB0/I/1hW7D'
+      Settings__Instance__Username: 'ork2'
+    links:
+      - simulator
+    depends_on:
+      - 'simulator'
+    restart: on-failure:3
+
+  ork3:
+    build:
+      context: .
+      dockerfile: ./Tide.Ork/Dockerfile
+    ports:
+      - '8003:80'
+    command: [ './wait-for-it.sh', 'simulator:80', '--strict', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork3']
+    environment:
+      Settings__Endpoints__Simulator__Api: 'http://simulator:80/simulator'
+      Settings__Endpoints__Simulator__Password: 'Password'
+      Settings__Instance__PrivateKey: 'BZJrKMczqmkPfk1ACDFP/kvyxczUFNbgwIf4SMPW0WMf0vePtGU88MW25xtujo+1oF1XODIJ7DlJigcZTDBPbAtMkH6YU2CzcO3eG9K0YCkLY8j98ahpdNzf/DBHH2NI'
+      Settings__Instance__SecretKey: 'AhAsCWVibFkZUZyT6XkcaPi8IB4+NnKWF1vE9zemMgW09pCY3OgLZAmbZ/WsxVD5g3Jb'
+      Settings__Instance__Username: 'ork3'
+    links:
+      - simulator
+    depends_on:
+      - 'simulator'
+    restart: on-failure:3
+
+# products:
+#   build:
+#     context: ./apps/products/.
+#   image: yourorg/products:${IMAGE_TAG:-latest}
+#   env_file:
+#     - ./apps/products/products.env
+#   restart: on-failure:5
+#   depends_on:
+#     postgres:
+#       condition: service_healthy
+#     products-run-migrations:
+#       condition: service_start
