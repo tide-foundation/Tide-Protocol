@@ -48,7 +48,7 @@ async function singleDecryption() {
 
     const keyStore = new KeyStore(vendorKey.public());
     const tag = Num64.seed("default");
-    const rule = Rule.allow(userId, tag, keyStore);
+    const rule = Rule.allow(userId, tag, keyStore.keyId);
 
     await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule) ]);
 
@@ -67,7 +67,6 @@ async function singleDecryption() {
   }
 }
 
-
 async function bulkDecryption() {
   try {
     const vendorKey = C25519Key.fromString("DeXSP3DBdA2mlgkxGEWxq7lIJO6gyd0pUcqM3c71TLAAQbUNuNbGAR7dM9Pc2083PQ8JxydPhGNM8M37eVnOZUI9eL2HtqSbhEo3wYVnflW0xNvlUs8YMaBuK0yydCHK");
@@ -79,8 +78,8 @@ async function bulkDecryption() {
     const keyStore = new KeyStore(vendorKey.public());
     const tag1 = Num64.seed("large");
     const tag2 = Num64.seed("short");
-    const rule1 = Rule.allow(userId, tag1, keyStore);
-    const rule2 = Rule.allow(userId, tag2, keyStore);
+    const rule1 = Rule.allow(userId, tag1, keyStore.keyId);
+    const rule2 = Rule.allow(userId, tag2, keyStore.keyId);
 
     await Promise.all([keyCln.setOrUpdate(keyStore), 
       ruleCln.setOrUpdate(rule1), ruleCln.setOrUpdate(rule2)
