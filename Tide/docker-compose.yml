@@ -92,3 +92,20 @@ services:
       - simulator
     depends_on:
       - 'simulator'
+
+  test:
+    build:
+      context: .
+      dockerfile: ./Tide.Js/Dockerfile
+    command: [ './wait-for-it.sh', 'ork3:80', '-s', '-t', '30', '--', './wait-for-it.sh', 'ork2:80', '--', './wait-for-it.sh', 'ork1:80', '--', 'npm', 'run', 'test']
+    environment:
+      TEST_ORK_NUM: '3'
+      TEST_ORK_MASK_URL: 'http://ork{0}'
+    links:
+      - ork1
+      - ork2
+      - ork3
+    depends_on:
+      - 'ork1'
+      - 'ork2'
+      - 'ork3'

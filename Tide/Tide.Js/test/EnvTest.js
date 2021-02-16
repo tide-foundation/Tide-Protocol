@@ -25,6 +25,6 @@ export default class EnvTest {
     }
   
     static get vendorUrl() {
-        return process.env.TEST_ORK_MASK_URL || 'http://localhost:6001';
+        return process.env.TEST_VENDOR_URL || 'http://localhost:6001';
     }
 }
