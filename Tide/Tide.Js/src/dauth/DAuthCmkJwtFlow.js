@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { AESKey, CP256Key } from "cryptide";
+import { AESKey, CP256Key, C25519Point } from "cryptide";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
 import Guid from "../guid";
@@ -28,12 +28,11 @@ export default class DAuthCmkJwtFlow {
     /** @type {string[]} */
     this.cvkUrls = null;
 
-    /** @type {bigInt.BigInteger}
-     * @private */
-    this._cmk = null;
+    /** @type {bigInt.BigInteger} */
+    this.cmk = null;
 
     /** @type {AESKey} */
-    this.cmkAuth = null;
+    this.cvkAuth = null;
 
     /** @type {Guid} */
     this.vuid = null;
@@ -44,24 +43,18 @@ export default class DAuthCmkJwtFlow {
     this.userid = typeof user === "string" ? Guid.seed(user) : user;
   }
 
-  /** @returns {bigInt.BigInteger} */
-  get cmk() { return this._cmk; }
-
-  /** @param {bigInt.BigInteger} key */
-  set cmk(key) {
-    this._cmk = key;
-    this.cmkAuth = AESKey.seed(Buffer.from(key.toArray(256).value))
-    this.vuid = IdGenerator.seed(this.userid.buffer, this.cmkAuth).guid;
-  }
-
   /** @returns {Promise<{ vuid: Guid; cvk: CP256Key; auth: AESKey; }>} */
   async logIn() {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
-    if (!this.cmkAuth) throw new Error("cmk must not be empty");
+    if (!this.cmk) throw new Error("cmk must not be empty");
 
     try {
+      const venPnt = C25519Point.fromString(this.vendorPub.y.toArray());
+      this.cvkAuth = AESKey.seed(venPnt.times(this.cmk).toArray());
+      this.vuid = IdGenerator.seed(this.userid.buffer, this.cvkAuth).guid;
+
       const flowCvk = await this._getCvkFlow();
-      const cvk = await flowCvk.getKey(this.cmkAuth, true);
+      const cvk = await flowCvk.getKey(this.cvkAuth, true);
       const cvkJwt = CP256Key.private(cvk.x);
 
       const keyId = Guid.seed(this.vendorPub.toArray());

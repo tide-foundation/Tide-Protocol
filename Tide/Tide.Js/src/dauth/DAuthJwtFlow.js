@@ -22,7 +22,7 @@ import DnsClient from "./DnsClient";
 
 export default class DAuthJwtFlow {
   /** @param {string|Guid} user */
-  constructor(user, newCvk = false) {
+  constructor(user) {
     /** @type {string} */
     this.homeUrl = null;
 
@@ -36,7 +36,7 @@ export default class DAuthJwtFlow {
     this.cmk = null;
 
     /** @type {AESKey} */
-    this.cmkAuth = null;
+    this.cvkAuth = null;
 
     /** @type {Guid} */
     this.vuid = null;
@@ -45,20 +45,12 @@ export default class DAuthJwtFlow {
     this.vendorPub = null;
 
     this.userid = typeof user === "string" ? Guid.seed(user) : user;
-
-    if (newCvk) this.generateCvk();
   }
 
-  generateCvk() {
-    this.cmk = Utils.random(1, C25519Point.n.subtract(1));
-    this._setCmk(AESKey.seed(Buffer.from(this.cmk.toArray(256).value)));
-  }
-
-  /** @param {AESKey} key
-   * @private */
-  _setCmk(key) {
-    this.cmkAuth = key;
-    this.vuid = IdGenerator.seed(this.userid.buffer, key).guid;
+  /** @private */
+  _genVuid() {
+    if (!this.cvkAuth) throw new Error("cvkAuth is needed");
+    this.vuid = IdGenerator.seed(this.userid.buffer, this.cvkAuth).guid;
   }
 
   /**
@@ -71,7 +63,10 @@ export default class DAuthJwtFlow {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
     try {
-      if (this.cmk === null) this.generateCvk();
+      if (!this.cmk) this.cmk = Utils.random(1, C25519Point.n.subtract(1));
+      const venPnt = C25519Point.fromString(this.vendorPub.y.toArray());
+      this.cvkAuth = AESKey.seed(venPnt.times(this.cmk).toArray());
+      this._genVuid();
 
       const cvk = C25519Key.generate();
       const cvkJwt = CP256Key.private(cvk.x);
@@ -87,7 +82,7 @@ export default class DAuthJwtFlow {
       await flowCmk.signUp(password, email, threshold, this.cmk);
 
       // register cvk
-      await flowCvk.signUp(this.cmkAuth, threshold, keyId, signatures, cvk);
+      await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);
 
       //test dauth and dcrypt
       const { cvk: cvkTag } = await this.logIn(password);
@@ -108,11 +103,13 @@ export default class DAuthJwtFlow {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
     try {
+      const venPnt = C25519Point.fromString(this.vendorPub.y.toArray());
       const flowCmk = await this._getCmkFlow();
-      this._setCmk(await flowCmk.logIn(password));
+      this.cvkAuth = await flowCmk.logIn(password, venPnt); 
+      this._genVuid();
 
       const flowCvk = await this._getCvkFlow();
-      const cvk = await flowCvk.getKey(this.cmkAuth, true);
+      const cvk = await flowCvk.getKey(this.cvkAuth, true);
       const cvkJwt = CP256Key.private(cvk.x);
 
       const keyId = Guid.seed(this.vendorPub.toArray());

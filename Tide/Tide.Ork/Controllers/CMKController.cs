@@ -118,8 +118,8 @@ namespace Tide.Ork.Controllers
         }
 
         //TODO: Add throttling by ip and account separate
-        [HttpGet("auth/{uid}/{token}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string token, [FromHeader] Guid tranid)
+        [HttpGet("auth/{uid}/{point}/{token}")]
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] C25519Point point, [FromRoute] string token, [FromHeader] Guid tranid)
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken))
             {
@@ -144,7 +144,8 @@ namespace Tide.Ork.Controllers
             }
 
             _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Successful login for {uid}");
-            return Ok(account.PrismiAuth.EncryptStr(account.Cmki.ToByteArray(true, true)));
+            var cvkAuthi = (point * account.Cmki).ToByteArray();
+            return Ok(account.PrismiAuth.EncryptStr(cvkAuthi));
         }
 
         [HttpPost("prism/{uid}/{prism}/{prismAuth}/{token}")]

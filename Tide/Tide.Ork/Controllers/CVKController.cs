@@ -78,7 +78,7 @@ namespace Tide.Ork.Controllers
                     return BadRequest("Signature is not valid");
             }
 
-            _logger.LogInformation($"New cvk for {vuid} with share {data[1]}", vuid, data[0]);
+            _logger.LogInformation("New cvk for {0} with pub {1}", vuid, data[0]);
 
             var resp = await _managerCvk.SetOrUpdate(account);
             if (!resp.Success)

@@ -8,34 +8,30 @@ namespace Tide.Ork.Classes {
 
     public class C25519PointBinder : IModelBinder
     {
-        public Task BindModelAsync(ModelBindingContext bindingContext)
+        public Task BindModelAsync(ModelBindingContext context)
         {
-            if (bindingContext == null)
-                throw new ArgumentNullException(nameof(bindingContext));
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
 
-            var modelName = bindingContext.ModelName;
-            var valueProviderResult = bindingContext.ValueProvider.GetValue(modelName);
-            if (valueProviderResult == ValueProviderResult.None)
+            var fieldName = context.ModelName;
+            var fieldValue = context.ValueProvider.GetValue(fieldName);
+            if (fieldValue == ValueProviderResult.None || string.IsNullOrWhiteSpace(fieldValue.FirstValue))
                 return Task.CompletedTask;
 
-            var value = valueProviderResult.FirstValue;
-            if (string.IsNullOrEmpty(value))
-                return Task.CompletedTask;
-            
-            if (!Helpers.TryFromBase64String(value, out var buffer))
+            if (!Helpers.TryFromBase64String(fieldValue.FirstValue, out var buffer))
             {
-                bindingContext.ModelState.TryAddModelError(modelName, $"{modelName} is not a valid base64 string.");
+                context.ModelState.TryAddModelError(fieldName, $"Is not a valid base64 string.");
                 return Task.CompletedTask;
             }
 
             var model = C25519Point.From(buffer);
             if (!model.IsValid)
             {
-                bindingContext.ModelState.TryAddModelError(modelName, $"{modelName} is not a valid point.");
+                context.ModelState.TryAddModelError(fieldName, $"Is not a valid point.");
                 return Task.CompletedTask;
             }
 
-            bindingContext.Result = ModelBindingResult.Success(model);
+            context.Result = ModelBindingResult.Success(model);
             return Task.CompletedTask;
         }
     }
