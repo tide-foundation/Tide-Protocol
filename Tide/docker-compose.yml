@@ -3,8 +3,6 @@ version: '3.4'
 services: 
   db_host:
     image: mcr.microsoft.com/mssql/server:2019-latest
-    ports:
-      - '1433:1433'
     environment:
         SA_PASSWORD: 'P@ssw0rd'
         ACCEPT_EULA: 'Y'
@@ -25,8 +23,6 @@ services:
     build:
       context: .
       dockerfile: ./Tide.Simulator/Dockerfile
-    ports:
-      - '7000:80'
     command: ['./wait-for-it.sh', 'db_migration:80', '-s', '-t', '30',  '--', 'dotnet', 'Tide.Simulator.dll']
     environment:
       Settings__BearerKey: '5Fs4D8rzmI6eUur3zbw27ZeQ'
@@ -43,8 +39,6 @@ services:
     build:
       context: .
       dockerfile: ./Tide.Vendor/Dockerfile
-    ports:
-      - '6001:80'
     command: [ './wait-for-it.sh', 'simulator:80', '-s', '-t', '30', '--', 'dotnet', 'Tide.Vendor.dll' ]
     environment:
       Settings__Keys__PrivateKey: 'DHZzxQp+d0F7UokwkOuwy9YQmVxhR1IB34cOVXPVdX0PQeA43Y3ax9ebpVUTr3KiRYaykD7f6M9mzPPapCOjpieF5z2LLukWRXK4J3Ay0bZE85/VCjJT9HrbeLItSKiS'
