@@ -28,8 +28,11 @@ namespace Tide.Ork {
 
         public void ConfigureServices(IServiceCollection services) {
 
-            services.AddControllers();
-           
+            services.AddControllers(options =>
+            {
+                options.ModelBinderProviders.Insert(0, new C25519PointBinderProvider());
+            });
+
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
 

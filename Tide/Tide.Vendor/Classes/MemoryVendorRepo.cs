@@ -1,19 +1,22 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tide.Core;
 using Tide.Encryption.AesMAC;
+using Tide.VendorSdk.Classes;
 
-namespace Tide.VendorSdk.Classes
+namespace Tide.Vendor.Classes
 {
-    public class VendorRepo : IVendorRepo
+    public class MemoryVendorRepo : IVendorRepo
     {
+        public List<string> _orkUrls { get; }
+
         private readonly ConcurrentDictionary<Guid, Account> _items;
 
-        public VendorRepo()
+        public MemoryVendorRepo(Settings settings)
         {
+            _orkUrls = settings.OrkUrls;
             _items = new ConcurrentDictionary<Guid, Account>();
         }
 
@@ -45,26 +48,7 @@ namespace Tide.VendorSdk.Classes
             return ChangeState(vuid, TransactionState.Reverted);
         }
 
-        private async Task<string[]> GetListById(IEnumerable<Guid> selected)
-        {
-            var orks = (await GetListOrks()).Select(ork => new
-            {
-                url = ork,
-                id = IdGenerator.Seed(new Uri(ork)).Guid
-            }).ToList();
-
-            return orks.Where(ork => selected.Contains(ork.id)).Select(ork => ork.url).ToArray();
-        }
-
-
-        public Task<List<string>> GetListOrks()
-        {
-            return Task.FromResult(new List<string> {
-                "https://dork1.azurewebsites.net/discover",
-                "https://dork2.azurewebsites.net/discover",
-                "https://dork3.azurewebsites.net/discover"
-            });
-        }
+        public Task<List<string>> GetListOrks() => Task.FromResult(_orkUrls);
 
         private async Task ChangeState(Guid vuid, TransactionState state)
         {

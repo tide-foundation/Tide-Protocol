@@ -128,6 +128,7 @@ export default new Vuex.Store({
       await context.state.tide.changePassword(user.password, user.newPassword, context.getters.orks);
     },
     async finalizeAuthentication(context, data) {
+      delete data.encryptionKey
       data.vuid = data.vuid.toString();
       data.action = context.state.action;
       data.autoClose = !context.state.goToDashboard && !context.state.keepOpen;
