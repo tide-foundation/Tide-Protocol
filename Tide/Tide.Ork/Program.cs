@@ -31,7 +31,8 @@ namespace Tide.Ork {
             builder.ConfigureServices((hostContext, services) =>
             {
                 var settings = hostContext.Configuration.GetSection("Settings").Get<Settings>();
-                
+                Console.WriteLine($"info: Registering {settings.Instance.Username} with url: {args[1]}");
+
                 if(args.Any(arg => arg == "--register") && args.Length == 2) {
                     var client = new SimulatorOrkManager(settings.Instance.Username, settings.BuildClient());
                     client.Add(new OrkNode {
