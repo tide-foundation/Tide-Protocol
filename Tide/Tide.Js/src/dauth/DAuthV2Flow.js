@@ -44,25 +44,18 @@ export default class DAuthV2Flow {
     this.cmk = null;
 
     /** @type {AESKey} */
-    this.cmkAuth = null;
+    this.cvkAuth = null;
 
     /** @type {Guid} */
     this.vuid = null;
 
     this.userid = typeof user === "string" ? Guid.seed(user) : user;
-
-    if (newCvk) this.generateCvk();
-  }
-
-  generateCvk() {
-    this.cmk = Utils.random(1, C25519Point.n.subtract(1));
-    this._setCmk(AESKey.seed(Buffer.from(this.cmk.toArray(256).value)));
   }
 
   /** @param {AESKey} key */
-  _setCmk(key) {
-    this.cmkAuth = key;
-    this.vuid = IdGenerator.seed(this.userid.buffer, key).guid;
+  _genVuid() {
+    if (!this.cvkAuth) throw new Error("cvkAuth is needed");
+    this.vuid = IdGenerator.seed(this.userid.buffer, this.cvkAuth).guid;
   }
 
   /**
@@ -73,17 +66,17 @@ export default class DAuthV2Flow {
    */
   async signUp(password, email, threshold) {
     try {
-      if (this.cmk === null) this.generateCvk();
+      const vendorCln = this._getVendorClient();
+      const { pubKey } = await vendorCln.configuration();
+
+      if (!this.cmk) this.cmk = Utils.random(1, C25519Point.n.subtract(1));
+      this.cvkAuth = AESKey.seed(pubKey.y.times(this.cmk).toArray());
+      this._genVuid();
 
       const cvk = C25519Key.generate();
-
       const flowCmk = await this._getCmkFlow();
       const flowCvk = await this._getCvkFlow();
-      const vendorCln = this._getVendorClient();
       const keyCln = new KeyClientSet(this.cmkUrls);
-
-      // add vendor pub key
-      const { pubKey } = await vendorCln.configuration();
 
       const vendorPubStore = new KeyStore(pubKey);
       await keyCln.setOrUpdate(vendorPubStore);
@@ -97,7 +90,7 @@ export default class DAuthV2Flow {
       await flowCmk.signUp(password, email, threshold, this.cmk);
 
       // register cvk
-      await flowCvk.signUp(this.cmkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
+      await flowCvk.signUp(this.cvkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
 
       //user encrypt vendor token
       const hashToken = Hash.shaBuffer(vendorToken.toArray());
@@ -121,15 +114,18 @@ export default class DAuthV2Flow {
   /** @param {string} password */
   async logIn(password) {
     try {
+      const vendorCln = this._getVendorClient();
+      const { pubKey } = await vendorCln.configuration();
+
       const flowCmk = await this._getCmkFlow();
-      this._setCmk(await flowCmk.logIn(password));
+      this.cvkAuth = await flowCmk.logIn(password, pubKey.y); 
+      this._genVuid();
 
       await this._setCvkUrlFromDns();
       const flowCvk = await this._getCvkFlow();
-      const cvk = await flowCvk.getKey(this.cmkAuth);
+      const cvk = await flowCvk.getKey(this.cvkAuth);
 
-      const vendorCln = this._getVendorClient();
-      const bufferVid = (await vendorCln.getGuid()).toArray();
+      const bufferVid = Guid.seed(pubKey.toArray()).toArray();
       const vuidAuth = AESKey.seed(cvk.toArray()).derive(bufferVid);
 
       return { vuid: this.vuid, cvk, auth: vuidAuth };

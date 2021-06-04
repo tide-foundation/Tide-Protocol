@@ -12,6 +12,7 @@
 **/node_modules/
 
 **/global.json
-**/Dockerfile*
+**/[Dd]ockerfile*
 **/.dockerignore*
+**/*.[Dd]ockerfile*
 **/*.user

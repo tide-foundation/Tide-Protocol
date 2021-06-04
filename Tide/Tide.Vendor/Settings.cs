@@ -1,6 +1,5 @@
 ﻿using System;
-using Tide.Encryption.AesMAC;
-using Tide.Encryption.Ecc;
+using System.Collections.Generic;
 using Tide.VendorSdk.Classes;
 
 namespace Tide.Vendor {
@@ -10,6 +9,7 @@ namespace Tide.Vendor {
         public string BearerKey { get; set; }
         public string Audience { get; set; }
         public bool DevFront { get; set; }
+        public List<string> OrkUrls { get; set; }
     }
 
    

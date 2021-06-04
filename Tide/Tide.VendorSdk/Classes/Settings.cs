@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 
