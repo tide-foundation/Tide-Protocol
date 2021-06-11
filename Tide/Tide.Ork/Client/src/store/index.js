@@ -32,6 +32,7 @@ export default new Vuex.Store({
     source: null,
     origin: null,
     event: null,
+    encryptionKey: null,
   },
   mutations: {
     UPDATE_MODE(state, newMode) {
@@ -51,6 +52,9 @@ export default new Vuex.Store({
     },
     UPDATE_EVENT(state, event) {
       state.event = event;
+    },
+    SET_ENCRYPTION_KEY(state, key) {
+      state.encryptionKey = key;
     },
   },
   actions: {
@@ -128,7 +132,9 @@ export default new Vuex.Store({
       await context.state.tide.changePassword(user.password, user.newPassword, context.getters.orks);
     },
     async finalizeAuthentication(context, data) {
-      delete data.encryptionKey
+      context.commit("SET_ENCRYPTION_KEY", data.encryptionKey);
+      data.encryptionKey = null;
+
       data.vuid = data.vuid.toString();
       data.action = context.state.action;
       data.autoClose = !context.state.goToDashboard && !context.state.keepOpen;
@@ -161,5 +167,6 @@ export default new Vuex.Store({
     formData: (state) => state.formData,
     source: (state) => state.source,
     origin: (state) => state.origin,
+    encryptionKey: (state) => state.encryptionKey,
   },
 });
