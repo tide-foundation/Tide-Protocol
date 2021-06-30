@@ -8,4 +8,5 @@ module.exports = {
       splitChunks: false,
     },
   },
+  integrity: true,
 };
