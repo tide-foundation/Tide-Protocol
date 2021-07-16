@@ -11,10 +11,12 @@
 
 <script>
 export default {
+  created() {
+    this.$store.dispatch("closeWindow");
+  },
   methods: {
     getMasterKey() {
       this.$bus.$emit("show-status", "Hey guys, we don't really get these keys. Check console");
-      console.log("THIS IS THE INFO WE GET:", this.$store.getters.account);
     },
   },
 };
