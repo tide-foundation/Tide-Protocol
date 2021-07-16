@@ -2,7 +2,8 @@
   <div id="app">
     <Status></Status>
     <Loading></Loading>
-    <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/5/51/RMIT_University_Logo.svg" alt="tide logo" />
+    <img class="logo" src="@/assets/img/tide-logo.svg" alt="tide logo" />
+    <!-- <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/5/51/RMIT_University_Logo.svg" alt="tide logo" /> -->
     <div id="content" v-if="!useTwoFactor || $store.getters.sessionId != null">
       <router-view />
     </div>

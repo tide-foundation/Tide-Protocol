@@ -21,6 +21,7 @@ export default {
       encrypted: true,
       formData: this.$store.getters.formData,
       account: this.$store.getters.account,
+      key: this.$store.getters.encryptionKey,
     };
   },
   created() {
@@ -30,7 +31,7 @@ export default {
 
     if (this.encrypted) {
       for (const field of this.fields) {
-        field.decrypt(this.account.encryptionKey);
+        field.decrypt(this.key);
       }
     }
   },
@@ -39,7 +40,7 @@ export default {
       this.$loading(true, "Encrypting your data and returning it to the vendor");
       setTimeout(async () => {
         for (const field of this.fields) {
-          field.encrypt(this.account.encryptionKey);
+          field.encrypt(this.key);
         }
 
         await this.$store.dispatch("postData", MetaField.buildModel(this.fields));
