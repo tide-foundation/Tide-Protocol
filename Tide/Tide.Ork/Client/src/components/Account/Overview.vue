@@ -1,20 +1,23 @@
 <template>
   <div>
-    <h2>Account</h2>
+    <!-- <h2>Account</h2>
     <form>
       <button type="button" @click="$parent.changeMode('Change')">Change Password</button>
       <button type="button" @click="getMasterKey">Show my Vendor Key</button>
       <button type="button" @click="getMasterKey">Show my Master Key</button>
-    </form>
+    </form> -->
+    Process complete
   </div>
 </template>
 
 <script>
 export default {
+  created() {
+    this.$store.dispatch("closeWindow");
+  },
   methods: {
     getMasterKey() {
       this.$bus.$emit("show-status", "Hey guys, we don't really get these keys. Check console");
-      console.log("THIS IS THE INFO WE GET:", this.$store.getters.account);
     },
   },
 };
