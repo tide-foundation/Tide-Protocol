@@ -56,6 +56,7 @@ namespace Tide.Ork.Models {
 
     public class EmailClient
     {
+        public string Key { get; set; }
         public string SenderName { get; set; }
         public string SenderEmail { get; set; }
         public string SenderPassword { get; set; }

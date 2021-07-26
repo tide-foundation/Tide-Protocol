@@ -39,7 +39,7 @@ namespace Tide.Ork {
             services.AddSingleton(settings);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
-            services.AddTransient<IEmailClient, MailKitClient>();
+            services.AddTransient<IEmailClient, SendGridEmailClient>();
             services.AddTransient<OrkConfig>();
             services.AddSignalR();
 
