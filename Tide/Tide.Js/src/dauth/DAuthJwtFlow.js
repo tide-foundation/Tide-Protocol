@@ -108,7 +108,7 @@ export default class DAuthJwtFlow {
       this._genVuid();
 
       const flowCvk = await this._getCvkFlow();
-      const cvk = await flowCvk.getKey(this.cvkAuth, true);
+      const cvk = await flowCvk.getKey(this.cvkAuth);
 
       const keyId = Guid.seed(this.vendorPub.toArray());
       const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);

@@ -78,7 +78,7 @@ export default class TideAuthentication {
         const jwtCvk = CP256Key.private(cvk.x);
         const token = encode({ vuid: vuid.toString(), exp: serverTime }, jwtCvk);
 
-        var cvkPublic = EcKeyFormat.PemPublic(cvk);
+        var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
 
         this.account = new Account(username, vuid, token, cvkPublic, cvk);
         return resolve(this.account);
@@ -114,7 +114,7 @@ export default class TideAuthentication {
         const jwtCvk = CP256Key.private(cvk.x);
         const token = encode({ vuid: vuid.toString(), exp: serverTime }, jwtCvk);
 
-        var cvkPublic = EcKeyFormat.PemPublic(cvk);
+        var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
 
         this.account = new Account(username, vuid, token, cvkPublic, cvk);
         return resolve(this.account);
@@ -145,9 +145,11 @@ export default class TideAuthentication {
         const flow = generateCvkLoginFlow(username, orks, CP256Key.from(this.config.vendorPublic), cmkKey);
 
         var { vuid, cvk } = await flow.logIn();
-        const token = encode({ vuid: vuid.toString(), exp: serverTime }, cvk);
 
-        var cvkPublic = EcKeyFormat.PemPublic(cvk);
+        const jwtCvk = CP256Key.private(cvk.x);
+        const token = encode({ vuid: vuid.toString(), exp: serverTime }, jwtCvk);
+
+        var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
 
         this.account = new Account(username, vuid, token, cvkPublic);
         return resolve(this.account);
