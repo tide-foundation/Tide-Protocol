@@ -55,7 +55,7 @@ export default {
         homeOrk: "http://172.26.17.60:8081/",
         recoveryEmails: [this.$store.getters.debug ? "matt@tide.org" : ""],
         selectedOrks: [],
-        frags: [...Array(5)],
+        frags: [],
       },
     };
   },
