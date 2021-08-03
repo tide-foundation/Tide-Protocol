@@ -105,7 +105,7 @@ export default new Vuex.Store({
       context.state.account = await context.state.tide.registerJwt(
         user.username,
         user.password,
-        isEmail ? user.username : "noemail@noemail.com",
+        user.recoveryEmails[0], //isEmail ? user.username : "noemail@noemail.com",
         context.state.orks,
         serverTime,
         context.state.orks.length
