@@ -57,7 +57,7 @@ export default class DAuthJwtFlow {
    * @param {string} password
    * @param {string} email
    * @param {number} threshold
-   * @returns {Promise<{ vuid: Guid; cvk: CP256Key; auth: AESKey; }>}
+   * @returns {Promise<{ vuid: Guid; cvk: C25519Key; auth: AESKey; }>}
    */
   async signUp(password, email, threshold) {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
@@ -69,13 +69,12 @@ export default class DAuthJwtFlow {
       this._genVuid();
 
       const cvk = C25519Key.generate();
-      const cvkJwt = CP256Key.private(cvk.x);
       const flowCmk = await this._getCmkFlow(true);
       const flowCvk = await this._getCvkFlow(true);
 
       //vendor
       const keyId = Guid.seed(this.vendorPub.toArray());
-      const vuidAuth = AESKey.seed(cvkJwt.toArray()).derive(keyId.buffer);
+      const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
       const signatures = flowCvk.clients.map((_) => new Uint8Array());
 
       // register cmk
@@ -87,40 +86,39 @@ export default class DAuthJwtFlow {
       //test dauth and dcrypt
       const { cvk: cvkTag } = await this.logIn(password);
 
-      if (cvkJwt.toString() !== cvkTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
+      if (cvk.toString() !== cvkTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 
       await Promise.all([flowCmk.confirm(), flowCvk.confirm()]);
 
-      return { vuid: this.vuid, cvk: cvkJwt, auth: vuidAuth };
+      return { vuid: this.vuid, cvk: cvk, auth: vuidAuth };
     } catch (err) {
       return Promise.reject(err);
     }
   }
 
   /** @param {string} password
-   * @returns {Promise<{ vuid: Guid; cvk: CP256Key; auth: AESKey; }>} */
+   * @returns {Promise<{ vuid: Guid; cvk: C25519Key; auth: AESKey; }>} */
   async logIn(password) {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
     try {
       const venPnt = C25519Point.fromString(this.vendorPub.y.toArray());
       const flowCmk = await this._getCmkFlow();
-      this.cvkAuth = await flowCmk.logIn(password, venPnt); 
+      this.cvkAuth = await flowCmk.logIn(password, venPnt);
       this._genVuid();
 
       const flowCvk = await this._getCvkFlow();
-      const cvk = await flowCvk.getKey(this.cvkAuth, true);
-      const cvkJwt = CP256Key.private(cvk.x);
+      const cvk = await flowCvk.getKey(this.cvkAuth);
 
       const keyId = Guid.seed(this.vendorPub.toArray());
-      const vuidAuth = AESKey.seed(cvkJwt.toArray()).derive(keyId.buffer);
+      const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
 
-      return { vuid: this.vuid, cvk: cvkJwt, auth: vuidAuth };
+      return { vuid: this.vuid, cvk: cvk, auth: vuidAuth };
     } catch (err) {
       return Promise.reject(err);
     }
   }
-  
+
   async Recover() {
     await (await this._getCmkFlow()).Recover();
   }
@@ -153,8 +151,7 @@ export default class DAuthJwtFlow {
       this.cmkUrls = cmkUrls;
     }
 
-    if (this.cmkUrls && this.cmkUrls.length > 0)
-      return this._cmkFlow = new DAuthFlow(this.cmkUrls, this.userid, memory);
+    if (this.cmkUrls && this.cmkUrls.length > 0) return (this._cmkFlow = new DAuthFlow(this.cmkUrls, this.userid, memory));
 
     throw new Error("cmkUrls or homeUrl must be provided");
   }
@@ -171,8 +168,7 @@ export default class DAuthJwtFlow {
       this.cvkUrls = cvkUrls;
     }
 
-    if (this.cvkUrls && this.cvkUrls.length > 0)
-      return this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid, memory);
+    if (this.cvkUrls && this.cvkUrls.length > 0) return (this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid, memory));
 
     throw new Error("cvkUrls must not be empty");
   }

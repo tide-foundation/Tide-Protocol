@@ -6,6 +6,8 @@ services:
     environment:
         SA_PASSWORD: 'P@ssw0rd'
         ACCEPT_EULA: 'Y'
+    networks:
+      - 'simulator'
 
   db_migration:
     build:
@@ -14,10 +16,10 @@ services:
     environment:
       SA_PASSWORD: 'P@ssw0rd'
       SA_HOST: 'db_host'
-    links:
-      - db_host
     depends_on:
       - 'db_host'
+    networks:
+      - 'simulator'
 
   simulator:
     build:
@@ -28,12 +30,12 @@ services:
       Settings__BearerKey: '5Fs4D8rzmI6eUur3zbw27ZeQ'
       Settings__Connection: 'Server=db_host;Database=db;User Id=sa;Password=P@ssw0rd;'
       Settings__Threshold: '3'
-    links:
-      - 'db_host'
-      - 'db_migration'
     depends_on:
       - 'db_host'
       - 'db_migration'
+    networks: 
+      - 'simulator'
+      - 'default'
 
   vendor:
     build:
@@ -43,17 +45,15 @@ services:
     environment:
       Settings__Keys__PrivateKey: 'DHZzxQp+d0F7UokwkOuwy9YQmVxhR1IB34cOVXPVdX0PQeA43Y3ax9ebpVUTr3KiRYaykD7f6M9mzPPapCOjpieF5z2LLukWRXK4J3Ay0bZE85/VCjJT9HrbeLItSKiS'
       Settings__Keys__SecretKey: 'AhAtBR+XCacnLUJjJ7e7C7yvIE/I1kYZ1lOFa0Hn8G+oKmUoj8R2AeNDAqD57cm2NG9F'
-      Settings__OrkUrls__0: 'http://ork1'
-      Settings__OrkUrls__1: 'http://ork2'
-      Settings__OrkUrls__2: 'http://ork3'
-    links:
-      - ork1
-      - ork2
-      - ork3
+      Settings__OrkUrls__0: 'http://ork1.local'
+      Settings__OrkUrls__1: 'http://ork2.local'
+      Settings__OrkUrls__2: 'http://ork3.local'
     depends_on:
       - ork1
       - ork2
       - ork3
+    networks: 
+      - 'default'
 
   ork1:
     build:
@@ -61,17 +61,20 @@ services:
       dockerfile: ./Tide.Ork/Dockerfile
     ports:
       - '5001:80'
-    command: [ './wait-for-it.sh', 'simulator:80', '-s', '-t', '30', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork1']
+    command: [ './wait-for-it.sh', 'simulator:80', '-s', '-t', '30', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork1.local']
     environment:
+      VIRTUAL_HOST: 'ork1.local'
       Settings__Endpoints__Simulator__Api: 'http://simulator:80/simulator'
       Settings__Endpoints__Simulator__Password: 'Password'
       Settings__Instance__PrivateKey: 'CBHaP68zFuCHJHMpoNatSi1Ea43nJD2aN4hzznfRaF9epxsm/Ly4U1koay26BJ2KYbUBXTwV5sG7XbJh8Fi/e3AO1S+fr9VPSm8oG2TIQZdntg7V50hkYj5pt/SsLsL3'
       Settings__Instance__SecretKey: 'AhDaAyMV+S5kqDA2GcNC1u9RIPFA0470RdxjEuEKjHhBgCQrsqR2Ik81gcSd06wIWoDH'
       Settings__Instance__Username: 'ork1'
-    links:
-      - simulator
     depends_on:
       - 'simulator'
+    networks:
+      default:
+        aliases:
+          - ork1.local
 
   ork2:
     build:
@@ -79,17 +82,20 @@ services:
       dockerfile: ./Tide.Ork/Dockerfile
     ports:
       - '5002:80'
-    command: [ './wait-for-it.sh', 'simulator:80', '-s', '-t', '30', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork2']
+    command: [ './wait-for-it.sh', 'simulator:80', '-s', '-t', '30', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork2.local']
     environment:
+      VIRTUAL_HOST: 'ork2.local'
       Settings__Endpoints__Simulator__Api: 'http://simulator:80/simulator'
       Settings__Endpoints__Simulator__Password: 'Password'
       Settings__Instance__PrivateKey: 'AOb+bNal/0M0bT4jFC0K6+YuEBwwR5nBMaps7kZR64JFKCrU63/BQWasFCgIlgtlSOv5jzQfMjFBfsud/veC0ljtUScANNgwqmitEl6ChDOSyWBzA57sFmWAX2pe8fGR'
       Settings__Instance__SecretKey: 'AhC9OpCHalVMzgDc8LAyky05IKY92xhE2SmmCJ1RgzC0hkgDMkVa8W0cdsB0/I/1hW7D'
       Settings__Instance__Username: 'ork2'
-    links:
-      - simulator
     depends_on:
       - 'simulator'
+    networks:
+      default:
+        aliases:
+          - ork2.local
 
   ork3:
     build:
@@ -97,34 +103,38 @@ services:
       dockerfile: ./Tide.Ork/Dockerfile
     ports:
       - '5003:80'
-    command: [ './wait-for-it.sh', 'simulator:80', '-s', '-t', '30', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork3']
+    command: [ './wait-for-it.sh', 'simulator:80', '-s', '-t', '30', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork3.local']
     environment:
+      VIRTUAL_HOST: 'ork3.local'
       Settings__Endpoints__Simulator__Api: 'http://simulator:80/simulator'
       Settings__Endpoints__Simulator__Password: 'Password'
       Settings__Instance__PrivateKey: 'BZJrKMczqmkPfk1ACDFP/kvyxczUFNbgwIf4SMPW0WMf0vePtGU88MW25xtujo+1oF1XODIJ7DlJigcZTDBPbAtMkH6YU2CzcO3eG9K0YCkLY8j98ahpdNzf/DBHH2NI'
       Settings__Instance__SecretKey: 'AhAsCWVibFkZUZyT6XkcaPi8IB4+NnKWF1vE9zemMgW09pCY3OgLZAmbZ/WsxVD5g3Jb'
       Settings__Instance__Username: 'ork3'
-    links:
-      - simulator
     depends_on:
       - 'simulator'
+    networks:
+      default:
+        aliases:
+          - ork3.local
 
   test:
     build:
       context: .
       dockerfile: ./Tide.Js/Dockerfile
-    command: [ './wait-for-it.sh', 'ork3:80', '-s', '-t', '30', '--', './wait-for-it.sh', 'ork2:80', '--', './wait-for-it.sh', 'ork1:80', '--', 'npm', 'run', 'test']
+    command: [ './wait-for-it.sh', 'ork3.local:80', '-s', '-t', '30', '--', './wait-for-it.sh', 'ork2.local:80', '--', './wait-for-it.sh', 'ork1.local:80', '--', 'npm', 'run', 'test']
     environment:
       TEST_ORK_NUM: '3'
-      TEST_ORK_MASK_URL: 'http://ork{0}'
+      TEST_ORK_MASK_URL: 'http://ork{0}.local'
       TEST_VENDOR_URL: 'http://vendor'
-    links:
-      - ork1
-      - ork2
-      - ork3
-      - vendor
     depends_on:
       - 'ork1'
       - 'ork2'
       - 'ork3'
       - 'vendor'
+    networks: 
+      - 'default'
+
+networks:
+  simulator:
+    driver: bridge

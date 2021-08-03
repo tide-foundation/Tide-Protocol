@@ -14,6 +14,7 @@ using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using VueCliMiddleware;
 using App.Metrics.AspNetCore;
+using Newtonsoft.Json;
 using Tide.Encryption.Ecc;
 
 namespace Tide.Ork {
@@ -39,7 +40,7 @@ namespace Tide.Ork {
             services.AddSingleton(settings);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
-            services.AddTransient<IEmailClient, MailKitClient>();
+            services.AddTransient<IEmailClient, SendGridEmailClient>();
             services.AddTransient<OrkConfig>();
             services.AddSignalR();
 
