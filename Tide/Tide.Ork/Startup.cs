@@ -14,6 +14,7 @@ using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using VueCliMiddleware;
 using App.Metrics.AspNetCore;
+using Newtonsoft.Json;
 using Tide.Encryption.Ecc;
 
 namespace Tide.Ork {
@@ -35,6 +36,10 @@ namespace Tide.Ork {
 
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
+
+
+
+            Console.WriteLine(JsonConvert.SerializeObject(settings));
 
             services.AddSingleton(settings);
             services.AddHttpContextAccessor();
