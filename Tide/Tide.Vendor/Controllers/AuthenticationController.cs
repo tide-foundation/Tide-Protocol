@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tide.Core;
 using Tide.Vendor.Classes;
+using Tide.Vendor.Models;
 
 namespace Tide.Vendor.Controllers
 {
@@ -15,8 +16,7 @@ namespace Tide.Vendor.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthentication _auth;
-        public static Dictionary<string, VendorUser> Users = new Dictionary<string, VendorUser>();
-
+    
         public AuthenticationController(IAuthentication auth)
         {
             _auth = auth;
@@ -37,8 +37,7 @@ namespace Tide.Vendor.Controllers
 
        
         [HttpGet]
-        public IActionResult Get()
-        {
+        public IActionResult Get() {
             var user = _auth.GetUser(Request.Headers["Authorization"].ToString().Substring(7));
             return Ok(user.Vuid);
         }
@@ -57,11 +56,8 @@ namespace Tide.Vendor.Controllers
         public string TideToken { get; set; }
     }
 
-    public class AuthResponse {
-        public string Token { get; set; }
-    }
-
     public class VendorUser {
+        public int Id { get; set; }
         public string Vuid { get; set; }
         public string PublicKey { get; set; }
     }

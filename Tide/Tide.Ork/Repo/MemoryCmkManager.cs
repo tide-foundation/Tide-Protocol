@@ -5,7 +5,7 @@ using Tide.Core;
 
 namespace Tide.Ork.Repo
 {
-    public class MemoryCmkManager : MemoryManagerBase<CmkVault>, ICmkManager
+    public class MemoryCmkManager : MemoryManagerBites<CmkVault>, ICmkManager
     {
         public Task Confirm(Guid id) => Task.CompletedTask; //throw new NotImplementedException("Do not invoke confirm in memory manager");
 

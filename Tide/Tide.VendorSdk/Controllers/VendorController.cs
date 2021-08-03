@@ -14,12 +14,10 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -113,10 +111,14 @@ namespace Tide.VendorSdk.Controllers {
 
         private async Task<byte[]> Decrypt(Guid vuid, byte[] cipher)
         {
-            var uris = (await Repo.GetListOrks(vuid)).Select(url => new Uri(url)).ToList();
-            var flow = new DCryptFlow(vuid, uris);
-
-            return await flow.Decrypt(cipher, Config.PrivateKey);
+            var dnsUrls = (await Repo.GetListOrks()).Select(url => new Uri(url)).First();
+            var dnsClient = new DnsClient(dnsUrls);
+            var (orkUrls, _) = await dnsClient.GetInfo(vuid);
+            if (!orkUrls.Any())
+                throw new Exception("Invalid ID or orks not configured");
+            
+            var flow = new DCryptFlow(vuid, orkUrls);
+            return await flow.Decrypt(Config.PrivateKey, cipher);
         }
 
         private byte[] FromBase64(string input)

@@ -7,15 +7,16 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Tide.Vendor.Controllers;
+using Tide.Vendor.Models;
 
 namespace Tide.Vendor.Classes {
     public class Authentication : IAuthentication {
         private readonly Settings _settings;
+        private VendorDbContext _context;
 
-        private readonly Dictionary<string, VendorUser> _users = new Dictionary<string, VendorUser>();
-
-        public Authentication(Settings settings) {
+        public Authentication(Settings settings,VendorDbContext context) {
             _settings = settings;
+            _context = context;
         }
 
         public string Register(string tideToken, string publicKey) {
@@ -25,19 +26,19 @@ namespace Tide.Vendor.Classes {
             var claims = ExtractClaims(tideToken, key);
             var vuid = claims.First(c => c.Type == "vuid").Value;
 
-            _users.Add(vuid, new VendorUser {PublicKey = publicKey, Vuid = vuid});
-
+            _context.Add(new VendorUser {PublicKey = publicKey, Vuid = vuid});
+            _context.SaveChanges();
+     
             return GenerateVendorToken(vuid);
         }
 
         public string Login(string tideToken, string vuid) {
-            if (_users.TryGetValue(vuid, out var user)) {
-                var key = GetPublicKey(user.PublicKey);
-                if (!ValidateTideToken(tideToken, key)) return null;
-                return GenerateVendorToken(vuid);
-            }
+            var user = _context.Users.FirstOrDefault(u => u.Vuid == vuid);
+            if (user == null) return null;
 
-            return null;
+            var key = GetPublicKey(user.PublicKey);
+            if (!ValidateTideToken(tideToken, key)) return null;
+            return GenerateVendorToken(vuid);
         }
 
         public VendorUser GetUser(string stringToken) {
@@ -49,8 +50,8 @@ namespace Tide.Vendor.Classes {
                
                 var vuid = token.Claims.First(c => c.Type == "vuid").Value;
               
-                return _users.First(u => u.Key == vuid).Value;
-          
+                return _context.Users.FirstOrDefault(u => u.Vuid == vuid);
+
         }
 
         #region Vendor Token

@@ -2,32 +2,30 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
-RUN apt update -y && apt install nano curl -y \
-    && curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh \
-    && bash nodesource_setup.sh \
-    && apt install nodejs
+FROM tideorg/dotnet-node-sdk:3-12 AS build
+WORKDIR /app/publish/
+RUN curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /app/publish/wait-for-it.sh \
+    && chmod +x /app/publish/wait-for-it.sh
 
-WORKDIR /src
-COPY ["Tide/Tide.Ork/Tide.Ork.csproj", "Tide/Tide.Ork/"]
-COPY ["Tide/Tide.Core/Tide.Core.csproj", "Tide/Tide.Core/"]
-COPY ["Tide/Tide.VendorSdk/Tide.VendorSdk.csproj", "Tide/Tide.VendorSdk/"]
-COPY ["Tide/Tide.Js/package.json", "Tide/Tide.Js/package-lock.json", "Tide/Tide.Js/"]
-COPY ["Tide/Tide.Ork/Client/package.json", "Tide/Tide.Ork/Client/package-lock.json", "Tide/Tide.Ork/Client/"]
-RUN dotnet restore "Tide/Tide.Ork/Tide.Ork.csproj" \
-    && npm install --cwd /src/Tide/Tide.Js --prefix /src/Tide/Tide.Js \
-    && npm install --cwd /src/Tide/Tide.Ork/Client --prefix /src/Tide/Tide.Ork/Client
+WORKDIR /src/Tide
+COPY ["Tide.Ork/Tide.Ork.csproj", "Tide.Ork/"]
+COPY ["Tide.Core/Tide.Core.csproj", "Tide.Core/"]
+COPY ["Tide.VendorSdk/Tide.VendorSdk.csproj", "Tide.VendorSdk/"]
+COPY ["Tide.Js/package.json", "Tide.Js/package-lock.json", "Tide.Js/"]
+COPY ["Tide.Ork/Client/package.json", "Tide.Ork/Client/package-lock.json", "Tide.Ork/Client/"]
+RUN dotnet restore "Tide.Ork/Tide.Ork.csproj" \
+    && npm install --cwd ./Tide.Js --prefix ./Tide.Js \
+    && npm install --cwd ./Tide.Ork/Client --prefix ./Tide.Ork/Client
 
-COPY ["Tide/Tide.Core/", "Tide/Tide.Core/"]
-COPY ["Tide/Tide.VendorSdk", "Tide/Tide.VendorSdk"]
-COPY ["Tide/Tide.Js/src", "Tide/Tide.Js/src"]
-RUN dotnet build "Tide/Tide.VendorSdk" -c Release
+COPY ["Tide.Core/", "Tide.Core/"]
+COPY ["Tide.VendorSdk", "Tide.VendorSdk"]
+COPY ["Tide.Js/src", "Tide.Js/src"]
+RUN dotnet build "Tide.VendorSdk" -c Release
 
-COPY ["Tide/Tide.Ork", "Tide/Tide.Ork"]
-WORKDIR "/src/Tide/Tide.Ork"
-RUN dotnet publish "Tide.Ork.csproj" -c Release -o /app/publish \
+COPY ["Tide.Ork", "Tide.Ork"]
+RUN dotnet publish "Tide.Ork/Tide.Ork.csproj" -c Release -o /app/publish \
     && rm -fr /app/publish/Client/node_modules /app/publish/Client/public
 
 FROM base AS final
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "Tide.Ork.dll"]
+CMD ["dotnet", "Tide.Ork.dll"]

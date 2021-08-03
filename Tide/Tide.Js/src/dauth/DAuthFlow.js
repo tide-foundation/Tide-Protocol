@@ -16,25 +16,28 @@
 import BigInt from "big-integer";
 import DAuthClient from "./DAuthClient";
 import DAuthShare from "./DAuthShare";
-import { SecretShare, Utils, C25519Point, AESKey } from "cryptide";
+import { SecretShare, Utils, C25519Point, AESKey, C25519Key } from "cryptide";
 import TranToken from "../TranToken";
 import { concat } from "../Helpers";
 import { getArray } from "cryptide/src/bnInput";
+import DnsEntry from "../DnsEnrty";
+import DnsClient from "./DnsClient";
+import Guid from "../guid";
 
 export default class DAuthFlow {
   /**
    * @param {string[]} urls
-   * @param {string} user
+   * @param {string|Guid} user
    */
   constructor(urls, user, memory = false) {
     this.clients = urls.map((url) => new DAuthClient(url, user, memory));
-    this.user = user;
   }
 
   /**
    * @param {string} password
    * @param {string} email
    * @param {number} threshold
+   * @returns {Promise<AESKey>}
    */
   async signUp(password, email, threshold, cmk = random()) {
     try {
@@ -51,29 +54,55 @@ export default class DAuthFlow {
       var [, cmks] = SecretShare.shareFromIds(cmk, ids, threshold, C25519Point.n);
       var [, prisms] = SecretShare.shareFromIds(prism, ids, threshold, C25519Point.n);
 
-      await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], email)));
+      var signatures = await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], email)));
+      await this.addDns(signatures, C25519Key.private(cmk));
+
       return cmkAuth;
     } catch (err) {
       return Promise.reject(err);
     }
   }
 
-  /** @param {string} password */
-  async logIn(password) {
+  /** @private 
+   * @param {{orkid: string, sign: string}[]} signatures 
+   * @param {C25519Key} key */
+  addDns(signatures, key) {
+    const cln = this.clients[Math.floor(Math.random() * this.clients.length)];
+    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
+    var entry = new DnsEntry();
+    
+    entry.id = cln.userGuid;
+    entry.public = key.public()
+    entry.signatures = signatures.map(sig => sig.sign);
+    entry.orks = signatures.map(sig => sig.orkid);
+    entry.sign(key);
+
+    return dnsCln.addDns(entry);
+  }
+
+  /**
+   * @param {string} password 
+   * @param {C25519Point} point */
+  async logIn(password, point) {
     try {
       var [prismAuth, token] = await this.getPrismAuth(password);
       var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
       var prismAuths = idBuffers.map((buff) => prismAuth.derive(buff));
 
+      const tranid = new Guid();
       var tokens = this.clients.map((c, i) => token.copy().sign(prismAuths[i], c.userBuffer));
-      var ciphers = await Promise.all(this.clients.map((cli, i) => cli.signIn(tokens[i])));
+      var ciphers = await Promise.all(this.clients.map((cli, i) => cli.signIn(tranid, tokens[i], point)));
 
-      var cmks = prismAuths.map((auth, i) => auth.decrypt(ciphers[i])).map((shr) => BigInt.fromArray(Array.from(shr), 256, false));
+      var cvkAuths = prismAuths.map((auth, i) => auth.decrypt(ciphers[i])).map(shr => C25519Point.from(shr));
 
       var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
-      var cmk = SecretShare.interpolate(ids, cmks, C25519Point.n);
 
-      return AESKey.seed(Buffer.from(cmk.toArray(256).value));
+      /** @type {C25519Point} */
+      var cvkAuth = ids.map(id => SecretShare.getLi(id, ids, C25519Point.n))
+          .map((li, i) => cvkAuths[i].times(li))
+          .reduce((sum, cvkAuthi) => sum.add(cvkAuthi), C25519Point.infinity);
+
+      return AESKey.seed(cvkAuth.toArray());
     } catch (err) {
       return Promise.reject(err);
     }

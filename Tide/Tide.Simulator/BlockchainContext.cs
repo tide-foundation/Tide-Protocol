@@ -14,5 +14,7 @@ namespace Tide.Simulator
         }
 
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<AuthPending> AuthPendings { get; set; }
+        public DbSet<Auth> Auths { get; set; }
     }
 }

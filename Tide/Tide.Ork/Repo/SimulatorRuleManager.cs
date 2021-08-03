@@ -7,12 +7,10 @@ using Tide.Encryption.AesMAC;
 using Tide.Ork.Classes;
 
 namespace Tide.Ork.Repo {
-    public class SimulatorRuleManager : SimulatorManagerBase<RuleVault>, IRuleManager {
+    public class SimulatorRuleManager : SimulatorManagerCipherBase<RuleVault>, IRuleManager {
         protected override string TableName => "rules";
         protected override string Contract => "Permissions";
         public static Guid MaxID => Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff");
-
-        protected override bool IsEncrypted => false;
 
         public SimulatorRuleManager(string orkId, SimulatorClient client, AesKey key) : base(orkId, client, key)
         {
@@ -29,6 +27,13 @@ namespace Tide.Ork.Repo {
         {
             return (await GetAll()).Where(rule => rule.OwnerId == ownerId
                 && (rule.Tag == tag || rule.Tag == ulong.MaxValue)
+                && (rule.KeyId == keyId || rule.KeyId == MaxID)).ToList();
+        }
+
+        public async Task<List<RuleVault>> GetSetBy(Guid ownerId, ICollection<ulong> tags, Guid keyId)
+        {
+            return (await GetAll()).Where(rule => rule.OwnerId == ownerId
+                && (tags.Contains(rule.Tag) || rule.Tag == ulong.MaxValue)
                 && (rule.KeyId == keyId || rule.KeyId == MaxID)).ToList();
         }
     }

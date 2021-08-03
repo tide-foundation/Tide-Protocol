@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Tide.Core;
-using Tide.Simulator.Models;
 
 namespace Tide.Simulator.Classes {
     public interface IBlockLayer
@@ -21,6 +21,12 @@ namespace Tide.Simulator.Classes {
         (bool success,string error) Write(Transaction block);
         (bool success, string error) Write(List<Transaction> blocks);
 
+        List<AuthStateTran> SelectPendingLogs(IEnumerable<Guid> ids, int threshold);
+        List<Auth> SelectLogs(IEnumerable<Guid> ids);
+        void UpdateLogs(IEnumerable<Auth> logs);
+        void InsertLogs(IEnumerable<Auth> logs);
+        void InsertPendingLogs(IEnumerable<AuthPending> logs);
+
         /// <summary>
         ///     Read the newest version of this data block from the 'Blockchain'.
         /// </summary>
@@ -29,6 +35,14 @@ namespace Tide.Simulator.Classes {
         /// <param name="index">The primary index for the data under the selected scope.</param>
         /// <returns>Serialized object</returns>
         Transaction Read(string location, string index);
+
+        /// <summary>
+        /// Read the newest versions of the data blocks from the 'Blockchain'.
+        /// </summary>
+        /// <param name="index">The primary index for the data under the selected scope.</param>
+        /// <param name="locations">The location resources.</param>
+        /// <returns>Serialized object</returns>
+        List<Transaction> Read(string locations, ICollection<string> index);
 
         /// <summary>
         ///     Read the newest version of this data block from the 'Blockchain'.

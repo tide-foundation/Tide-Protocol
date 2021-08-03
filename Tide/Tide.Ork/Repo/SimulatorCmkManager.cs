@@ -6,7 +6,7 @@ using Tide.Encryption.AesMAC;
 using Tide.Ork.Classes;
 
 namespace Tide.Ork.Repo {
-    public class SimulatorCmkManager : SimulatorManagerBase<CmkVault>, ICmkManager {
+    public class SimulatorCmkManager : SimulatorManagerCipherBase<CmkVault>, ICmkManager {
         protected override string TableName => "cmks";
         protected override string Contract => "Authentication";
 

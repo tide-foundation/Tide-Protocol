@@ -1,25 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Tide.Encryption.AesMAC;
 using Tide.Vendor.Classes;
 using Tide.Vendor.Models;
 using Tide.VendorSdk.Classes;
@@ -62,14 +50,14 @@ namespace Tide.Vendor
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = settings.Audience,
                         ValidAudience = settings.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.BearerKey))
+                        IssuerSigningKey = new SymmetricSecurityKey(settings.Keys.CreateVendorConfig().SecretKey.ToByteArray())
                     };
                 });
 
 
             if (settings.DevFront) services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
-            services.AddSingleton<IAuthentication, Authentication>();
-            services.AddSingleton<IVendorRepo, VendorRepo>();
+            services.AddScoped<IAuthentication, Authentication>();
+            services.AddSingleton<IVendorRepo, MemoryVendorRepo>();
             services.AddTideEndpoint(settings.Keys);
             services.AddControllers();
 

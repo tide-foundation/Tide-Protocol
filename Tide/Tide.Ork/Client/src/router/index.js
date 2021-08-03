@@ -2,7 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Initializing from "../views/Initializing.vue";
 import Auth from "../views/Auth.vue";
-import Finished from "../views/Finished.vue";
+import Form from "../views/Form.vue";
+import Account from "../views/Account.vue";
 import Store from "../store/";
 
 Vue.use(VueRouter);
@@ -19,9 +20,17 @@ const routes = [
     component: Auth,
   },
   {
-    path: "/finished",
-    name: "Finished",
-    component: Finished,
+    path: "/form",
+    name: "Form",
+    component: Form,
+  },
+  {
+    path: "/account",
+    name: "Account",
+    component: Account,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
@@ -32,9 +41,10 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.path != "/" && !Store.getters.isInitialized) {
-    return next({ name: "Initializing" });
-  } else next();
+  if (to.path != "/" && !Store.getters.isInitialized) return next({ name: "Initializing" });
+  else if (to.matched.some((record) => record.meta.requiresAuth) && !Store.getters.isLoggedIn) return next("/auth");
+
+  next();
 });
 
 export default router;

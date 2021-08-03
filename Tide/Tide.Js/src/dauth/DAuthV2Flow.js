@@ -14,22 +14,22 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import { AESKey, Hash, Utils, C25519Point, C25519Key } from "cryptide";
-import Num64 from "../Num64";
+import Tags from "../tags";
 import DAuthFlow from "./DAuthFlow";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
 import VendorClient from "../VendorClient";
-import RuleClientSet from "./RuleClientSet";
 import KeyClientSet from "./keyClientSet";
 import KeyStore from "../keyStore";
-import Rule from "../rule";
 import Cipher from "../Cipher";
 import Guid from "../guid";
+import DnsClient from "./DnsClient";
 
 export default class DAuthV2Flow {
-  /** @param {string} user */
+  /** @param {string|Guid} user */
   constructor(user, newCvk = false) {
-    this.user = user;
+    /** @type {string} */
+    this.homeUrl = null;
 
     /** @type {string[]} */
     this.cmkUrls = null;
@@ -44,25 +44,18 @@ export default class DAuthV2Flow {
     this.cmk = null;
 
     /** @type {AESKey} */
-    this.cmkAuth = null;
+    this.cvkAuth = null;
 
     /** @type {Guid} */
     this.vuid = null;
 
-    this.userid = IdGenerator.seed(this.user).guid;
-
-    if (newCvk) this.generateCvk();
-  }
-
-  generateCvk() {
-    this.cmk = Utils.random(1, C25519Point.n.subtract(1));
-    this._setCmk(AESKey.seed(Buffer.from(this.cmk.toArray(256).value)));
+    this.userid = typeof user === "string" ? Guid.seed(user) : user;
   }
 
   /** @param {AESKey} key */
-  _setCmk(key) {
-    this.cmkAuth = key;
-    this.vuid = IdGenerator.seed(this.user, key).guid;
+  _genVuid() {
+    if (!this.cvkAuth) throw new Error("cvkAuth is needed");
+    this.vuid = IdGenerator.seed(this.userid.buffer, this.cvkAuth).guid;
   }
 
   /**
@@ -73,18 +66,17 @@ export default class DAuthV2Flow {
    */
   async signUp(password, email, threshold) {
     try {
-      if (this.cmk === null) this.generateCvk();
+      const vendorCln = this._getVendorClient();
+      const { pubKey } = await vendorCln.configuration();
+
+      if (!this.cmk) this.cmk = Utils.random(1, C25519Point.n.subtract(1));
+      this.cvkAuth = AESKey.seed(pubKey.y.times(this.cmk).toArray());
+      this._genVuid();
 
       const cvk = C25519Key.generate();
-
-      const flowCmk = this._getCmkFlow();
-      const flowCvk = this._getCvkFlow();
-      const vendorCln = this._getVendorClient();
-      const ruleCln = new RuleClientSet(this.cmkUrls, this.vuid);
+      const flowCmk = await this._getCmkFlow();
+      const flowCvk = await this._getCvkFlow();
       const keyCln = new KeyClientSet(this.cmkUrls);
-
-      // add vendor pub key
-      const { pubKey } = await vendorCln.configuration();
 
       const vendorPubStore = new KeyStore(pubKey);
       await keyCln.setOrUpdate(vendorPubStore);
@@ -98,17 +90,11 @@ export default class DAuthV2Flow {
       await flowCmk.signUp(password, email, threshold, this.cmk);
 
       // register cvk
-      await flowCvk.signUp(this.cmkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
-
-      // allow vendor to partial decrypt
-      const tokenTag = Num64.seed("token");
-      const allowTokenToVendor = Rule.allow(this.vuid, tokenTag, vendorPubStore);
-
-      await ruleCln.setOrUpdate(allowTokenToVendor);
+      await flowCvk.signUp(this.cvkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
 
       //user encrypt vendor token
       const hashToken = Hash.shaBuffer(vendorToken.toArray());
-      const cipher = Cipher.encrypt(hashToken, tokenTag, cvk);
+      const cipher = Cipher.encrypt(hashToken, Tags.vendor, cvk);
 
       //test dauth and dcrypt
       const { auth: vuidAuthTag } = await this.logIn(password);
@@ -128,14 +114,18 @@ export default class DAuthV2Flow {
   /** @param {string} password */
   async logIn(password) {
     try {
-      const flowCmk = this._getCmkFlow();
-      this._setCmk(await flowCmk.logIn(password));
-
-      const flowCvk = this._getCvkFlow();
-      const cvk = await flowCvk.getKey(this.cmkAuth);
-
       const vendorCln = this._getVendorClient();
-      const bufferVid = (await vendorCln.getGuid()).toArray();
+      const { pubKey } = await vendorCln.configuration();
+
+      const flowCmk = await this._getCmkFlow();
+      this.cvkAuth = await flowCmk.logIn(password, pubKey.y); 
+      this._genVuid();
+
+      await this._setCvkUrlFromDns();
+      const flowCvk = await this._getCvkFlow();
+      const cvk = await flowCvk.getKey(this.cvkAuth);
+
+      const bufferVid = Guid.seed(pubKey.toArray()).toArray();
       const vuidAuth = AESKey.seed(cvk.toArray()).derive(bufferVid);
 
       return { vuid: this.vuid, cvk, auth: vuidAuth };
@@ -145,7 +135,7 @@ export default class DAuthV2Flow {
   }
 
   async Recover() {
-    await this._getCmkFlow().Recover();
+    await (await this._getCmkFlow()).Recover();
   }
 
   /**
@@ -154,7 +144,7 @@ export default class DAuthV2Flow {
    * @param {number} threshold
    */
   async Reconstruct(textShares, newPass = null, threshold = null) {
-    await this._getCmkFlow().Reconstruct(textShares, newPass, threshold);
+    await (await this._getCmkFlow()).Reconstruct(textShares, newPass, threshold);
   }
 
   /**
@@ -163,7 +153,17 @@ export default class DAuthV2Flow {
    * @param {number} threshold
    */
   async changePass(pass, newPass, threshold) {
-    await this._getCmkFlow().changePass(pass, newPass, threshold);
+    await (await this._getCmkFlow()).changePass(pass, newPass, threshold);
+  }
+  
+  /** @private */
+  async _setCvkUrlFromDns() {
+    if (this.cvkUrls && this.cvkUrls.length > 0)
+      return;
+
+    const dnsCln = new DnsClient(this.cmkUrls[0], this.vuid);
+    const [cvkUrls] = await dnsCln.getInfoOrks();
+    this.cvkUrls = cvkUrls;
   }
 
   _getVendorClient() {
@@ -174,21 +174,35 @@ export default class DAuthV2Flow {
     return this._vendorClient;
   }
 
-  _getCmkFlow() {
-    if (this.cmkUrls === null || this.cmkUrls.length === 0) throw new Error("cmkUrls must not be empty");
+  async _getCmkFlow(memory = false) {
+    if (this._cmkFlow) return this._cmkFlow;
 
-    if (this._cmkFlow === undefined) this._cmkFlow = new DAuthFlow(this.cmkUrls, this.user);
+    if (this.homeUrl && (!this.cmkUrls || !this.cmkUrls.length)) {
+      const dnsCln = new DnsClient(this.homeUrl, this.userid);
+      const [cmkUrls] = await dnsCln.getInfoOrks();
+      this.cmkUrls = cmkUrls;
+    }
 
-    return this._cmkFlow;
+    if (this.cmkUrls && this.cmkUrls.length > 0)
+      return this._cmkFlow = new DAuthFlow(this.cmkUrls, this.userid, memory);
+
+    throw new Error("cmkUrls or homeUrl must be provided");
   }
 
-  _getCvkFlow() {
-    if (this.cvkUrls === null || this.cvkUrls.length === 0) throw new Error("cvkUrls must not be empty");
+  async _getCvkFlow(memory = false) {
+    if (!this.vuid) throw new Error("vuid must not be empty");
 
-    if (this.vuid === null) throw new Error("vuid must not be empty");
+    if (this._cvkFlow) return this._cvkFlow;
 
-    if (this._cvkFlow === undefined) this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid);
+    if ((!this.cvkUrls || !this.cvkUrls.length) && (this.homeUrl || (this.cmkUrls && this.cmkUrls.length))) {
+      const dnsCln = new DnsClient(this.homeUrl || this.cmkUrls[0], this.vuid);
+      const [cvkUrls] = await dnsCln.getInfoOrks();
+      this.cvkUrls = cvkUrls;
+    }
 
-    return this._cvkFlow;
+    if (this.cvkUrls && this.cvkUrls.length > 0)
+      return this._cvkFlow = new DCryptFlow(this.cvkUrls, this.vuid, memory);
+
+    throw new Error("cvkUrls must not be empty");
   }
 }

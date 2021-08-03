@@ -12,7 +12,7 @@ namespace Tide.VendorSdk.Classes
     public class SimulatorClient
     {
         private static HttpClient _client;
-        private readonly AuthenticationRequest _authRequest;
+        //private readonly AuthenticationRequest _authRequest; //TODO: Ask matt why is not used.
         private const string _chainEndpoint = "https://tidesimulator.azurewebsites.net/";
 
         public SimulatorClient(string vendorId)

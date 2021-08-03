@@ -24,6 +24,7 @@ namespace Tide.Ork.Repo
     {
         Task<List<RuleVault>> GetSetBy(Guid ownerId);
         Task<List<RuleVault>> GetSetBy(Guid ownerId, ulong tag, Guid keyId);
+        Task<List<RuleVault>> GetSetBy(Guid ownerId, ICollection<ulong> tags, Guid keyId);
         Task ConfirmAll(Guid ownerId);
     }
 }

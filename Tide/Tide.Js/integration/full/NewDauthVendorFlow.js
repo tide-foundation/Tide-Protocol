@@ -1,4 +1,4 @@
-import TideAuthentication from "../../src/sdk/TideAuthentication";
+import TideAuthentication from "../../src/export/TideAuthentication";
 import request from "superagent";
 
 // var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net/`);

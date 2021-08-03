@@ -9,5 +9,6 @@ namespace Tide.Core
         public string Id { get; set; }
         public string Url { get; set; }
         public string Website { get; set; }
+        public string PubKey { get; set; }
     }
 }

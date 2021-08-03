@@ -19,6 +19,72 @@ namespace Tide.Simulator.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Tide.Core.Auth", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Method")
+                        .HasColumnType("VARCHAR(250)");
+
+                    b.Property<bool>("Successful")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SuccessfulOrks")
+                        .HasColumnType("VARCHAR(MAX)");
+
+                    b.Property<DateTimeOffset>("Time")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("TranId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Uid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UnsuccessfulOrks")
+                        .HasColumnType("VARCHAR(MAX)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Auths");
+                });
+
+            modelBuilder.Entity("Tide.Core.AuthPending", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Metadata")
+                        .HasColumnType("VARCHAR(MAX)");
+
+                    b.Property<string>("Method")
+                        .HasColumnType("VARCHAR(250)");
+
+                    b.Property<string>("OrkId")
+                        .HasColumnType("VARCHAR(400)");
+
+                    b.Property<bool>("Successful")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("Time")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("TranId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Uid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuthPendings");
+                });
+
             modelBuilder.Entity("Tide.Core.Transaction", b =>
                 {
                     b.Property<int>("Id")

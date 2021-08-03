@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tide.Core;
-using Tide.Encryption;
 
 namespace Tide.Ork.Repo
 {
-    public class MemoryManagerBase<T> : IManager<T> where T : SerializableByteBase<T>, IGuid, new()
+    public abstract class MemoryManagerBase<T> : IManager<T> where T : IGuid, new()
     {
         protected readonly ConcurrentDictionary<Guid, string> _items;
 
@@ -17,7 +16,7 @@ namespace Tide.Ork.Repo
             _items = new ConcurrentDictionary<Guid, string>();
         }
 
-        public Task Delete(Guid id)
+        public virtual Task Delete(Guid id)
         {
             if (_items.ContainsKey(id))
                 _items.Remove(id, out string elm);
@@ -25,27 +24,41 @@ namespace Tide.Ork.Repo
             return Task.CompletedTask;
         }
 
-        public Task<bool> Exist(Guid id)
+        public virtual Task<bool> Exist(Guid id)
         {
             return Task.FromResult(_items.ContainsKey(id));
         }
 
-        public Task<List<T>> GetAll()
+        public virtual Task<List<T>> GetAll()
         {
             return Task.FromResult(GetEnumerable().ToList());
         }
 
-        public Task<T> GetById(Guid id)
+        public virtual Task<T> GetById(Guid id)
         {
             if (!_items.ContainsKey(id))
-                return Task.FromResult<T>(null);
+                return Task.FromResult<T>(default(T));
 
-            return Task.FromResult(SerializableByteBase<T>.Parse(_items[id]));
+            return Task.FromResult(Map(_items[id]));
         }
 
-        public Task<TideResponse> SetOrUpdate(T entity)
+        public virtual Task<List<T>> GetByIds(IEnumerable<Guid> ids)
         {
-            _items[entity.Id] = entity.ToString();
+            return Task.FromResult<List<T>>(ids.Where(id => _items.ContainsKey(id)).Select(id => Map(_items[id])).ToList());
+        }
+
+        public virtual Task<TideResponse> Add(T entity)
+        {
+            if (_items.ContainsKey(entity.Id))
+                return Task.FromResult(new TideResponse($"The entity [{entity.Id}] already exists"));
+
+            _items[entity.Id] = Map(entity);
+            return Task.FromResult(new TideResponse());
+        }
+
+        public virtual Task<TideResponse> SetOrUpdate(T entity)
+        {
+            _items[entity.Id] = Map(entity);
             return Task.FromResult(new TideResponse());
         }
 
@@ -53,8 +66,12 @@ namespace Tide.Ork.Repo
         {
             foreach (KeyValuePair<Guid, string> entry in _items)
             {
-                yield return SerializableByteBase<T>.Parse(entry.Value);
+                yield return Map(entry.Value);
             }
         }
+
+        protected abstract T Map(string data);
+
+        protected abstract string Map(T entity);
     }
 }

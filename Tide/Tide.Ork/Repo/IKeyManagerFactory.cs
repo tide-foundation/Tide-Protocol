@@ -6,5 +6,6 @@ namespace Tide.Ork.Repo {
         ICvkManager BuildManagerCvk();
         IKeyIdManager BuildKeyIdManager();
         IRuleManager BuildRuleManager();
+        IDnsManager BuildDnsManager();
     }
 }

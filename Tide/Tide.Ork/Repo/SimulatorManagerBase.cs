@@ -3,31 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tide.Core;
-using Tide.Encryption;
-using Tide.Encryption.AesMAC;
 using Tide.Ork.Classes;
 
 namespace Tide.Ork.Repo {
-    public abstract class SimulatorManagerBase<T> where T : SerializableByteBase<T>, IGuid, new()
+    public abstract class SimulatorManagerBase<T> where T : IGuid, new()
     {
         protected readonly SimulatorClient _client;
-        protected readonly AesKey _key;
         protected readonly string _orkId;
-
-        protected virtual bool IsEncrypted => true;
-
         protected abstract string TableName { get; }
         protected abstract string Contract { get; }
 
-        public SimulatorManagerBase(string orkId, SimulatorClient client, AesKey key) {
+        public SimulatorManagerBase(string orkId, SimulatorClient client) {
             _orkId = orkId;
             _client = client;
-            _key = key;
         }
 
-        public async Task<bool> Exist(Guid id) {
-            return await GetById(id) == null;
-        }
+        public async Task<bool> Exist(Guid id) => await GetById(id) == null;
 
         public async Task<List<T>> GetAll()
         {
@@ -38,9 +29,23 @@ namespace Tide.Ork.Repo {
         public async Task<T> GetById(Guid id) {
             var response = await _client.Get(Contract, TableName, _orkId, id.ToString());
             if (string.IsNullOrEmpty(response))
-                return null;
+                return default(T);
 
             return Map(response);
+        }
+
+        public async Task<List<T>> GetByIds(IEnumerable<Guid> ids)
+        {
+            var response = await _client.Get(Contract, TableName, _orkId, ids.Select(id => id.ToString()));
+            return response.Select(Map).ToList();
+        }
+
+        public async Task<TideResponse> Add(T entity)
+        {
+            if (await Exist(entity.Id))
+                return new TideResponse($"The entity [{entity.Id}] already exists");
+            
+            return await SetOrUpdate(entity);
         }
 
         public async Task<TideResponse> SetOrUpdate(T entity)
@@ -52,9 +57,8 @@ namespace Tide.Ork.Repo {
 
         public Task Delete(Guid id) => throw new NotImplementedException();
 
-        private T Map(string data) => !IsEncrypted ? SerializableByteBase<T>.Parse(data.Replace("\"", ""))
-            : SerializableByteBase<T>.Parse(_key.Decrypt(data.Replace("\"", "")));
+        protected abstract T Map(string data);
 
-        private string Map(T entity) => !IsEncrypted ? entity.ToString() : _key.EncryptStr(entity);
+        protected abstract string Map(T entity);
     }
 }

@@ -18,7 +18,7 @@ namespace Tide.Ork.Classes {
         private readonly HttpClient _client;
         private readonly C25519Key _private;
         private readonly string _orkId;
-        private bool _registered;
+        //private bool _registered; //TODO: Ask matt why is not used
 
         public SimulatorClient(string url,string orkId, C25519Key privateKey) {
             _private = privateKey;
@@ -62,6 +62,22 @@ namespace Tide.Ork.Classes {
             }
         }
 
+        public async Task<List<string>> Get(string contract, string table, string scope, IEnumerable<string> index) {
+            try
+            {
+                var body = new StringContent(JsonConvert.SerializeObject(index), Encoding.UTF8, "application/json");
+                var response = await _client.PostAsync(GeneratePath(contract, table, scope, null), body);
+                var transactions = JsonConvert.DeserializeObject<List<Transaction>>(await response.Content.ReadAsStringAsync());
+
+                return transactions.Select(t => t.Data).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.Write($"FAILED GATHERING DATA FOR POST: {GeneratePath(contract, table, scope, null)}. RESPONSE: {e.Message}");
+                return null;
+            }
+        }
+
         public async Task<List<string>> Get(string contract, string table, string scope)
         {
             try {
@@ -74,7 +90,7 @@ namespace Tide.Ork.Classes {
             }
         }
 
-        public async Task<bool> Delete(string contract, string table, string scope, string index)
+        public Task<bool> Delete(string contract, string table, string scope, string index)
         {
            // if (!await Authenticated()) return false;
 
@@ -86,11 +102,12 @@ namespace Tide.Ork.Classes {
             //    var result = await _client.SendAsync(requestMessage);
             //    return result.IsSuccessStatusCode;
             //}
-            return false;
+            return Task.FromResult(false);
         }
 
         private string GeneratePath(string contract, string table, string scope, string index) {
-            return $"Simulator/{contract}/{table}/{scope}{(string.IsNullOrEmpty(index) ? "" : $"/{index}")}";
+            return string.Join("/", new[] { "Simulator", contract, table, scope, index }
+                .Where(itm => !string.IsNullOrWhiteSpace(itm)));
         }
 
         private async Task<T> FetchTransaction<T>(string location) {

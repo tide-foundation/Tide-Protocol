@@ -1,6 +1,7 @@
 ﻿using System;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
+using Tide.Ork.Classes;
 
 namespace Tide.Ork.Models {
     public class Settings
@@ -15,12 +16,21 @@ namespace Tide.Ork.Models {
         {
             Features = new Features();
         }
+
+        public SimulatorClient BuildClient() => new SimulatorClient
+            (Endpoints.Simulator.Api, Instance.Username, Instance.GetPrivateKey());
     }
 
     public class Features
     {
         public bool Memory { get; set; }
         public bool Voucher { get; set; }
+        public bool Metrics { get; set; }
+        public bool Throttling { get; set; }
+
+        public Features() {
+            Throttling = true;
+        }
     }
 
     public class Instance

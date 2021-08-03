@@ -23,10 +23,10 @@ var newPass = "1234567";
 var email = "tmp@tide.org";
 
 var orkUrls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
-var vendorUrl = "http://127.0.0.1:6001";
+//var vendorUrl = "http://127.0.0.1:6001";
 
-// var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);
-// var vendorUrl = "https://tidevendor.azurewebsites.net/";
+// var orkUrls = [...Array(20)].map((_, i) => `https://pdork${i + 1}.azurewebsites.net/`);
+var vendorUrl = "http://localhost:44384";
 
 (async () => {
   await signUp();
@@ -42,8 +42,7 @@ async function signUp() {
     var { auth: auth0 } = await flow.signUp(pass, email, threshold);
 
     flow = new DAuthV2Flow(user);
-    flow.cmkUrls = orkUrls;
-    flow.cvkUrls = orkUrls;
+    flow.homeUrl = orkUrls[0];
     flow.vendorUrl = vendorUrl;
 
     var { auth: auth1 } = await flow.logIn(pass);

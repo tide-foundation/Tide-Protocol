@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Fluent;
 using Tide.Core;
@@ -59,8 +56,6 @@ namespace Tide.Simulator {
 
         }
 
-   
-
         public List<Transaction> Read(string contract, string table, string scope, KeyValuePair<string,string> index)
         {
             var queryDefinition = new QueryDefinition($"select * from c where c.location = '{Transaction.CreateLocation(contract,table,scope)}' AND c.data['{index.Key}'] = '{index.Value}'");
@@ -73,6 +68,10 @@ namespace Tide.Simulator {
         public Transaction Read(string location, string index)
         {
             return Fetch(location, index);
+        }
+
+        public List<Transaction> Read(string location, ICollection<string> index) {
+            return _transactionContainer.GetItemLinqQueryable<Transaction>(true).Where(t => t.Location == location && !t.Stale && index.Contains(t.Index)).ToList();
         }
 
         public Transaction Read(string contract, string table, string scope, string index) {
@@ -117,6 +116,32 @@ namespace Tide.Simulator {
             return null;
            // return batch.ReplaceItem(transaction.Id, transaction);
         }
+
+        public List<AuthStateTran> SelectPendingLogs(IEnumerable<Guid> ids, int threshold)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Auth> SelectLogs(IEnumerable<Guid> ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateLogs(IEnumerable<Auth> logs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InsertLogs(IEnumerable<Auth> logs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InsertPendingLogs(IEnumerable<AuthPending> logs)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
     }

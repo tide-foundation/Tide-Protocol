@@ -20,7 +20,7 @@ import TranToken from "../TranToken";
 export default class DAuthClient extends ClientBase {
   /**
    * @param {string|URL} url
-   * @param {string} user
+   * @param {string|import("../guid").default} user
    */
   constructor(url, user, memory = false) {
     super(url, user, memory);
@@ -33,20 +33,26 @@ export default class DAuthClient extends ClientBase {
     return [ C25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
   }
 
-  /** @param {TranToken} token */
-  async signIn(token) {
-    var tkn = urlEncode(token.toArray());
+  /**
+   * @param { import("../guid").default } tranid
+   * @param {TranToken} token
+   * @param {C25519Point} point
+   **/
+  async signIn(tranid, token, point) {
+    const tkn = urlEncode(token.toArray());
+    const pnt = urlEncode(point.toArray());
 
-    var res = await this._get(`/cmk/auth/${this.userGuid}/${tkn}`);
+    const res = await this._get(`/cmk/auth/${this.userGuid}/${pnt}/${tkn}`).set('tranid', tranid.toString());
     return fromBase64(res.text);
   }
 
-  /**
+    /**
    * @param {bigInt.BigInteger} prismi
    * @param {bigInt.BigInteger} cmki
    * @param {AESKey} prismAuthi
    * @param {AESKey} cmkAuthi
    * @param {string} email
+   * @returns {Promise<{orkid: string, sign: string}>}
    */
   async signUp(prismi, cmki, prismAuthi, cmkAuthi, email) {
     var user = this.userGuid;
@@ -56,7 +62,13 @@ export default class DAuthClient extends ClientBase {
     var cmkAuth = urlEncode(cmkAuthi.toString());
     var mail = encodeURIComponent(email);
 
-    return (await this._put(`/cmk/${user}/${prism}/${cmk}/${prismAuth}/${cmkAuth}/${mail}`)).body;
+    var resp = (await this._put(`/cmk/${user}/${prism}/${cmk}/${prismAuth}/${cmkAuth}/${mail}`));
+    if (!resp.ok || !resp.body && !resp.body.success) {
+      const error = !resp.ok || !resp.body ? resp.text : resp.body.error;
+      return  Promise.reject(new Error(error));
+    }
+    
+    return resp.body.content;
   }
 
   /**

@@ -19,7 +19,11 @@ import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
 import Guid from "../guid";
 import { concat } from "../Helpers";
-import TranToken from "../TranToken";
+import DnsEntry from "../DnsEnrty";
+import DnsClient from "./DnsClient";
+import RuleClientSet from "./RuleClientSet";
+import Rule from "../rule";
+import Tags from "../tags";
 
 export default class DCryptFlow {
   /**
@@ -29,6 +33,7 @@ export default class DCryptFlow {
   constructor(urls, user, memory = false) {
     this.clients = urls.map((url) => new DCryptClient(url, user, memory));
     this.user = user;
+    this.ruleCln = new RuleClientSet(urls, user);
   }
 
   /**
@@ -46,10 +51,13 @@ export default class DCryptFlow {
 
       const cvks = cvk.share(threshold, ids, true);
       var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-      const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
+      const cvkAuths = idBuffers.map(buff => concat(buff, this.user.buffer)).map(buff => cmkAuth.derive(buff));
 
-      await Promise.all(this.clients.map((cli, i) => 
+      var orkSigns = await Promise.all(this.clients.map((cli, i) => 
         cli.register(cvk.public(), cvks[i].x, cvkAuths[i], signedKeyId, signatures[i])));
+
+      await Promise.all([this.addDns(orkSigns, cvk),
+        this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId))]);
 
       return cvk;
     } catch (err) {
@@ -57,12 +65,30 @@ export default class DCryptFlow {
     }
   }
 
+  /** @private 
+   * @param {{orkid: string, sign: string}[]} signatures 
+   * @param {C25519Key} key */
+  addDns(signatures, key) {
+    const cln = this.clients[Math.floor(Math.random() * this.clients.length)];
+    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
+    var entry = new DnsEntry();
+    
+    entry.id = cln.userGuid;
+    entry.public = key.public()
+    entry.signatures = signatures.map(sig => sig.sign);
+    entry.orks = signatures.map(sig => sig.orkid);
+    entry.sign(key);
+
+    return dnsCln.addDns(entry);
+  }
+
   /** @param {AESKey} cmkAuth */
   async getKey(cmkAuth, noPublic = false) {
     var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-    const cvkAuths = idBuffers.map(buff => concat(buff, this.user.toArray())).map(buff => cmkAuth.derive(buff));
+    const cvkAuths = idBuffers.map(buff => concat(buff, this.user.buffer)).map(buff => cmkAuth.derive(buff));
 
-    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(cvkAuths[i])));
+    const tranid = new Guid();
+    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(tranid, cvkAuths[i])));
 
     var cvks = cvkAuths.map((auth, i) => auth.decrypt(cipherCvks[i])).map((shr) => BnInput.getBig(shr));
 
@@ -73,36 +99,54 @@ export default class DCryptFlow {
   }
 
   /**
-   * @param {Uint8Array} cipher
+   * @param {Uint8Array[]} ciphers
    * @param {C25519Key} prv
+   * @returns {Promise<Uint8Array[]>}
    */
-  async decrypt(cipher, prv) {
+  async decryptBulk(ciphers, prv) {
     try {
       const keyId = new KeyStore(prv.public()).keyId;
       const challenges = await Promise.all(this.clients.map((cli) => cli.challenge(keyId)));
 
-      const asymmetric = Cipher.asymmetric(cipher);
+      const asymmetrics = ciphers.map(cph => Cipher.asymmetric(cph));
       const sessionKeys = challenges.map((ch) => prv.decryptKey(ch.challenge));
-      const signs = sessionKeys.map((key) => key.hash(asymmetric));
+      const signs = sessionKeys.map(key => key.hash(concat(...asymmetrics)));
 
-      const ciphers = await Promise.all(this.clients.map((cli, i) => cli.decrypt(asymmetric, keyId, challenges[i].token, signs[i])));
+      const cipherPartials = await Promise.all(this.clients.map((cli, i) => cli.decryptBulk(asymmetrics, keyId, challenges[i].token, signs[i])));
 
-      const ciph = Cipher.cipherFromAsymmetric(asymmetric);
-      const partials = ciphers.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph))).map((pnt) => new C25519Cipher(pnt, ciph.c2));
+      const ciphs = asymmetrics.map(asy => Cipher.cipherFromAsymmetric(asy));
+      const ids = await Promise.all(this.clients.map(c => c.getClientId()));
 
-      const ids = await Promise.all(this.clients.map((c) => c.getClientId()));
-      const plain = C25519Cipher.decryptShares(partials, ids);
+      /** @type {Uint8Array[]} */
+      const plains = new Array(ciphers.length);
+      for (let j = 0; j < ciphers.length; j++) {
+        const partials = cipherPartials.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph[j])))
+          .map(pnt => new C25519Cipher(pnt, ciphs[j].c2));
+        const plain = C25519Cipher.decryptShares(partials, ids);
+  
+        const symmetric = Cipher.symmetric(ciphers[j]);
+        if (symmetric.length == 0) {
+          plains[j] = C25519Cipher.unpad(plain);
+          continue;
+        }
 
-      var symmetric = Cipher.symmetric(cipher);
-      if (symmetric.length == 0) {
-        return C25519Cipher.unpad(plain);
+        const symmetricKey = AesSherableKey.from(plain);
+        plains[j] = symmetricKey.decrypt(symmetric);
       }
 
-      const symmetricKey = AesSherableKey.from(plain);
-      return symmetricKey.decrypt(symmetric);
+      return plains;
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  /**
+   * @param {Uint8Array]} cipher
+   * @param {C25519Key} prv
+   * @returns {Promise<Uint8Array>}
+   */
+  async decrypt(cipher, prv) {
+    return (await this.decryptBulk([cipher], prv))[0];
   }
 
   confirm() {

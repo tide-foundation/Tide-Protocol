@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Tide.Core {
@@ -15,7 +16,7 @@ namespace Tide.Core {
             DateCreated = DateTimeOffset.Now;
             Index = index;
             Account = account;
-            Data = JsonConvert.SerializeObject(data);
+            Data = data is string ? data as string : JsonConvert.SerializeObject(data);
 
             Location = CreateLocation(contract, table, scope);
         }
@@ -58,9 +59,7 @@ namespace Tide.Core {
 
         public static string CreateLocation(string contract, string table, string scope)
         {
-            return $"{contract}/{table}/{scope}";
+            return string.Join('/', (new[] { contract, table, scope }).Where(elm => !String.IsNullOrWhiteSpace(elm)));
         }
     }
-
-
 }

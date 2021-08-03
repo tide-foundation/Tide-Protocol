@@ -16,6 +16,7 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,7 @@ using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
+using Tide.Ork.Components.AuditTrail;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
 
@@ -35,15 +37,15 @@ namespace Tide.Ork.Controllers
     public class CMKController : ControllerBase
     {
         private readonly IEmailClient _mail;
-        private readonly ILogger _logger;
+        private readonly LoggerPipe _logger;
         private readonly ICmkManager _manager;
         private readonly OrkConfig _config;
 
-        public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger, OrkConfig config)
+        public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger, OrkConfig config, Settings settings)
         {
             _manager = factory.BuildCmkManager();
             _mail = mail;
-            _logger = logger;
+            _logger = new LoggerPipe(logger, settings, new LoggerConfig());
             _config = config;
         }
 
@@ -63,9 +65,19 @@ namespace Tide.Ork.Controllers
                 Email = HttpUtility.UrlDecode(email)
             };
 
-            return await _manager.SetOrUpdate(account);
+            var resp = await _manager.SetOrUpdate(account);
+            if (!resp.Success)
+                return resp;
+            
+            var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
+            //TODO: The ork should not send the orkid because the client should already know
+            var signature = Convert.ToBase64String(_config.PrivateKey.Sign(m));
+            resp.Content = new { orkid = _config.UserName, sign = signature };
+            
+            return resp;
         }
 
+        [ThrottleAttribute("uid")]
         [HttpGet("prism/{uid}/{pass}")]
         public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string pass)
         {
@@ -106,12 +118,12 @@ namespace Tide.Ork.Controllers
         }
 
         //TODO: Add throttling by ip and account separate
-        [HttpGet("auth/{uid}/{token}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string token)
+        [HttpGet("auth/{uid}/{point}/{token}")]
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] C25519Point point, [FromRoute] string token, [FromHeader] Guid tranid)
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken))
             {
-                _logger.LogInformation($"Authenticate: Invalid token format for {uid}");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Invalid token format for {uid}");
                 return Unauthorized();
             }
 
@@ -119,20 +131,21 @@ namespace Tide.Ork.Controllers
             var account = await _manager.GetById(uid);
             if (account == null || tran == null || !tran.Check(account.PrismiAuth, uid.ToByteArray())) {
                 if (account == null)
-                    _logger.LogInformation($"Authenticate: Account {uid} does not exist");
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Account {uid} does not exist");
                 else
-                    _logger.LogInformation($"Authenticate: Invalid token for {uid}");
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Invalid token for {uid}");
 
                 return Unauthorized("Invalid account or signature");
             }
             
             if (!tran.OnTime) {
-                _logger.LogInformation($"Authenticate: Expired token for {uid}");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
 
-            _logger.LogInformation($"Authenticate: Successful login for {uid}");
-            return Ok(account.PrismiAuth.EncryptStr(account.Cmki.ToByteArray(true, true)));
+            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Successful login for {uid}");
+            var cvkAuthi = (point * account.Cmki).ToByteArray();
+            return Ok(account.PrismiAuth.EncryptStr(cvkAuthi));
         }
 
         [HttpPost("prism/{uid}/{prism}/{prismAuth}/{token}")]
