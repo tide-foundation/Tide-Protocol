@@ -37,10 +37,6 @@ namespace Tide.Ork {
             var settings = new Settings();
             Configuration.Bind("Settings", settings);
 
-
-
-            Console.WriteLine(JsonConvert.SerializeObject(settings));
-
             services.AddSingleton(settings);
             services.AddHttpContextAccessor();
             services.AddMemoryCache();

@@ -55,12 +55,13 @@ export default {
         homeOrk: "http://172.26.17.60:8081/",
         recoveryEmails: [this.$store.getters.debug ? "matt@tide.org" : ""],
         selectedOrks: [],
-        frags: [process.env.VUE_APP_ORK_COUNT],
+        frags: [],
       },
     };
   },
   created() {
     this.user.selectedOrks = this.$store.getters.orks;
+    this.user.frags = [...Array(process.env.VUE_APP_ORK_COUNT)].map((_, i) => "");
   },
   methods: {
     setStatus(msg) {
