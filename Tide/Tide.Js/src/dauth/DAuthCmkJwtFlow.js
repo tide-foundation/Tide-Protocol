@@ -54,13 +54,12 @@ export default class DAuthCmkJwtFlow {
       this.vuid = IdGenerator.seed(this.userid.buffer, this.cvkAuth).guid;
 
       const flowCvk = await this._getCvkFlow();
-      const cvk = await flowCvk.getKey(this.cvkAuth, true);
-      const cvkJwt = CP256Key.private(cvk.x);
+      const cvk = await flowCvk.getKey(this.cvkAuth);
 
       const keyId = Guid.seed(this.vendorPub.toArray());
-      const vuidAuth = AESKey.seed(cvkJwt.toArray()).derive(keyId.buffer);
+      const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
 
-      return { vuid: this.vuid, cvk: cvkJwt, auth: vuidAuth };
+      return { vuid: this.vuid, cvk: cvk, auth: vuidAuth };
     } catch (err) {
       return Promise.reject(err);
     }
