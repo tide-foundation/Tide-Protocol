@@ -1,0 +1,46 @@
+@startuml silentLoginJwtFlow
+skinparam monochrome true
+
+title Silent Login JWT Flow
+
+note over Client
+c = {
+  ...
+  homeOrk: ork1
+  ...
+}
+end note
+
+
+Client -> TideButton: new TideButton(c)
+activate Client
+activate TideButton
+TideButton -> HomeOrkEnclave: OpenEnclave()
+activate HomeOrkEnclave
+
+note over HomeOrkEnclave
+silentJwt = localStorage.get(silentJwt)
+end note
+alt silentJwt != null ?
+note over HomeOrkEnclave
+vendorJwt = GenerateVendorJwt(silentJwt)
+end note
+  HomeOrkEnclave->TideButton:OK(vendorJwt)
+    else
+  HomeOrkEnclave -> Tide: Login()
+  activate Tide
+Tide -> HomeOrkEnclave: Success(cvk)
+deactivate Tide
+note over HomeOrkEnclave
+vendorJwt = GenerateVendorJwt(cvk)
+silentJwt = GenerateSilentLoginJwt(cvk)
+localStorage.set(silentJwt)
+end note
+  HomeOrkEnclave->TideButton:OK(vendorJwt)
+  deactivate HomeOrkEnclave
+end
+
+TideButton -> Client:OK(vendorJwt)
+deactivate TideButton
+deactivate Client
+@enduml
