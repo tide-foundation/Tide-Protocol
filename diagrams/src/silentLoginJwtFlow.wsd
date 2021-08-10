@@ -15,29 +15,29 @@ end note
 Client -> TideButton: new TideButton(c)
 activate Client
 activate TideButton
-TideButton -> HomeOrkEnclave: OpenEnclave()
-activate HomeOrkEnclave
+TideButton -> Enclave: OpenEnclave()
+activate Enclave
 
-note over HomeOrkEnclave
+note over Enclave
 silentJwt = localStorage.get(silentJwt)
 end note
 alt silentJwt != null ?
-note over HomeOrkEnclave
+note over Enclave
 vendorJwt = GenerateVendorJwt(silentJwt)
 end note
-  HomeOrkEnclave->TideButton:OK(vendorJwt)
+  Enclave->TideButton:OK(vendorJwt)
     else
-  HomeOrkEnclave -> Tide: Login()
+  Enclave -> Tide: Login()
   activate Tide
-Tide -> HomeOrkEnclave: Success(cvk)
+Tide -> Enclave: Success(cvk)
 deactivate Tide
-note over HomeOrkEnclave
+note over Enclave
 vendorJwt = GenerateVendorJwt(cvk)
 silentJwt = GenerateSilentLoginJwt(cvk)
 localStorage.set(silentJwt)
 end note
-  HomeOrkEnclave->TideButton:OK(vendorJwt)
-  deactivate HomeOrkEnclave
+  Enclave->TideButton:OK(vendorJwt)
+  deactivate Enclave
 end
 
 TideButton -> Client:OK(vendorJwt)
