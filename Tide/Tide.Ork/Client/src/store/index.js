@@ -69,22 +69,21 @@ export default new Vuex.Store({
       context.state.keepOpen = data.keepOpen;
 
       context.state.formData = data.formData;
-      // console.log(context.state.formData.data);
+
       context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
+
+      var silentLoginAccount = context.state.tide.loginSilently();
+      if (silentLoginAccount != null) {
+        await context.dispatch("finalizeAuthentication", silentLoginAccount);
+        return;
+      }
 
       // if (!context.state.tide.validateReturnUrl(Vue.prototype.$bus.origin, data.hashedReturnUrl)) {
       //   return Vue.prototype.$bus.source.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, Vue.prototype.$bus.origin);
       // }
 
-      // TESTING DECRYPT
-
       if (data.formData != null) router.push("/auth?mode=form");
       else router.push("/auth");
-      // if (context.state.formData != null) {
-      //   router.push("/form");
-      // } else {
-      //   router.push("/auth");
-      // }
     },
 
     async checkForValidUsername(context, username) {
@@ -115,6 +114,7 @@ export default new Vuex.Store({
 
       return context.state.account;
     },
+
     async loginAccount(context, user) {
       context.state.action = "Login";
       context.state.goToDashboard = user.goToDashboard || context.state.keepOpen;
@@ -141,7 +141,7 @@ export default new Vuex.Store({
       data.action = Vue.prototype.$bus.source.postMessage({ type: "tide-authenticated", data }, Vue.prototype.$bus.origin);
 
       if (context.state.formData) router.push("/form");
-      else if (context.state.goToDashboard) router.push("/account");
+      else context.dispatch("closeWindow");
     },
     async postData(context, data) {
       Vue.prototype.$bus.source.postMessage({ type: "tide-form", data }, Vue.prototype.$bus.origin);

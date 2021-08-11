@@ -21,40 +21,40 @@ testEncryption();
 testValidation();
 
 function testValidation() {
-    const model = {
-        message: 'this is my secret message 🥵',
-        age: 10,
-        date: '2021/12/30',
-    };
+  const model = {
+    message: "this is my secret message 🥵",
+    age: 10,
+    date: "2021/12/30",
+  };
 
-    const validation = {
-        message: 'required',
-        age: 'required|numeric|digits:2',
-        date: 'required|date',
-    };
+  const validation = {
+    message: "required",
+    age: "required|numeric|digits:2",
+    date: "required|date",
+  };
 
-    const fields = MetaField.fromModel(model, false, validation);
-    
-    console.log(fields.every(itm => itm.isValid));
+  const fields = MetaField.fromModel(model, false, validation);
 
-    fields[0].value = '';
-    fields[1].value = '';
-    fields[2].value = '';
-    
-    console.log(fields.every(itm => !itm.isValid));
+  console.log(fields.every((itm) => itm.isValid));
+
+  fields[0].value = "";
+  fields[1].value = "";
+  fields[2].value = "";
+
+  console.log(fields.every((itm) => !itm.isValid));
 }
 
 function testEncryption() {
-    var key = C25519Key.generate();
+  var key = C25519Key.generate();
 
-    var field = MetaField.fromText('message', 'this is my secret message 🥵', false);
-    field.encrypt(key);
-    
-    const fieldTag = MetaField.fromText(field.field, field.value, true);
+  var field = MetaField.fromText("message", "this is my secret message 🥵", false);
+  field.encrypt(key);
 
-    field.decrypt(key);
-    fieldTag.decrypt(key);
+  const fieldTag = MetaField.fromText(field.field, field.value, true);
 
-    console.log(field.value);
-    console.log(fieldTag.value);
+  field.decrypt(key);
+  fieldTag.decrypt(key);
+
+  console.log(field.value);
+  console.log(fieldTag.value);
 }

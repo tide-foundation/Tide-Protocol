@@ -8,6 +8,7 @@ import TideConfiguration from "./models/TideConfiguration";
 import { encode } from "../jwtToken";
 import DnsClient from "../dauth/DnsClient";
 import BigInt from "big-integer";
+import SilentLogin from "../SilentLogin";
 
 export default class TideAuthentication {
   /**
@@ -20,6 +21,10 @@ export default class TideAuthentication {
    */
   constructor(vendorId, serverUrl, homeOrks, vendorPublic) {
     this.config = new TideConfiguration(vendorId, serverUrl, homeOrks, vendorPublic);
+  }
+
+  loginSilently() {
+    return SilentLogin.GetAccount();
   }
 
   /**
@@ -80,6 +85,9 @@ export default class TideAuthentication {
         var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
 
         this.account = new Account(username, vuid, token, cvkPublic, jwtCvk);
+
+        SilentLogin.SetAccount(this.account);
+
         return resolve(this.account);
       } catch (error) {
         reject(error);
@@ -117,6 +125,9 @@ export default class TideAuthentication {
         var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
 
         this.account = new Account(username, vuid, token, cvkPublic, cvk);
+
+        SilentLogin.SetAccount(this.account);
+
         return resolve(this.account);
       } catch (error) {
         return reject(error);
