@@ -59,31 +59,35 @@ export default new Vuex.Store({
   },
   actions: {
     async initializeTide(context, data) {
-      context.state.initialized = true;
-      context.state.vendorUrl = data.vendorUrl;
-      context.state.vendorPublic = data.vendorPublic;
-      context.state.vendorServer = data.serverUrl;
-      context.state.orks = data.orks;
-      context.state.debug = data.debug;
-      context.state.vendorName = data.vendorName;
-      context.state.keepOpen = data.keepOpen;
+      try {
+        context.state.initialized = true;
+        context.state.vendorUrl = data.vendorUrl;
+        context.state.vendorPublic = data.vendorPublic;
+        context.state.vendorServer = data.serverUrl;
+        context.state.orks = data.orks;
+        context.state.debug = data.debug;
+        context.state.vendorName = data.vendorName;
+        context.state.keepOpen = data.keepOpen;
 
-      context.state.formData = data.formData;
+        context.state.formData = data.formData;
 
-      context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
+        context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
 
-      var silentLoginAccount = context.state.tide.loginSilently();
-      if (silentLoginAccount != null) {
-        await context.dispatch("finalizeAuthentication", silentLoginAccount);
-        return;
+        var silentLoginAccount = context.state.tide.loginSilently();
+        if (silentLoginAccount != null) {
+          await context.dispatch("finalizeAuthentication", silentLoginAccount);
+          return;
+        }
+
+        // if (!context.state.tide.validateReturnUrl(Vue.prototype.$bus.origin, data.hashedReturnUrl)) {
+        //   return Vue.prototype.$bus.source.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, Vue.prototype.$bus.origin);
+        // }
+
+        if (data.formData != null) router.push("/auth?mode=form");
+        else router.push("/auth");
+      } catch (error) {
+        this.$bus.$emit("initError", { msg: "Failed Initializing", error });
       }
-
-      // if (!context.state.tide.validateReturnUrl(Vue.prototype.$bus.origin, data.hashedReturnUrl)) {
-      //   return Vue.prototype.$bus.source.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, Vue.prototype.$bus.origin);
-      // }
-
-      if (data.formData != null) router.push("/auth?mode=form");
-      else router.push("/auth");
     },
 
     async checkForValidUsername(context, username) {
