@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  db_host:
+    volumes:
+      - 'dbdata:/var/opt/mssql'
+
+volumes:
+  dbdata:
+    driver: local
