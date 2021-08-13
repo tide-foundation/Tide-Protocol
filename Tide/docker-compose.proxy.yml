@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  nginx:
+    image: jwilder/nginx-proxy
+    ports:
+      - '80:80'
+    volumes:
+      - '/var/run/docker.sock:/tmp/docker.sock:ro'
+    networks: 
+      - 'default'
+
+  ork1:
+    depends_on:
+      - 'nginx'
+
+  ork2:
+    depends_on:
+      - 'nginx'
+
+  ork3:
+    depends_on:
+      - 'nginx'

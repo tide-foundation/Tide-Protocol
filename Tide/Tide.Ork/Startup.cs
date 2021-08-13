@@ -79,7 +79,8 @@ namespace Tide.Ork {
          
             app.UseDeveloperExceptionPage(); // TODO: Remove for production
 
-            app.UseHttpsRedirection();
+            if (env.IsProduction())
+                app.UseHttpsRedirection();
 
             app.UseRouting();
             
