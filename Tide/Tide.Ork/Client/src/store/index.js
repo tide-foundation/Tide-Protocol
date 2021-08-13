@@ -73,11 +73,11 @@ export default new Vuex.Store({
 
         context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
 
-        var silentLoginAccount = context.state.tide.loginSilently();
-        if (silentLoginAccount != null) {
-          await context.dispatch("finalizeAuthentication", silentLoginAccount);
-          return;
-        }
+        // var silentLoginAccount = context.state.tide.loginSilently();
+        // if (silentLoginAccount != null) {
+        //   await context.dispatch("finalizeAuthentication", silentLoginAccount);
+        //   return;
+        // }
 
         // if (!context.state.tide.validateReturnUrl(Vue.prototype.$bus.origin, data.hashedReturnUrl)) {
         //   return Vue.prototype.$bus.source.postMessage({ type: "tide-failed", data: { error: "Failed to validate returnUrl" } }, Vue.prototype.$bus.origin);
