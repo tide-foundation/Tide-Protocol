@@ -27,6 +27,7 @@ services:
       dockerfile: ./Tide.Simulator/Dockerfile
     command: ['./wait-for-it.sh', 'db_migration:80', '-s', '-t', '30',  '--', 'dotnet', 'Tide.Simulator.dll']
     environment:
+      VIRTUAL_HOST: 'simulator.local'
       Settings__BearerKey: '5Fs4D8rzmI6eUur3zbw27ZeQ'
       Settings__Connection: 'Server=db_host;Database=db;User Id=sa;Password=P@ssw0rd;'
       Settings__Threshold: '3'

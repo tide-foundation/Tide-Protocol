@@ -6,6 +6,9 @@ build:
 run:
 	docker-compose -f docker-compose.yml -f docker-compose.storage.yml -f docker-compose.proxy.yml up ork1 ork2 ork3
 
+simulator:
+	docker-compose -f docker-compose.yml -f docker-compose.storage.yml -f docker-compose.proxy.yml up -d simulator
+
 test:  test-basic clean
 	
 test-basic:

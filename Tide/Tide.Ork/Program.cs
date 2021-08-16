@@ -31,13 +31,14 @@ namespace Tide.Ork {
             builder.ConfigureServices((hostContext, services) =>
             {
                 var settings = hostContext.Configuration.GetSection("Settings").Get<Settings>();
-                Console.WriteLine($"info: Registering {settings.Instance.Username} with url: {args[1]}");
 
-                if(args.Any(arg => arg == "--register") && args.Length == 2) {
+                var index = Array.IndexOf(args, "--register");
+                if(index >= 0 && args.Length - index >= 2) {
+                    Console.WriteLine($"info: Registering {settings.Instance.Username} with url: {args[index+1]}");
                     var client = new SimulatorOrkManager(settings.Instance.Username, settings.BuildClient());
                     client.Add(new OrkNode {
                         Id = settings.Instance.Username,
-                        Url = args[1],
+                        Url = args[index+1],
                         PubKey = settings.Instance.GetPrivateKey().GetPublic().ToString()
                     }).GetAwaiter().GetResult();
                 }
