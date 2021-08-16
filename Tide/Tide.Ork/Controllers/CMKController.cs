@@ -65,9 +65,11 @@ namespace Tide.Ork.Controllers
                 Email = HttpUtility.UrlDecode(email)
             };
 
-            var resp = await _manager.SetOrUpdate(account);
-            if (!resp.Success)
+            var resp = await _manager.Add(account);
+            if (!resp.Success) {
+                _logger.LogInformation($"CMK was not added for uid '{uid}'");
                 return resp;
+            }
             
             var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
             //TODO: The ork should not send the orkid because the client should already know

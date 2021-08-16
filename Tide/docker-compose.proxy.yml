@@ -10,6 +10,14 @@ services:
     networks: 
       - 'default'
 
+  db_host:
+    ports:
+      - '1433:1433'
+
+  simulator:
+    depends_on:
+      - 'nginx'
+
   ork1:
     depends_on:
       - 'nginx'
