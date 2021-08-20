@@ -84,16 +84,19 @@ export default class DCryptFlow {
 
   /** @param {AESKey} cmkAuth */
   async getKey(cmkAuth, noPublic = false) {
-    var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-    const cvkAuths = idBuffers.map(buff => concat(buff, this.user.buffer)).map(buff => cmkAuth.derive(buff));
+    const idGens = await Promise.all(this.clients.map((c) => c.getClientGenerator()));
 
     const tranid = new Guid();
-    const cipherCvks = await Promise.all(this.clients.map((c, i) => c.getCvk(tranid, cvkAuths[i])));
+    const ids = idGens.map(idGen => idGen.id);
+    const lis = ids.map(id => SecretShare.getLi(id, ids, C25519Point.n));
+    const cvkAuths = idGens.map(idGen => concat(idGen.buffer, this.user.buffer)).map(buff => cmkAuth.derive(buff));
+    const cipherCvks = this.clients.map((c, i) => c.getCvk(tranid, cvkAuths[i], lis[i]));
 
-    var cvks = cvkAuths.map((auth, i) => auth.decrypt(cipherCvks[i])).map((shr) => BnInput.getBig(shr));
-
-    var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
-    var cvk = SecretShare.interpolate(ids, cvks, C25519Point.n);
+    const cvks = cvkAuths.map(async (auth, i) => BnInput.getBig(auth.decrypt(await cipherCvks[i])));
+    const cvk = await cvks.reduce(async (sumP, cvkiP) => {
+      const [sum, cvki] = await Promise.all([sumP, cvkiP]);
+      return sum.add(cvki).mod(C25519Point.n);
+    });
 
     return C25519Key.private(cvk, noPublic);
   }

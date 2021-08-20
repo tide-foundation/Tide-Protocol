@@ -93,8 +93,14 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("{vuid}/{token}")]
-        public async Task<ActionResult<byte[]>> GetCvk([FromRoute] Guid vuid, [FromRoute] string token, [FromHeader] Guid tranid)
+        public async Task<ActionResult<byte[]>> GetCvk([FromRoute] Guid vuid, [FromRoute] string token, [FromQuery] Guid tranid, [FromQuery] string li = null)
         {
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian)) {
+                _logger.LogInformation("Invalid li for {vuid}: '{li}' ", vuid, li);
+                return BadRequest("Invalid parameter li");
+            }
+
             var tran = TranToken.Parse(FromBase64(token));
 
             var account = await _managerCvk.GetById(vuid);
@@ -109,7 +115,8 @@ namespace Tide.Ork.Controllers
             }
 
             _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Returning cvk from {vuid}");
-            return account.CvkiAuth.Encrypt(account.CVKi.ToByteArray(true, true));
+            var cvki = lagrangian <= 0 ? account.CVKi : (account.CVKi * lagrangian).Mod(C25519Point.N);
+            return account.CvkiAuth.Encrypt(cvki.ToByteArray(true, true));
         }
 
         [HttpGet("challenge/{vuid}/{keyId}")]
