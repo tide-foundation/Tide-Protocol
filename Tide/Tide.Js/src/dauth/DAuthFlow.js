@@ -85,22 +85,23 @@ export default class DAuthFlow {
    * @param {C25519Point} point */
   async logIn(password, point) {
     try {
-      var [prismAuth, token] = await this.getPrismAuth(password);
-      var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-      var prismAuths = idBuffers.map((buff) => prismAuth.derive(buff));
+      const [prismAuth, token] = await this.getPrismAuth(password);
+
+      const idGens = await Promise.all(this.clients.map((c) => c.getClientGenerator()));
+      const prismAuths = idGens.map(idGen => prismAuth.derive(idGen.buffer));
+      const tokens = this.clients.map((c, i) => token.copy().sign(prismAuths[i], c.userBuffer));
 
       const tranid = new Guid();
-      var tokens = this.clients.map((c, i) => token.copy().sign(prismAuths[i], c.userBuffer));
-      var ciphers = await Promise.all(this.clients.map((cli, i) => cli.signIn(tranid, tokens[i], point)));
-
-      var cvkAuths = prismAuths.map((auth, i) => auth.decrypt(ciphers[i])).map(shr => C25519Point.from(shr));
-
-      var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
+      const ids = idGens.map(idGen => idGen.id);
+      const lis = ids.map(id => SecretShare.getLi(id, ids, C25519Point.n));
+      const pre_ciphers = this.clients.map((cli, i) => cli.signIn(tranid, tokens[i], point, lis[i]));
 
       /** @type {C25519Point} */
-      var cvkAuth = ids.map(id => SecretShare.getLi(id, ids, C25519Point.n))
-          .map((li, i) => cvkAuths[i].times(li))
-          .reduce((sum, cvkAuthi) => sum.add(cvkAuthi), C25519Point.infinity);
+      const cvkAuth = await prismAuths.map(async (auth, i) => C25519Point.from(auth.decrypt(await pre_ciphers[i])))
+        .reduce(async (sumP, cvkAuthiP) => {
+          const [sum, cvkAuthi] = await Promise.all([sumP, cvkAuthiP]);
+          return sum.add(cvkAuthi);
+        });
 
       return AESKey.seed(cvkAuth.toArray());
     } catch (err) {
@@ -112,19 +113,28 @@ export default class DAuthFlow {
    * @returns {Promise<[AESKey, TranToken]>} */
   async getPrismAuth(pass) {
     try {
-      var r = random();
-      var n = C25519Point.n;
-      var g = C25519Point.fromString(pass);
-      var gR = g.multiply(r);
+      const pre_ids = this.clients.map((c) => c.getClientId());
 
-      var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
-      var lis = ids.map((id) => SecretShare.getLi(id, ids, n));
+      const r = random();
+      const n = C25519Point.n;
+      const g = C25519Point.fromString(pass);
+      const gR = g.multiply(r);
 
-      var gRPrismis = await Promise.all(this.clients.map((cli) => cli.ApplyPrism(gR)));
-      var gRPrism = gRPrismis.map(([ki], i) => ki.times(lis[i])).reduce((rki, sum) => rki.add(sum));
-      var gPrism = gRPrism.times(r.modInv(n));
+      const ids = await Promise.all(pre_ids);
+      const lis = ids.map((id) => SecretShare.getLi(id, ids, n));
 
-      return [AESKey.seed(gPrism.toArray()), gRPrismis[0][1]];
+      const pre_gRPrismis = this.clients.map((cli, i) => cli.ApplyPrism(gR, lis[i]));
+      const rInv = r.modInv(n);
+
+      const gRPrism = await pre_gRPrismis.map(async ki => (await ki)[0]).reduce(async (sumP, rkiP) => {
+        const [sum, rki] = await Promise.all([sumP, rkiP]);
+        return sum.add(rki);
+      });
+
+      const gPrism = gRPrism.times(rInv);
+      const [,token] = await pre_gRPrismis[0];
+
+      return [AESKey.seed(gPrism.toArray()), token];
     } catch (err) {
       return Promise.reject(err);
     }

@@ -63,6 +63,13 @@ export default class ClientBase {
     return this._clientId.buffer;
   }
 
+  async getClientGenerator() {
+    if (!this._clientId)
+      await this._setClientId();
+
+    return this._clientId;
+  }
+
   /** @returns {Promise<C25519Key>} */
   async getPublic() {
     var res = await this._get("/public");
