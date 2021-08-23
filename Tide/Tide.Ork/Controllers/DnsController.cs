@@ -57,8 +57,12 @@ namespace Tide.Ork.Controllers
         [HttpPost("ids")]
         public async Task<List<DnsEntry>> GetByIds([FromBody] Guid[] ids)
         {
-            var orksInfoTask = await _orkManager.GetAll();
-            var entries = await _manager.GetByIds(ids);
+            var reqTask = _orkManager.GetAll();
+            var entriesTask = _manager.GetByIds(ids);
+            await Task.WhenAll(reqTask, entriesTask);
+
+            var orksInfoTask = await reqTask;
+            var entries = await entriesTask;
 
             foreach (var entry in entries)
             {

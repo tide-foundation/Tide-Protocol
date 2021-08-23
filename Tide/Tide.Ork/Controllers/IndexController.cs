@@ -16,6 +16,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Tide.Core;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
@@ -37,7 +38,12 @@ namespace Tide.Ork.Controllers
         }
  
        [HttpGet("public")]
-        public ActionResult<string> GetPublic() => _config.PrivateKey.GetPublic().ToString();
+        public ActionResult<string> GetPublic() {
+            Response.Headers[HeaderNames.CacheControl] = "public, max-age=1800, immutable";
+            Response.Headers[HeaderNames.Expires] = new[] { DateTime.UtcNow.AddSeconds(1800).ToString("R") };
+            
+            return _config.PrivateKey.GetPublic().ToString();
+        }
 
         #if DEBUG
         [HttpGet("register")]

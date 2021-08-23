@@ -79,11 +79,17 @@ namespace Tide.Ork.Controllers
 
         [ThrottleAttribute("uid")]
         [HttpGet("prism/{uid}/{pass}")]
-        public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string pass)
+        public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string pass, [FromQuery] string li = null)
         {
             if (!pass.FromBase64UrlString(out byte[] bytesPass)) {
                 _logger.LogInformation($"Apply: Invalid pass for {uid}");
                 return BadRequest("Invalid parameters");
+            }
+
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian)) {
+                _logger.LogInformation("Apply: Invalid li for {uid}: '{li}' ", uid, li);
+                return BadRequest("Invalid parameter li");
             }
 
             C25519Point g;
@@ -107,7 +113,7 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Invalid parameters");
             }
 
-            var gs = g * s;
+            var gs = lagrangian <= 0 ? g * s : g * (s *  lagrangian).Mod(C25519Point.N);
 
             _logger.LogInformation($"Login attempt for {uid}", uid, pass);
             return new ApplyResponse
@@ -119,12 +125,19 @@ namespace Tide.Ork.Controllers
 
         //TODO: Add throttling by ip and account separate
         [HttpGet("auth/{uid}/{point}/{token}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] C25519Point point, [FromRoute] string token, [FromHeader] Guid tranid)
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] C25519Point point, [FromRoute] string token, [FromQuery] Guid tranid, [FromQuery] string li = null)
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken))
             {
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Invalid token format for {uid}");
                 return Unauthorized();
+            }
+
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
+            {
+                _logger.LogInformation("Apply: Invalid li for {uid}: '{li}' ", uid, li);
+                return BadRequest("Invalid parameter li");
             }
 
             var tran = TranToken.Parse(bytesToken);
@@ -144,7 +157,7 @@ namespace Tide.Ork.Controllers
             }
 
             _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Successful login for {uid}");
-            var cvkAuthi = (point * account.Cmki).ToByteArray();
+            var cvkAuthi = (lagrangian <= 0 ? point * account.Cmki : point * (account.Cmki * lagrangian).Mod(C25519Point.N)).ToByteArray();
             return Ok(account.PrismiAuth.EncryptStr(cvkAuthi));
         }
 

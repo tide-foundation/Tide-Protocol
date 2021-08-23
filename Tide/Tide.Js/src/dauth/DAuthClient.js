@@ -26,10 +26,17 @@ export default class DAuthClient extends ClientBase {
     super(url, user, memory);
   }
 
-  /** @param {C25519Point} pass
+  /** 
+   * @param {C25519Point} pass
+   * @param {bigInt.BigInteger} li
    *  @returns {Promise<[C25519Point, TranToken]>} */
-  async ApplyPrism(pass) {
-    var res = await this._get(`/cmk/prism/${this.userGuid}/${urlEncode(pass.toArray())}`);
+  async ApplyPrism(pass, li = null) {
+    let url = `/cmk/prism/${this.userGuid}/${urlEncode(pass.toArray())}`;
+    if (li) {
+      url += `?li=${li.toString(10)}`
+    }
+
+    const res = await this._get(url);
     return [ C25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
   }
 
@@ -37,12 +44,18 @@ export default class DAuthClient extends ClientBase {
    * @param { import("../guid").default } tranid
    * @param {TranToken} token
    * @param {C25519Point} point
+   * @param {bigInt.BigInteger} li
    **/
-  async signIn(tranid, token, point) {
+  async signIn(tranid, token, point, li = null) {
     const tkn = urlEncode(token.toArray());
     const pnt = urlEncode(point.toArray());
 
-    const res = await this._get(`/cmk/auth/${this.userGuid}/${pnt}/${tkn}`).set('tranid', tranid.toString());
+    let url = `/cmk/auth/${this.userGuid}/${pnt}/${tkn}?tranid=${tranid.toString()}`;
+    if (li) {
+      url += `&li=${li.toString(10)}`
+    }
+
+    const res = await this._get(url);
     return fromBase64(res.text);
   }
 
