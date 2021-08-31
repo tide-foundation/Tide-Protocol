@@ -14,7 +14,8 @@ RUN apt update && apt install -y gnupg2 netcat \
 
 COPY ["Tide.Core/", "Tide.Core/"]
 COPY ["Tide.Simulator/", "Tide.Simulator/"]
-RUN dotnet-ef migrations script --idempotent --project "Tide.Simulator" --output "migration.sql"
+RUN chmod +x "./Tide.Simulator/entrypoint.sh" \
+    && dotnet-ef migrations script --idempotent --project "Tide.Simulator" --output "migration.sql"
 RUN sed -i '1s/^...//' migration.sql \
     && sed -i "1s/^/CREATE DATABASE [db];\nGO\n\nUSE db;\nGO\n\n/" migration.sql \
     && sed -i "1s/^/IF NOT EXISTS(SELECT name FROM sys.sysdatabases where name='db')\n/" migration.sql

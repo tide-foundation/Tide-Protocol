@@ -92,6 +92,7 @@ namespace Tide.Ork.Controllers
             return resp;
         }
 
+        [MetricAttribute("cvk", recordSuccess:true)]
         [HttpGet("{vuid}/{token}")]
         public async Task<ActionResult<byte[]>> GetCvk([FromRoute] Guid vuid, [FromRoute] string token, [FromQuery] Guid tranid, [FromQuery] string li = null)
         {

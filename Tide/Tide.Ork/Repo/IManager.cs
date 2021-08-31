@@ -10,6 +10,7 @@ namespace Tide.Ork.Repo
         Task<List<T>> GetAll();
         Task<bool> Exist(Guid id);
         Task<T> GetById(Guid id);
+        Task<TideResponse> Add(T entity);
         Task<TideResponse> SetOrUpdate(T entity);
         Task Delete(Guid id);
     }

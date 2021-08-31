@@ -18,7 +18,7 @@ namespace Tide.Ork.Repo {
             _client = client;
         }
 
-        public async Task<bool> Exist(Guid id) => await GetById(id) == null;
+        public async Task<bool> Exist(Guid id) => await GetById(id) != null;
 
         public async Task<List<T>> GetAll()
         {
