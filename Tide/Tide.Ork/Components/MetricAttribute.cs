@@ -32,7 +32,7 @@ namespace Tide.Ork.Classes
                 MeasurementUnit = Unit.Errors
             };
 
-            _success = this.recordSuccess != recordSuccess ? null
+            _success = !(this.recordSuccess = recordSuccess) ? null
                 : new MeterOptions {
                     Name = $"{name}_success",
                     MeasurementUnit = Unit.Events
