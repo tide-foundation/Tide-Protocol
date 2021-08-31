@@ -79,6 +79,7 @@ namespace Tide.Ork.Controllers
             return resp;
         }
 
+        [MetricAttribute("prism")]
         [ThrottleAttribute("uid")]
         [HttpGet("prism/{uid}/{pass}")]
         public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string pass, [FromQuery] string li = null)
@@ -126,6 +127,7 @@ namespace Tide.Ork.Controllers
         }
 
         //TODO: Add throttling by ip and account separate
+        [MetricAttribute("cmk", recordSuccess:true)]
         [HttpGet("auth/{uid}/{point}/{token}")]
         public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] C25519Point point, [FromRoute] string token, [FromQuery] Guid tranid, [FromQuery] string li = null)
         {
