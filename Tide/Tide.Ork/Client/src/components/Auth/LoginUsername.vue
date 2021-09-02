@@ -10,7 +10,8 @@
       <input type="text" required class="mt-30" v-model="user.username" placeholder="Username" ref="focus" />
 
       <div class="action-row mt-20">
-        <p @click="$parent.changeMode('Register')">Create Account</p>
+        <p v-if="!$store.getters.demoMode" @click="$parent.changeMode('Register')">Create Account</p>
+        <p v-else></p>
         <button>Next</button>
       </div>
 

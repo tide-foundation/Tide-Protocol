@@ -34,6 +34,7 @@ export default new Vuex.Store({
     event: null,
     encryptionKey: null,
     vendorLogo: null,
+    demoMode: false,
   },
   mutations: {
     UPDATE_MODE(state, newMode) {
@@ -70,7 +71,8 @@ export default new Vuex.Store({
         context.state.vendorName = data.vendorName;
         context.state.keepOpen = data.keepOpen;
         context.state.style = data.style;
-
+        context.state.demoMode = data.demoMode;
+        console.log(data.demoMode);
         context.state.formData = data.formData;
 
         context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
@@ -161,7 +163,10 @@ export default new Vuex.Store({
       data.action = Vue.prototype.$bus.source.postMessage({ type: "tide-authenticated", data }, Vue.prototype.$bus.origin);
 
       if (context.state.formData) router.push("/form");
-      else context.dispatch("closeWindow");
+      else {
+        if (context.state.demoMode) router.push("/tech-crunch");
+        else context.dispatch("closeWindow");
+      }
     },
     async postData(context, data) {
       Vue.prototype.$bus.source.postMessage({ type: "tide-form", data }, Vue.prototype.$bus.origin);
@@ -189,5 +194,6 @@ export default new Vuex.Store({
     origin: (state) => state.origin,
     encryptionKey: (state) => state.encryptionKey,
     vendorLogo: (state) => state.vendorLogo,
+    demoMode: (state) => state.demoMode,
   },
 });

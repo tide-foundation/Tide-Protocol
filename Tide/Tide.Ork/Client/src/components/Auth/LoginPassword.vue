@@ -7,7 +7,8 @@
       <input type="password" class="mt-50" v-model="user.password" placeholder="Enter Password" ref="focus" />
 
       <div class="action-row mt-50">
-        <p @click="$parent.changeMode('ForgotSend')">Forgot Password?</p>
+        <p v-if="!$store.getters.demoMode" @click="$parent.changeMode('ForgotSend')">Forgot Password?</p>
+        <p v-else></p>
         <button>LOGIN</button>
       </div>
 
