@@ -33,6 +33,7 @@ export default new Vuex.Store({
     origin: null,
     event: null,
     encryptionKey: null,
+    vendorLogo: null,
   },
   mutations: {
     UPDATE_MODE(state, newMode) {
@@ -68,10 +69,25 @@ export default new Vuex.Store({
         context.state.debug = data.debug;
         context.state.vendorName = data.vendorName;
         context.state.keepOpen = data.keepOpen;
+        context.state.style = data.style;
 
         context.state.formData = data.formData;
 
         context.state.tide = new Tide("VendorId", data.vendorUrl, data.orks, data.vendorPublic);
+
+        try {
+          if (data.style != null) {
+            context.state.vendorLogo = data.style.logo;
+
+            if (data.style.stylesheet != null) {
+              var sheet = document.createElement("style");
+              sheet.innerHTML = data.style.stylesheet;
+              document.body.appendChild(sheet);
+            }
+          }
+        } catch (error) {
+          console.log("Error occured in stylesheet", error);
+        }
 
         // var silentLoginAccount = context.state.tide.loginSilently();
         // if (silentLoginAccount != null) {
@@ -172,5 +188,6 @@ export default new Vuex.Store({
     source: (state) => state.source,
     origin: (state) => state.origin,
     encryptionKey: (state) => state.encryptionKey,
+    vendorLogo: (state) => state.vendorLogo,
   },
 });

@@ -3,8 +3,8 @@
     <h2>Update your details</h2>
     <form id="update-form" @submit.prevent="update">
       <div class="form-field" v-for="(field, index) in fields" :key="index">
-        <label for="">{{ field.field }}</label>
-        <input class="mt-10" type="text" v-model="field.value" required :placeholder="field.field" />
+        <label class="form-label" for="">{{ field.field }}</label>
+        <input class="mt-10 form-input" type="text" v-model="field.value" required :placeholder="field.field" />
       </div>
 
       <button class="mt-20" type="submit">UPDATE DETAILS</button>

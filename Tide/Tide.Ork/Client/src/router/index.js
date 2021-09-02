@@ -4,6 +4,7 @@ import Initializing from "../views/Initializing.vue";
 import Auth from "../views/Auth.vue";
 import Form from "../views/Form.vue";
 import Account from "../views/Account.vue";
+import TechCrunch from "../views/TechCrunch.vue";
 import Store from "../store/";
 
 Vue.use(VueRouter);
@@ -31,6 +32,11 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+  },
+  {
+    path: "/tech-crunch",
+    name: "Tech Crunch",
+    component: TechCrunch,
   },
 ];
 
