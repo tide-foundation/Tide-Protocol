@@ -1,7 +1,11 @@
 <template>
   <div id="app">
+    <div id="vendor-logo">
+      <img v-if="$store.getters.vendorLogo != null" class="logo" :src="$store.getters.vendorLogo" alt="" />
+    </div>
     <Status></Status>
     <Loading></Loading>
+
     <img class="logo" src="@/assets/img/tide-logo.svg" alt="tide logo" />
     <!-- <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/5/51/RMIT_University_Logo.svg" alt="tide logo" /> -->
     <div id="content" v-if="!useTwoFactor || $store.getters.sessionId != null">
@@ -67,6 +71,20 @@ export default {
 
   .logo {
     width: 150px;
+  }
+}
+
+#vendor-logo {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+
+  img {
+    width: 200px;
+    margin: 10px 10px 0 0;
   }
 }
 </style>
