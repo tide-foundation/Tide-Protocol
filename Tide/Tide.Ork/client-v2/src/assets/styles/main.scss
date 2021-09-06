@@ -2,9 +2,9 @@
 
 @font-face {
   font-family: "Avenir LT Std";
-  src: url("AvenirLTStd-Roman.eot");
-  src: local("Avenir LT Std 55 Roman"), local("AvenirLTStd-Roman"), url("AvenirLTStd-Roman.eot?#iefix") format("embedded-opentype"),
-    url("AvenirLTStd-Roman.woff") format("woff"), url("AvenirLTStd-Roman.svg#AvenirLTStd-Roman") format("svg");
+  src: url("./font/AvenirLTStd-Roman.eot");
+  src: local("Avenir LT Std 55 Roman"), local("AvenirLTStd-Roman"), url("./font/AvenirLTStd-Roman.eot?#iefix") format("embedded-opentype"),
+    url("./font/AvenirLTStd-Roman.woff") format("woff"), url("./font/AvenirLTStd-Roman.svg#AvenirLTStd-Roman") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -100,4 +100,22 @@ a {
   &:hover {
     color: $secondary;
   }
+}
+
+.mobile {
+  display: none;
+  @media only screen and (max-width: $mobile-break) {
+    display: initial;
+  }
+}
+
+.desktop {
+  display: initial;
+  @media only screen and (max-width: $mobile-break) {
+    display: none;
+  }
+}
+
+.error {
+  color: rgb(185, 43, 43);
 }

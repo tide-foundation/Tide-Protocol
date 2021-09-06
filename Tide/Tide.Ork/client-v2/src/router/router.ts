@@ -20,6 +20,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "Login",
         component: () => import(/* webpackChunkName: "login" */ "../views/Login.vue"),
       },
+      {
+        path: "/register",
+        name: "Register",
+        component: () => import(/* webpackChunkName: "register" */ "../views/Register.vue"),
+      },
     ],
   },
 ];
@@ -30,9 +35,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  // await mainStore.waitForInitialization();
-
-  //if (to.matched.some((record) => record.meta.requiresInit) && mainStore.getState.user == null) return next("/initializing");
+  if (to.matched.some((record) => record.meta.requiresInit) && mainStore.getState.tide == null) return next("/");
   return next();
 });
 

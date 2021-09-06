@@ -22,14 +22,14 @@ const fetchHeight = () => {
 
 <style lang="scss" scoped>
 #app {
-  height: calc(var(--vh, 1vh) * 100);
-
+  height: $screen-height;
+  background: url(./assets/img/rmit-background-2.jpg);
+  background-size: cover;
+  background-position: bottom;
   #wrapper {
     width: 100%;
     max-width: 800px;
-    height: 600px;
-    border: 1px solid rgb(219, 219, 219);
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    min-height: 500px;
   }
 }
 </style>
