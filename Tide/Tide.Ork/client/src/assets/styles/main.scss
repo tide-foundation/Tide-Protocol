@@ -119,3 +119,47 @@ a {
 .error {
   color: rgb(185, 43, 43);
 }
+
+.auth-page {
+  text-align: center;
+  align-items: stretch;
+
+  .page-title {
+    justify-content: space-between;
+
+    .spacer {
+      width: 4px;
+
+      &.line {
+        background-color: $primary;
+        height: 50px;
+
+        transform: translate(-20px, 17px);
+      }
+    }
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+
+  .actions {
+    a {
+      //  margin-left: 10px;
+      width: 130px;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .loading-graphic {
+    pointer-events: none;
+    position: absolute;
+    //background-color: $background;
+    left: 0;
+    top: 0;
+  }
+}

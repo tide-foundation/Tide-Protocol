@@ -1,12 +1,10 @@
+// vue.config.js
 module.exports = {
-  productionSourceMap: false,
   css: {
-    extract: false,
-  },
-  configureWebpack: {
-    optimization: {
-      splitChunks: false,
+    loaderOptions: {
+      sass: {
+        prependData: `@import "@/assets/styles/_variables.scss";`,
+      },
     },
   },
-  integrity: true,
 };

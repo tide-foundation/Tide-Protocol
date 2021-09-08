@@ -1,21 +1,21 @@
 <template>
-  <div id="layout" class="full-height f-r">
+  <div id="auth-layout" class="full-height f-r">
     <div id="left" class="f-grow f-c">
-      <img src="../assets/img/qr.svg" alt="" />
+      <img src="../../assets/img/qr.svg" alt="" />
       <h3>Tide Authenticator</h3>
     </div>
     <div id="right" class="full-height f-c">
-      <img class="vendor-logo mobile" src="../assets/img/rmit-logo-dark.svg" alt="" />
+      <img class="vendor-logo mobile" src="../../assets/img/rmit-logo-dark.svg" alt="" />
       <div id="header" class="full-width "></div>
       <div id="content" class="f-grow full-width ">
         <router-view></router-view>
       </div>
 
       <a id="footer" class="full-width f-c" href="https://tide.org" target="_blank">
-        <img src="../assets/img/tide-inside.png" alt="" />
+        <img src="../../assets/img/tide-inside.png" alt="" />
       </a>
     </div>
-    <img class="vendor-logo desktop" src="../assets/img/rmit-logo.svg" alt="" />
+    <img class="vendor-logo desktop" src="../../assets/img/rmit-logo.svg" alt="" />
   </div>
 </template>
 
@@ -24,7 +24,10 @@ import { ref, computed } from "vue";
 </script>
 
 <style lang="scss" scoped>
-#layout {
+#auth-layout {
+  width: 98%;
+  max-width: 800px;
+  min-height: 500px;
   position: relative;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   .vendor-logo {
@@ -81,9 +84,10 @@ import { ref, computed } from "vue";
     }
 
     #footer {
-      height: 50px;
+      height: 60px;
 
       img {
+        margin-bottom: 10px;
         //  height: 200px;
       }
     }

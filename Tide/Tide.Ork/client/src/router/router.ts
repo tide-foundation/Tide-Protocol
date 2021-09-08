@@ -9,8 +9,8 @@ const routes: Array<RouteRecordRaw> = [
     component: Initializing,
   },
   {
-    path: "/layout",
-    component: () => import(/* webpackChunkName: "layout" */ "../views/Layout.vue"),
+    path: "/auth-layout",
+    component: () => import(/* webpackChunkName: "auth-layout" */ "../views/auth/Auth-Layout.vue"),
     meta: {
       requiresInit: true,
     },
@@ -18,12 +18,26 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/login",
         name: "Login",
-        component: () => import(/* webpackChunkName: "login" */ "../views/Login.vue"),
+        component: () => import(/* webpackChunkName: "login" */ "../views/auth/Login.vue"),
       },
       {
         path: "/register",
         name: "Register",
-        component: () => import(/* webpackChunkName: "register" */ "../views/Register.vue"),
+        component: () => import(/* webpackChunkName: "register" */ "../views/auth/Register.vue"),
+      },
+    ],
+  },
+  {
+    path: "/layout",
+    component: () => import(/* webpackChunkName: "layout" */ "../views/Layout.vue"),
+    meta: {
+      requiresInit: true,
+    },
+    children: [
+      {
+        path: "/form",
+        name: "Form",
+        component: () => import(/* webpackChunkName: "form" */ "../views/Form.vue"),
       },
     ],
   },

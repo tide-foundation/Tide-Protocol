@@ -1,68 +1,94 @@
 <template>
-  <div>
-    <h2>Update your details</h2>
-    <form id="update-form" @submit.prevent="update">
-      <div class="form-field" v-for="(field, index) in fields" :key="index">
-        <label class="form-label" for="">{{ field.field }}</label>
-        <input class="mt-10 form-input" type="text" v-model="field.value" required :placeholder="field.field" />
+  <div id="form">
+    <div class="row">
+      <div class="col-12">
+        <h2>Update your details</h2>
+      </div>
+    </div>
+
+    <form id="update-form" class="f-c" @submit.prevent="update">
+      <div id="form-padding">.</div>
+      <div class="row">
+        <div class="col-12 col-md-4" v-for="(field, index) in fields">
+          <tide-input :key="index" :id="field.field" v-model="field.value">{{ field.friendlyName }}</tide-input>
+        </div>
       </div>
 
-      <button class="mt-20" type="submit">UPDATE DETAILS</button>
+      <div class="row">
+        <div class="col-4">
+          <button class="mt-20" type="submit">UPDATE DETAILS</button>
+        </div>
+      </div>
     </form>
   </div>
 </template>
 
-<script>
-import MetaField from "../assets/js/MetaField";
-export default {
-  data() {
-    return {
-      fields: [],
-      encrypted: true,
-      formData: this.$store.getters.formData,
-      account: this.$store.getters.account,
-      key: this.$store.getters.encryptionKey,
-    };
-  },
-  created() {
-    this.encrypted = this.formData.type == "modify";
+<script setup lang="ts">
+import mainStore from "@/store/mainStore";
+import TideInput from "@/components/Tide-Input.vue";
+import { ref, computed, onMounted } from "vue";
+// @ts-ignore
+import MetaField from "@/assets/ts/MetaField";
 
-    this.fields = MetaField.fromModel(this.formData.data, this.encrypted, this.formData.validation, this.formData.classification, this.formData.tags);
+var fields = ref<any>([]);
+var encrypted = ref(true);
+var formData = ref(mainStore.getState.config.formData);
 
-    if (this.encrypted) {
-      for (const field of this.fields) {
-        field.decrypt(this.key);
-      }
+onMounted(() => {
+  encrypted.value = formData.value.type == "modify";
+
+  fields.value = MetaField.fromModel(
+    formData.value.data,
+    encrypted.value,
+    formData.value.validation,
+    formData.value.classification,
+    formData.value.tags
+  );
+
+  for (const field of fields.value) {
+    const splitCamel = field.field.replace(/([a-z])([A-Z])/g, "$1 $2") as string;
+    field.friendlyName = `${splitCamel[0].toUpperCase()}${splitCamel.substring(1)}`;
+
+    if (encrypted.value) field.decrypt(mainStore.getState.account!.encryptionKey);
+  }
+});
+
+const update = async () => {
+  setTimeout(async () => {
+    for (const field of fields.value) {
+      field.encrypt(mainStore.getState.account!.encryptionKey);
     }
-  },
-  methods: {
-    async update() {
-      this.$loading(true, "Encrypting your data and returning it to the vendor");
-      setTimeout(async () => {
-        for (const field of this.fields) {
-          field.encrypt(this.key);
-        }
 
-        await this.$store.dispatch("postData", MetaField.buildModel(this.fields));
-
-        this.$store.dispatch("closeWindow");
-      }, 50);
-
-      // if (this.$store.getters.formData.closeAfter) this.$store.dispatch("closeWindow");
-    },
-  },
+    mainStore.returnFormData(fields.value);
+  }, 50);
 };
 </script>
 
 <style lang="scss" scoped>
-.form-field {
-  position: relative;
-  label {
-    position: absolute;
-    top: 10px;
-    left: 5px;
-    font-size: 12px;
-    color: gray;
+#form {
+  width: 100%;
+
+  h2 {
+    margin-left: 20px;
+    font-size: 1.4rem;
+  }
+
+  #update-form {
+    width: 100%;
+
+    overflow-y: auto;
+
+    #form-padding {
+      display: block;
+    }
+    .row {
+      width: 100%;
+      .col-4 {
+        button {
+          width: 100%;
+        }
+      }
+    }
   }
 }
 </style>

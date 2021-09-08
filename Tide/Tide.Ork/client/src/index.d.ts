@@ -43,6 +43,11 @@ declare global {
     encryptionKey?: string;
   }
 
+  interface ReturnData {
+    key: string;
+    value: string;
+  }
+
   type ModeType = "auto" | "button" | "frame" | "manual" | "redirect";
   type AuthAction = "Login" | "Register";
 }

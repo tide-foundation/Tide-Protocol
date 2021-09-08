@@ -1,4 +1,4 @@
-# client-v3
+# basic
 
 ## Project setup
 ```
@@ -15,9 +15,9 @@ npm run serve
 npm run build
 ```
 
-### Run your unit tests
+### Lints and fixes files
 ```
-npm run test:unit
+npm run lint
 ```
 
 ### Customize configuration
