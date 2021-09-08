@@ -12,10 +12,10 @@ COPY ["Tide.Ork/Tide.Ork.csproj", "Tide.Ork/"]
 COPY ["Tide.Core/Tide.Core.csproj", "Tide.Core/"]
 COPY ["Tide.VendorSdk/Tide.VendorSdk.csproj", "Tide.VendorSdk/"]
 COPY ["Tide.Js/package.json", "Tide.Js/package-lock.json", "Tide.Js/"]
-COPY ["Tide.Ork/Client/package.json", "Tide.Ork/Client/package-lock.json", "Tide.Ork/Client/"]
+COPY ["Tide.Ork/Enclave/package.json", "Tide.Ork/Enclave/package-lock.json", "Tide.Ork/Enclave/"]
 RUN dotnet restore "Tide.Ork/Tide.Ork.csproj" \
     && npm install --cwd ./Tide.Js --prefix ./Tide.Js \
-    && npm install --cwd ./Tide.Ork/Client --prefix ./Tide.Ork/Client
+    && npm install --cwd ./Tide.Ork/Enclave --prefix ./Tide.Ork/Enclave
 
 COPY ["Tide.Core/", "Tide.Core/"]
 COPY ["Tide.VendorSdk", "Tide.VendorSdk"]
@@ -24,7 +24,7 @@ RUN dotnet build "Tide.VendorSdk" -c Release
 
 COPY ["Tide.Ork", "Tide.Ork"]
 RUN dotnet publish "Tide.Ork/Tide.Ork.csproj" -c Release -o /app/publish \
-    && rm -fr /app/publish/Client/node_modules /app/publish/Client/public
+    && rm -fr /app/publish/Enclave/node_modules /app/publish/Enclave/public
 
 FROM base AS final
 COPY --from=build /app/publish .
