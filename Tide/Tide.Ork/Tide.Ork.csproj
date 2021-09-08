@@ -21,7 +21,7 @@
 
   <!-- START SPA -->
   <PropertyGroup>
-    <SpaRoot>Client\</SpaRoot>
+    <SpaRoot>Enclave\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
   </PropertyGroup>
@@ -32,14 +32,7 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>-->
 
-  <ItemGroup>
-    <Folder Include="Client\dist\" />
-    <Folder Include="Client\dist\css\" />
-    <Folder Include="Client\dist\img\" />
-    <Folder Include="Client\dist\js\" />
-    <Folder Include="Client\src\plugins\" />
-    <!--<Folder Exclude="Client\node_modules\**" />-->
-  </ItemGroup>
+
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build">
     <!-- Build Target:  Ensure Node.js is installed -->
