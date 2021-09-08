@@ -1,49 +1,66 @@
 <template>
-  <div>
-    <h1>
-      INITIALIZING
-    </h1>
-    <br />
-    <h2>
-      PLEASE WAIT
-    </h2>
+  <div id="initializing" class="full-height f-c">
+    <h1>INITIALIZING</h1>
 
-    <p v-if="error != null">{{ error.msg }}</p>
+    <div class="error" v-if="error != ''">
+      {{ error }}
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      error: null,
-    };
-  },
-  created() {
-    this.$bus.$on("initError", (e) => {
-      this.error = e;
-      console.log(this.error);
-    });
-  },
+<script setup lang="ts">
+import mainStore from "@/store/mainStore";
+import { ref, onMounted } from "vue";
+import router from "@/router/router";
+import { SESSION_ACCOUNT_KEY, SESSION_DATA_KEY } from "@/assets/ts/Constants";
+
+var error = ref("");
+
+onMounted(() => {
+  mainStore.initialize(parseConfig());
+
+  if (mainStore.getState.account == null) router.push("/login");
+  else router.push("/form");
+});
+
+const parseConfig = (): Config => {
+  try {
+    // See if a session account is active
+    // var sessionAccount = sessionStorage.getItem(SESSION_ACCOUNT_KEY);
+    // if (sessionAccount != null) mainStore.setAccount(JSON.parse(sessionAccount));
+
+    // Fetch data from query
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    let data = Object.fromEntries(urlSearchParams.entries()).data;
+
+    // Store into session data to preserve refresh
+    if (data != null) sessionStorage.setItem(SESSION_DATA_KEY, data);
+    else {
+      // If query is null, try get from session. User may have refreshed
+      var sessionData = sessionStorage.getItem(SESSION_DATA_KEY);
+      if (sessionData == null) throw "Missing config data";
+      data = sessionData;
+    }
+
+    // Return the decoded and parsed data
+    return JSON.parse(decodeURIComponent(data)) as Config;
+  } catch (e) {
+    //error.value = "sdfsfdssfd";
+    throw e;
+  }
 };
 </script>
 
-<style scoped lang="scss">
-h1 {
-  text-align: center;
-  font-weight: 400;
+<style lang="scss" scoped>
+#initializing {
+  padding: 20px;
+  background-color: white;
+  border-radius: $border-radius;
 
-  margin: 70px 0 0 0;
-  line-height: 20px;
-}
-
-h2 {
-  font-weight: 400;
-  font-size: 14px;
-  margin: 0px;
-}
-
-p {
-  color: red;
+  h1 {
+    font-size: 3rem;
+  }
+  .error {
+  }
 }
 </style>
