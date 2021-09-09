@@ -10,10 +10,6 @@
 import { computed, onMounted } from "vue";
 import mainStore from "./store/mainStore";
 
-var loggedIn = computed(() => {
-  return mainStore.getState.account != null;
-});
-
 onMounted(async () => {
   window.addEventListener("resize", () => fetchHeight());
   fetchHeight();
@@ -28,7 +24,9 @@ const fetchHeight = () => {
 <style lang="scss" scoped>
 #app {
   height: $screen-height;
-  background: url(./assets/img/rmit-background-2.jpg);
+  background-color: #0072c6;
+  // background: url(./assets/img/test-2.jpg);
+
   background-size: cover;
   background-position: bottom;
   #wrapper {
