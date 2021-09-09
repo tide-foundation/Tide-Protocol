@@ -13,21 +13,27 @@
         <button>Sign In</button>
       </div>
     </form>
-
-    <div class="loading-graphic full-width full-height f-c"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import TideInput from "@/components/Tide-Input.vue";
 import mainStore from "@/store/mainStore";
+import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
 
 var user = ref<UserPass>({ username: "445", password: "445" });
 
+const bus = inject(BUS_KEY) as IBus;
+
 const login = async () => {
-  await mainStore.login(user.value);
-  mainStore.authenticationComplete();
+  try {
+    bus.trigger(SET_LOADING_KEY, true);
+    await mainStore.login(user.value);
+    mainStore.authenticationComplete();
+  } catch (error) {
+    bus.trigger(SET_LOADING_KEY, false);
+  }
 };
 </script>
 

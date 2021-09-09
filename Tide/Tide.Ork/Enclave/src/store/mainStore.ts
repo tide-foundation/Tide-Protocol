@@ -29,7 +29,7 @@ class MainStore extends Store<MainState> {
 
   async login(user: UserPass) {
     this.state.action = "Login";
-    const serverTime = await GetServerTime();
+    const serverTime = await getServerTime();
 
     this.setAccount(await this.state.tide.loginJwt(user.username, user.password, serverTime));
 
@@ -40,7 +40,7 @@ class MainStore extends Store<MainState> {
   async registerAccount(user: UserPass) {
     this.state.action = "Register";
 
-    const serverTime = await GetServerTime();
+    const serverTime = await getServerTime();
 
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     var isEmail = re.test(String(user.username).toLowerCase());
@@ -78,12 +78,8 @@ class MainStore extends Store<MainState> {
       vuid: this.state.account!.vuid.toString(),
     };
 
-    let returnUrl = `${this.state.config.returnUrl}${this.state.config.returnUrl.includes("?") ? "&" : "?"}data=${encodeURIComponent(
-      JSON.stringify(authResponse)
-    )}`;
-
     sessionStorage.removeItem(SESSION_ACCOUNT_KEY);
-    window.location.replace(returnUrl);
+    window.location.replace(constructReturnUrl(this.state.config.returnUrl, authResponse));
   }
 
   returnFormData(fields: any[]) {
@@ -94,10 +90,7 @@ class MainStore extends Store<MainState> {
       } as ReturnData;
     });
 
-    let returnUrl = `${this.state.config.returnUrl}${this.state.config.returnUrl.includes("?") ? "&" : "?"}data=${encodeURIComponent(
-      JSON.stringify(returnData)
-    )}`;
-    window.location.replace(returnUrl);
+    window.location.replace(constructReturnUrl(this.state.config.returnUrl, returnData));
   }
 }
 
@@ -105,6 +98,10 @@ const mainStore: MainStore = new MainStore();
 
 export default mainStore;
 
-async function GetServerTime(): Promise<number> {
+async function getServerTime(): Promise<number> {
   return await (await fetch(`${mainStore.getState.config?.serverUrl}/tide-utility/servertime`)).json();
+}
+
+function constructReturnUrl(returnUrl: string, data: object) {
+  return `${returnUrl}${returnUrl.includes("?") ? "&" : "?"}data=${encodeURIComponent(JSON.stringify(data))}`;
 }

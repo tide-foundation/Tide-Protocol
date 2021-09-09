@@ -19,15 +19,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import TideInput from "@/components/Tide-Input.vue";
 import mainStore from "@/store/mainStore";
+import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
 
 var user = ref<UserPass>({ username: `tide_user_${(Math.random() + 1).toString(36).substring(7)}`, password: "333" });
 
+const bus = inject(BUS_KEY) as IBus;
+
 const register = async () => {
-  await mainStore.registerAccount(user.value);
-  mainStore.authenticationComplete();
+  try {
+    bus.trigger(SET_LOADING_KEY, true);
+    await mainStore.registerAccount(user.value);
+    mainStore.authenticationComplete();
+  } catch (error) {
+    bus.trigger(SET_LOADING_KEY, false);
+  }
 };
 </script>
 
