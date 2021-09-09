@@ -1,6 +1,6 @@
-FROM node:14-slim AS test
+FROM node:14.17.6-alpine3.13 AS test
 WORKDIR /src/Tide.Js
-RUN apt update && apt install curl -y \
+RUN apk add --no-cache curl bash \
     && curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /src/Tide.Js/wait-for-it.sh \
     && chmod +x /src/Tide.Js/wait-for-it.sh
 
