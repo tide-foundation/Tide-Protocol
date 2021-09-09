@@ -14,13 +14,22 @@
       <a id="footer" class="full-width f-c" href="https://tide.org" target="_blank">
         <img src="../../assets/img/tide-inside.png" alt="" />
       </a>
+      <transition name="fade" mode="out-in">
+        <loader v-if="loading"></loader>
+      </transition>
     </div>
     <img class="vendor-logo desktop" src="../../assets/img/rmit-logo.svg" alt="" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, inject } from "vue";
+import Loader from "@/components/Loader2.vue";
+import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
+
+const bus = inject(BUS_KEY) as IBus;
+var loading = ref(false);
+bus.on(SET_LOADING_KEY, (data: any) => (loading.value = data));
 </script>
 
 <style lang="scss" scoped>
@@ -60,6 +69,7 @@ import { ref, computed } from "vue";
   }
 
   #right {
+    position: relative;
     width: 100%;
     max-width: 394px;
     background: $background;

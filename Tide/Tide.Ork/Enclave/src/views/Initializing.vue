@@ -1,11 +1,11 @@
 <template>
-  <div id="initializing" class="full-height f-c">
+  <!-- <div id="initializing" class="full-height f-c">
     <h1>INITIALIZING</h1>
 
     <div class="error" v-if="error != ''">
       {{ error }}
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
