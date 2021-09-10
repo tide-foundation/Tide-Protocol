@@ -79,7 +79,7 @@ class MainStore extends Store<MainState> {
     };
 
     sessionStorage.removeItem(SESSION_ACCOUNT_KEY);
-    window.location.replace(constructReturnUrl(this.state.config.returnUrl, authResponse));
+    window.location.replace(constructReturnUrl(this.state.config.returnUrl!, authResponse));
   }
 
   returnFormData(fields: any[]) {
@@ -90,7 +90,7 @@ class MainStore extends Store<MainState> {
       } as ReturnData;
     });
 
-    window.location.replace(constructReturnUrl(this.state.config.returnUrl, returnData));
+    window.location.replace(constructReturnUrl(this.state.config.returnUrl!, returnData));
   }
 }
 

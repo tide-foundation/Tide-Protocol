@@ -5,7 +5,13 @@
       <h3>Tide Authenticator</h3>
     </div>
     <div id="right" class="full-height f-c">
-      <img class="vendor-logo mobile" src="../../assets/img/rmit-logo-dark.svg" alt="" />
+      <img
+        v-if="mainStore.getState.config.styles?.logoDark != null"
+        class="vendor-logo mobile"
+        :src="mainStore.getState.config.styles?.logoDark"
+        alt=""
+      />
+
       <div id="header" class="full-width "></div>
       <div id="content" class="f-grow full-width ">
         <router-view></router-view>
@@ -18,14 +24,20 @@
         <loader v-if="loading"></loader>
       </transition>
     </div>
-    <img class="vendor-logo desktop" src="../../assets/img/rmit-logo.svg" alt="" />
+    <img
+      v-if="mainStore.getState.config.styles?.logoDark != null"
+      class="vendor-logo desktop"
+      :src="mainStore.getState.config.styles?.logoLight"
+      alt=""
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, inject } from "vue";
-import Loader from "@/components/Loader2.vue";
+import Loader from "@/components/Loader.vue";
 import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
+import mainStore from "@/store/mainStore";
 
 const bus = inject(BUS_KEY) as IBus;
 var loading = ref(false);

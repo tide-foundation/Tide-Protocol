@@ -17,7 +17,11 @@ import { SESSION_ACCOUNT_KEY, SESSION_DATA_KEY } from "@/assets/ts/Constants";
 var error = ref("");
 
 onMounted(() => {
+  // Init config
   mainStore.initialize(parseConfig());
+
+  // Apply styles
+  applyOverrides();
 
   if (mainStore.getState.account == null) router.push("/login");
   else router.push("/form");
@@ -47,6 +51,19 @@ const parseConfig = (): Config => {
   } catch (e) {
     //error.value = "sdfsfdssfd";
     throw e;
+  }
+};
+
+const applyOverrides = () => {
+  try {
+    const styleSheet = mainStore.getState.config.styles?.stylesheet;
+    if (styleSheet != null) {
+      var sheet = document.createElement("style");
+      sheet.innerHTML = styleSheet;
+      document.body.appendChild(sheet);
+    }
+  } catch (error) {
+    console.log("Error occured in stylesheet", error);
   }
 };
 </script>
