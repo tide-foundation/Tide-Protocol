@@ -44,7 +44,7 @@ namespace Tide.Ork {
             services.AddTransient<OrkConfig>();
             services.AddSignalR();
 
-            services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
+            services.AddSpaStaticFiles(opt => opt.RootPath = "Enclave/dist");
 
             if (settings.Features.Metrics)
                 services.AddMetrics();
@@ -59,10 +59,6 @@ namespace Tide.Ork {
 
             services.AddCors();
 
-            var privString = "AOAxMtmYfyI98Tr5jiQ77kZGA3goBctEWnDFTWnSOzol3pIbKWvLkkW83s55zJNczOxcbKXdeRSheFXmlDeQWS+KTCkfERyiI5J1i8Xlwe4clgY10LAfV0Ds9xP4QOhK";
-
-            var priv = C25519Key.Parse(privString);
-            var pubString = priv.GetPublic().ToString();
         }
 
      
@@ -80,7 +76,8 @@ namespace Tide.Ork {
          
             app.UseDeveloperExceptionPage(); // TODO: Remove for production
 
-            app.UseHttpsRedirection();
+            if (env.IsProduction())
+                app.UseHttpsRedirection();
 
             app.UseRouting();
             
@@ -109,7 +106,7 @@ namespace Tide.Ork {
                 {
                     endpoints.MapToVueCliProxy(
                         "{*path}",
-                        new SpaOptions { SourcePath = "Client" },
+                        new SpaOptions { SourcePath = "Enclave" },
                         npmScript: (System.Diagnostics.Debugger.IsAttached) ? "serve" : null,
                         regex: "Compiled successfully"
                     );
@@ -119,7 +116,7 @@ namespace Tide.Ork {
             if (settings.DevFront)
             {
                 app.UseSpaStaticFiles();
-                app.UseSpa(spa => spa.Options.SourcePath = "Client");
+                app.UseSpa(spa => spa.Options.SourcePath = "Enclave");
             }
         }
     }

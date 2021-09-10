@@ -65,9 +65,11 @@ namespace Tide.Ork.Controllers
                 Email = HttpUtility.UrlDecode(email)
             };
 
-            var resp = await _manager.SetOrUpdate(account);
-            if (!resp.Success)
+            var resp = await _manager.Add(account);
+            if (!resp.Success) {
+                _logger.LogInformation($"CMK was not added for uid '{uid}'");
                 return resp;
+            }
             
             var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
             //TODO: The ork should not send the orkid because the client should already know
@@ -77,6 +79,7 @@ namespace Tide.Ork.Controllers
             return resp;
         }
 
+        [MetricAttribute("prism")]
         [ThrottleAttribute("uid")]
         [HttpGet("prism/{uid}/{pass}")]
         public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string pass, [FromQuery] string li = null)
@@ -124,6 +127,7 @@ namespace Tide.Ork.Controllers
         }
 
         //TODO: Add throttling by ip and account separate
+        [MetricAttribute("cmk", recordSuccess:true)]
         [HttpGet("auth/{uid}/{point}/{token}")]
         public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] C25519Point point, [FromRoute] string token, [FromQuery] Guid tranid, [FromQuery] string li = null)
         {

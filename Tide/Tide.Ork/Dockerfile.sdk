@@ -1,5 +1,0 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0
-RUN apt update -y && apt install nano curl -y \
-    && curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh \
-    && bash nodesource_setup.sh \
-    && apt install nodejs

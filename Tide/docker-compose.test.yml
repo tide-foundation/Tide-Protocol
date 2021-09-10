@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  test:
+    build:
+      context: .
+      dockerfile: ./Tide.Js/Dockerfile
+    command: [ './wait-for-it.sh', 'ork3.local:80', '-s', '-t', '60', '--', './wait-for-it.sh', 'ork2.local:80', '--', './wait-for-it.sh', 'ork1.local:80', '--', 'npm', 'run', 'test']
+    environment:
+      TEST_ORK_NUM: '3'
+      TEST_ORK_MASK_URL: 'http://ork{0}.local'
+      TEST_VENDOR_URL: 'http://vendor'
+    depends_on:
+      - 'ork1'
+      - 'ork2'
+      - 'ork3'
+      - 'vendor'
+    networks: 
+      - 'default'

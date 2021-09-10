@@ -20,6 +20,16 @@ namespace Tide.Ork.Repo
             this.Manager = manager;
         }
 
+        public async Task<TideResponse> Add(T entity)
+        {
+            if (entity.Id != Guid.Empty || await Exist(entity.Id)){
+                return new TideResponse($"Entity '{entity.Id}' already exists");
+            }
+
+            Cache.Set(entity.Id, entity, life);
+            return new TideResponse(true);
+        }
+
         //TODO: SetOrUpdate must be separated into two methods
         public async Task<TideResponse> SetOrUpdate(T entity)
         {
