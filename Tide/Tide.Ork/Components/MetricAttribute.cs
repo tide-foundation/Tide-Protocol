@@ -62,7 +62,7 @@ namespace Tide.Ork.Classes
                     return;
                 }
 
-                using(metrics.Measure.Timer.Time(_timer));
+                using(metrics.Measure.Timer.Time(_timer))
                 {
                     await next();
                     if (context.HttpContext.Response.StatusCode < 200 || context.HttpContext.Response.StatusCode > 299) {
