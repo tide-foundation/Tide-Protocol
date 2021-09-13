@@ -45,7 +45,7 @@ const parseConfig = (): Config => {
       if (sessionData == null) throw "Missing config data";
       data = sessionData;
     }
-    console.log(data);
+
     // Return the decoded and parsed data
     return JSON.parse(decodeURIComponent(data)) as Config;
   } catch (e) {
