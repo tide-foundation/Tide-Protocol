@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <PackageId>Tide</PackageId>
     <Version>0.0.1</Version>
     <Authors>Matthew Spencer, Jose Luis Lobo Vasquez</Authors>
