@@ -8,8 +8,6 @@
     <a id="footer" class="full-width f-c" href="https://tide.org" target="_blank">
       <img src="../assets/img/tide-inside.png" alt="" />
     </a>
-
-    <img class="vendor-logo" src="../assets/img/rmit-logo-dark.svg" alt="" />
   </div>
 </template>
 

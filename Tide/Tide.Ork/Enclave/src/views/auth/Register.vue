@@ -24,7 +24,8 @@ import TideInput from "@/components/Tide-Input.vue";
 import mainStore from "@/store/mainStore";
 import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
 
-var user = ref<UserPass>({ username: `tide_user_${(Math.random() + 1).toString(36).substring(7)}`, password: "333" });
+//var user = ref<UserPass>({ username: `tide_user_${(Math.random() + 1).toString(36).substring(7)}`, password: "333" });
+var user = ref<UserPass>({ username: ``, password: "" });
 
 const bus = inject(BUS_KEY) as IBus;
 

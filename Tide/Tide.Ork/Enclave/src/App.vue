@@ -21,14 +21,12 @@ const fetchHeight = () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #app {
   height: $screen-height;
   background-color: #0072c6;
-  // background: url(./assets/img/test-2.jpg);
+  background: bottom cover url(./assets/img/test-5.jpg);
 
-  background-size: cover;
-  background-position: bottom;
   #wrapper {
     width: 100%;
   }
