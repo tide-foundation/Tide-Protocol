@@ -1,7 +1,7 @@
 <template>
   <div id="auth-layout" class="full-height f-r">
     <div id="left" class="f-grow f-c">
-      <img src="../../assets/img/qr.svg" alt="" />
+      <img src="../../assets/img/qr.png" alt="" />
       <h3>Tide Authenticator</h3>
     </div>
     <div id="right" class="full-height f-c">
