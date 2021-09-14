@@ -1,13 +1,11 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine3.13 AS base
+RUN  apk add --no-cache bash
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine3.13 AS build
 WORKDIR /app/publish/
-RUN apt update -y && apt install nano curl -y \
-    && curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh \
-    && bash nodesource_setup.sh \
-    && apt install nodejs \
+RUN apk add --no-cache nodejs npm \
     && curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /app/publish/wait-for-it.sh \
     && chmod +x /app/publish/wait-for-it.sh
 
