@@ -49,7 +49,8 @@ const parseConfig = (): Config => {
 
     // Auth requires decoding, but form does not... need to find a way to
     // tell them apart. Because this double try catch is absolute garbage.
-    // Return the decoded and parsed data
+    // Return the decoded and parsed data. Also, this is dauth related...
+    // Enclave should always get uniform data. We need to sort this out on the dauth page
     return JSON.parse(decodeURIComponent(data)) as Config;
   } catch (e) {
     try {
