@@ -5,7 +5,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine3.13 as build
 WORKDIR /app/publish/
-RUN apk add --no-cache nodejs npm curl bash \
+RUN apk add --no-cache nodejs npm \
     && curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /app/publish/wait-for-it.sh \
     && chmod +x /app/publish/wait-for-it.sh
 

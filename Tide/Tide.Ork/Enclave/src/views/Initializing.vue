@@ -15,7 +15,7 @@ import router from "@/router/router";
 import { SESSION_ACCOUNT_KEY, SESSION_DATA_KEY } from "@/assets/ts/Constants";
 
 var error = ref("");
-
+var data = "";
 onMounted(() => {
   // Init config
   mainStore.initialize(parseConfig());
@@ -35,7 +35,8 @@ const parseConfig = (): Config => {
 
     // Fetch data from query
     const urlSearchParams = new URLSearchParams(window.location.search);
-    let data = Object.fromEntries(urlSearchParams.entries()).data;
+
+    data = Object.fromEntries(urlSearchParams.entries()).data;
 
     // Store into session data to preserve refresh
     if (data != null) sessionStorage.setItem(SESSION_DATA_KEY, data);
@@ -46,11 +47,17 @@ const parseConfig = (): Config => {
       data = sessionData;
     }
 
-    // Return the decoded and parsed data
+    // Auth requires decoding, but form does not... need to find a way to
+    // tell them apart. Because this double try catch is absolute garbage.
+    // Return the decoded and parsed data. Also, this is dauth related...
+    // Enclave should always get uniform data. We need to sort this out on the dauth page
     return JSON.parse(decodeURIComponent(data)) as Config;
   } catch (e) {
-    //error.value = "sdfsfdssfd";
-    throw e;
+    try {
+      return JSON.parse(data) as Config;
+    } catch (error) {
+      throw e;
+    }
   }
 };
 
