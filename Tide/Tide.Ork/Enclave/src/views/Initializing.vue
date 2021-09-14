@@ -34,7 +34,9 @@ const parseConfig = (): Config => {
     // if (sessionAccount != null) mainStore.setAccount(JSON.parse(sessionAccount));
 
     // Fetch data from query
+    //console.log(window.location.search);
     const urlSearchParams = new URLSearchParams(window.location.search);
+
     let data = Object.fromEntries(urlSearchParams.entries()).data;
 
     // Store into session data to preserve refresh
@@ -47,7 +49,7 @@ const parseConfig = (): Config => {
     }
 
     // Return the decoded and parsed data
-    return JSON.parse(decodeURIComponent(data)) as Config;
+    return JSON.parse(data) as Config;
   } catch (e) {
     //error.value = "sdfsfdssfd";
     throw e;
