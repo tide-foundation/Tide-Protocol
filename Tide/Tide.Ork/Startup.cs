@@ -115,6 +115,7 @@ namespace Tide.Ork {
             if (settings.DevFront)
             {
                 app.UseSpaStaticFiles();
+                app.UseMiddleware<HeaderSecurityMiddleware>();
                 app.UseSpa(spa => spa.Options.SourcePath = "Enclave");
             }
         }
