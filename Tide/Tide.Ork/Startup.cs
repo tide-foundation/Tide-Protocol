@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,14 +6,10 @@ using Microsoft.AspNetCore.SpaServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Tide.Core;
-using Tide.Encryption.AesMAC;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using VueCliMiddleware;
-using App.Metrics.AspNetCore;
-using Tide.Encryption.Ecc;
 
 namespace Tide.Ork {
     public class Startup {
@@ -34,7 +29,7 @@ namespace Tide.Ork {
             });
 
             var settings = new Settings();
-            Configuration.Bind("Settings", settings);
+            Configuration.Bind(nameof(Settings), settings);
 
             services.AddSingleton(settings);
             services.AddHttpContextAccessor();
@@ -60,8 +55,6 @@ namespace Tide.Ork {
 
         }
 
-     
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings) {
             if (env.IsDevelopment())
@@ -73,7 +66,9 @@ namespace Tide.Ork {
 
             app.UseStaticFiles();
          
+            #if DEBUG
             app.UseDeveloperExceptionPage(); // TODO: Remove for production
+            #endif
 
             if (env.IsProduction())
                 app.UseHttpsRedirection();
@@ -101,7 +96,7 @@ namespace Tide.Ork {
                 endpoints.MapControllers();
                 endpoints.MapHub<EnclaveHub>("/enclave-hub");
 
-                if (env.IsDevelopment() && settings.DevFront)
+                if (env.IsDevelopment() && settings.Features.DevFront)
                 {
                     endpoints.MapToVueCliProxy(
                         "{*path}",
@@ -112,15 +107,14 @@ namespace Tide.Ork {
                 }
             });
 
-            if (settings.DevFront)
+            if (settings.Features.CSP)
+                app.UseMiddleware<HeaderSecurityMiddleware>();
+
+            if (settings.Features.DevFront)
             {
                 app.UseSpaStaticFiles();
-                app.UseMiddleware<HeaderSecurityMiddleware>();
                 app.UseSpa(spa => spa.Options.SourcePath = "Enclave");
             }
         }
     }
-
-
-
 }
