@@ -2,7 +2,8 @@ import { Store } from "./main";
 import router from "@/router/router";
 
 // @ts-ignore
-import Tide from "../../../../Tide.Js/src/export/TideAuthentication";
+import Tide, { C25519Key } from "../../../../Tide.Js/src/export/TideAuthentication";
+
 import { SESSION_ACCOUNT_KEY } from "@/assets/ts/Constants";
 
 interface MainState extends Object {
@@ -31,15 +32,13 @@ class MainStore extends Store<MainState> {
     this.state.action = "Login";
     const serverTime = await getServerTime();
 
-    this.setAccount(await this.state.tide.loginJwt(user.username, user.password, serverTime));
+    this.setAccount(await this.state.tide.loginJwt(user.username, user.password, serverTime), "Login");
 
     if (this.state.account == null) throw new Error("Invalid account");
     return this.state.account;
   }
 
   async registerAccount(user: UserPass) {
-    this.state.action = "Register";
-
     const serverTime = await getServerTime();
 
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -53,32 +52,36 @@ class MainStore extends Store<MainState> {
         this.state.config.orks,
         serverTime,
         this.state.config.orks.length
-      )
+      ),
+      "Register"
     );
 
     return this.state.account;
   }
 
-  setAccount(account: Account) {
+  setAccount(account: Account, action: AuthAction) {
+    // Stringify the C25519Key
+    account.encryptionKey = account.encryptionKey.toString();
+    account.vuid = account.vuid.toString();
     this.state.account = account;
+    this.state.action = action;
+
+    sessionStorage.setItem(SESSION_ACCOUNT_KEY, JSON.stringify(account));
+  }
+
+  logout() {
+    this.state.account = undefined;
+    sessionStorage.removeItem(SESSION_ACCOUNT_KEY);
   }
 
   authenticationComplete() {
-    // Go to form if data is available
-    if (mainStore.getState.config.formData != null) {
-      sessionStorage.setItem(SESSION_ACCOUNT_KEY, JSON.stringify(this.state.account));
-      return router.push("/form");
-    }
-
-    // If it gets here it was a standard authentication. Let's redirect
     const authResponse: AuthResponse = {
       publicKey: this.state.account!.cvkPublic,
       tideToken: this.state.account!.tideToken,
       action: this.state.action,
-      vuid: this.state.account!.vuid.toString(),
+      vuid: this.state.account!.vuid,
     };
 
-    sessionStorage.removeItem(SESSION_ACCOUNT_KEY);
     window.location.replace(constructReturnUrl(this.state.config.returnUrl!, authResponse));
   }
 

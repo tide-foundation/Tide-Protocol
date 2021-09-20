@@ -17,10 +17,6 @@ import { ref, computed } from "vue";
 
 <style lang="scss" scoped>
 #layout {
-  width: 98%;
-  max-width: 1150px;
-  min-height: 500px;
-
   position: relative;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   background: $background;

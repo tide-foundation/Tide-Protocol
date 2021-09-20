@@ -19,6 +19,6 @@ declare global {
     vuid: string;
     tideToken: string;
     cvkPublic: string;
-    encryptionKey?: string;
+    encryptionKey: string;
   }
 }

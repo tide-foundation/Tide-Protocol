@@ -34,10 +34,6 @@ body {
 .f-c {
   @extend .f;
   flex-direction: column;
-}
-
-.f-c {
-  @extend .f-c;
   justify-content: center;
   align-items: center;
 }
@@ -100,6 +96,10 @@ a {
   &:hover {
     color: $secondary;
   }
+}
+
+.primary {
+  color: $primary;
 }
 
 .mobile {

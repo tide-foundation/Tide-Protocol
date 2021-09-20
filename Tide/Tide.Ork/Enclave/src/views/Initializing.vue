@@ -14,7 +14,6 @@ import { ref, onMounted } from "vue";
 import router from "@/router/router";
 import { SESSION_ACCOUNT_KEY, SESSION_DATA_KEY } from "@/assets/ts/Constants";
 
-var error = ref("");
 var data = "";
 onMounted(() => {
   // Init config
@@ -23,24 +22,27 @@ onMounted(() => {
   // Apply styles
   applyOverrides();
 
+  silentLogin();
+
+  // If not logged in
   if (mainStore.getState.account == null) router.push("/login");
-  else router.push("/form");
+  // If silent logged in and has form data
+  else if (mainStore.getState.config.formData != null) router.push("/form");
+  // At this stage we silently logged in and there is no form data. Show an action screen
+  else router.push("/actions");
 });
 
 const parseConfig = (): Config => {
   try {
-    // See if a session account is active
-    // var sessionAccount = sessionStorage.getItem(SESSION_ACCOUNT_KEY);
-    // if (sessionAccount != null) mainStore.setAccount(JSON.parse(sessionAccount));
-
     // Fetch data from query
     const urlSearchParams = new URLSearchParams(window.location.search);
 
     data = Object.fromEntries(urlSearchParams.entries()).data;
 
     // Store into session data to preserve refresh
-    if (data != null) sessionStorage.setItem(SESSION_DATA_KEY, data);
-    else {
+    if (data != null) {
+      sessionStorage.setItem(SESSION_DATA_KEY, data);
+    } else {
       // If query is null, try get from session. User may have refreshed
       var sessionData = sessionStorage.getItem(SESSION_DATA_KEY);
       if (sessionData == null) throw "Missing config data";
@@ -58,6 +60,12 @@ const parseConfig = (): Config => {
       throw e;
     }
   }
+};
+
+const silentLogin = () => {
+  // See if a session account is active
+  var sessionAccount = sessionStorage.getItem(SESSION_ACCOUNT_KEY);
+  if (sessionAccount != null) mainStore.setAccount(JSON.parse(sessionAccount), "Login");
 };
 
 const applyOverrides = () => {

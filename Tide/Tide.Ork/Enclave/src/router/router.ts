@@ -39,6 +39,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "Form",
         component: () => import(/* webpackChunkName: "form" */ "../views/Form.vue"),
       },
+      {
+        path: "/actions",
+        name: "Actions",
+        component: () => import(/* webpackChunkName: "actions" */ "../views/Actions.vue"),
+      },
     ],
   },
 ];

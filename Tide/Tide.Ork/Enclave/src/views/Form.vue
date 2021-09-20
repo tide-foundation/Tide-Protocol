@@ -29,12 +29,16 @@ import TideInput from "@/components/Tide-Input.vue";
 import { ref, computed, onMounted } from "vue";
 // @ts-ignore
 import MetaField from "@/assets/ts/MetaField";
+// @ts-ignore
+import { C25519Key } from "../../../../Tide.Js/src/export/TideAuthentication";
 
 var fields = ref<any>([]);
 var encrypted = ref(true);
 var formData = ref(mainStore.getState.config.formData);
-
+var key: C25519Key;
 onMounted(() => {
+  key = C25519Key.fromString(mainStore.getState.account!.encryptionKey);
+
   encrypted.value = formData.value.type == "modify";
 
   fields.value = MetaField.fromModel(
@@ -49,14 +53,14 @@ onMounted(() => {
     const splitCamel = field.field.replace(/([a-z])([A-Z])/g, "$1 $2") as string;
     field.friendlyName = `${splitCamel[0].toUpperCase()}${splitCamel.substring(1)}`;
 
-    if (encrypted.value) field.decrypt(mainStore.getState.account!.encryptionKey);
+    if (encrypted.value) field.decrypt(key);
   }
 });
 
 const update = async () => {
   setTimeout(async () => {
     for (const field of fields.value) {
-      field.encrypt(mainStore.getState.account!.encryptionKey);
+      field.encrypt(key);
     }
 
     mainStore.returnFormData(fields.value);
@@ -67,6 +71,8 @@ const update = async () => {
 <style lang="scss" scoped>
 #form {
   width: 100%;
+  max-width: 1150px;
+  min-height: 500px;
 
   h2 {
     margin-left: 20px;

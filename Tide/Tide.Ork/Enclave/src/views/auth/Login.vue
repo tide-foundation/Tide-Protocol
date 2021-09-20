@@ -21,6 +21,7 @@ import { ref, inject } from "vue";
 import TideInput from "@/components/Tide-Input.vue";
 import mainStore from "@/store/mainStore";
 import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
+import router from "@/router/router";
 
 var user = ref<UserPass>({ username: "", password: "" });
 
@@ -30,7 +31,9 @@ const login = async () => {
   try {
     bus.trigger(SET_LOADING_KEY, true);
     await mainStore.login(user.value);
-    mainStore.authenticationComplete();
+    // Go to form if data is available
+    if (mainStore.getState.config.formData != null) return router.push("/form");
+    else mainStore.authenticationComplete();
   } catch (error) {
     bus.trigger(SET_LOADING_KEY, false);
   }
