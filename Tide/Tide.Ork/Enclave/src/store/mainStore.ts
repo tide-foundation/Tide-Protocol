@@ -30,29 +30,19 @@ class MainStore extends Store<MainState> {
 
   async login(user: UserPass) {
     this.state.action = "Login";
-    const serverTime = await getServerTime();
 
-    this.setAccount(await this.state.tide.loginJwt(user.username, user.password, serverTime), "Login");
+    this.setAccount(await this.state.tide.loginJwt(user.username, user.password, await getServerTime()), "Login");
 
     if (this.state.account == null) throw new Error("Invalid account");
     return this.state.account;
   }
 
   async registerAccount(user: UserPass) {
+    this.state.action = "Register";
     const serverTime = await getServerTime();
 
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    var isEmail = re.test(String(user.username).toLowerCase());
-
     this.setAccount(
-      await this.state.tide.registerJwt(
-        user.username,
-        user.password,
-        isEmail ? user.username : "noemail@noemail.com",
-        this.state.config.orks,
-        serverTime,
-        this.state.config.orks.length
-      ),
+      await this.state.tide.registerJwt(user.username, user.password, user.email, this.state.config.orks, serverTime, this.state.config.orks.length),
       "Register"
     );
 
@@ -94,6 +84,14 @@ class MainStore extends Store<MainState> {
     });
 
     window.location.replace(constructReturnUrl(this.state.config.returnUrl!, returnData));
+  }
+
+  async sendRecoveryEmails(username: string) {
+    await this.state.tide.recover(username, this.state.config.orks);
+  }
+
+  async reconstructAccount(username: string, shares: string, newPassword: string) {
+    await this.state.tide.reconstruct(username, shares, newPassword, this.state.config.orks);
   }
 }
 

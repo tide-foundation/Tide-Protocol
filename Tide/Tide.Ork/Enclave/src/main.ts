@@ -6,7 +6,16 @@ import router from "./router/router";
 import "@/assets/styles/main.scss";
 import Bus from "./assets/ts/Bus";
 
+const myMixin = {
+  methods: {
+    hello() {
+      console.log("hello from mixin!");
+    },
+  },
+};
+
 createApp(App)
+  .mixin(myMixin)
   .provide(BUS_KEY, Bus)
   .use(router)
   .mount("#app");

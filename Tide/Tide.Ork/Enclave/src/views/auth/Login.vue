@@ -12,6 +12,9 @@
         <router-link class="font-small " to="/register">Create an account</router-link>
         <button>Sign In</button>
       </div>
+      <div class="full-width f-r-r mt-10 font-small">
+        <router-link to="/forgot">Forgot password?</router-link>
+      </div>
     </form>
   </div>
 </template>
@@ -20,7 +23,7 @@
 import { ref, inject } from "vue";
 import TideInput from "@/components/Tide-Input.vue";
 import mainStore from "@/store/mainStore";
-import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
+import { BUS_KEY, SET_LOADING_KEY, SHOW_ERROR_KEY } from "@/assets/ts/Constants";
 import router from "@/router/router";
 
 var user = ref<UserPass>({ username: "", password: "" });
@@ -35,6 +38,7 @@ const login = async () => {
     if (mainStore.getState.config.formData != null) return router.push("/form");
     else mainStore.authenticationComplete();
   } catch (error) {
+    bus.trigger(SHOW_ERROR_KEY, { type: "error", msg: `Failed to login: ${error}` } as Alert);
     bus.trigger(SET_LOADING_KEY, false);
   }
 };

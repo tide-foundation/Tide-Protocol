@@ -3,12 +3,15 @@
     <div id="wrapper" class="f-c">
       <router-view></router-view>
     </div>
+
+    <error></error>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
 import mainStore from "./store/mainStore";
+import Error from "@/components/Error.vue";
 
 onMounted(async () => {
   window.addEventListener("resize", () => fetchHeight());

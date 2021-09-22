@@ -25,6 +25,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "Register",
         component: () => import(/* webpackChunkName: "register" */ "../views/auth/Register.vue"),
       },
+      {
+        path: "/forgot",
+        name: "Forgot",
+        component: () => import(/* webpackChunkName: "forgot" */ "../views/auth/Forgot.vue"),
+      },
     ],
   },
   {
@@ -43,6 +48,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/actions",
         name: "Actions",
         component: () => import(/* webpackChunkName: "actions" */ "../views/Actions.vue"),
+      },
+      {
+        path: "/reconstruct",
+        name: "Reconstruct",
+        component: () => import(/* webpackChunkName: "reconstruct" */ "../views/auth/Reconstruct.vue"),
       },
     ],
   },

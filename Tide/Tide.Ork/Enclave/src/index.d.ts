@@ -12,6 +12,7 @@ declare global {
   interface UserPass {
     username: string;
     password: string;
+    email?: string;
   }
 
   interface Account {
@@ -21,4 +22,11 @@ declare global {
     cvkPublic: string;
     encryptionKey: string;
   }
+
+  interface Alert {
+    type: AlertType;
+    msg: string;
+  }
+
+  type AlertType = "error" | "success" | "info";
 }

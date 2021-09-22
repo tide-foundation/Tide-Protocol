@@ -31,6 +31,12 @@ body {
   @extend .f;
   flex-direction: row;
 }
+
+.f-r-r {
+  @extend .f;
+  flex-direction: row-reverse;
+}
+
 .f-c {
   @extend .f;
   flex-direction: column;
@@ -52,6 +58,10 @@ body {
 
 .font-small {
   font-size: 0.8rem;
+}
+
+.mt-10 {
+  margin-top: 10px;
 }
 
 .actions {
@@ -170,4 +180,10 @@ a {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+.invisible {
+  opacity: 0;
+  color: transparent;
+  pointer-events: none;
 }
