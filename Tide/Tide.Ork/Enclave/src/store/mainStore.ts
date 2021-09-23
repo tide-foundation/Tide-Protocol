@@ -93,6 +93,10 @@ class MainStore extends Store<MainState> {
   async reconstructAccount(username: string, shares: string, newPassword: string) {
     await this.state.tide.reconstruct(username, shares, newPassword, this.state.config.orks);
   }
+
+  async changePassword(newPassword: NewPassword) {
+    await this.state.tide.changePassword(newPassword.password, newPassword.confirm, this.state.config.orks);
+  }
 }
 
 const mainStore: MainStore = new MainStore();

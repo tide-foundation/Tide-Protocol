@@ -5,7 +5,7 @@
       <router-view></router-view>
     </div>
 
-    <a id="footer" class="full-width f-c" href="https://tide.org" target="_blank">
+    <a id="footer" class="full-width f-c" target="_blank">
       <img src="../assets/img/tide-inside.png" alt="" />
     </a>
     <transition name="fade" mode="out-in">
@@ -40,7 +40,7 @@ bus.on(SET_LOADING_KEY, (data: any) => (loading.value = data));
   }
 
   #header {
-    height: 100px;
+    height: 70px;
   }
 
   #content {

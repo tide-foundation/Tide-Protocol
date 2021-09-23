@@ -15,7 +15,7 @@ const myMixin = {
 };
 
 createApp(App)
-  .mixin(myMixin)
+  // .mixin(myMixin)
   .provide(BUS_KEY, Bus)
   .use(router)
   .mount("#app");

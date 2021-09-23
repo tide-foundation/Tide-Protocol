@@ -92,9 +92,31 @@ button {
   color: white;
   border: 0px;
   border-bottom: 4px solid $primary-dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: $primary-dark;
+  }
+
+  img {
+    margin-left: 10px;
+    height: 20px;
+  }
+
+  &.secondary {
+    background-color: #fac800;
+    border-bottom: 4px solid #dbaf00;
+
+    &:hover {
+      background: #dbaf00;
+    }
+  }
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.4;
   }
 }
 
@@ -123,6 +145,16 @@ a {
   display: initial;
   @media only screen and (max-width: $mobile-break) {
     display: none;
+  }
+}
+
+.button-row {
+  margin-bottom: 40px;
+
+  button {
+    width: 100%;
+    min-width: 240px;
+    margin-top: 10px;
   }
 }
 

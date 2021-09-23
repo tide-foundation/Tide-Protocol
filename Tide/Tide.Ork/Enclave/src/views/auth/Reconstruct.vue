@@ -41,11 +41,6 @@ interface Fragment {
   val: string;
 }
 
-interface NewPassword {
-  password: string;
-  confirm: string;
-}
-
 type ForgotMode = "Reconstruct" | "Reset";
 
 import { ref, inject, onMounted } from "vue";

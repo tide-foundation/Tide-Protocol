@@ -16,6 +16,10 @@
         <router-link to="/forgot">Forgot password?</router-link>
       </div>
     </form>
+    <div id="to-account-checkbox" class="f-r" :class="{ checked: goToAccount }" @click="goToAccount = !goToAccount">
+      <div>Continue to account</div>
+      <div id="checkbox"></div>
+    </div>
   </div>
 </template>
 
@@ -30,12 +34,15 @@ var user = ref<UserPass>({ username: "", password: "" });
 
 const bus = inject(BUS_KEY) as IBus;
 
+var goToAccount = ref(false);
+
 const login = async () => {
   try {
     bus.trigger(SET_LOADING_KEY, true);
     await mainStore.login(user.value);
     // Go to form if data is available
     if (mainStore.getState.config.formData != null) return router.push("/form");
+    else if (goToAccount.value) return router.push("/account");
     else mainStore.authenticationComplete();
   } catch (error) {
     bus.trigger(SHOW_ERROR_KEY, { type: "error", msg: `Failed to login: ${error}` } as Alert);
@@ -46,5 +53,26 @@ const login = async () => {
 
 <style lang="scss" scoped>
 #login {
+  #to-account-checkbox {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    align-items: center;
+    #checkbox {
+      margin-left: 7px;
+      width: 15px;
+      height: 15px;
+      border-radius: 3px;
+      border: 1px solid #0072c6;
+      background-color: transparent;
+      transform: translate(0px, 1px);
+    }
+    &.checked {
+      #checkbox {
+        background-color: #0072c6;
+      }
+    }
+  }
 }
 </style>

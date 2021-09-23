@@ -54,6 +54,16 @@ const routes: Array<RouteRecordRaw> = [
         name: "Reconstruct",
         component: () => import(/* webpackChunkName: "reconstruct" */ "../views/auth/Reconstruct.vue"),
       },
+      {
+        path: "/account",
+        name: "Account",
+        component: () => import(/* webpackChunkName: "account" */ "../views/Account.vue"),
+      },
+      {
+        path: "/change-password",
+        name: "Change Password",
+        component: () => import(/* webpackChunkName: "change-password" */ "../views/ChangePassword.vue"),
+      },
     ],
   },
 ];

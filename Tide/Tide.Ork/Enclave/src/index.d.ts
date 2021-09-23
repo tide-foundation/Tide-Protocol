@@ -15,6 +15,11 @@ declare global {
     email?: string;
   }
 
+  interface NewPassword {
+    password: string;
+    confirm: string;
+  }
+
   interface Account {
     username: string;
     vuid: string;
