@@ -31,16 +31,7 @@ export default class TranToken {
     *  @param {Uint8Array} data */
     check(key, data = null) {
         const signature = getSignature(key, this.id, this.ticks, data);
-        if (signature.length != this.signature.length)
-            return false;
-        
-        let isValid = true;
-        for (let i = 0; i < signature.length; i++) {
-            if (signature[0] !== this.signature[0])
-                isValid = false;
-        }
-
-        return isValid;
+        return secureEqual(signature, this.signature);
     }
     copy() {
         return TranToken.from(this.toArray())
@@ -98,4 +89,17 @@ function getSignature(key, id, ticks, data = null) {
         buffer.set(data, 16);
 
     return key.hash(buffer).slice(0, 16);
+}
+
+/**
+ * @param {Uint8Array} arr1 
+ * @param {Uint8Array} arr2 
+ * @returns {boolean}
+ */
+function secureEqual(arr1, arr2) {
+    if (!arr1 || !arr2) return false;
+
+    if (arr1.length > arr2.length) [arr1, arr2] = [arr2, arr1];
+
+    return 0 === arr1.reduce((sum, _, i) => (arr1[i] ^ arr2[i]) + sum, arr1.length ^ arr2.length);
 }
