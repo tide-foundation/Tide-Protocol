@@ -108,5 +108,28 @@ async function getServerTime(): Promise<number> {
 }
 
 function constructReturnUrl(returnUrl: string, data: object) {
-  return `${returnUrl}${returnUrl.includes("?") ? "&" : "?"}data=${encodeURIComponent(JSON.stringify(data))}`;
+  var redirect = returnUrl;
+
+  var indexOf = returnUrl.indexOf("?");
+
+  if (indexOf != -1) {
+    var start = returnUrl.substr(0, indexOf + 1);
+    var end = returnUrl.substr(indexOf + 1);
+
+    var splitQueries = end.split("&");
+    var newQueries = "";
+
+    for (let i = 0; i < splitQueries.length; i++) {
+      const query = splitQueries[i];
+
+      var s = query.split("=");
+      newQueries += `${s[0]}=${encodeURIComponent(s[1])}`;
+
+      if (i <= splitQueries.length - 1) newQueries += "&";
+    }
+
+    redirect = start + newQueries;
+  }
+
+  return `${redirect}${redirect.includes("?") ? "&" : "?"}data=${encodeURIComponent(JSON.stringify(data))}`;
 }

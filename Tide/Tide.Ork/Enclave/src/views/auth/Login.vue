@@ -16,7 +16,7 @@
         <router-link to="/forgot">Forgot password?</router-link>
       </div>
     </form>
-    <div id="to-account-checkbox" class="f-r" :class="{ checked: goToAccount }" @click="goToAccount = !goToAccount">
+    <div id="to-account-checkbox" class="f-r font-small" :class="{ checked: goToAccount }" @click="goToAccount = !goToAccount">
       <div>Continue to account</div>
       <div id="checkbox"></div>
     </div>
@@ -61,8 +61,8 @@ const login = async () => {
     align-items: center;
     #checkbox {
       margin-left: 7px;
-      width: 15px;
-      height: 15px;
+      width: 12px;
+      height: 12px;
       border-radius: 3px;
       border: 1px solid #0072c6;
       background-color: transparent;
