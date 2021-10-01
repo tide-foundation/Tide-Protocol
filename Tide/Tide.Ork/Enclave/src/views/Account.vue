@@ -11,7 +11,7 @@
     <div class="button-row">
       <div class="row">
         <div class="col-12 col-md-4">
-          <button disabled @click="$router.push('/change-password')">Change password <img src="../assets/img/icons/key.svg" /></button>
+          <button @click="$router.push('/change-password')">Change password <img src="../assets/img/icons/key.svg" /></button>
         </div>
         <div class="col-12 col-md-4">
           <button disabled>Change ORKs <img src="../assets/img/icons/ork.svg" /></button>
@@ -29,14 +29,15 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from "vue";
-import mainStore from "@/store/mainStore";
-import router from "@/router/router";
-const logout = () => {
-  mainStore.logout();
-  router.push("/");
-};
+<script lang="ts">
+import Base from "@/assets/ts/Base";
+
+export default class Account extends Base {
+  logout() {
+    this.mainStore.logout();
+    this.router.push("/");
+  }
+}
 </script>
 
 <style lang="scss" scoped>

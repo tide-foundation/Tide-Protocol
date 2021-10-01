@@ -19,26 +19,24 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, inject } from "vue";
-import TideInput from "@/components/Tide-Input.vue";
-import mainStore from "@/store/mainStore";
-import { BUS_KEY, SET_LOADING_KEY, SHOW_ERROR_KEY } from "@/assets/ts/Constants";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
 
-var user = ref<UserPass>({ username: ``, password: "" });
+export default class Register extends Base {
+  user: UserPass = { username: ``, password: "" };
+  async register() {
+    try {
+      this.setLoading(true);
 
-const bus = inject(BUS_KEY) as IBus;
+      await this.mainStore.registerAccount(this.user);
+      this.mainStore.authenticationComplete();
+    } catch (error) {
+      this.showAlert("error", `Failed to register: ${error}`);
 
-const register = async () => {
-  try {
-    bus.trigger(SET_LOADING_KEY, true);
-    await mainStore.registerAccount(user.value);
-    mainStore.authenticationComplete();
-  } catch (error) {
-    bus.trigger(SHOW_ERROR_KEY, { type: "error", msg: `Failed to register: ${error}` } as Alert);
-    bus.trigger(SET_LOADING_KEY, false);
+      this.setLoading(false);
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

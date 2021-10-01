@@ -33,15 +33,22 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, inject } from "vue";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
+import { SET_LOADING_KEY } from "@/assets/ts/Constants";
+import { Options } from "vue-class-component";
 import Loader from "@/components/Loader.vue";
-import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
-import mainStore from "@/store/mainStore";
-
-const bus = inject(BUS_KEY) as IBus;
-var loading = ref(false);
-bus.on(SET_LOADING_KEY, (data: any) => (loading.value = data));
+@Options({
+  components: {
+    Loader,
+  },
+})
+export default class Forgot extends Base {
+  loading: boolean = false;
+  mounted() {
+    this.bus.on(SET_LOADING_KEY, (data: any) => (this.loading = data));
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -28,27 +28,17 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import mainStore from "@/store/mainStore";
-import router from "@/router/router";
-const logout = () => {
-  mainStore.logout();
-  router.push("/");
-};
+<script lang="ts">
+import Base from "@/assets/ts/Base";
 
-const backToVendor = () => {
-  mainStore.authenticationComplete();
-};
-</script>
-
-<style lang="scss" scoped>
-#actions {
-  h1 {
-    margin-bottom: 0px;
+export default class Actions extends Base {
+  logout() {
+    this.mainStore.logout();
+    this.router.push("/");
   }
 
-  p {
-    margin-bottom: 40px;
+  backToVendor() {
+    this.mainStore.authenticationComplete();
   }
 }
-</style>
+</script>

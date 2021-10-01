@@ -9,19 +9,28 @@
       <img src="../assets/img/tide-inside.png" alt="" />
     </a>
     <transition name="fade" mode="out-in">
-      <loader v-if="loading"></loader>
+      <Loader v-if="loading"></Loader>
     </transition>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, inject } from "vue";
-import Loader from "@/components/Loader.vue";
-import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
+import { SET_LOADING_KEY } from "@/assets/ts/Constants";
 
-const bus = inject(BUS_KEY) as IBus;
-var loading = ref(false);
-bus.on(SET_LOADING_KEY, (data: any) => (loading.value = data));
+import { Options } from "vue-class-component";
+import Loader from "@/components/Loader.vue";
+@Options({
+  components: {
+    Loader,
+  },
+})
+export default class Layout extends Base {
+  loading: boolean = false;
+  mounted() {
+    this.bus.on(SET_LOADING_KEY, (data: any) => (this.loading = data));
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -19,32 +19,27 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, inject } from "vue";
-import TideInput from "@/components/Tide-Input.vue";
-import { BUS_KEY, SET_LOADING_KEY, SHOW_ERROR_KEY } from "@/assets/ts/Constants";
-import mainStore from "@/store/mainStore";
-import router from "@/router/router";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
 
-const bus = inject(BUS_KEY) as IBus;
+export default class ChangePassword extends Base {
+  newPassword: NewPassword = { password: ``, confirm: "" };
 
-var newPassword = ref<NewPassword>({ password: ``, confirm: "" });
+  async change() {
+    try {
+      this.setLoading(true);
+      await this.mainStore.changePassword(this.newPassword);
 
-const change = async () => {
-  try {
-    bus.trigger(SET_LOADING_KEY, true);
+      this.showAlert("success", "Your password has been changed");
 
-    await mainStore.changePassword(newPassword.value);
-
-    bus.trigger(SHOW_ERROR_KEY, { type: "success", msg: "Your password has been changed" } as Alert);
-
-    router.push("/account");
-  } catch (error) {
-    bus.trigger(SHOW_ERROR_KEY, { type: "error", msg: `Failed changing your password. ${error}` } as Alert);
-  } finally {
-    bus.trigger(SET_LOADING_KEY, false);
+      this.router.push("/account");
+    } catch (error) {
+      this.showAlert("error", `Failed changing your password. ${error}`);
+    } finally {
+      this.setLoading(false);
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

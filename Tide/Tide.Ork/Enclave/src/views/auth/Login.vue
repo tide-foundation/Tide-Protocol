@@ -23,32 +23,28 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, inject } from "vue";
-import TideInput from "@/components/Tide-Input.vue";
-import mainStore from "@/store/mainStore";
-import { BUS_KEY, SET_LOADING_KEY, SHOW_ERROR_KEY } from "@/assets/ts/Constants";
-import router from "@/router/router";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
 
-var user = ref<UserPass>({ username: "", password: "" });
+export default class Login extends Base {
+  goToAccount: boolean = false;
+  user: UserPass = { username: "", password: "" };
 
-const bus = inject(BUS_KEY) as IBus;
+  async login() {
+    try {
+      this.setLoading(true);
+      await this.mainStore.login(this.user);
+      // Go to form if data is available
+      if (this.mainStore.getState.config.formData != null) return this.router.push("/form");
+      else if (this.goToAccount) return this.router.push("/account");
+      else this.mainStore.authenticationComplete();
+    } catch (error) {
+      this.showAlert("error", `Failed to login: ${error}`);
 
-var goToAccount = ref(false);
-
-const login = async () => {
-  try {
-    bus.trigger(SET_LOADING_KEY, true);
-    await mainStore.login(user.value);
-    // Go to form if data is available
-    if (mainStore.getState.config.formData != null) return router.push("/form");
-    else if (goToAccount.value) return router.push("/account");
-    else mainStore.authenticationComplete();
-  } catch (error) {
-    bus.trigger(SHOW_ERROR_KEY, { type: "error", msg: `Failed to login: ${error}` } as Alert);
-    bus.trigger(SET_LOADING_KEY, false);
+      this.setLoading(false);
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

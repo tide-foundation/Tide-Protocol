@@ -20,29 +20,26 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, inject } from "vue";
-import TideInput from "@/components/Tide-Input.vue";
-import { BUS_KEY, FORGOT_PASSWORD_USERNAME, SET_LOADING_KEY, SHOW_ERROR_KEY } from "@/assets/ts/Constants";
-import mainStore from "@/store/mainStore";
-import router from "@/router/router";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
+import { FORGOT_PASSWORD_USERNAME } from "@/assets/ts/Constants";
 
-const bus = inject(BUS_KEY) as IBus;
+export default class Forgot extends Base {
+  user: UserPass = { username: "", password: "" };
+  async sendEmails() {
+    try {
+      sessionStorage.setItem(FORGOT_PASSWORD_USERNAME, this.user.username);
+      this.setLoading(true);
 
-var user = ref<UserPass>({ username: ``, password: "" });
-
-const sendEmails = async () => {
-  try {
-    sessionStorage.setItem(FORGOT_PASSWORD_USERNAME, user.value.username);
-    bus.trigger(SET_LOADING_KEY, true);
-    await mainStore.sendRecoveryEmails(user.value.username);
-    router.push("Reconstruct");
-  } catch (error) {
-    bus.trigger(SHOW_ERROR_KEY, { type: "error", msg: `Failed to send emils: ${error}` } as Alert);
-  } finally {
-    bus.trigger(SET_LOADING_KEY, false);
+      await this.mainStore.sendRecoveryEmails(this.user.username);
+      this.router.push("Reconstruct");
+    } catch (error) {
+      this.showAlert("error", `Failed to send emils: ${error}`);
+    } finally {
+      this.setLoading(false);
+    }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

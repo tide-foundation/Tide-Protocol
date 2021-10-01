@@ -1,5 +1,4 @@
 import { Store } from "./main";
-import router from "@/router/router";
 
 // @ts-ignore
 import Tide, { C25519Key } from "../../../../Tide.Js/src/export/TideAuthentication";
@@ -110,11 +109,11 @@ async function getServerTime(): Promise<number> {
 function constructReturnUrl(returnUrl: string, data: object) {
   var redirect = returnUrl;
 
-  var indexOf = returnUrl.indexOf("?");
+  var indexOfQueries = returnUrl.indexOf("?");
 
-  if (indexOf != -1) {
-    var start = returnUrl.substr(0, indexOf + 1);
-    var end = returnUrl.substr(indexOf + 1);
+  if (indexOfQueries != -1) {
+    var start = returnUrl.substr(0, indexOfQueries + 1);
+    var end = returnUrl.substr(indexOfQueries + 1);
 
     var splitQueries = end.split("&");
     var newQueries = "";

@@ -36,63 +36,52 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
+import Base from "@/assets/ts/Base";
+import { FORGOT_PASSWORD_USERNAME } from "@/assets/ts/Constants";
+
 interface Fragment {
   val: string;
 }
 
 type ForgotMode = "Reconstruct" | "Reset";
 
-import { ref, inject, onMounted } from "vue";
-import TideInput from "@/components/Tide-Input.vue";
-import { BUS_KEY, FORGOT_PASSWORD_USERNAME, SET_LOADING_KEY, SHOW_ERROR_KEY } from "@/assets/ts/Constants";
-import mainStore from "@/store/mainStore";
-import router from "@/router/router";
+export default class Reconstruct extends Base {
+  mode: ForgotMode = "Reconstruct";
+  newPassword: NewPassword = { password: ``, confirm: "" };
+  frags: Fragment[] = [];
+  FRAG_COUNT = Math.min(this.mainStore.getState.config.orks.length, 16);
 
-const bus = inject(BUS_KEY) as IBus;
-
-var mode = ref<ForgotMode>("Reconstruct");
-
-var newPassword = ref<NewPassword>({ password: ``, confirm: "" });
-
-var frags = ref([] as Fragment[]);
-
-const FRAG_COUNT = Math.min(mainStore.getState.config.orks.length, 16);
-
-onMounted(() => {
-  for (let i = 0; i < FRAG_COUNT; i++) {
-    frags.value.push({ val: "" } as Fragment);
-  }
-});
-
-const toNextStep = async () => {
-  mode.value = "Reset";
-};
-
-const reset = async () => {
-  try {
-    bus.trigger(SET_LOADING_KEY, true);
-    const username = sessionStorage.getItem(FORGOT_PASSWORD_USERNAME);
-    if (username == null) return;
-
-    let assembled = "";
-    for (let i = 0; i < FRAG_COUNT; i++) {
-      assembled += `${frags.value[i].val}${i != FRAG_COUNT - 1 ? "\n" : ""}`;
+  mounted() {
+    for (let i = 0; i < this.FRAG_COUNT; i++) {
+      this.frags.push({ val: "" } as Fragment);
     }
-
-    await mainStore.reconstructAccount(username, assembled, newPassword.value.password);
-    bus.trigger(SHOW_ERROR_KEY, { type: "success", msg: "Your password has been changed" } as Alert);
-
-    router.push("/login");
-  } catch (error) {
-    bus.trigger(SHOW_ERROR_KEY, {
-      type: "error",
-      msg: `Failed resetting your password. Please check your fragments are correct and try again. ${error}`,
-    } as Alert);
-  } finally {
-    bus.trigger(SET_LOADING_KEY, false);
   }
-};
+
+  toNextStep = () => (this.mode = "Reset");
+
+  async reset() {
+    try {
+      this.setLoading(true);
+      const username = sessionStorage.getItem(FORGOT_PASSWORD_USERNAME);
+      if (username == null) return;
+
+      let assembled = "";
+      for (let i = 0; i < this.FRAG_COUNT; i++) {
+        assembled += `${this.frags[i].val}${i != this.FRAG_COUNT - 1 ? "\n" : ""}`;
+      }
+
+      await this.mainStore.reconstructAccount(username, assembled, this.newPassword.password);
+      this.showAlert("success", "Your password has been changed");
+
+      this.router.push("/login");
+    } catch (error) {
+      this.showAlert("error", `Failed resetting your password. Please check your fragments are correct and try again. ${error}`);
+    } finally {
+      this.setLoading(false);
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -23,49 +23,44 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import mainStore from "@/store/mainStore";
-import TideInput from "@/components/Tide-Input.vue";
-import { ref, computed, onMounted } from "vue";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
 // @ts-ignore
 import MetaField from "@/assets/ts/MetaField";
 // @ts-ignore
 import { C25519Key } from "../../../../Tide.Js/src/export/TideAuthentication";
 
-var fields = ref<any>([]);
-var encrypted = ref(true);
-var formData = ref(mainStore.getState.config.formData);
-var key: C25519Key;
-onMounted(() => {
-  key = C25519Key.fromString(mainStore.getState.account!.encryptionKey);
+export default class Form extends Base {
+  fields: any[] = [];
+  encrypted: boolean = true;
+  formData: any;
+  key: C25519Key;
 
-  encrypted.value = formData.value.type == "modify";
+  mounted() {
+    this.formData = this.mainStore.getState.config.formData;
 
-  fields.value = MetaField.fromModel(
-    formData.value.data,
-    encrypted.value,
-    formData.value.validation,
-    formData.value.classification,
-    formData.value.tags
-  );
+    this.encrypted = this.formData.type == "modify";
 
-  for (const field of fields.value) {
-    const splitCamel = field.field.replace(/([a-z])([A-Z])/g, "$1 $2") as string;
-    field.friendlyName = `${splitCamel[0].toUpperCase()}${splitCamel.substring(1)}`;
+    this.fields = MetaField.fromModel(this.formData.data, this.encrypted, this.formData.validation, this.formData.classification, this.formData.tags);
 
-    if (encrypted.value) field.decrypt(key);
-  }
-});
+    for (const field of this.fields) {
+      const splitCamel = field.field.replace(/([a-z])([A-Z])/g, "$1 $2") as string;
+      field.friendlyName = `${splitCamel[0].toUpperCase()}${splitCamel.substring(1)}`;
 
-const update = async () => {
-  setTimeout(async () => {
-    for (const field of fields.value) {
-      field.encrypt(key);
+      if (this.encrypted) field.decrypt(this.key);
     }
+  }
 
-    mainStore.returnFormData(fields.value);
-  }, 50);
-};
+  async update() {
+    setTimeout(async () => {
+      for (const field of this.fields) {
+        field.encrypt(this.key);
+      }
+
+      this.mainStore.returnFormData(this.fields);
+    }, 50);
+  }
+}
 </script>
 
 <style lang="scss" scoped>

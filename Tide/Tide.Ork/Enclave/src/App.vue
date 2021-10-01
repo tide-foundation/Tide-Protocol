@@ -9,8 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
-import mainStore from "./store/mainStore";
+import { onMounted } from "vue";
 import Error from "@/components/Error.vue";
 
 onMounted(async () => {
