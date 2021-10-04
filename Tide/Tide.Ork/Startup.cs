@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,15 +6,10 @@ using Microsoft.AspNetCore.SpaServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Tide.Core;
-using Tide.Encryption.AesMAC;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using VueCliMiddleware;
-using App.Metrics.AspNetCore;
-using Newtonsoft.Json;
-using Tide.Encryption.Ecc;
 
 namespace Tide.Ork {
     public class Startup {
@@ -35,7 +29,7 @@ namespace Tide.Ork {
             });
 
             var settings = new Settings();
-            Configuration.Bind("Settings", settings);
+            Configuration.Bind(nameof(Settings), settings);
 
             services.AddSingleton(settings);
             services.AddHttpContextAccessor();
@@ -44,7 +38,7 @@ namespace Tide.Ork {
             services.AddTransient<OrkConfig>();
             services.AddSignalR();
 
-            services.AddSpaStaticFiles(opt => opt.RootPath = "Client/dist");
+            services.AddSpaStaticFiles(opt => opt.RootPath = "Enclave/dist");
 
             if (settings.Features.Metrics)
                 services.AddMetrics();
@@ -59,13 +53,7 @@ namespace Tide.Ork {
 
             services.AddCors();
 
-            var privString = "AOAxMtmYfyI98Tr5jiQ77kZGA3goBctEWnDFTWnSOzol3pIbKWvLkkW83s55zJNczOxcbKXdeRSheFXmlDeQWS+KTCkfERyiI5J1i8Xlwe4clgY10LAfV0Ds9xP4QOhK";
-
-            var priv = C25519Key.Parse(privString);
-            var pubString = priv.GetPublic().ToString();
         }
-
-     
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,Settings settings) {
@@ -78,7 +66,9 @@ namespace Tide.Ork {
 
             app.UseStaticFiles();
          
+            #if DEBUG
             app.UseDeveloperExceptionPage(); // TODO: Remove for production
+            #endif
 
             if (env.IsProduction())
                 app.UseHttpsRedirection();
@@ -106,25 +96,25 @@ namespace Tide.Ork {
                 endpoints.MapControllers();
                 endpoints.MapHub<EnclaveHub>("/enclave-hub");
 
-                if (env.IsDevelopment() && settings.DevFront)
+                if (env.IsDevelopment() && settings.Features.DevFront)
                 {
                     endpoints.MapToVueCliProxy(
                         "{*path}",
-                        new SpaOptions { SourcePath = "Client" },
+                        new SpaOptions { SourcePath = "Enclave" },
                         npmScript: (System.Diagnostics.Debugger.IsAttached) ? "serve" : null,
                         regex: "Compiled successfully"
                     );
                 }
             });
 
-            if (settings.DevFront)
+            if (settings.Features.CSP)
+                app.UseMiddleware<HeaderSecurityMiddleware>();
+
+            if (settings.Features.DevFront)
             {
                 app.UseSpaStaticFiles();
-                app.UseSpa(spa => spa.Options.SourcePath = "Client");
+                app.UseSpa(spa => spa.Options.SourcePath = "Enclave");
             }
         }
     }
-
-
-
 }

@@ -102,6 +102,7 @@ export default class DAuthJwtFlow {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
     try {
+      const pre_flowCmk = this._getCmkFlow();
       const venPnt = C25519Point.fromString(this.vendorPub.y.toArray());
       const flowCmk = await this._getCmkFlow();
       this.cvkAuth = await flowCmk.logIn(password, venPnt);

@@ -70,6 +70,7 @@ services:
       Settings__Instance__PrivateKey: 'CBHaP68zFuCHJHMpoNatSi1Ea43nJD2aN4hzznfRaF9epxsm/Ly4U1koay26BJ2KYbUBXTwV5sG7XbJh8Fi/e3AO1S+fr9VPSm8oG2TIQZdntg7V50hkYj5pt/SsLsL3'
       Settings__Instance__SecretKey: 'AhDaAyMV+S5kqDA2GcNC1u9RIPFA0470RdxjEuEKjHhBgCQrsqR2Ik81gcSd06wIWoDH'
       Settings__Instance__Username: 'ork1'
+      Settings__Features__Metrics: 'true'
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
     depends_on:
       - 'simulator'
@@ -92,6 +93,7 @@ services:
       Settings__Instance__PrivateKey: 'AOb+bNal/0M0bT4jFC0K6+YuEBwwR5nBMaps7kZR64JFKCrU63/BQWasFCgIlgtlSOv5jzQfMjFBfsud/veC0ljtUScANNgwqmitEl6ChDOSyWBzA57sFmWAX2pe8fGR'
       Settings__Instance__SecretKey: 'AhC9OpCHalVMzgDc8LAyky05IKY92xhE2SmmCJ1RgzC0hkgDMkVa8W0cdsB0/I/1hW7D'
       Settings__Instance__Username: 'ork2'
+      Settings__Features__Metrics: 'true'
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
     depends_on:
       - 'simulator'
@@ -114,6 +116,7 @@ services:
       Settings__Instance__PrivateKey: 'BZJrKMczqmkPfk1ACDFP/kvyxczUFNbgwIf4SMPW0WMf0vePtGU88MW25xtujo+1oF1XODIJ7DlJigcZTDBPbAtMkH6YU2CzcO3eG9K0YCkLY8j98ahpdNzf/DBHH2NI'
       Settings__Instance__SecretKey: 'AhAsCWVibFkZUZyT6XkcaPi8IB4+NnKWF1vE9zemMgW09pCY3OgLZAmbZ/WsxVD5g3Jb'
       Settings__Instance__Username: 'ork3'
+      Settings__Features__Metrics: 'true'
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
     depends_on:
       - 'simulator'

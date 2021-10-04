@@ -10,6 +10,7 @@ import DnsClient from "../dauth/DnsClient";
 import BigInt from "big-integer";
 import SilentLogin from "../SilentLogin";
 
+export { C25519Key };
 export default class TideAuthentication {
   /**
    * Tide Authentication Module
