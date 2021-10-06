@@ -70,7 +70,7 @@ class MainStore extends Store<MainState> {
       action: this.state.action,
       vuid: this.state.account!.vuid,
     };
-
+    //console.log(constructReturnUrl(this.state.config.returnUrl!, authResponse));
     window.location.replace(constructReturnUrl(this.state.config.returnUrl!, authResponse));
   }
 
@@ -107,6 +107,11 @@ async function getServerTime(): Promise<number> {
 }
 
 function constructReturnUrl(returnUrl: string, data: object) {
+  if (!returnUrl.includes("reset=")) {
+    return `${returnUrl}${returnUrl.includes("?") ? "&" : "?"}data=${encodeURIComponent(JSON.stringify(data))}`;
+  }
+
+  // Edge case for reset
   var redirect = returnUrl;
 
   var indexOfQueries = returnUrl.indexOf("?");
