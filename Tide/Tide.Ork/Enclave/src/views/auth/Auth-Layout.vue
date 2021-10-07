@@ -53,7 +53,7 @@ export default class Forgot extends Base {
 
 <style lang="scss" scoped>
 #auth-layout {
-  width: 98%;
+  width: 100%;
   max-width: 800px;
   min-height: 500px;
   position: relative;
