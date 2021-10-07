@@ -35,12 +35,16 @@ export default class DAuthFlow {
 
   /**
    * @param {string} password
-   * @param {string} email
+   * @param {string|string[]} email
    * @param {number} threshold
    * @returns {Promise<AESKey>}
    */
   async signUp(password, email, threshold, cmk = random()) {
     try {
+      if (!email) throw new Error("email must have at least one item");
+      var emails = typeof email === "string" ? [email] : email;
+      var emailIndex = Math.floor(Math.random() * emails.length);
+
       var prism = random();
       var g = C25519Point.fromString(password);
 
@@ -54,7 +58,7 @@ export default class DAuthFlow {
       var [, cmks] = SecretShare.shareFromIds(cmk, ids, threshold, C25519Point.n);
       var [, prisms] = SecretShare.shareFromIds(prism, ids, threshold, C25519Point.n);
 
-      var signatures = await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], email)));
+      var signatures = await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], emails[(emailIndex + i) % emails.length])));
       await this.addDns(signatures, C25519Key.private(cmk));
 
       return cmkAuth;

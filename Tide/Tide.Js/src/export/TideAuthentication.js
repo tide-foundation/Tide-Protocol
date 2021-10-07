@@ -35,7 +35,7 @@ export default class TideAuthentication {
    *
    * @param {string}  username - Plain text username of the new user
    * @param {string} password - Plain text password of the new user
-   * @param  {string} email - The recovery email to be used by the user.
+   * @param  {string|string[]} email - The recovery email to be used by the user.
    * @param  {string[]} orks - The desired ork nodes to be used for registration. An account can only be activated when all ork nodes have confirmed they have stored the shard.
    *
    * @returns  - The Tide user account
@@ -63,7 +63,7 @@ export default class TideAuthentication {
    *
    * @param {string}  username - Plain text username of the new user
    * @param {string} password - Plain text password of the new user
-   * @param  {string} email - The recovery email to be used by the user.
+   * @param  {string|string[]} email - The recovery email to be used by the user.
    * @param  {string[]} orks - The desired ork nodes to be used for registration. An account can only be activated when all ork nodes have confirmed they have stored the shard.
    *
    * @returns  - The Tide user account
