@@ -28,7 +28,7 @@ import Base from "@/assets/ts/Base";
 
 export default class Login extends Base {
   goToAccount: boolean = false;
-  user: UserPass = { username: "", password: "" };
+  user: UserPass = { username: "", password: "", emails: [] };
 
   async login() {
     try {

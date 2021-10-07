@@ -12,7 +12,7 @@ declare global {
   interface UserPass {
     username: string;
     password: string;
-    email?: string;
+    emails: string[];
   }
 
   interface NewPassword {

@@ -25,7 +25,7 @@ import Base from "@/assets/ts/Base";
 import { FORGOT_PASSWORD_USERNAME } from "@/assets/ts/Constants";
 
 export default class Forgot extends Base {
-  user: UserPass = { username: "", password: "" };
+  user: UserPass = { username: "", password: "", emails: [] };
   async sendEmails() {
     try {
       sessionStorage.setItem(FORGOT_PASSWORD_USERNAME, this.user.username);

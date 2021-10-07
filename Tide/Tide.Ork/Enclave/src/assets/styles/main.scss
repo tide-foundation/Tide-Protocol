@@ -64,6 +64,10 @@ body {
   margin-top: 10px;
 }
 
+.mr-10 {
+  margin-right: 10px;
+}
+
 .actions {
   @extend .f-r;
   justify-content: space-between;
@@ -111,6 +115,15 @@ button {
 
     &:hover {
       background: #dbaf00;
+    }
+  }
+
+  &.delete {
+    background-color: #fa0075;
+    border-bottom: 4px solid #d60064;
+
+    &:hover {
+      background: #d60064;
     }
   }
 
@@ -218,4 +231,8 @@ a {
   opacity: 0;
   color: transparent;
   pointer-events: none;
+}
+
+.tippy-content {
+  color: white;
 }

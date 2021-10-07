@@ -41,7 +41,14 @@ class MainStore extends Store<MainState> {
     const serverTime = await getServerTime();
 
     this.setAccount(
-      await this.state.tide.registerJwt(user.username, user.password, user.email, this.state.config.orks, serverTime, this.state.config.orks.length),
+      await this.state.tide.registerJwt(
+        user.username,
+        user.password,
+        user.emails[0],
+        this.state.config.orks,
+        serverTime,
+        this.state.config.orks.length
+      ),
       "Register"
     );
 
