@@ -33,30 +33,27 @@
         </p>
 
         <div id="emails" class="full-width">
-          <tide-input
-            v-for="(email, i) in user.emails"
-            :key="i"
-            :id="`email${i + 1}`"
-            v-model="user.emails[i]"
-            type="email"
-            :required="true"
-            :style="{ opacity: i == user.emails.length - 1 && highlightlastEmail && user.emails.length > 1 ? 0.5 : 1 }"
-            >Email {{ i + 1 }}</tide-input
-          >
+          <div v-for="(email, i) in user.emails" :key="i" class="email-container  f-r">
+            <tide-input
+              class="email-input"
+              :id="`email${i + 1}`"
+              v-model="user.emails[i]"
+              type="email"
+              :required="true"
+              :style="{ opacity: i == user.emails.length - 1 && highlightlastEmail && user.emails.length > 1 ? 0.5 : 1 }"
+              >Email {{ i + 1 }}</tide-input
+            >
+            <div v-if="i == user.emails.length - 1 && user.emails.length > 1" class="invisible">...</div>
+            <button v-if="i == user.emails.length - 1 && user.emails.length > 1" @click="user.emails.pop()" class="del-email-icon f-c delete">
+              <img src="../../assets/img/icons/times.svg" />
+            </button>
+          </div>
+
+          <button class="full-width font-small" @click="user.emails.push('')" type="button">Add email</button>
         </div>
-        <div class="f-r full-width mt-10">
-          <button class="full-width font-small" @click="user.emails.push('')">Add email</button>
-          <div v-if="user.emails.length > 1" class="invisible">...</div>
-          <button
-            v-if="user.emails.length > 1"
-            class="full-width delete font-small"
-            @click="user.emails.pop()"
-            @mouseover="highlightlastEmail = true"
-            @mouseleave="highlightlastEmail = false"
-          >
-            Remove email {{ user.emails.length }}
-          </button>
-        </div>
+        <!-- <div class="f-r full-width mt-10">
+          <button class="full-width font-small" @click="user.emails.push('')" type="button">Add email</button>
+        </div> -->
       </div>
     </form>
   </div>
@@ -136,6 +133,10 @@ export default class Register extends Base {
         border-top: 1px solid #eaebf5;
         border-bottom: 1px solid #eaebf5;
 
+        .email-input {
+          width: 100%;
+        }
+
         &::-webkit-scrollbar {
           width: 0.3em;
         }
@@ -160,6 +161,16 @@ export default class Register extends Base {
     top: 3px;
     left: 4px;
     color: white;
+  }
+}
+.email-container {
+  .del-email-icon {
+    width: 70px;
+
+    padding: 0px;
+    img {
+      margin: 0px;
+    }
   }
 }
 </style>
