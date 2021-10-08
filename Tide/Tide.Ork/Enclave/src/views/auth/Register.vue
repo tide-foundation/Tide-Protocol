@@ -51,9 +51,6 @@
 
           <button class="full-width font-small" @click="user.emails.push('')" type="button">Add email</button>
         </div>
-        <!-- <div class="f-r full-width mt-10">
-          <button class="full-width font-small" @click="user.emails.push('')" type="button">Add email</button>
-        </div> -->
       </div>
     </form>
   </div>

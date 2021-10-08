@@ -6,28 +6,31 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, inject } from "vue";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
+import { SHOW_ERROR_KEY } from "@/assets/ts/Constants";
 
-import { BUS_KEY, SHOW_ERROR_KEY } from "@/assets/ts/Constants";
+export default class Error extends Base {
+  alert: Alert = { type: "success", msg: "" };
+  show: boolean = false;
+  timer: number = 0;
 
-var alert = ref<Alert>({ type: "success", msg: "" });
-var show = ref(false);
-const bus = inject(BUS_KEY) as IBus;
-var timer = 0;
-bus.on(SHOW_ERROR_KEY, (data: Alert) => {
-  clearTimeout(timer);
-  alert.value = data;
-  show.value = true;
-  timer = setTimeout(() => {
-    show.value = false;
-  }, 5000);
-});
+  created() {
+    this.bus.on(SHOW_ERROR_KEY, (data: Alert) => {
+      clearTimeout(this.timer);
+      this.alert = data;
+      this.show = true;
+      this.timer = setTimeout(() => {
+        this.show = false;
+      }, 5000);
+    });
+  }
 
-const clicked = () => {
-  show.value = false;
-  clearTimeout(timer);
-};
+  clicked() {
+    this.show = false;
+    clearTimeout(this.timer);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
