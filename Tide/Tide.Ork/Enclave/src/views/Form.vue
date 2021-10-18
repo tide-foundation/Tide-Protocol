@@ -7,7 +7,7 @@
     </div>
 
     <form id="update-form" class="f-c" @submit.prevent="update">
-      <div id="form-padding">.</div>
+      <div id="form-padding" class="invisible">.</div>
       <div class="row">
         <div class="col-12 col-md-4" v-for="(field, index) in fields">
           <tide-input :key="index" :id="field.field" v-model="field.value">{{ field.friendlyName }}</tide-input>
@@ -37,6 +37,7 @@ export default class Form extends Base {
   key: C25519Key;
 
   mounted() {
+    this.key = C25519Key.fromString(this.mainStore.getState.account!.encryptionKey);
     this.formData = this.mainStore.getState.config.formData;
 
     this.encrypted = this.formData.type == "modify";
@@ -67,7 +68,7 @@ export default class Form extends Base {
 #form {
   width: 100%;
   max-width: 1150px;
-  min-height: 500px;
+  // min-height: 500px;
 
   h2 {
     margin-left: 20px;
