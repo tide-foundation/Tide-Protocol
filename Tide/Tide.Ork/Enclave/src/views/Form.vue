@@ -14,9 +14,9 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-4">
-          <button class="mt-20" type="submit">UPDATE DETAILS</button>
+      <div class="row mb-30">
+        <div class="col-12 col-md-4">
+          <button class="mt-20 full-width" type="submit">UPDATE DETAILS</button>
         </div>
       </div>
     </form>
