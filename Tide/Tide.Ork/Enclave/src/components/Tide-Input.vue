@@ -1,6 +1,6 @@
 <template>
   <div class="tide-input f-c">
-    <input :type="type" :id="id" :value="modelValue" @input="updateModelValue" />
+    <input :type="type" :id="id" :value="modelValue" :required="required" @input="updateModelValue" />
     <label :for="id"><slot></slot></label>
   </div>
 </template>
@@ -18,7 +18,10 @@ const props = defineProps({
     default: "text",
     required: false,
   },
-
+  required: {
+    type: Boolean,
+    default: true,
+  },
   modelValue: {
     type: String,
     default: "",

@@ -5,22 +5,36 @@
       <router-view></router-view>
     </div>
 
-    <a id="footer" class="full-width f-c" href="https://tide.org" target="_blank">
+    <a id="footer" class="full-width f-c" target="_blank">
       <img src="../assets/img/tide-inside.png" alt="" />
     </a>
+    <transition name="fade" mode="out-in">
+      <Loader v-if="loading"></Loader>
+    </transition>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from "vue";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
+import { SET_LOADING_KEY } from "@/assets/ts/Constants";
+
+import { Options } from "vue-class-component";
+import Loader from "@/components/Loader.vue";
+@Options({
+  components: {
+    Loader,
+  },
+})
+export default class Layout extends Base {
+  loading: boolean = false;
+  mounted() {
+    this.bus.on(SET_LOADING_KEY, (data: any) => (this.loading = data));
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 #layout {
-  width: 98%;
-  max-width: 1150px;
-  min-height: 500px;
-
   position: relative;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   background: $background;
@@ -35,7 +49,7 @@ import { ref, computed } from "vue";
   }
 
   #header {
-    height: 100px;
+    height: 70px;
   }
 
   #content {

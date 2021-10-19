@@ -60,7 +60,7 @@ export default class DAuthV2Flow {
 
   /**
    * @param {string} password
-   * @param {string} email
+   * @param {string|string[]} email
    * @param {number} threshold
    * @returns {Promise<{ vuid: Guid; cvk: C25519Key; auth: AESKey; }>}
    */

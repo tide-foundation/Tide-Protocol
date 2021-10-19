@@ -7,66 +7,68 @@
     </div>
 
     <form id="update-form" class="f-c" @submit.prevent="update">
-      <div id="form-padding">.</div>
+      <div id="form-padding" class="invisible">.</div>
       <div class="row">
         <div class="col-12 col-md-4" v-for="(field, index) in fields">
           <tide-input :key="index" :id="field.field" v-model="field.value">{{ field.friendlyName }}</tide-input>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-4">
-          <button class="mt-20" type="submit">UPDATE DETAILS</button>
+      <div class="row mb-30">
+        <div class="col-12 col-md-4">
+          <button class="mt-20 full-width" type="submit">UPDATE DETAILS</button>
         </div>
       </div>
     </form>
   </div>
 </template>
 
-<script setup lang="ts">
-import mainStore from "@/store/mainStore";
-import TideInput from "@/components/Tide-Input.vue";
-import { ref, computed, onMounted } from "vue";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
 // @ts-ignore
 import MetaField from "@/assets/ts/MetaField";
+// @ts-ignore
+import { C25519Key } from "../../../../Tide.Js/src/export/TideAuthentication";
 
-var fields = ref<any>([]);
-var encrypted = ref(true);
-var formData = ref(mainStore.getState.config.formData);
+export default class Form extends Base {
+  fields: any[] = [];
+  encrypted: boolean = true;
+  formData: any;
+  key: C25519Key;
 
-onMounted(() => {
-  encrypted.value = formData.value.type == "modify";
+  mounted() {
+    this.key = C25519Key.fromString(this.mainStore.getState.account!.encryptionKey);
+    this.formData = this.mainStore.getState.config.formData;
 
-  fields.value = MetaField.fromModel(
-    formData.value.data,
-    encrypted.value,
-    formData.value.validation,
-    formData.value.classification,
-    formData.value.tags
-  );
+    this.encrypted = this.formData.type == "modify";
 
-  for (const field of fields.value) {
-    const splitCamel = field.field.replace(/([a-z])([A-Z])/g, "$1 $2") as string;
-    field.friendlyName = `${splitCamel[0].toUpperCase()}${splitCamel.substring(1)}`;
+    this.fields = MetaField.fromModel(this.formData.data, this.encrypted, this.formData.validation, this.formData.classification, this.formData.tags);
 
-    if (encrypted.value) field.decrypt(mainStore.getState.account!.encryptionKey);
-  }
-});
+    for (const field of this.fields) {
+      const splitCamel = field.field.replace(/([a-z])([A-Z])/g, "$1 $2") as string;
+      field.friendlyName = `${splitCamel[0].toUpperCase()}${splitCamel.substring(1)}`;
 
-const update = async () => {
-  setTimeout(async () => {
-    for (const field of fields.value) {
-      field.encrypt(mainStore.getState.account!.encryptionKey);
+      if (this.encrypted) field.decrypt(this.key);
     }
+  }
 
-    mainStore.returnFormData(fields.value);
-  }, 50);
-};
+  async update() {
+    setTimeout(async () => {
+      for (const field of this.fields) {
+        field.encrypt(this.key);
+      }
+
+      this.mainStore.returnFormData(this.fields);
+    }, 50);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 #form {
   width: 100%;
+  max-width: 1150px;
+  // min-height: 500px;
 
   h2 {
     margin-left: 20px;

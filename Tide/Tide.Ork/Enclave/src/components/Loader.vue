@@ -15,8 +15,10 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from "vue";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
+
+export default class Loader extends Base {}
 </script>
 
 <style lang="scss" scoped>
