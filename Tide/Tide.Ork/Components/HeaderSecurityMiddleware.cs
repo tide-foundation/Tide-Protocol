@@ -37,7 +37,8 @@ namespace Tide.Ork.Classes
                     context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
                 }
 
-                var csp = "default-src 'self'; object-src 'none'; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts; base-uri 'self'; connect-src *;";
+                //TODO: The 'unsafe-inline' for style-src should be removed and implemented in a better way
+                var csp = "default-src 'self'; object-src 'none'; frame-ancestors 'none'; sandbox allow-forms allow-same-origin allow-scripts; base-uri 'self'; connect-src *; style-src 'unsafe-inline'";
                 if (!context.Response.Headers.ContainsKey("Content-Security-Policy"))
                 {
                     context.Response.Headers.Add("Content-Security-Policy", csp);
