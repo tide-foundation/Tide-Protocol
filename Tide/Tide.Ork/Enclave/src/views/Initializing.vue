@@ -34,6 +34,10 @@ export default class Initializing extends Base {
       // Store into session data to preserve refresh
       if (this.stringData != null) {
         sessionStorage.setItem(SESSION_DATA_KEY, this.stringData);
+
+        // Save url for change-ork flow
+        var trueUrl = window.location.search;
+        sessionStorage.setItem("true-url", trueUrl);
       } else {
         // If query is null, try get from session. User may have refreshed
         var sessionData = sessionStorage.getItem(SESSION_DATA_KEY);

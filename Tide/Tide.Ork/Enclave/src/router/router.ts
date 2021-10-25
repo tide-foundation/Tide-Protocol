@@ -10,6 +10,7 @@ import Reconstruct from "@/views/auth/Reconstruct.vue";
 import Layout from "@/views/Layout.vue";
 import Form from "@/views/Form.vue";
 import Actions from "@/views/Actions.vue";
+import Options from "@/views/Options.vue";
 
 import Account from "@/views/Account.vue";
 import ChangePassword from "@/views/ChangePassword.vue";
@@ -77,6 +78,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "/change-password",
         name: "Change Password",
         component: ChangePassword,
+      },
+      {
+        path: "/options",
+        name: "Options",
+        component: Options,
       },
     ],
   },
