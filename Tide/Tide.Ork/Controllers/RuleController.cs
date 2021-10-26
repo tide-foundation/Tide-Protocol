@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tide.Ork.Classes.Rules;
@@ -29,6 +30,7 @@ namespace Tide.Ork.Controllers {
     public class RuleController : ControllerBase {
         private readonly ILogger _logger;
         private readonly IRuleManager _manager;
+        private Guid Username => User.Identity.IsAuthenticated && Guid.TryParse(User.Identity.Name, out var id) ? id : Guid.Empty;
 
         public RuleController(IKeyManagerFactory factory, ILogger<RuleController> logger) {
             _manager = factory.BuildRuleManager();
@@ -54,23 +56,57 @@ namespace Tide.Ork.Controllers {
         [HttpPost]
         public async Task<ActionResult> SetOrUpdate([FromBody] RuleVaultDTO rule)
         {
-            try {
-                new RuleConditionEval(rule).Eval().Compile();
-
-                var result = await _manager.SetOrUpdate(rule);
-                _logger.LogInformation($"Rule added from user {rule.OwnerId} with tag {rule.Tag} for key {rule.KeyId}");
-                return result.Success ? Ok() : BadRequest() as ActionResult;
-            }catch{
+            try { new RuleConditionEval(rule).Eval().Compile(); }
+            catch {
                 _logger.LogError($"Invalid rule condition for user {rule.OwnerId}: {rule.Condition}");
                 return BadRequest("Invalid rule condition");
             }
+
+            var isRightOwner = User.Identity.IsAuthenticated && rule.OwnerId == Username;
+            var isNewEntry = false;
+
+            if (isRightOwner || (isNewEntry = !await _manager.Exist(rule.RuleId)))
+            {
+                var result = await _manager.SetOrUpdate(rule);
+                if (!result.Success)
+                {
+                    _logger.LogError("There is an error with the rule repository for {ruleId}: {error}", rule.RuleId, result.Error);
+                    return StatusCode(500);
+                }
+
+                _logger.LogInformation($"Rule added from user {rule.OwnerId} with tag {rule.Tag} for key {rule.KeyId}");
+                return !isNewEntry ? Ok() : CreatedAtAction(nameof(GetById), new { rule.RuleId }, rule);
+            }
+
+            if (!isNewEntry && !User.Identity.IsAuthenticated)
+                _logger.LogWarning("An unauthorized user tried to update the rule {ruleId} owned by {id}", rule.RuleId, rule.OwnerId);
+
+            else
+                _logger.LogWarning("An unauthorized user {user} tried to update the rule {ruleId} owned by {id}", Username, rule.RuleId, rule.OwnerId);
+
+            return Unauthorized();
         }
 
-        [HttpDelete("{ruleId}")]
-        public async Task<ActionResult> Delete([FromRoute] Guid ruleId)
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] Guid id)
         {
-            await _manager.Delete(ruleId);
-            return Ok();
+            var rule = await _manager.GetById(id);
+            if (rule == null) {
+                _logger.LogWarning("The user {user} tried to delete the rule {ruleId} that does not existed", Username, id);
+                return Unauthorized();
+            }
+
+            var isRightOwner = User.Identity.IsAuthenticated && rule.OwnerId == Username;
+            if (!isRightOwner)
+            {
+                _logger.LogWarning("An unauthorized user {user} tried to delete the rule {ruleId} owned by {id}", Username, id, rule.OwnerId);
+                return Unauthorized();
+            }
+
+            await _manager.Delete(id);
+            _logger.LogInformation("Rule deleted for {ruleId}", id);
+            return NoContent();
         }
     }
 }

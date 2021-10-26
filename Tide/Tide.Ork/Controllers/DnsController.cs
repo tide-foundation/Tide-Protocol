@@ -34,8 +34,9 @@ namespace Tide.Ork.Controllers
         private readonly IDnsManager _manager;
         private readonly SimulatorOrkManager _orkManager;
         private readonly string _orkId;
+        private Guid Username => User.Identity.IsAuthenticated && Guid.TryParse(User.Identity.Name, out var id) ? id : Guid.Empty;
 
-        public DnsController(IKeyManagerFactory factory, ILogger<KeyController> logger, Settings settings)
+        public DnsController(IKeyManagerFactory factory, ILogger<DnsController> logger, Settings settings)
         {
             _manager = factory.BuildDnsManager();
             _logger = logger;
@@ -81,11 +82,29 @@ namespace Tide.Ork.Controllers
         [HttpPost]
         public async Task<ActionResult> SetOrUpdate([FromBody] DnsEntry entry)
         {
-            var result = await _manager.SetOrUpdate(entry);
-            if (result.Success) _logger.LogInformation($"DnsEntry added for {entry.Id}");
-            else _logger.LogError(result.Error);
+            var isRightOwner = User.Identity.IsAuthenticated && entry.Id == Username;
+            var isNewEntry = false;
 
-            return result.Success ? Ok() : BadRequest(result.Error) as ActionResult;
+            if (isRightOwner || (isNewEntry = !await _manager.Exist(entry.Id)))
+            {
+                var result = await _manager.SetOrUpdate(entry);
+                if (!result.Success)
+                {
+                    _logger.LogError("There is an error with the dns repository for {dnsId}: {error}", entry.Id, result.Error);
+                    return StatusCode(500);
+                }
+
+                _logger.LogInformation("DnsEntry {note} for {dnsId}", isNewEntry ? "added" : "modified", entry.Id);
+                return !isNewEntry ? Ok() : CreatedAtAction(nameof(GetById), new { id = entry.Id }, entry);
+            }
+
+            if (!isNewEntry && !User.Identity.IsAuthenticated)
+                _logger.LogWarning("An unauthorized user tried to update the dns {dnsId}", entry.Id);
+
+            else
+                _logger.LogWarning("An unauthorized user {user} tried to update the dns {dnsId}", Username, entry.Id);
+
+            return Unauthorized();
         }
-   }
+    }
 }

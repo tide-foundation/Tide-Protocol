@@ -41,12 +41,12 @@ namespace Tide.Simulator.Contracts
                     return new BadRequestObjectResult("One of the ORK signatures is invalid");
                 }
 
-                //TODO: Verify if this works
-                var sourceTran = _blockchain.Read(transaction.Location, transaction.Index);
+                //TODO: Verify that only the contract owner can modify it
+                /*var sourceTran = _blockchain.Read(transaction.Location, transaction.Index);
                 if (sourceTran != null) {
                     _logger.LogInformation("Dns entry is already created for {0}", transaction.Index);
                     return new BadRequestObjectResult("The account already exists");
-                }
+                }*/
 
                 lock (_lockObj)
                 {

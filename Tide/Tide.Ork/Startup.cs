@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices;
@@ -37,6 +38,8 @@ namespace Tide.Ork {
             services.AddTransient<IEmailClient, SendGridEmailClient>();
             services.AddTransient<OrkConfig>();
             services.AddSignalR();
+            services.AddTransient<IVerificationKeyRepo, VerificationKeyRepo>();
+            
 
             services.AddSpaStaticFiles(opt => opt.RootPath = "Enclave/dist");
 
@@ -52,7 +55,7 @@ namespace Tide.Ork {
                 services.AddTransient<IKeyManagerFactory, SimulatorFactory>();
 
             services.AddCors();
-
+            services.AddAuthentication("keyAuth").AddScheme<AuthenticationSchemeOptions, VerificationKeyAuthenticationHandler>("keyAuth", null);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,7 +77,7 @@ namespace Tide.Ork {
                 app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseCors(builder => builder
