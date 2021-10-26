@@ -49,7 +49,7 @@ export default class Layout extends Base {
   }
 
   #header {
-    height: 70px;
+    height: 40px;
   }
 
   #content {

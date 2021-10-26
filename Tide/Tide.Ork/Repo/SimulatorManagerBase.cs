@@ -55,7 +55,9 @@ namespace Tide.Ork.Repo {
             return new TideResponse(false,null,result.error);
         }
 
-        public Task Delete(Guid id) => throw new NotImplementedException();
+        public Task<bool> Delete(Guid id) {
+            return _client.Delete(Contract, TableName, _orkId, id.ToString());
+        }
 
         protected abstract T Map(string data);
 

@@ -9,9 +9,10 @@ Makefile*  text eol=lf
 *.bat      text eol=crlf
 *.cmd      text eol=crlf
 *.ps1      text eol=crlf
-*.md       text diff=markdown
 
+*.svg      text
+*.md       text diff=markdown
 *.cs       text diff=csharp
-*.cshtml   text diff=html
 *.csx      text diff=csharp
+*.cshtml   text diff=html
 *.csproj   text merge=union

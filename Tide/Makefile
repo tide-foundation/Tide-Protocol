@@ -1,4 +1,4 @@
-.PHONY: build run test test-basic clean
+.PHONY: build run test test-basic unit-test clean
 
 build:
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
@@ -15,7 +15,10 @@ simulator:
 dauth: build
 	docker-compose -f docker-compose.yml -f docker-compose.storage.yml up ork1 ork2 ork3
 
-test:  test-basic clean
+unit-test:
+	dotnet test Tide.Ork.Test
+
+test:  build test-basic clean
 	
 test-basic:
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml up --exit-code-from test test

@@ -41,6 +41,8 @@ export default class Num64 {
 
     toString() { return this.num.toString(); }
 
+    toJSON() { return this.toString(); }
+
     inspect() { return this.toString(); }
 
     /** @param {string|Uint8Array} data */

@@ -16,12 +16,12 @@ namespace Tide.Ork.Repo
             _items = new ConcurrentDictionary<Guid, string>();
         }
 
-        public virtual Task Delete(Guid id)
+        public virtual Task<bool> Delete(Guid id)
         {
             if (_items.ContainsKey(id))
                 _items.Remove(id, out string elm);
 
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
 
         public virtual Task<bool> Exist(Guid id)

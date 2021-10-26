@@ -39,8 +39,23 @@ export default class RuleClient {
     return res.body.map((r) => Rule.from(r));
   }
 
-  /** @param {Rule} rule */
-  async setOrUpdate(rule) {
-    await superagent.post(this.url).set("Content-Type", "application/json").send(rule.stringify());
+  /**
+   * @param {Rule} rule
+   * @param {import("../TranJwt").default} jwt
+   **/
+  async setOrUpdate(rule, jwt = null) {
+    const req = superagent.post(this.url).set("Content-Type", "application/json")
+    if (jwt)
+      req.set("Authorization", `Bearer ${jwt}`)
+
+    await req.send(rule.stringify());
+  }
+
+  /**
+   * @param {Guid} id
+   * @param {import("../TranJwt").default} jwt
+   **/
+  async delete(id, jwt) {
+    await superagent.delete(this.url + "/" + id).set("Authorization", `Bearer ${jwt}`);
   }
 }
