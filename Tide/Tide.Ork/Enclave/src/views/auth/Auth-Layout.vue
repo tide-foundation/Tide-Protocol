@@ -46,8 +46,8 @@ import Loader from "@/components/Loader.vue";
 })
 export default class Forgot extends Base {
   loading: boolean = false;
-  tideInside: any = require("../../assets/img/tide-inside-new.png");
-  tideInsideHover: any = require("../../assets/img/tide-inside-new-hover.png");
+  tideInside: any = require("../../assets/img/tide-inside.png");
+  tideInsideHover: any = require("../../assets/img/tide-inside-hover.png");
   hover = false;
 
   get pictureHover() {

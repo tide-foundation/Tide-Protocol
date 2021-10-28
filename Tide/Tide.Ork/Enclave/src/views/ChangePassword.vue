@@ -1,5 +1,5 @@
 <template>
-  <div id="reconstruct" class="full-height f-c auth-page">
+  <div id="reconstruct" class="full-height f-c auth-page mw-400">
     <div class="f-r page-title">
       <div class="spacer line"></div>
       <h1>Change your password</h1>

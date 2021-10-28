@@ -1,5 +1,6 @@
 <template>
-  <div id="account" class="full-height f-c auth-page">
+  <div id="account" class="full-height f-c auth-page mw-400">
+    <div class="back-link font-small" @click="mainStore.authenticationComplete">Back to vendor</div>
     <div class="f-r page-title">
       <div class="spacer line"></div>
       <h1>Your Tide Account</h1>
@@ -9,23 +10,10 @@
       Alter the way you interact with the Tide ecosystem
     </p>
     <div class="button-row">
-      <div class="row">
-        <div class="col-12 col-md-4">
-          <button @click="$router.push('/change-password')">Change password <img src="../assets/img/icons/key.svg" /></button>
-        </div>
-        <div class="col-12 col-md-4">
-          <button disabled>Change ORKs <img src="../assets/img/icons/ork.svg" /></button>
-        </div>
-        <!-- <div class="col-12 col-md-4">
-          <button disabled>Account History <img src="../assets/img/icons/history.svg" /></button>
-        </div> -->
-        <div class="col-12 col-md-4">
-          <button @click="logout">Logout <img src="../assets/img/icons/logout.svg" /></button>
-        </div>
-      </div>
+      <button @click="$router.push('/change-password')">Change password <img src="../assets/img/icons/key.svg" /></button>
+      <button disabled>Change Account Servers <img src="../assets/img/icons/ork.svg" /></button>
+      <button @click="logout" class="secondary">Logout <img src="../assets/img/icons/logout.svg" /></button>
     </div>
-
-    <button @click="mainStore.authenticationComplete" id="return-button" class="f-c secondary"><img src="../assets/img/icons/return.svg" /></button>
   </div>
 </template>
 
