@@ -1,6 +1,6 @@
 <template>
   <div id="options" class="full-height f-c auth-page">
-    <router-link id="back-link" class="font-small" to="/login">Back</router-link>
+    <router-link class="back-link font-small" to="/login">Back</router-link>
     <div class="f-r page-title">
       <div class="spacer line"></div>
       <h1>Tide Configuration</h1>
@@ -12,7 +12,7 @@
       source to anyone in the Tide network
     </p>
     <form @submit.prevent="changeOrk" class="mb-30">
-      <tide-input v-model="newOrk" type="text">New server address</tide-input>
+      <tide-input v-model="newOrk" id="change" type="text">New server address</tide-input>
       <button class="full-width">Change Server</button>
     </form>
   </div>
@@ -36,10 +36,5 @@ export default class Login extends Base {
 
 <style lang="scss" scoped>
 #options {
-  #back-link {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-  }
 }
 </style>

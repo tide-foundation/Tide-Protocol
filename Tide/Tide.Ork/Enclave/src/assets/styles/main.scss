@@ -145,14 +145,19 @@ button {
   }
 }
 
-a {
+.link-style {
   transition: 0.2s all ease-in-out;
   text-decoration: none;
   color: $primary;
+  cursor: pointer;
 
   &:hover {
     color: $secondary;
   }
+}
+
+a {
+  @extend .link-style;
 }
 
 .primary {
@@ -185,6 +190,9 @@ a {
 
 .error {
   color: rgb(185, 43, 43);
+}
+.mw-400 {
+  min-width: 400px;
 }
 
 .auth-page {
@@ -247,4 +255,12 @@ a {
 
 .tippy-content {
   color: white;
+}
+
+.back-link {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+
+  @extend .link-style;
 }

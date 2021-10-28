@@ -1,5 +1,6 @@
 <template>
-  <div id="actions" class="full-height f-c auth-page">
+  <div id="actions" class="full-height f-c auth-page mw-400">
+    <div class="back-link font-small" @click="mainStore.authenticationComplete">Back to vendor</div>
     <div class="f-r page-title">
       <div class="spacer line"></div>
       <h1>
@@ -11,19 +12,8 @@
       How would you like to proceed?
     </p>
     <div class="button-row">
-      <div class="row">
-        <div class="col-12 col-md-4">
-          <button class="secondary" @click="backToVendor">
-            Back to {{ mainStore.getState.config.vendorName }} <img src="../assets/img/icons/return.svg" />
-          </button>
-        </div>
-        <div class="col-12 col-md-4">
-          <button @click="$router.push('/account')">Your Account <img src="../assets/img/icons/tide.svg" /></button>
-        </div>
-        <div class="col-12 col-md-4">
-          <button @click="logout">Logout <img src="../assets/img/icons/logout.svg" /></button>
-        </div>
-      </div>
+      <button @click="$router.push('/account')">Your Account <img src="../assets/img/icons/tide.svg" /></button>
+      <button @click="logout" class="secondary">Logout <img src="../assets/img/icons/logout.svg" /></button>
     </div>
   </div>
 </template>
@@ -35,10 +25,6 @@ export default class Actions extends Base {
   logout() {
     this.mainStore.logout();
     this.router.push("/");
-  }
-
-  backToVendor() {
-    this.mainStore.authenticationComplete();
   }
 }
 </script>
