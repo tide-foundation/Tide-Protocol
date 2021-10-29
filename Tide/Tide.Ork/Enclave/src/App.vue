@@ -1,9 +1,7 @@
 <template>
   <div id="app" class="f-c">
     <div id="wrapper" class="f-c">
-      <transition name="fade" mode="out-in">
-        <router-view></router-view>
-      </transition>
+      <router-view></router-view>
     </div>
 
     <error></error>
