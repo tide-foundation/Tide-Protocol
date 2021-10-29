@@ -1,7 +1,9 @@
 <template>
   <div id="app" class="f-c">
     <div id="wrapper" class="f-c">
-      <router-view></router-view>
+      <transition name="fade" mode="out-in">
+        <router-view></router-view>
+      </transition>
     </div>
 
     <error></error>
@@ -32,5 +34,15 @@ const fetchHeight = () => {
   #wrapper {
     width: 100%;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
