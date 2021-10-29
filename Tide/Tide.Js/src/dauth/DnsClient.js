@@ -43,9 +43,16 @@ export default class DnsClient {
     return DnsEntry.from(resp.body)
   }
 
-  /** @param {DnsEntry} entry */
-  async addDns(entry) {
-    await superagent.post(this.url).set('Content-Type', 'application/json').send(entry.toString());
+  /**
+   * @param {DnsEntry} entry
+   * @param {import("../TranJwt").default} jwt
+   **/
+  async addDns(entry, jwt = null) {
+    const req = superagent.post(this.url).set('Content-Type', 'application/json')
+    if (jwt)
+      req.set("Authorization", `Bearer ${jwt}`)
+    
+    await req.send(entry.toString());
   }
 
   /** @returns { Promise<[string[], C25519Key[]]> } */

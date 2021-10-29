@@ -27,6 +27,6 @@ namespace Tide.Ork.Repo
         Task<KeyIdVault> GetById(Guid id);
         Task<List<KeyIdVault>> GetAll();
         Task<TideResponse> SetOrUpdate(KeyIdVault entity);
-        Task Delete(Guid id);
+        Task<bool> Delete(Guid id);
     }
 }

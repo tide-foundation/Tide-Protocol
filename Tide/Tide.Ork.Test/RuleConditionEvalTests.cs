@@ -12,7 +12,7 @@ namespace Tide.Ork.Test
     public class RuleConditionEvalTests
     {
         [Theory]
-        [InlineData(800)]
+        [InlineData(500)]
         public void EvaluationShouldBeEfficient(int numberOfExpressions)
         {
             var expressions = RandomExpressions(numberOfExpressions).ToList();

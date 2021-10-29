@@ -1,6 +1,22 @@
 import mainStore from "@/store/mainStore";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+
+import AuthLayout from "@/views/auth/Auth-Layout.vue";
+import Login from "@/views/auth/Login.vue";
+import Register from "@/views/auth/Register.vue";
+import Forgot from "@/views/auth/Forgot.vue";
+import Reconstruct from "@/views/auth/Reconstruct.vue";
+
+import Layout from "@/views/Layout.vue";
+import Form from "@/views/Form.vue";
+import Actions from "@/views/Actions.vue";
+import Options from "@/views/Options.vue";
+
+import Account from "@/views/Account.vue";
+import ChangePassword from "@/views/ChangePassword.vue";
+
 import Initializing from "../views/Initializing.vue";
+import Logout from "../views/Logout.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -9,8 +25,13 @@ const routes: Array<RouteRecordRaw> = [
     component: Initializing,
   },
   {
+    path: "/logout",
+    name: "Logout",
+    component: Logout,
+  },
+  {
     path: "/auth-layout",
-    component: () => import(/* webpackChunkName: "auth-layout" */ "../views/auth/Auth-Layout.vue"),
+    component: AuthLayout,
     meta: {
       requiresInit: true,
     },
@@ -18,18 +39,23 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/login",
         name: "Login",
-        component: () => import(/* webpackChunkName: "login" */ "../views/auth/Login.vue"),
+        component: Login,
       },
       {
         path: "/register",
         name: "Register",
-        component: () => import(/* webpackChunkName: "register" */ "../views/auth/Register.vue"),
+        component: Register,
+      },
+      {
+        path: "/forgot",
+        name: "Forgot",
+        component: Forgot,
       },
     ],
   },
   {
     path: "/layout",
-    component: () => import(/* webpackChunkName: "layout" */ "../views/Layout.vue"),
+    component: Layout,
     meta: {
       requiresInit: true,
     },
@@ -37,7 +63,32 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/form",
         name: "Form",
-        component: () => import(/* webpackChunkName: "form" */ "../views/Form.vue"),
+        component: Form,
+      },
+      {
+        path: "/actions",
+        name: "Actions",
+        component: Actions,
+      },
+      {
+        path: "/reconstruct",
+        name: "Reconstruct",
+        component: Reconstruct,
+      },
+      {
+        path: "/account",
+        name: "Account",
+        component: Account,
+      },
+      {
+        path: "/change-password",
+        name: "Change Password",
+        component: ChangePassword,
+      },
+      {
+        path: "/options",
+        name: "Options",
+        component: Options,
       },
     ],
   },

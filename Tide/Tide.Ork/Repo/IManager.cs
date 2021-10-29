@@ -12,6 +12,6 @@ namespace Tide.Ork.Repo
         Task<T> GetById(Guid id);
         Task<TideResponse> Add(T entity);
         Task<TideResponse> SetOrUpdate(T entity);
-        Task Delete(Guid id);
+        Task<bool> Delete(Guid id);
     }
 }

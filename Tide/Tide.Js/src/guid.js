@@ -31,13 +31,11 @@ export default class Guid {
     }
 
     /** @returns {Uint8Array} */
-    toArray() {
-        return this.buffer;
-    }
+    toArray() { return this.buffer; }
 
-    inspect() {
-        return this.toString();
-    }
+    toJSON() { return this.toString(); }
+
+    inspect() { return this.toString(); }
 
     /** @param {Uint8Array|string} data */
     static from(data) {

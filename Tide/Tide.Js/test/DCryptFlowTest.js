@@ -13,7 +13,6 @@ import assert from 'assert';
 const threshold = 3;
 const cmkAuth = AESKey.from("AhATyXYow4qdCw7nFGVFu87JICzd7w9PbzAyp7M4r6PiHS7h0RTUNSP5XmcOVUmsvPKe");
 const urls = EnvTest.orkUrls;
-const vendorKey = C25519Key.fromString("DeXSP3DBdA2mlgkxGEWxq7lIJO6gyd0pUcqM3c71TLAAQbUNuNbGAR7dM9Pc2083PQ8JxydPhGNM8M37eVnOZUI9eL2HtqSbhEo3wYVnflW0xNvlUs8YMaBuK0yydCHK");
 
 describe('DCryptFlow', function () {
     it('should decrypt a cipher', async function () {
@@ -22,6 +21,7 @@ describe('DCryptFlow', function () {
         const flow = new DCryptFlow(urls, userId);
         const ruleCln = new RuleClientSet(urls, userId);
         const keyCln = new KeyClientSet(urls);
+        const vendorKey = C25519Key.generate();
         
         const msgs = ["😃The magical realist style and thematic substance of One Hundred Years of Solitude😄",
             "established it as"];
@@ -51,6 +51,7 @@ describe('DCryptFlow', function () {
         const flow = new DCryptFlow(urls, userId);
         const ruleCln = new RuleClientSet(urls, userId);
         const keyCln = new KeyClientSet(urls);
+        const vendorKey = C25519Key.generate();
         
         const msgs = [ "😃The magical realist style and thematic substance of One Hundred Years of Solitude😄",
             "established it as",

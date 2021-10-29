@@ -29,8 +29,23 @@ export default class KeyClient {
     return KeyStore.from(res.body);
   }
 
-  /** @param {KeyStore} key */
-  async setOrUpdate(key) {
-    await superagent.post(this.url).set("Content-Type", "application/json").send(key.stringify());
+  /** 
+   * @param {KeyStore} key
+   * @param {import("../TranJwt").default} jwt
+   **/
+  async setOrUpdate(key, jwt = null) {
+    const req = superagent.post(this.url).set("Content-Type", "application/json");
+    if (jwt)
+      req.set("Authorization", `Bearer ${jwt}`)
+    
+    await req.send(key.stringify());
+  }
+
+  /**
+   * @param {Guid} id
+   * @param {import("../TranJwt").default} jwt
+   **/
+  async delete(id, jwt) {
+    await superagent.delete(this.url + "/" + id).set("Authorization", `Bearer ${jwt}`);
   }
 }

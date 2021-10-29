@@ -15,6 +15,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tide.Ork.DTOs;
@@ -26,6 +27,7 @@ namespace Tide.Ork.Controllers {
     public class KeyController : ControllerBase {
         private readonly ILogger _logger;
         private readonly IKeyIdManager _manager;
+        private Guid Username => User.Identity.IsAuthenticated && Guid.TryParse(User.Identity.Name, out var id) ? id : Guid.Empty;
 
         public KeyController(IKeyManagerFactory factory, ILogger<KeyController> logger) {
             _manager = factory.BuildKeyIdManager();
@@ -36,8 +38,7 @@ namespace Tide.Ork.Controllers {
         public async Task<ActionResult<KeyIdVaultDTO>> GetById([FromRoute] Guid id)
         {
             var key = await _manager.GetById(id);
-            if (key == null)
-                return NotFound();
+            if (key == null) return NotFound();
 
             return new KeyIdVaultDTO(key);
         }
@@ -45,18 +46,42 @@ namespace Tide.Ork.Controllers {
         [HttpPost]
         public async Task<ActionResult> SetOrUpdate([FromBody] KeyIdVaultDTO key)
         {
-            var result = await _manager.SetOrUpdate(key);
-            if(result.Success) _logger.LogInformation($"Key added for {key.KeyId}");
-            else _logger.LogError(result.Error);
+            var isRightOwner = User.Identity.IsAuthenticated  && key.KeyId == Username;
+            var isNewEntry = false;
 
-            return result.Success ? Ok() : BadRequest(result.Error) as ActionResult;
+            if (isRightOwner || (isNewEntry = !await _manager.Exist(key.KeyId))) {
+                var result = await _manager.SetOrUpdate(key);
+                if (!result.Success) {
+                    _logger.LogError("There is an error with the key repository for {keyId}: {error}", key.KeyId, result.Error);
+                    return StatusCode(500);
+                }
+
+                _logger.LogInformation("Key {note} for {keyId}", isNewEntry? "added" : "modified", key.KeyId);
+                return !isNewEntry ? Ok() : CreatedAtAction(nameof(GetById), new { id = key.KeyId }, key);
+            }
+
+            if (!isNewEntry && !User.Identity.IsAuthenticated)
+                _logger.LogWarning("An unauthorized user tried to update the key {keyId}", key.KeyId);
+
+            else
+                _logger.LogWarning("An unauthorized user {user} tried to update the key {keyId}", Username, key.KeyId);
+
+            return Unauthorized();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete([FromRoute] Guid id)
         {
+            var isRightOwner = User.Identity.IsAuthenticated && id == Username;
+            if (!isRightOwner) {
+                _logger.LogWarning("An unauthorized user {user} tried to update the key {keyId}", Username, id);
+                return Unauthorized();
+            }
+
             await _manager.Delete(id);
-            return Ok();
+            _logger.LogInformation("Key deleted for {keyId}", id);
+            return  NoContent();
         }
     }
 }

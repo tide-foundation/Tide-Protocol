@@ -1,78 +1,82 @@
-<template>
-  <!-- <div id="initializing" class="full-height f-c">
-    <h1>INITIALIZING</h1>
+<template> </template>
 
-    <div class="error" v-if="error != ''">
-      {{ error }}
-    </div>
-  </div> -->
-</template>
-
-<script setup lang="ts">
-import mainStore from "@/store/mainStore";
-import { ref, onMounted } from "vue";
-import router from "@/router/router";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
 import { SESSION_ACCOUNT_KEY, SESSION_DATA_KEY } from "@/assets/ts/Constants";
 
-var error = ref("");
-var data = "";
-onMounted(() => {
-  // Init config
-  mainStore.initialize(parseConfig());
+export default class Initializing extends Base {
+  stringData: string = "";
 
-  // Apply styles
-  applyOverrides();
+  created() {
+    // Init config
+    this.mainStore.initialize(this.parseConfig());
 
-  if (mainStore.getState.account == null) router.push("/login");
-  else router.push("/form");
-});
+    // Apply styles
+    this.applyOverrides();
 
-const parseConfig = (): Config => {
-  try {
-    // See if a session account is active
-    // var sessionAccount = sessionStorage.getItem(SESSION_ACCOUNT_KEY);
-    // if (sessionAccount != null) mainStore.setAccount(JSON.parse(sessionAccount));
+    this.silentLogin();
 
-    // Fetch data from query
-    const urlSearchParams = new URLSearchParams(window.location.search);
+    // If not logged in
+    if (this.mainStore.getState.account == null) this.router.push("/login");
+    // If silent logged in and has form data
+    else if (this.mainStore.getState.config.formData != null) this.router.push("/form");
+    // At this stage we silently logged in and there is no form data. Show an action screen
+    else this.router.push("/actions");
+  }
 
-    data = Object.fromEntries(urlSearchParams.entries()).data;
-
-    // Store into session data to preserve refresh
-    if (data != null) sessionStorage.setItem(SESSION_DATA_KEY, data);
-    else {
-      // If query is null, try get from session. User may have refreshed
-      var sessionData = sessionStorage.getItem(SESSION_DATA_KEY);
-      if (sessionData == null) throw "Missing config data";
-      data = sessionData;
-    }
-
-    // Auth requires decoding, but form does not... need to find a way to
-    // tell them apart. Because this double try catch is absolute garbage.
-    // Return the decoded and parsed data. Also, this is dauth related...
-    // Enclave should always get uniform data. We need to sort this out on the dauth page
-    return JSON.parse(decodeURIComponent(data)) as Config;
-  } catch (e) {
+  parseConfig(): Config {
     try {
-      return JSON.parse(data) as Config;
-    } catch (error) {
-      throw e;
-    }
-  }
-};
+      // Fetch data from query
+      const urlSearchParams = new URLSearchParams(window.location.search);
 
-const applyOverrides = () => {
-  try {
-    const styleSheet = mainStore.getState.config.styles?.stylesheet;
-    if (styleSheet != null) {
-      var sheet = document.createElement("style");
-      sheet.innerHTML = styleSheet;
-      document.body.appendChild(sheet);
+      this.stringData = Object.fromEntries(urlSearchParams.entries()).data;
+
+      // Store into session data to preserve refresh
+      if (this.stringData != null) {
+        sessionStorage.setItem(SESSION_DATA_KEY, this.stringData);
+
+        // Save url for change-ork flow
+        var trueUrl = window.location.search;
+        sessionStorage.setItem("true-url", trueUrl);
+      } else {
+        // If query is null, try get from session. User may have refreshed
+        var sessionData = sessionStorage.getItem(SESSION_DATA_KEY);
+        if (sessionData == null) throw "Missing config data";
+        this.stringData = sessionData;
+      }
+
+      // Auth requires decoding, but form does not... need to find a way to
+      // tell them apart. Because this double try catch is absolute garbage.
+      // Return the decoded and parsed data
+      return JSON.parse(decodeURIComponent(this.stringData)) as Config;
+    } catch (e) {
+      try {
+        return JSON.parse(this.stringData) as Config;
+      } catch (error) {
+        throw e;
+      }
     }
-  } catch (error) {
-    console.log("Error occured in stylesheet", error);
   }
-};
+
+  silentLogin() {
+    // See if a session account is active
+    var sessionAccount = sessionStorage.getItem(SESSION_ACCOUNT_KEY);
+    if (sessionAccount != null) this.mainStore.setAccount(JSON.parse(sessionAccount), "Login");
+  }
+
+  applyOverrides() {
+    try {
+      const styleSheet = this.mainStore.getState.config.styles?.stylesheet;
+      if (styleSheet != null) {
+        var sheet = document.createElement("style");
+        sheet.innerHTML = styleSheet;
+        document.body.appendChild(sheet);
+      }
+    } catch (error) {
+      console.log("Error occured in stylesheet", error);
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

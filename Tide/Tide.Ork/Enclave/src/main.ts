@@ -3,10 +3,16 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router/router";
 
-import "@/assets/styles/main.scss";
+import VueTippy from "vue-tippy";
+import "tippy.js/dist/tippy.css"; // optional for styling
+
 import Bus from "./assets/ts/Bus";
 
-createApp(App)
+import "@/assets/styles/main.scss";
+
+var app = createApp(App)
   .provide(BUS_KEY, Bus)
   .use(router)
-  .mount("#app");
+  .use(VueTippy, {});
+
+app.mount("#app");

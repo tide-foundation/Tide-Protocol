@@ -10,7 +10,6 @@ namespace Tide.Ork.Models {
         public Endpoints Endpoints { get; set; }
         public EmailClient EmailClient { get; set; }
         public Features Features { get; set; }
-        public bool DevFront { get; set; }
 
         public Settings()
         {
@@ -27,9 +26,12 @@ namespace Tide.Ork.Models {
         public bool Voucher { get; set; }
         public bool Metrics { get; set; }
         public bool Throttling { get; set; }
+        public bool CSP { get; set; }
+        public bool DevFront { get; set; }
 
         public Features() {
             Throttling = true;
+            CSP = true;
         }
     }
 

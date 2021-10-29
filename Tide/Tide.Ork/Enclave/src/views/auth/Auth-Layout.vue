@@ -17,9 +17,10 @@
         <router-view></router-view>
       </div>
 
-      <a id="footer" class="full-width f-c" href="https://tide.org" target="_blank">
-        <img src="../../assets/img/tide-inside.png" alt="" />
-      </a>
+      <div id="footer" class="full-width f-c">
+        <img @click="$router.push('options')" alt="" :src="pictureHover" @mouseover="hover = true" @mouseleave="hover = false" />
+      </div>
+
       <transition name="fade" mode="out-in">
         <loader v-if="loading"></loader>
       </transition>
@@ -33,20 +34,35 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, inject } from "vue";
+<script lang="ts">
+import Base from "@/assets/ts/Base";
+import { SET_LOADING_KEY } from "@/assets/ts/Constants";
+import { Options } from "vue-class-component";
 import Loader from "@/components/Loader.vue";
-import { BUS_KEY, SET_LOADING_KEY } from "@/assets/ts/Constants";
-import mainStore from "@/store/mainStore";
+@Options({
+  components: {
+    Loader,
+  },
+})
+export default class Forgot extends Base {
+  loading: boolean = false;
+  tideInside: any = require("../../assets/img/tide-inside.png");
+  tideInsideHover: any = require("../../assets/img/tide-inside-hover.png");
+  hover = false;
 
-const bus = inject(BUS_KEY) as IBus;
-var loading = ref(false);
-bus.on(SET_LOADING_KEY, (data: any) => (loading.value = data));
+  get pictureHover() {
+    return this.hover ? this.tideInsideHover : this.tideInside;
+  }
+
+  mounted() {
+    this.bus.on(SET_LOADING_KEY, (data: any) => (this.loading = data));
+  }
+}
 </script>
 
 <style lang="scss" scoped>
 #auth-layout {
-  width: 98%;
+  width: 100%;
   max-width: 800px;
   min-height: 500px;
   position: relative;
@@ -109,6 +125,7 @@ bus.on(SET_LOADING_KEY, (data: any) => (loading.value = data));
       height: 60px;
 
       img {
+        cursor: pointer;
         margin-bottom: 10px;
         //  height: 200px;
       }

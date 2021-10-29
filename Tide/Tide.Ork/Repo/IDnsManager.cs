@@ -29,6 +29,6 @@ namespace Tide.Ork.Repo
         Task<List<DnsEntry>> GetAll();
         Task<TideResponse> Add(DnsEntry entity);
         Task<TideResponse> SetOrUpdate(DnsEntry entity);
-        Task Delete(Guid id);
+        Task<bool> Delete(Guid id);
     }
 }

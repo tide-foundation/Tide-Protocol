@@ -49,13 +49,13 @@ namespace Tide.Ork.Repo
             Cache.Remove(id);
         }
 
-        public Task Delete(Guid id)
+        public Task<bool> Delete(Guid id)
         {
             var data = Cache.Get<T>(id);
             if (data == null) return Manager.Delete(id);
 
             Cache.Remove(id);
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
 
         public Task<bool> Exist(Guid id)

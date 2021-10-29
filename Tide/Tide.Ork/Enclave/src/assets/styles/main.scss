@@ -31,13 +31,15 @@ body {
   @extend .f;
   flex-direction: row;
 }
-.f-c {
+
+.f-r-r {
   @extend .f;
-  flex-direction: column;
+  flex-direction: row-reverse;
 }
 
 .f-c {
-  @extend .f-c;
+  @extend .f;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -56,6 +58,26 @@ body {
 
 .font-small {
   font-size: 0.8rem;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mb-30 {
+  margin-bottom: 30px;
+}
+
+.mr-10 {
+  margin-right: 10px;
 }
 
 .actions {
@@ -86,20 +108,60 @@ button {
   color: white;
   border: 0px;
   border-bottom: 4px solid $primary-dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: $primary-dark;
   }
+
+  img {
+    margin-left: 10px;
+    height: 20px;
+  }
+
+  &.secondary {
+    background-color: #fac800;
+    border-bottom: 4px solid #dbaf00;
+
+    &:hover {
+      background: #dbaf00;
+    }
+  }
+
+  &.delete {
+    background-color: #fa0075;
+    border-bottom: 4px solid #d60064;
+
+    &:hover {
+      background: #d60064;
+    }
+  }
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.4;
+  }
 }
 
-a {
+.link-style {
   transition: 0.2s all ease-in-out;
   text-decoration: none;
   color: $primary;
+  cursor: pointer;
 
   &:hover {
     color: $secondary;
   }
+}
+
+a {
+  @extend .link-style;
+}
+
+.primary {
+  color: $primary;
 }
 
 .mobile {
@@ -116,8 +178,21 @@ a {
   }
 }
 
+.button-row {
+  margin-bottom: 40px;
+
+  button {
+    width: 100%;
+    min-width: 240px;
+    margin-top: 10px;
+  }
+}
+
 .error {
   color: rgb(185, 43, 43);
+}
+.mw-400 {
+  min-width: 400px;
 }
 
 .auth-page {
@@ -170,4 +245,22 @@ a {
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+.invisible {
+  opacity: 0;
+  color: transparent;
+  pointer-events: none;
+}
+
+.tippy-content {
+  color: white;
+}
+
+.back-link {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+
+  @extend .link-style;
 }
