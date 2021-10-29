@@ -16,12 +16,18 @@ import Account from "@/views/Account.vue";
 import ChangePassword from "@/views/ChangePassword.vue";
 
 import Initializing from "../views/Initializing.vue";
+import Logout from "../views/Logout.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Initializing",
     component: Initializing,
+  },
+  {
+    path: "/logout",
+    name: "Logout",
+    component: Logout,
   },
   {
     path: "/auth-layout",
