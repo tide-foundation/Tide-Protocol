@@ -49,10 +49,6 @@ export default class Forgot extends Base {
   loading: boolean = false;
   hover = false;
 
-  get pictureHover() {
-    return this.hover ? this.tideInsideHover : this.tideInside;
-  }
-
   mounted() {
     this.bus.on(SET_LOADING_KEY, (data: any) => (this.loading = data));
   }
