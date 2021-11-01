@@ -86,7 +86,7 @@ export default class TideAuthentication {
 
         var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
 
-        this.account = new Account(username, vuid, token, cvkPublic, jwtCvk);
+        this.account = new Account(username, vuid, token, cvkPublic, cvk);
 
         SilentLogin.SetAccount(this.account);
 
