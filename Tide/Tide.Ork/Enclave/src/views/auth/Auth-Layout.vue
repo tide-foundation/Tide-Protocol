@@ -17,8 +17,9 @@
         <router-view></router-view>
       </div>
 
-      <div id="footer" class="full-width f-c">
-        <img @click="$router.push('options')" alt="" :src="pictureHover" @mouseover="hover = true" @mouseleave="hover = false" />
+      <div id="footer" class="full-width f-c" @click="$router.push('options')" alt="" @mouseover="hover = true" @mouseleave="hover = false">
+        <img v-if="!hover" src="../../assets/img/tide-inside.png" />
+        <img v-else src="../../assets/img/tide-inside-hover.png" />
       </div>
 
       <transition name="fade" mode="out-in">
@@ -46,8 +47,6 @@ import Loader from "@/components/Loader.vue";
 })
 export default class Forgot extends Base {
   loading: boolean = false;
-  tideInside: any = require("../../assets/img/tide-inside.png");
-  tideInsideHover: any = require("../../assets/img/tide-inside-hover.png");
   hover = false;
 
   get pictureHover() {
@@ -123,9 +122,8 @@ export default class Forgot extends Base {
 
     #footer {
       height: 60px;
-
+      cursor: pointer;
       img {
-        cursor: pointer;
         margin-bottom: 10px;
         //  height: 200px;
       }
