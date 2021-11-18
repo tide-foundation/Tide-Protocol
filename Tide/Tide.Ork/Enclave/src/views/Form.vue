@@ -53,17 +53,20 @@ export default class Form extends Base {
 
     var structure = this.formData.structure as any[];
     var userData = this.formData.data as any[];
-    console.log(structure);
-    console.log(userData);
+
     structure.forEach((field: Field) => {
+      // Get the current field value, or create an empty string
       var v = userData.find((d) => d.key == field.Name);
       var val = v != null && v.value != "" ? v.value : "";
 
+      // Generate the form field and decrypt it if it's not new
       var metaField = MetaField.fromText(field.Name, val, val != "");
       if (val != "") metaField.decrypt(this.key);
 
+      // Set the tag, this will be dynamic in the future
       metaField.tag = Num64.seed("__vendor__");
 
+      // Create a friendly name for the field by splitting camelCase
       const splitCamel = metaField.field.replace(/([a-z])([A-Z])/g, "$1 $2") as string;
       metaField.friendlyName = `${splitCamel[0].toUpperCase()}${splitCamel.substring(1)}`;
 
