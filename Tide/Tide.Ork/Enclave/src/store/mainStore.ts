@@ -55,12 +55,12 @@ class MainStore extends Store<MainState> {
     this.state.account = account;
     this.state.action = action;
 
-    sessionStorage.setItem(SESSION_ACCOUNT_KEY, JSON.stringify(account));
+    localStorage.setItem(SESSION_ACCOUNT_KEY, JSON.stringify(account));
   }
 
   logout() {
     this.state.account = undefined;
-    sessionStorage.removeItem(SESSION_ACCOUNT_KEY);
+    localStorage.removeItem(SESSION_ACCOUNT_KEY);
   }
 
   authenticationComplete() {

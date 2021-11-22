@@ -28,7 +28,18 @@ import Base from "@/assets/ts/Base";
 // @ts-ignore
 import MetaField from "@/assets/ts/MetaField";
 // @ts-ignore
+import Num64 from "../../../../Tide.Js/src/Num64";
+// @ts-ignore
 import { C25519Key } from "../../../../Tide.Js/src/export/TideAuthentication";
+
+interface Field {
+  Name: string;
+  Value: string;
+}
+
+interface DynamicForm {
+  [key: string]: any;
+}
 
 export default class Form extends Base {
   fields: any[] = [];
@@ -40,16 +51,27 @@ export default class Form extends Base {
     this.key = C25519Key.fromString(this.mainStore.getState.account!.encryptionKey);
     this.formData = this.mainStore.getState.config.formData;
 
-    this.encrypted = this.formData.type == "modify";
+    var structure = this.formData.structure as any[];
+    var userData = this.formData.data as any[];
 
-    this.fields = MetaField.fromModel(this.formData.data, this.encrypted, this.formData.validation, this.formData.classification, this.formData.tags);
+    structure.forEach((field: Field) => {
+      // Get the current field value, or create an empty string
+      var v = userData.find((d) => d.key == field.Name);
+      var val = v != null && v.value != "" ? v.value : "";
 
-    for (const field of this.fields) {
-      const splitCamel = field.field.replace(/([a-z])([A-Z])/g, "$1 $2") as string;
-      field.friendlyName = `${splitCamel[0].toUpperCase()}${splitCamel.substring(1)}`;
+      // Generate the form field and decrypt it if it's not new
+      var metaField = MetaField.fromText(field.Name, val, val != "");
+      if (val != "") metaField.decrypt(this.key);
 
-      if (this.encrypted) field.decrypt(this.key);
-    }
+      // Set the tag, this will be dynamic in the future
+      metaField.tag = Num64.seed("__vendor__");
+
+      // Create a friendly name for the field by splitting camelCase
+      const splitCamel = metaField.field.replace(/([a-z])([A-Z])/g, "$1 $2") as string;
+      metaField.friendlyName = `${splitCamel[0].toUpperCase()}${splitCamel.substring(1)}`;
+
+      this.fields.push(metaField);
+    });
   }
 
   async update() {

@@ -60,7 +60,7 @@ export default class Initializing extends Base {
 
   silentLogin() {
     // See if a session account is active
-    var sessionAccount = sessionStorage.getItem(SESSION_ACCOUNT_KEY);
+    var sessionAccount = localStorage.getItem(SESSION_ACCOUNT_KEY);
     if (sessionAccount != null) this.mainStore.setAccount(JSON.parse(sessionAccount), "Login");
   }
 
