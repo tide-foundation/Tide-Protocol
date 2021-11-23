@@ -1,4 +1,4 @@
-.PHONY: build run test test-basic unit-test clean
+.PHONY: build run test test-basic unit-test clean ork
 
 build:
 	docker-compose -f docker-compose.yml -f docker-compose.test.yml build
@@ -25,3 +25,11 @@ test-basic:
 
 clean:
 	docker-compose -f docker-compose.yml -f docker-compose.proxy.yml -f docker-compose.test.yml down
+
+n=1
+ork:
+	n=$n; port=500$n; sw=true; \
+	while [ "$$sw" = true ]; \
+	do nc -z localhost $$port && n=$$((n+1)) && port=$$((port+1)) || sw=false; done; \
+	export ASPNETCORE_ENVIRONMENT=ork$$n; \
+	dotnet watch --project Tide.Ork run --no-build --no-launch-profile --urls=http://0.0.0.0:$$port;
