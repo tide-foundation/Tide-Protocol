@@ -42,7 +42,7 @@ export default class SetClient {
     const errors = [];
     for (let [i, elem] = [0, allData[0]]; i < allData.length; (i++, elem = allData[i])) {
       if (elem instanceof Error) errors.push(elem);
-      else data[i] = elem;
+      else data[keys[i]] = elem;
     }
 
     return Object.keys(data).length >= TideConfig.threshold ?  data : new Errors(errors);
