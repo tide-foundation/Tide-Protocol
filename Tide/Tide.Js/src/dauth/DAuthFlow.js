@@ -13,6 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 // @ts-check
+
 import BigInt from "big-integer";
 import DAuthClient from "./DAuthClient";
 import DAuthShare from "./DAuthShare";
@@ -54,7 +55,7 @@ export default class DAuthFlow {
       const prismAuth = AESKey.seed(g.times(prism).toArray());
       const cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
 
-      const ids = await this.clienSet.call((cli) => cli.getClientId());
+      const ids = await this.clienSet.call(cli => cli.getClientId());
       if (ids instanceof Error) throw ids;
 
       const idBuffers = await this.clienSet.call(cli => cli.getClientBuffer(), Object.keys(ids));

@@ -12,10 +12,12 @@
 // You should have received a copy of the Tide Community Open
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
+// @ts-check
 
 import Guid from "../guid";
 import Rule from "../rule";
 import RuleClient from "./RuleClient";
+import SetClient from "./SetClient";
 
 export default class RuleClientSet {
   /**
@@ -23,21 +25,35 @@ export default class RuleClientSet {
    * @param {Guid} user
    */
   constructor(urls, user) {
-    this.clients = urls.map((url) => new RuleClient(url, user));
+    this.clients = new SetClient(urls.map((url) => new RuleClient(url, user)));
     this.guid = user;
   }
 
-  /** @param {Guid} ruleId */
-  async getById(ruleId) {
-    return await Promise.all(this.clients.map((cln) => cln.getById(ruleId)));
+  /** 
+   * @param {Guid} ruleId
+   * @param {Array<string>} indices
+   */
+  async getById(ruleId, indices = null) {
+    const resp = await this.clients.call(cln => cln.getById(ruleId), indices);
+    if (resp instanceof Error) throw resp;
+
+    return Object.values(resp);
   }
 
-  async getSet() {
-    return await Promise.all(this.clients.map((cln) => cln.getSet()));
+  /** @param {Array<string>} indices */
+   async getSet(indices = null) {
+    const resp = await this.clients.call(cln => cln.getSet(), indices);
+    if (resp instanceof Error) throw resp;
+
+    return Object.values(resp);
   }
 
-  /** @param {Rule} rule */
-  async setOrUpdate(rule) {
-    return await Promise.all(this.clients.map((cln) => cln.setOrUpdate(rule)));
+  /**
+   * @param {Rule} rule
+   * @param {Array<string>} indices
+   */
+  async setOrUpdate(rule, indices = null) {
+    const resp = await this.clients.call(cln => cln.setOrUpdate(rule), indices);
+    if (resp instanceof Error) throw resp;
   }
 }
