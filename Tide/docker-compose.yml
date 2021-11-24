@@ -125,6 +125,52 @@ services:
         aliases:
           - ork3.local
 
+  ork4:
+    build:
+      context: .
+      dockerfile: ./Tide.Ork/Dockerfile
+    ports:
+      - '5004:80'
+    command: [ './wait-for-it.sh', 'simulator:80', '-s', '-t', '30', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork4.local']
+    environment:
+      VIRTUAL_HOST: 'ork4.local'
+      Settings__Endpoints__Simulator__Api: 'http://simulator:80/simulator'
+      Settings__Endpoints__Simulator__Password: 'Password'
+      Settings__Instance__PrivateKey: 'CE1e8/osvZTsbSbZgGZWGZGSUp7IxWVMrN4dD2Zf4e8dW0TzAX3oO3Ux22C492jhEyuaE+XdiHBRKgbH+M1wWToRODDPEIbeoXI2/qKkoKVy06pV8hxPzLmsGmxhZlGg'
+      Settings__Instance__SecretKey: 'AhDkj8JfW772dRrSyJ1vygNFIJXP2UOiFLSgMOjjml+JTXhAG5+X0oKchpiI9k69PDs5'
+      Settings__Instance__Username: 'ork4'
+      Settings__Features__Metrics: 'true'
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+    depends_on:
+      - 'simulator'
+    networks:
+      default:
+        aliases:
+          - ork4.local
+
+  ork5:
+    build:
+      context: .
+      dockerfile: ./Tide.Ork/Dockerfile
+    ports:
+      - '5005:80'
+    command: [ './wait-for-it.sh', 'simulator:80', '-s', '-t', '30', '--', 'dotnet', 'Tide.Ork.dll', '--register', 'http://ork5.local']
+    environment:
+      VIRTUAL_HOST: 'ork5.local'
+      Settings__Endpoints__Simulator__Api: 'http://simulator:80/simulator'
+      Settings__Endpoints__Simulator__Password: 'Password'
+      Settings__Instance__PrivateKey: 'DuKTzVy+sdjSzkFunI/ndR/zcdTMIMDE62UYPdAgIlcgIUETWx4ipwnOCWKbRcEAGJ/mpeFB0kYOCr4wSs2DjBJAcnIUE6M+t/3RWovyi1OTEwIlT8pK7+FtKpvkjQlF'
+      Settings__Instance__SecretKey: 'AhC/+GTbqp/PQeaIoYCR8SV4IL4xVQ8KR+YblF91ZE5uiqv4nIRbRTd76v6kTcMj4xDD'
+      Settings__Instance__Username: 'ork5'
+      Settings__Features__Metrics: 'true'
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+    depends_on:
+      - 'simulator'
+    networks:
+      default:
+        aliases:
+          - ork5.local
+
 networks:
   simulator:
     driver: bridge
