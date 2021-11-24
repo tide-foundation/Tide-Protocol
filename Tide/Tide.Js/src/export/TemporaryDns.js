@@ -25,7 +25,6 @@ async function get(endpoint) {
     var resp = (await superagent.get(endpoint)).text;
     return JSON.parse(resp);
   } catch (error) {
-    console.log(error.response.text);
     return null;
   }
 }
@@ -35,7 +34,6 @@ async function post(endpoint, payload) {
     await superagent.post(endpoint, payload);
     return true;
   } catch (error) {
-    console.log(error.response.text);
     return false;
   }
 }

@@ -12,11 +12,13 @@
 // You should have received a copy of the Tide Community Open
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
+// @ts-check
 
 import { C25519Point, AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
 import TranToken from "../TranToken";
 
+/** @typedef {{orkid: string, sign: string}} OrkSign */
 export default class DAuthClient extends ClientBase {
   /**
    * @param {string|URL} url
@@ -59,13 +61,13 @@ export default class DAuthClient extends ClientBase {
     return fromBase64(res.text);
   }
 
-    /**
+  /**
    * @param {bigInt.BigInteger} prismi
    * @param {bigInt.BigInteger} cmki
    * @param {AESKey} prismAuthi
    * @param {AESKey} cmkAuthi
    * @param {string} email
-   * @returns {Promise<{orkid: string, sign: string}>}
+   * @returns {Promise<OrkSign>}
    */
   async signUp(prismi, cmki, prismAuthi, cmkAuthi, email) {
     var user = this.userGuid;
