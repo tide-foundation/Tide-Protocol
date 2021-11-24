@@ -12,7 +12,7 @@
 // You should have received a copy of the Tide Community Open
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
-
+// @ts-check
 import BigInt from "big-integer";
 import DAuthClient from "./DAuthClient";
 import DAuthShare from "./DAuthShare";
@@ -23,6 +23,8 @@ import { getArray } from "cryptide/src/bnInput";
 import DnsEntry from "../DnsEnrty";
 import DnsClient from "./DnsClient";
 import Guid from "../guid";
+import SetClient from "./SetClient";
+import { mapDic } from "../Tools";
 
 export default class DAuthFlow {
   /**
@@ -31,34 +33,44 @@ export default class DAuthFlow {
    */
   constructor(urls, user, memory = false) {
     this.clients = urls.map((url) => new DAuthClient(url, user, memory));
+    this.clienSet = new SetClient(this.clients);
   }
 
   /**
    * @param {string} password
    * @param {string|string[]} email
    * @param {number} threshold
-   * @returns {Promise<AESKey>}
+   * @returns {Promise<AESKey|Error>}
    */
   async signUp(password, email, threshold, cmk = random()) {
     try {
       if (!email) throw new Error("email must have at least one item");
-      var emails = typeof email === "string" ? [email] : email;
-      var emailIndex = Math.floor(Math.random() * emails.length);
+      const emails = typeof email === "string" ? [email] : email;
+      const emailIndex = Math.floor(Math.random() * emails.length);
 
-      var prism = random();
-      var g = C25519Point.fromString(password);
+      const prism = random();
+      const g = C25519Point.fromString(password);
 
-      var prismAuth = AESKey.seed(g.times(prism).toArray());
-      var cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
+      const prismAuth = AESKey.seed(g.times(prism).toArray());
+      const cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
 
-      var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
-      var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-      var prismAuths = idBuffers.map((buff) => prismAuth.derive(buff));
-      var cmkAuths = idBuffers.map((buff) => cmkAuth.derive(buff));
-      var [, cmks] = SecretShare.shareFromIds(cmk, ids, threshold, C25519Point.n);
-      var [, prisms] = SecretShare.shareFromIds(prism, ids, threshold, C25519Point.n);
+      const ids = await this.clienSet.call((cli) => cli.getClientId());
+      if (ids instanceof Error) throw ids;
 
-      var signatures = await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], emails[(emailIndex + i) % emails.length])));
+      const idBuffers = await this.clienSet.call(cli => cli.getClientBuffer(), Object.keys(ids));
+      if (idBuffers instanceof Error) throw idBuffers;
+
+      const prismAuths = mapDic(idBuffers, (buff) => prismAuth.derive(buff));
+      const cmkAuths = mapDic(idBuffers, (buff) => cmkAuth.derive(buff));
+      
+      const [, listCmk] = SecretShare.shareFromIds(cmk, Object.values(ids), threshold, C25519Point.n);
+      const [, listPrism] = SecretShare.shareFromIds(prism, Object.values(ids), threshold, C25519Point.n);
+
+      const cmks = mapDic(ids, (_, __, i) => listCmk[i]);
+      const prisms = mapDic(ids, (_, __, i) => listPrism[i]);
+
+      const signatures = await this.clienSet.call((cli, key) => cli.signUp(prisms[key], cmks[key], prismAuths[key], cmkAuths[key], emails[(emailIndex + Number(key)) % emails.length]), Object.keys(idBuffers));
+      if (signatures instanceof Error) throw signatures;
       await this.addDns(signatures, C25519Key.private(cmk));
 
       return cmkAuth;
@@ -67,20 +79,31 @@ export default class DAuthFlow {
     }
   }
 
-  /** @private 
-   * @param {{orkid: string, sign: string}[]} signatures 
+  /**
+   * @private 
+   * @typedef {import("./DAuthClient").OrkSign} OrkSign
+   * @param {OrkSign[]|{[x: string]: OrkSign}} signatures 
    * @param {C25519Key} key */
   addDns(signatures, key) {
-    const cln = this.clients[Math.floor(Math.random() * this.clients.length)];
+    const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : Object.keys(signatures);
+    const index = keys[Math.floor(Math.random() * keys.length)];
+    const cln = this.clients[index];
     const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-    var entry = new DnsEntry();
-    
+
+    const entry = new DnsEntry();
     entry.id = cln.userGuid;
     entry.public = key.public()
-    entry.signatures = signatures.map(sig => sig.sign);
-    entry.orks = signatures.map(sig => sig.orkid);
-    entry.sign(key);
 
+    if (Array.isArray(signatures)) {
+      entry.signatures = signatures.map(sig => sig.sign);
+      entry.orks = signatures.map(sig => sig.orkid);
+    }
+    else {
+      entry.signatures = Object.keys(signatures).map(idx => signatures[idx].sign);
+      entry.orks = Object.keys(signatures).map(idx => signatures[idx].orkid);
+    }
+
+    entry.sign(key);
     return dnsCln.addDns(entry);
   }
 
