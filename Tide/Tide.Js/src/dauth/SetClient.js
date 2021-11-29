@@ -23,10 +23,22 @@ import { Errors } from "./Errors";
 export default class SetClient {
   /** @param {T[]} clients */
   constructor(clients) {
+    /** @private */
     this.clients = clients;
   }
 
+  /** 
+   * @param {string|number} key
+   * @returns {T} 
+   */
+  get(key) { return this.clients[key]; }
+
+  /** @param {T} value */
+  push(value) { this.clients.push(value); }
+
   get keys() { return Array.from(this.clients.keys()).map(String); }
+  
+  get values() { return this.clients; }
 
   /**
   * @template Y

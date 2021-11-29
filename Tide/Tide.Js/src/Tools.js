@@ -15,11 +15,11 @@ export class Dictionary {
 
     get values() { return Object.values(this.dic); }
     
-    /** @param {string} key */
+    /** @param {string|number} key */
     get(key) { return this.dic[key]; }
 
     /**
-     * @param {string} key
+     * @param {string|number} key
      * @param {TValue} value
      */
     set(key, value) { this.dic[key] = value; }
@@ -65,11 +65,11 @@ export class DictionaryPromise {
 
     get length() { return Object.keys(this.dic).length; }
     
-    /** @param {string} key */
+    /** @param {string|number} key */
     get(key) { return this.dic[key]; }
 
     /**
-     * @param {string} key
+     * @param {string|number} key
      * @param {Promise<TValue>} value
      */
     set(key, value) { this.dic[key] = value; }

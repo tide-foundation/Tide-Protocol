@@ -88,7 +88,7 @@ export default class DAuthFlow {
   addDns(signatures, key) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : Object.keys(signatures);
     const index = keys[Math.floor(Math.random() * keys.length)];
-    const cln = this.clients[index];
+    const cln = this.clienSet.get(index);
     const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
 
     const entry = new DnsEntry();
@@ -115,21 +115,17 @@ export default class DAuthFlow {
     try {
       const [prismAuth, token] = await this.getPrismAuth(password);
 
-      const idGens = await Promise.all(this.clients.map((c) => c.getClientGenerator()));
+      const idGens = await this.clienSet.all(c => c.getClientGenerator())
       const prismAuths = idGens.map(idGen => prismAuth.derive(idGen.buffer));
-      const tokens = this.clients.map((c, i) => token.copy().sign(prismAuths[i], c.userBuffer));
+      const tokens = idGens.map((_, i) => token.copy().sign(prismAuths.get(i), this.clienSet.get(i).userBuffer))
 
       const tranid = new Guid();
       const ids = idGens.map(idGen => idGen.id);
-      const lis = ids.map(id => SecretShare.getLi(id, ids, C25519Point.n));
-      const pre_ciphers = this.clients.map((cli, i) => cli.signIn(tranid, tokens[i], point, lis[i]));
+      const lis = ids.map(id => SecretShare.getLi(id, ids.values, C25519Point.n));
+      const pre_ciphers = this.clienSet.map(lis, (cli, li, i) => cli.signIn(tranid, tokens.get(i), point, li));
 
-      /** @type {C25519Point} */
-      const cvkAuth = await prismAuths.map(async (auth, i) => C25519Point.from(auth.decrypt(await pre_ciphers[i])))
-        .reduce(async (sumP, cvkAuthiP) => {
-          const [sum, cvkAuthi] = await Promise.all([sumP, cvkAuthiP]);
-          return sum.add(cvkAuthi);
-        });
+      const cvkAuth = await pre_ciphers.map((cipher, i) => C25519Point.from(prismAuths.get(i).decrypt(cipher)))
+        .reduce((sum, cvkAuthi) => sum.add(cvkAuthi), C25519Point.infinity);
 
       return AESKey.seed(cvkAuth.toArray());
     } catch (err) {
