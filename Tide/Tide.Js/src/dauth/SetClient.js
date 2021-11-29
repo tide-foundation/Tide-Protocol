@@ -15,6 +15,7 @@
 // @ts-check
 
 import TideConfig from "../TideConfig";
+import { Dictionary, DictionaryPromise } from "../Tools";
 import { processError } from "./ClientBase";
 import { Errors } from "./Errors";
 
@@ -25,6 +26,8 @@ export default class SetClient {
     this.clients = clients;
   }
 
+  get keys() { return Array.from(this.clients.keys()).map(String); }
+
   /**
   * @template Y
   * @param {Array<string>} keys 
@@ -32,7 +35,7 @@ export default class SetClient {
   * @returns {Promise<{[x: string]: Y}|Errors>}
   */
   async call(fun, keys = null) {
-    keys = keys ? keys : Array.from(this.clients.keys()).map(String);
+    keys = keys ? keys : this.keys;
     var allData = await Promise.all(keys.map(key => processError(fun(this.clients[key], key))));
 
     /** @type {{[x: string]: Y}} */
@@ -46,5 +49,25 @@ export default class SetClient {
     }
 
     return Object.keys(data).length >= TideConfig.threshold ?  data : new Errors(errors);
+  }
+
+  /**
+  * @template Y
+  * @template U
+  * @param {Dictionary<Y>} dic 
+  * @param {(cli: T, value: Y, key: string, dic: Dictionary<Y>) => Promise<U>} fun
+  * @returns {DictionaryPromise<U>}
+  */
+  map(dic, fun) {
+    return DictionaryPromise.buildFrom(dic.keys, key => fun(this.clients[key], dic.get(key), key, dic));
+  }
+
+  /**
+  * @template Y
+  * @param {(cli: T, key: string) => Promise<Y>} fun
+  * @returns {DictionaryPromise<Y>}
+  */
+  all(fun) {
+    return DictionaryPromise.buildFrom(this.keys, key => fun(this.clients[key], key));
   }
 }

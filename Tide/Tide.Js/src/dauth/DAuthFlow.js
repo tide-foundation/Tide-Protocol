@@ -141,26 +141,24 @@ export default class DAuthFlow {
    * @returns {Promise<[AESKey, TranToken]>} */
   async getPrismAuth(pass) {
     try {
-      const pre_ids = this.clients.map((c) => c.getClientId());
+      const pre_ids = this.clienSet.all(c => c.getClientId());
 
       const r = random();
       const n = C25519Point.n;
       const g = C25519Point.fromString(pass);
       const gR = g.multiply(r);
 
-      const ids = await Promise.all(pre_ids);
-      const lis = ids.map((id) => SecretShare.getLi(id, ids, n));
+      const ids = await pre_ids;
+      const lis = ids.map((id) => SecretShare.getLi(id, ids.values, n));
 
-      const pre_gRPrismis = this.clients.map((cli, i) => cli.ApplyPrism(gR, lis[i]));
+      const pre_gRPrismis = this.clienSet.map(lis, (cli, li) => cli.ApplyPrism(gR, li));
       const rInv = r.modInv(n);
 
-      const gRPrism = await pre_gRPrismis.map(async ki => (await ki)[0]).reduce(async (sumP, rkiP) => {
-        const [sum, rki] = await Promise.all([sumP, rkiP]);
-        return sum.add(rki);
-      });
+      const gRPrism = await pre_gRPrismis.map(ki =>  ki[0])
+        .reduce((sum, rki) => sum.add(rki), C25519Point.infinity);
 
       const gPrism = gRPrism.times(rInv);
-      const [,token] = await pre_gRPrismis[0];
+      const [,token] = await pre_gRPrismis.values[0];
 
       return [AESKey.seed(gPrism.toArray()), token];
     } catch (err) {
@@ -219,8 +217,9 @@ export default class DAuthFlow {
     return this._changePass(cmkAuth, pass, threshold, true);
   }
 
-  confirm() {
-    return Promise.all(this.clients.map((c) => c.confirm()));
+  async confirm() {
+    const resp = await this.clienSet.call(c => c.confirm());
+    if (resp instanceof Error) throw resp;
   }
 
   /**

@@ -15,4 +15,14 @@
 
 export default class TideConfig {
   static get threshold() { return 3; }
+
+  /**
+   * Calculates whether the number of errors affects the interpolation 
+   * @param {number} errorCount 
+   * @param {number} shareCount 
+   * @returns 
+   */
+  static isError(errorCount, shareCount) {
+    return errorCount > (shareCount - TideConfig.threshold);
+  }
 }

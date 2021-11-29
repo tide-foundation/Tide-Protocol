@@ -173,7 +173,8 @@ export default class DCryptFlow {
     return (await this.decryptBulk([cipher], prv))[0];
   }
 
-  confirm() {
-    return Promise.all(this.clients.map(c => c.confirm()));
+  async confirm() {
+    const resp = await this.clienSet.call(c => c.confirm());
+    if (resp instanceof Error) throw resp;
   }
 }
