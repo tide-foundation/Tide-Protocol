@@ -27,6 +27,12 @@ export default class SetClient {
     this.clients = clients;
   }
 
+  get length() { return this.clients.length; }
+
+  get keys() { return Array.from(this.clients.keys()).map(String); }
+  
+  get values() { return this.clients; }
+
   /** 
    * @param {string|number} key
    * @returns {T} 
@@ -35,10 +41,6 @@ export default class SetClient {
 
   /** @param {T} value */
   push(value) { this.clients.push(value); }
-
-  get keys() { return Array.from(this.clients.keys()).map(String); }
-  
-  get values() { return this.clients; }
 
   /**
   * @template Y

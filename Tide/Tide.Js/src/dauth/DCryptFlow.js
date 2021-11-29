@@ -48,7 +48,7 @@ export default class DCryptFlow {
    */
   async signUp(cmkAuth, threshold, signedKeyId, signatures, cvk = C25519Key.generate()) {
     try {
-      if (!signatures && signatures.length != this.clients.length)
+      if (!signatures && signatures.length != this.clienSet.length)
         throw new Error("Signatures are required");
 
       const ids = await this.clienSet.call(c => c.getClientId());
@@ -83,7 +83,7 @@ export default class DCryptFlow {
    addDns(signatures, key) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : Object.keys(signatures);
     const index = keys[Math.floor(Math.random() * keys.length)];
-    const cln = this.clients[index];
+    const cln = this.clienSet.get(index);
     const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
 
     const entry = new DnsEntry();
@@ -105,19 +105,16 @@ export default class DCryptFlow {
 
   /** @param {AESKey} cmkAuth */
   async getKey(cmkAuth, noPublic = false) {
-    const idGens = await Promise.all(this.clients.map((c) => c.getClientGenerator()));
-
+    const idGens = await this.clienSet.all(c => c.getClientGenerator());
+    
     const tranid = new Guid();
     const ids = idGens.map(idGen => idGen.id);
-    const lis = ids.map(id => SecretShare.getLi(id, ids, C25519Point.n));
+    const lis = ids.map(id => SecretShare.getLi(id, ids.values, C25519Point.n));
     const cvkAuths = idGens.map(idGen => concat(idGen.buffer, this.user.buffer)).map(buff => cmkAuth.derive(buff));
-    const cipherCvks = this.clients.map((c, i) => c.getCvk(tranid, cvkAuths[i], lis[i]));
+    const cipherCvks = this.clienSet.map(lis,(c, li, i) => c.getCvk(tranid, cvkAuths.get(i), li));
 
-    const cvks = cvkAuths.map(async (auth, i) => BnInput.getBig(auth.decrypt(await cipherCvks[i])));
-    const cvk = await cvks.reduce(async (sumP, cvkiP) => {
-      const [sum, cvki] = await Promise.all([sumP, cvkiP]);
-      return sum.add(cvki).mod(C25519Point.n);
-    });
+    const cvk = await cipherCvks.map((cvki, i) => BnInput.getBig(cvkAuths.get(i).decrypt(cvki)))
+      .reduce((sum, cvki) => sum.add(cvki).mod(C25519Point.n), BnInput.getBig(0));
 
     return C25519Key.private(cvk, noPublic);
   }
