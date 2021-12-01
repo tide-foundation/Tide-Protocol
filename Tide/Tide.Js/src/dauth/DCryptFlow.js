@@ -26,7 +26,6 @@ import RuleClientSet from "./RuleClientSet";
 import Rule from "../rule";
 import Tags from "../tags";
 import SetClient from "./SetClient";
-import { mapDic } from "../Tools";
 
 export default class DCryptFlow {
   /**
@@ -51,23 +50,18 @@ export default class DCryptFlow {
       if (!signatures && signatures.length != this.clienSet.length)
         throw new Error("Signatures are required");
 
-      const ids = await this.clienSet.call(c => c.getClientId());
-      if (ids instanceof Error) throw ids;
+      const ids = await this.clienSet.all(c => c.getClientId());
+      const listCvk = cvk.share(threshold, ids.values, true);
+      const cvks = ids.map((_, __, i) => listCvk[i]);
 
-      const listCvk = cvk.share(threshold, Object.values(ids), true);
-      const cvks = mapDic(ids, (_, __, i) => listCvk[i]);
+      const idBuffers = await this.clienSet.map(ids, c => c.getClientBuffer());
+      const cvkAuths = idBuffers.map(buff => cmkAuth.derive(concat(buff, this.user.buffer)));
 
-      var idBuffers = await this.clienSet.call(c => c.getClientBuffer(), Object.keys(ids));
-      if (idBuffers instanceof Error) throw idBuffers;
-
-      const cvkAuths = mapDic(idBuffers, buff => cmkAuth.derive(concat(buff, this.user.buffer)));
-      var orkSigns = await this.clienSet.call((cli, key) => 
-        cli.register(cvk.public(), cvks[key].x, cvkAuths[key], signedKeyId, signatures[key]),
-        Object.keys(idBuffers));
-      if (orkSigns instanceof Error) throw orkSigns;
+      const orkSigns = await this.clienSet.map(cvkAuths, (cli, _, key) => 
+        cli.register(cvk.public(), cvks.get(key).x, cvkAuths.get(key), signedKeyId, signatures[key]));
 
       await Promise.all([this.addDns(orkSigns, cvk),
-        this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), Object.keys(orkSigns))]);
+        this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), orkSigns.keys)]);
 
       return cvk;
     } catch (err) {
@@ -78,10 +72,10 @@ export default class DCryptFlow {
   /**
    * @private 
    * @typedef {import("./DAuthClient").OrkSign} OrkSign
-   * @param {OrkSign[]|{[x: string]: OrkSign}} signatures 
+   * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
    * @param {C25519Key} key */
    addDns(signatures, key) {
-    const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : Object.keys(signatures);
+    const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
     const cln = this.clienSet.get(index);
     const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
@@ -95,8 +89,8 @@ export default class DCryptFlow {
       entry.orks = signatures.map(sig => sig.orkid);
     }
     else {
-      entry.signatures = Object.keys(signatures).map(idx => signatures[idx].sign);
-      entry.orks = Object.keys(signatures).map(idx => signatures[idx].orkid);
+      entry.signatures = signatures.values.map(val => val.sign);
+      entry.orks = signatures.values.map(val => val.orkid);
     }
 
     entry.sign(key);
@@ -162,7 +156,7 @@ export default class DCryptFlow {
   }
 
   /**
-   * @param {Uint8Array]} cipher
+   * @param {Uint8Array} cipher
    * @param {C25519Key} prv
    * @returns {Promise<Uint8Array>}
    */
@@ -171,7 +165,6 @@ export default class DCryptFlow {
   }
 
   async confirm() {
-    const resp = await this.clienSet.call(c => c.confirm());
-    if (resp instanceof Error) throw resp;
+    await this.clienSet.all(c => c.confirm());
   }
 }

@@ -25,7 +25,6 @@ import DnsEntry from "../DnsEnrty";
 import DnsClient from "./DnsClient";
 import Guid from "../guid";
 import SetClient from "./SetClient";
-import { mapDic } from "../Tools";
 
 export default class DAuthFlow {
   /**
@@ -55,23 +54,21 @@ export default class DAuthFlow {
       const prismAuth = AESKey.seed(g.times(prism).toArray());
       const cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
 
-      const ids = await this.clienSet.call(cli => cli.getClientId());
-      if (ids instanceof Error) throw ids;
+      const ids = await this.clienSet.all(cli => cli.getClientId());
+      const idBuffers = await this.clienSet.map(ids, cli => cli.getClientBuffer());
 
-      const idBuffers = await this.clienSet.call(cli => cli.getClientBuffer(), Object.keys(ids));
-      if (idBuffers instanceof Error) throw idBuffers;
+      const prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
+      const cmkAuths = idBuffers.map(buff => cmkAuth.derive(buff));
 
-      const prismAuths = mapDic(idBuffers, (buff) => prismAuth.derive(buff));
-      const cmkAuths = mapDic(idBuffers, (buff) => cmkAuth.derive(buff));
-      
-      const [, listCmk] = SecretShare.shareFromIds(cmk, Object.values(ids), threshold, C25519Point.n);
-      const [, listPrism] = SecretShare.shareFromIds(prism, Object.values(ids), threshold, C25519Point.n);
+      const [, listCmk] = SecretShare.shareFromIds(cmk, ids.values, threshold, C25519Point.n);
+      const [, listPrism] = SecretShare.shareFromIds(prism, ids.values, threshold, C25519Point.n);
 
-      const cmks = mapDic(ids, (_, __, i) => listCmk[i]);
-      const prisms = mapDic(ids, (_, __, i) => listPrism[i]);
+      const cmks = ids.map((_, __, i) => listCmk[i]);
+      const prisms = ids.map((_, __, i) => listPrism[i]);
 
-      const signatures = await this.clienSet.call((cli, key) => cli.signUp(prisms[key], cmks[key], prismAuths[key], cmkAuths[key], emails[(emailIndex + Number(key)) % emails.length]), Object.keys(idBuffers));
-      if (signatures instanceof Error) throw signatures;
+      const signatures = await this.clienSet.map(idBuffers, (cli, _, key) =>
+        cli.signUp(prisms.get(key), cmks.get(key), prismAuths.get(key), cmkAuths.get(key), emails[(emailIndex + Number(key)) % emails.length]));
+
       await this.addDns(signatures, C25519Key.private(cmk));
 
       return cmkAuth;
@@ -83,10 +80,10 @@ export default class DAuthFlow {
   /**
    * @private 
    * @typedef {import("./DAuthClient").OrkSign} OrkSign
-   * @param {OrkSign[]|{[x: string]: OrkSign}} signatures 
+   * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
    * @param {C25519Key} key */
   addDns(signatures, key) {
-    const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : Object.keys(signatures);
+    const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
     const cln = this.clienSet.get(index);
     const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
@@ -100,8 +97,8 @@ export default class DAuthFlow {
       entry.orks = signatures.map(sig => sig.orkid);
     }
     else {
-      entry.signatures = Object.keys(signatures).map(idx => signatures[idx].sign);
-      entry.orks = Object.keys(signatures).map(idx => signatures[idx].orkid);
+      entry.signatures = signatures.values.map(val => val.sign);
+      entry.orks = signatures.values.map(val => val.orkid);
     }
 
     entry.sign(key);
@@ -214,8 +211,7 @@ export default class DAuthFlow {
   }
 
   async confirm() {
-    const resp = await this.clienSet.call(c => c.confirm());
-    if (resp instanceof Error) throw resp;
+    await this.clienSet.all(c => c.confirm());
   }
 
   /**

@@ -19,13 +19,14 @@ import DAuthJwtFlow from "../../src/dauth/DAuthJwtFlow";
 import { CP256Key } from "cryptide";
 import Guid from "../../src/guid";
 
+var nodes = 3;
 var threshold = 3;
-var user = Guid.seed("admin");
+var user = new Guid();
 var pass = "123456";
 var newPass = "1234567";
 var email = "tmp@tide.org";
 
-var orkUrls = [...Array(threshold)].map((_, i) => "http://localhost:500" + (i + 1));
+var orkUrls = [...Array(nodes)].map((_, i) => `http://ork${i+1}.local`);
 var vendorPub = CP256Key.generate();
 
 // var orkUrls = [...Array(3)].map((_, i) => `https://ork-${i}.azurewebsites.net`);

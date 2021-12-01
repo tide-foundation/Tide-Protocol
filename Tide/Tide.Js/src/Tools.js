@@ -26,24 +26,24 @@ export class Dictionary {
 
     /**
      * @template TReturn
-     * @param {(value: TValue, key: string, dic: {[x: string]: TValue}) => TReturn} fun
+     * @param {(value: TValue, key: string, index: number, dic: {[x: string]: TValue}) => TReturn} fun
      * @returns {Dictionary<TReturn>}
      */
-    map(fun) { return Dictionary.buildFrom(this.keys, key => fun(this.dic[key], key, this.dic)); }
+    map(fun) { return Dictionary.buildFrom(this.keys, (key, i) => fun(this.dic[key], key, i, this.dic)); }
 
     /**
      * @template TReturn
-     * @param {(previous: TReturn, current: TValue, key: string, dic: {[x: string]: TValue}) => TReturn} fun
+     * @param {(previous: TReturn, current: TValue, key: string, index: number, dic: {[x: string]: TValue}) => TReturn} fun
      * @param {TReturn} initial
      * @returns {TReturn}
      */
-    reduce(fun, initial = undefined) { return this.keys.reduce((previous, key) =>
-        fun(previous, this.dic[key], key, this.dic), initial); }
+    reduce(fun, initial = undefined) { return this.keys.reduce((previous, key, i) =>
+        fun(previous, this.dic[key], key, i, this.dic), initial); }
     
     /**
      * @template TValue
      * @param {string[]} keys
-     * @param {(key: string) => TValue} callback
+     * @param {(key: string, index: number) => TValue} callback
      * @returns {Dictionary<TValue>}
      */
     static buildFrom(keys, callback) { return new Dictionary(buildDic(keys, callback)); }
@@ -109,15 +109,15 @@ export class DictionaryPromise {
 
     /**
      * @template TReturn
-     * @param {(value: TValue, key: string, dic: {[x: string]: Promise<TValue>}) => TReturn} fun
+     * @param {(value: TValue, key: string, index: number, dic: {[x: string]: Promise<TValue>}) => TReturn} fun
      * @returns {DictionaryPromise<TReturn>}
      */
-    map(fun) { return DictionaryPromise.buildFrom(this.keys, key =>
-        this.dic[key].then(val => fun(val, key, this.dic))); }
+    map(fun) { return DictionaryPromise.buildFrom(this.keys, (key, i) =>
+        this.dic[key].then(val => fun(val, key, i, this.dic))); }
 
     /**
      * @template TReturn
-     * @param {(previous: TReturn, current: TValue, key: string, dic: {[x: string]: Promise<TValue>}) => TReturn} fun
+     * @param {(previous: TReturn, current: TValue, key: string, index: number, dic: {[x: string]: Promise<TValue>}) => TReturn} fun
      * @param {TReturn} initial
      * @returns {Promise<TReturn>}
      */
@@ -138,7 +138,7 @@ export class DictionaryPromise {
                     errors.push(value);
                 }
                 else {
-                    previous = fun(previous, value, keys[i], this.dic);
+                    previous = fun(previous, value, keys[i], i, this.dic);
                 }
 
                 values.splice(i, 1);
@@ -155,39 +155,20 @@ export class DictionaryPromise {
     /**
      * @template TValue
      * @param {string[]} keys
-     * @param {(key: string) => Promise<TValue>} callback
+     * @param {(key: string, index: number) => Promise<TValue>} callback
      * @returns {DictionaryPromise<TValue>}
      */
     static buildFrom(keys, callback) { return new DictionaryPromise(buildDic(keys, callback)); }
 }
 
-
-/**
- * @template TValue
- * @template TReturn
- * @param {{[x: string]: TValue}} dic
- * @param {(value: TValue, key: string, index: number) => TReturn} fun
- * @returns {{[x: string]: TReturn}}
- */
-export function mapDic(dic, fun) {
-    /** @type {{[x: string]: TReturn}} */
-    const newDic = {};
-    const keys = Object.keys(dic);
-    for (let i = 0; i < keys.length; i++) {
-        newDic[keys[i]]  = fun(dic[keys[i]], keys[i], i);
-    }
-
-    return newDic;
-}
-
 /**
  * @template T
  * @param {string[]} keys
- * @param {(key: string) => T} callback
+ * @param {(key: string, index: number) => T} callback
  * @returns {{[x: string]: T}}
  */
 function buildDic(keys, callback) {
-    return (keys.reduce((dic, key) => (dic[key] = callback(key), dic), {}));
+    return (keys.reduce((dic, key, i) => (dic[key] = callback(key, i), dic), {}));
 }
 
 /** 
