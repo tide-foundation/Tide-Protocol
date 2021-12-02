@@ -18,6 +18,7 @@
     "@babel/preset-env"
   ],
   "scripts": {
+    "debug": "node -r esm ./integration/partial/DAuthJwtFlowTest.js",
     "build": "webpack --config ./webpack/webpack.prod.js && node tools/build",
     "build:dev": "webpack --config ./webpack/webpack.dev.js",
     "start": "webpack-dev-server --open --config ./webpack/webpack.dev.js",

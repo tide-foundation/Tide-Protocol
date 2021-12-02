@@ -12,6 +12,7 @@
 // You should have received a copy of the Tide Community Open
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
+// @ts-check
 
 import DCryptClient from "./DCryptClient";
 import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare, AesSherableKey } from "cryptide";
@@ -24,6 +25,7 @@ import DnsClient from "./DnsClient";
 import RuleClientSet from "./RuleClientSet";
 import Rule from "../rule";
 import Tags from "../tags";
+import SetClient from "./SetClient";
 
 export default class DCryptFlow {
   /**
@@ -32,6 +34,7 @@ export default class DCryptFlow {
    */
   constructor(urls, user, memory = false) {
     this.clients = urls.map((url) => new DCryptClient(url, user, memory));
+    this.clienSet = new SetClient(this.clients);
     this.user = user;
     this.ruleCln = new RuleClientSet(urls, user);
   }
@@ -44,20 +47,21 @@ export default class DCryptFlow {
    */
   async signUp(cmkAuth, threshold, signedKeyId, signatures, cvk = C25519Key.generate()) {
     try {
-      if (!signatures && signatures.length != this.clients.length)
+      if (!signatures && signatures.length != this.clienSet.length)
         throw new Error("Signatures are required");
 
-      const ids = await Promise.all(this.clients.map((c) => c.getClientId()));
+      const ids = await this.clienSet.all(c => c.getClientId());
+      const listCvk = cvk.share(threshold, ids.values, true);
+      const cvks = ids.map((_, __, i) => listCvk[i]);
 
-      const cvks = cvk.share(threshold, ids, true);
-      var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-      const cvkAuths = idBuffers.map(buff => concat(buff, this.user.buffer)).map(buff => cmkAuth.derive(buff));
+      const idBuffers = await this.clienSet.map(ids, c => c.getClientBuffer());
+      const cvkAuths = idBuffers.map(buff => cmkAuth.derive(concat(buff, this.user.buffer)));
 
-      var orkSigns = await Promise.all(this.clients.map((cli, i) => 
-        cli.register(cvk.public(), cvks[i].x, cvkAuths[i], signedKeyId, signatures[i])));
+      const orkSigns = await this.clienSet.map(cvkAuths, (cli, _, key) => 
+        cli.register(cvk.public(), cvks.get(key).x, cvkAuths.get(key), signedKeyId, signatures[key]));
 
       await Promise.all([this.addDns(orkSigns, cvk),
-        this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId))]);
+        this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), orkSigns.keys)]);
 
       return cvk;
     } catch (err) {
@@ -65,38 +69,46 @@ export default class DCryptFlow {
     }
   }
 
-  /** @private 
-   * @param {{orkid: string, sign: string}[]} signatures 
+  /**
+   * @private 
+   * @typedef {import("./DAuthClient").OrkSign} OrkSign
+   * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
    * @param {C25519Key} key */
-  addDns(signatures, key) {
-    const cln = this.clients[Math.floor(Math.random() * this.clients.length)];
+   addDns(signatures, key) {
+    const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
+    const index = keys[Math.floor(Math.random() * keys.length)];
+    const cln = this.clienSet.get(index);
     const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-    var entry = new DnsEntry();
-    
+
+    const entry = new DnsEntry();
     entry.id = cln.userGuid;
     entry.public = key.public()
-    entry.signatures = signatures.map(sig => sig.sign);
-    entry.orks = signatures.map(sig => sig.orkid);
-    entry.sign(key);
 
+    if (Array.isArray(signatures)) {
+      entry.signatures = signatures.map(sig => sig.sign);
+      entry.orks = signatures.map(sig => sig.orkid);
+    }
+    else {
+      entry.signatures = signatures.values.map(val => val.sign);
+      entry.orks = signatures.values.map(val => val.orkid);
+    }
+
+    entry.sign(key);
     return dnsCln.addDns(entry);
   }
 
   /** @param {AESKey} cmkAuth */
   async getKey(cmkAuth, noPublic = false) {
-    const idGens = await Promise.all(this.clients.map((c) => c.getClientGenerator()));
-
+    const idGens = await this.clienSet.all(c => c.getClientGenerator());
+    
     const tranid = new Guid();
     const ids = idGens.map(idGen => idGen.id);
-    const lis = ids.map(id => SecretShare.getLi(id, ids, C25519Point.n));
+    const lis = ids.map(id => SecretShare.getLi(id, ids.values, C25519Point.n));
     const cvkAuths = idGens.map(idGen => concat(idGen.buffer, this.user.buffer)).map(buff => cmkAuth.derive(buff));
-    const cipherCvks = this.clients.map((c, i) => c.getCvk(tranid, cvkAuths[i], lis[i]));
+    const cipherCvks = this.clienSet.map(lis,(c, li, i) => c.getCvk(tranid, cvkAuths.get(i), li));
 
-    const cvks = cvkAuths.map(async (auth, i) => BnInput.getBig(auth.decrypt(await cipherCvks[i])));
-    const cvk = await cvks.reduce(async (sumP, cvkiP) => {
-      const [sum, cvki] = await Promise.all([sumP, cvkiP]);
-      return sum.add(cvki).mod(C25519Point.n);
-    });
+    const cvk = await cipherCvks.map((cvki, i) => BnInput.getBig(cvkAuths.get(i).decrypt(cvki)))
+      .reduce((sum, cvki) => sum.add(cvki).mod(C25519Point.n), BnInput.getBig(0));
 
     return C25519Key.private(cvk, noPublic);
   }
@@ -144,7 +156,7 @@ export default class DCryptFlow {
   }
 
   /**
-   * @param {Uint8Array]} cipher
+   * @param {Uint8Array} cipher
    * @param {C25519Key} prv
    * @returns {Promise<Uint8Array>}
    */
@@ -152,7 +164,7 @@ export default class DCryptFlow {
     return (await this.decryptBulk([cipher], prv))[0];
   }
 
-  confirm() {
-    return Promise.all(this.clients.map(c => c.confirm()));
+  async confirm() {
+    await this.clienSet.all(c => c.confirm());
   }
 }

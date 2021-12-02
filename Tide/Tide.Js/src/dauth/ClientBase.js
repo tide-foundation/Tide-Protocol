@@ -12,10 +12,12 @@
 // You should have received a copy of the Tide Community Open
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
+// @ts-check
 import * as superagent from "superagent";
 import IdGenerator from "../IdGenerator";
 import Guid from "../guid";
 import { C25519Key } from "cryptide";
+import { ClientError } from "./Errors";
 
 export default class ClientBase {
   /**
@@ -129,4 +131,28 @@ function encodeBase64Url(data) {
   const text = typeof data === "string" ? data : data instanceof Buffer ? data.toString("base64") : Buffer.from(data).toString("base64");
 
   return text.replace(/\=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+}
+
+/** 
+* @template T
+* @param {Promise<T>} req
+* @returns {Promise<T|Error>}
+*/
+export async function processError (req) {
+  try {
+    return await req;
+  }
+  catch (err) {
+    if (!(err instanceof Error)) {
+      return Error(err.toString());
+    }
+    
+    if (err['response'] && err['response']['error']) {
+      /** @type {superagent.HTTPError} */
+      const error = err['response']['error'];
+      return new ClientError(error.text, error.method, error.path, String(error.status))
+    }
+    
+    return err;
+  }
 }

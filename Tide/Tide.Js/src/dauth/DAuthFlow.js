@@ -12,6 +12,7 @@
 // You should have received a copy of the Tide Community Open
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
+// @ts-check
 
 import BigInt from "big-integer";
 import DAuthClient from "./DAuthClient";
@@ -23,6 +24,7 @@ import { getArray } from "cryptide/src/bnInput";
 import DnsEntry from "../DnsEnrty";
 import DnsClient from "./DnsClient";
 import Guid from "../guid";
+import SetClient from "./SetClient";
 
 export default class DAuthFlow {
   /**
@@ -31,34 +33,42 @@ export default class DAuthFlow {
    */
   constructor(urls, user, memory = false) {
     this.clients = urls.map((url) => new DAuthClient(url, user, memory));
+    this.clienSet = new SetClient(this.clients);
   }
 
   /**
    * @param {string} password
    * @param {string|string[]} email
    * @param {number} threshold
-   * @returns {Promise<AESKey>}
+   * @returns {Promise<AESKey|Error>}
    */
   async signUp(password, email, threshold, cmk = random()) {
     try {
       if (!email) throw new Error("email must have at least one item");
-      var emails = typeof email === "string" ? [email] : email;
-      var emailIndex = Math.floor(Math.random() * emails.length);
+      const emails = typeof email === "string" ? [email] : email;
+      const emailIndex = Math.floor(Math.random() * emails.length);
 
-      var prism = random();
-      var g = C25519Point.fromString(password);
+      const prism = random();
+      const g = C25519Point.fromString(password);
 
-      var prismAuth = AESKey.seed(g.times(prism).toArray());
-      var cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
+      const prismAuth = AESKey.seed(g.times(prism).toArray());
+      const cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
 
-      var ids = await Promise.all(this.clients.map((c) => c.getClientId()));
-      var idBuffers = await Promise.all(this.clients.map((c) => c.getClientBuffer()));
-      var prismAuths = idBuffers.map((buff) => prismAuth.derive(buff));
-      var cmkAuths = idBuffers.map((buff) => cmkAuth.derive(buff));
-      var [, cmks] = SecretShare.shareFromIds(cmk, ids, threshold, C25519Point.n);
-      var [, prisms] = SecretShare.shareFromIds(prism, ids, threshold, C25519Point.n);
+      const ids = await this.clienSet.all(cli => cli.getClientId());
+      const idBuffers = await this.clienSet.map(ids, cli => cli.getClientBuffer());
 
-      var signatures = await Promise.all(this.clients.map((cli, i) => cli.signUp(prisms[i], cmks[i], prismAuths[i], cmkAuths[i], emails[(emailIndex + i) % emails.length])));
+      const prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
+      const cmkAuths = idBuffers.map(buff => cmkAuth.derive(buff));
+
+      const [, listCmk] = SecretShare.shareFromIds(cmk, ids.values, threshold, C25519Point.n);
+      const [, listPrism] = SecretShare.shareFromIds(prism, ids.values, threshold, C25519Point.n);
+
+      const cmks = ids.map((_, __, i) => listCmk[i]);
+      const prisms = ids.map((_, __, i) => listPrism[i]);
+
+      const signatures = await this.clienSet.map(idBuffers, (cli, _, key) =>
+        cli.signUp(prisms.get(key), cmks.get(key), prismAuths.get(key), cmkAuths.get(key), emails[(emailIndex + Number(key)) % emails.length]));
+
       await this.addDns(signatures, C25519Key.private(cmk));
 
       return cmkAuth;
@@ -67,20 +77,31 @@ export default class DAuthFlow {
     }
   }
 
-  /** @private 
-   * @param {{orkid: string, sign: string}[]} signatures 
+  /**
+   * @private 
+   * @typedef {import("./DAuthClient").OrkSign} OrkSign
+   * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
    * @param {C25519Key} key */
   addDns(signatures, key) {
-    const cln = this.clients[Math.floor(Math.random() * this.clients.length)];
+    const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
+    const index = keys[Math.floor(Math.random() * keys.length)];
+    const cln = this.clienSet.get(index);
     const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-    var entry = new DnsEntry();
-    
+
+    const entry = new DnsEntry();
     entry.id = cln.userGuid;
     entry.public = key.public()
-    entry.signatures = signatures.map(sig => sig.sign);
-    entry.orks = signatures.map(sig => sig.orkid);
-    entry.sign(key);
 
+    if (Array.isArray(signatures)) {
+      entry.signatures = signatures.map(sig => sig.sign);
+      entry.orks = signatures.map(sig => sig.orkid);
+    }
+    else {
+      entry.signatures = signatures.values.map(val => val.sign);
+      entry.orks = signatures.values.map(val => val.orkid);
+    }
+
+    entry.sign(key);
     return dnsCln.addDns(entry);
   }
 
@@ -91,21 +112,17 @@ export default class DAuthFlow {
     try {
       const [prismAuth, token] = await this.getPrismAuth(password);
 
-      const idGens = await Promise.all(this.clients.map((c) => c.getClientGenerator()));
+      const idGens = await this.clienSet.all(c => c.getClientGenerator())
       const prismAuths = idGens.map(idGen => prismAuth.derive(idGen.buffer));
-      const tokens = this.clients.map((c, i) => token.copy().sign(prismAuths[i], c.userBuffer));
+      const tokens = idGens.map((_, i) => token.copy().sign(prismAuths.get(i), this.clienSet.get(i).userBuffer))
 
       const tranid = new Guid();
       const ids = idGens.map(idGen => idGen.id);
-      const lis = ids.map(id => SecretShare.getLi(id, ids, C25519Point.n));
-      const pre_ciphers = this.clients.map((cli, i) => cli.signIn(tranid, tokens[i], point, lis[i]));
+      const lis = ids.map(id => SecretShare.getLi(id, ids.values, C25519Point.n));
+      const pre_ciphers = this.clienSet.map(lis, (cli, li, i) => cli.signIn(tranid, tokens.get(i), point, li));
 
-      /** @type {C25519Point} */
-      const cvkAuth = await prismAuths.map(async (auth, i) => C25519Point.from(auth.decrypt(await pre_ciphers[i])))
-        .reduce(async (sumP, cvkAuthiP) => {
-          const [sum, cvkAuthi] = await Promise.all([sumP, cvkAuthiP]);
-          return sum.add(cvkAuthi);
-        });
+      const cvkAuth = await pre_ciphers.map((cipher, i) => C25519Point.from(prismAuths.get(i).decrypt(cipher)))
+        .reduce((sum, cvkAuthi) => sum.add(cvkAuthi), C25519Point.infinity);
 
       return AESKey.seed(cvkAuth.toArray());
     } catch (err) {
@@ -117,26 +134,24 @@ export default class DAuthFlow {
    * @returns {Promise<[AESKey, TranToken]>} */
   async getPrismAuth(pass) {
     try {
-      const pre_ids = this.clients.map((c) => c.getClientId());
+      const pre_ids = this.clienSet.all(c => c.getClientId());
 
       const r = random();
       const n = C25519Point.n;
       const g = C25519Point.fromString(pass);
       const gR = g.multiply(r);
 
-      const ids = await Promise.all(pre_ids);
-      const lis = ids.map((id) => SecretShare.getLi(id, ids, n));
+      const ids = await pre_ids;
+      const lis = ids.map((id) => SecretShare.getLi(id, ids.values, n));
 
-      const pre_gRPrismis = this.clients.map((cli, i) => cli.ApplyPrism(gR, lis[i]));
+      const pre_gRPrismis = this.clienSet.map(lis, (cli, li) => cli.ApplyPrism(gR, li));
       const rInv = r.modInv(n);
 
-      const gRPrism = await pre_gRPrismis.map(async ki => (await ki)[0]).reduce(async (sumP, rkiP) => {
-        const [sum, rki] = await Promise.all([sumP, rkiP]);
-        return sum.add(rki);
-      });
+      const gRPrism = await pre_gRPrismis.map(ki =>  ki[0])
+        .reduce((sum, rki) => sum.add(rki), C25519Point.infinity);
 
       const gPrism = gRPrism.times(rInv);
-      const [,token] = await pre_gRPrismis[0];
+      const [,token] = await pre_gRPrismis.values[0];
 
       return [AESKey.seed(gPrism.toArray()), token];
     } catch (err) {
@@ -195,8 +210,8 @@ export default class DAuthFlow {
     return this._changePass(cmkAuth, pass, threshold, true);
   }
 
-  confirm() {
-    return Promise.all(this.clients.map((c) => c.confirm()));
+  async confirm() {
+    await this.clienSet.all(c => c.confirm());
   }
 
   /**
