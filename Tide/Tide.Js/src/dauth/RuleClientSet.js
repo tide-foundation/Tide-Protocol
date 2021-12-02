@@ -34,6 +34,7 @@ export default class RuleClientSet {
    * @param {Array<string>} indices
    */
   async getById(ruleId, indices = null) {
+    if (!indices) indices = this.clients.keys;
     const resp = await this.clients.filter(indices, cln => cln.getById(ruleId));
 
     return resp.values;
@@ -41,6 +42,7 @@ export default class RuleClientSet {
 
   /** @param {Array<string>} indices */
    async getSet(indices = null) {
+    if (!indices) indices = this.clients.keys;
     const resp = await this.clients.filter(indices, cln => cln.getSet());
 
     return resp.values;
@@ -51,6 +53,7 @@ export default class RuleClientSet {
    * @param {Array<string>} indices
    */
   async setOrUpdate(rule, indices = null) {
-    const resp = await this.clients.filter(indices, cln => cln.setOrUpdate(rule));
+    if (!indices) indices = this.clients.keys;
+    await this.clients.filter(indices, cln => cln.setOrUpdate(rule));
   }
 }
