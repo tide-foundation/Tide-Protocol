@@ -44,19 +44,19 @@ interface DynamicForm {
 export default class Form extends Base {
   fields: any[] = [];
   encrypted: boolean = true;
-  formData: any;
   key: C25519Key;
 
   mounted() {
     this.key = C25519Key.fromString(this.mainStore.getState.account!.encryptionKey);
-    this.formData = this.mainStore.getState.config.formData;
-
-    var structure = this.formData.structure as any[];
-    var userData = this.formData.data as any[];
+    const formData = this.mainStore.getState.config.formData;
+    var raw = JSON.parse(JSON.stringify(formData));
+    var structure = raw.structure as any[];
+    var userData = raw.data as any[];
+    if (this.isEmpty(userData)) userData = [];
 
     structure.forEach((field: Field) => {
       // Get the current field value, or create an empty string
-      var v = userData.find((d) => d.key == field.Name);
+      var v = userData.find((d: any) => d.key == field.Name);
       var val = v != null && v.value != "" ? v.value : "";
 
       // Generate the form field and decrypt it if it's not new
@@ -72,6 +72,16 @@ export default class Form extends Base {
 
       this.fields.push(metaField);
     });
+  }
+
+  isEmpty(obj: object) {
+    for (var prop in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+        return false;
+      }
+    }
+
+    return JSON.stringify(obj) === JSON.stringify({});
   }
 
   async update() {
