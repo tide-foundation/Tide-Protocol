@@ -61,6 +61,7 @@ class MainStore extends Store<MainState> {
   logout() {
     this.state.account = undefined;
     localStorage.removeItem(SESSION_ACCOUNT_KEY);
+    localStorage.removeItem("silent_login_token"); // From tide-js
   }
 
   authenticationComplete() {
