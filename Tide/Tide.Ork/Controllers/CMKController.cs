@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -24,6 +25,7 @@ using Microsoft.Extensions.Logging;
 using Tide.Core;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
+using Tide.Encryption.SecretSharing;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 using Tide.Ork.Components.AuditTrail;
@@ -77,6 +79,101 @@ namespace Tide.Ork.Controllers
             resp.Content = new { orkid = _config.UserName, sign = signature };
             
             return resp;
+        }
+
+        [HttpGet("random/{uid}")]
+        public ActionResult<RandomResponse[]> GetRandom([FromQuery] byte[] pass, [FromQuery] ICollection<Guid> ids)
+        {
+            if (pass?.Length == 0) {
+                _logger.LogDebug("Random: The password cannot be null");
+                return BadRequest($"The password cannot be null");
+            }
+
+            if (ids == null || ids.Count < _config.Threshold) {
+                _logger.LogInformation("Random: The length of the ids ({length}) must be greater than or equal to {threshold}", ids?.Count, _config.Threshold);
+                return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
+            }
+
+            if (!ids.Contains(_config.Guid)) ids.Add(_config.Guid);
+            
+            var idValues = ids.Select(id => new BigInteger(id.ToByteArray(), true, true)).ToList();
+            if (idValues.Any(id => id == 0)) {
+                _logger.LogInformation("Random: Ids cannot contain the value zero");
+                return BadRequest($"Ids cannot contain the value zero");
+            }
+
+            C25519Point gPass;
+            try
+            {
+                gPass = C25519Point.From(pass);
+                if (!gPass.IsValid) {
+                    _logger.LogInformation($"Random: Invalid point");
+                    return BadRequest("Invalid password");
+                }
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation($"Random: Invalid point with error");
+                return BadRequest("Invalid password");
+            }
+
+            BigInteger prismi, cmki;
+            using (var rdm = new RandomField(C25519Point.N))
+            {
+                prismi = rdm.Generate(BigInteger.One);
+                cmki = rdm.Generate(BigInteger.One);
+            }
+
+            var gPassPrismi = gPass * prismi;            
+            var prisms = EccSecretSharing.Share(prismi, idValues, _config.Threshold, C25519Point.N);
+            var cmks = EccSecretSharing.Share(cmki, idValues, _config.Threshold, C25519Point.N);
+            
+            _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
+            return prisms.Select((prism, i) => new RandomResponse(gPassPrismi, prism, cmks[i])).ToArray();
+        }
+
+        [HttpPut("random/{uid}")]
+        public async Task<ActionResult<byte[]>> AddRandom([FromRoute] Guid uid, [FromBody] RandRegistrationReq rand)
+        {
+            if (uid == Guid.Empty) {
+                _logger.LogDebug("Random: The uid must not be empty");
+                return BadRequest($"The uid must not be empty");
+            }
+
+            if (rand is null || rand.Shares is null  || rand.Shares.Length < _config.Threshold) {
+                var args = new object[] { rand?.Shares?.Length, _config.Threshold };
+                _logger.LogInformation("Random: The length of the shares [length] must be greater than or equal to {threshold}", args);
+                return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
+            }
+
+            if (rand.Shares.Any(shr => shr.Id != _config.Guid)) {
+                var ids = string.Join(',', rand.Shares.Select(shr => shr.Id).Where(id => id != _config.Guid));
+                _logger.LogCritical("Random: Shares were sent to the wrong ORK: {ids}", ids);
+                return BadRequest($"Shares were sent to the wrong ORK: '{ids}'");
+            }
+
+            var isNew = !await _manager.Exist(uid);
+            if (!isNew) {
+                _logger.LogInformation("Random: CMK already exists for {uid}", uid);
+                return BadRequest("CMK already exists");
+            }
+
+            var account = new CmkVault
+            {
+                UserId = uid,
+                Prismi = rand.ComputePrism(),
+                Cmki = rand.ComputeCmk(),
+                Email = rand.Email
+            };
+
+            var resp = await _manager.Add(account);
+            if (!resp.Success) {
+                _logger.LogInformation($"CMK was not added for uid '{uid}'");
+                return Problem(resp.Error);
+            }
+            
+            var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
+            return _config.PrivateKey.Sign(m);
         }
 
         [MetricAttribute("prism")]

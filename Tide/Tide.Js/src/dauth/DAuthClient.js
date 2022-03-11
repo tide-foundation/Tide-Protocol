@@ -15,8 +15,9 @@
 // @ts-check
 
 import { C25519Point, AESKey } from "cryptide";
-import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
+import ClientBase, { urlEncode, fromBase64, encodeBase64 } from "./ClientBase";
 import TranToken from "../TranToken";
+import RandomResponse from "./RandomResponse";
 
 /** @typedef {{orkid: string, sign: string}} OrkSign */
 export default class DAuthClient extends ClientBase {
@@ -84,6 +85,40 @@ export default class DAuthClient extends ClientBase {
     }
     
     return resp.body.content;
+  }
+
+   /**
+   * @param {C25519Point} password
+   * @param {import("../guid").default[]} ids
+   * @returns {Promise<RandomResponse[]>}
+   */
+   async random(password, ids) {
+    if (!ids || ids.length <= 0) throw Error('ids are not defined');
+
+    const pass = encodeURIComponent(encodeBase64(password.toArray()));
+    const args = ids.map(id => `ids=${id}`).join('&');
+
+    const resp = await this._get(`/cmk/random/${this.userGuid}?pass=${pass}&${args}`)
+      .ok(res => res.status < 500);
+
+    if (!resp.ok) return Promise.reject(new Error(resp.text));
+
+    return resp.body.map(json => RandomResponse.from(json))
+  }
+
+  /**
+   * @param {import("./RandRegistrationReq").default} body
+   * @returns {Promise<OrkSign>}
+   */
+  async randomSignUp(body) {
+    if (!body) throw Error("The arguments cannot be null");
+
+    var resp = await this._put(`/cmk/random/${this.userGuid}`).send(body)
+      .ok(res => res.status < 500);
+    
+    if (!resp.ok) return  Promise.reject(new Error(resp.text));
+    
+    return resp.body;
   }
 
   /**

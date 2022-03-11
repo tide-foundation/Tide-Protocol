@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
+using Tide.Ork.Models.Serialization;
 using Tide.Ork.Repo;
 using VueCliMiddleware;
 
@@ -23,11 +25,8 @@ namespace Tide.Ork {
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
-
-            services.AddControllers(options =>
-            {
-                options.ModelBinderProviders.Insert(0, new C25519PointBinderProvider());
-            });
+            services.AddControllers(opt => opt.ModelBinderProviders.Insert(0, new C25519PointBinderProvider()))
+                .AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new C25519PointConverter()));
 
             var settings = new Settings();
             Configuration.Bind(nameof(Settings), settings);

@@ -26,10 +26,8 @@ test-basic:
 clean:
 	docker-compose -f Tide/docker-compose.yml -f Tide/docker-compose.proxy.yml -f Tide/docker-compose.test.yml down
 
-n=1
 ork:
-	n=$n; port=500$n; sw=true; \
-	while [ "$$sw" = true ]; \
-	do nc -z localhost $$port && n=$$((n+1)) && port=$$((port+1)) || sw=false; done; \
-	export ASPNETCORE_ENVIRONMENT=ork$$n; \
+	@read -p "Enter the ORK number: " n; \
+	[ -z "$$n" ] && echo "n cannot be empty" && return 1 || \
+	port=500$$n; export ASPNETCORE_ENVIRONMENT=ork$$n; \
 	dotnet watch --project Tide/Tide.Ork run --no-build --no-launch-profile --urls=http://0.0.0.0:$$port;
