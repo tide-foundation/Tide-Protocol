@@ -3,11 +3,12 @@ using System.Linq;
 using System.Numerics;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
+using static Tide.Ork.Models.RandomResponse;
 
 namespace Tide.Ork.Models {
     public class RandRegistrationReq
     {
-        public RandomResponse[] Shares { get; set; }
+        public RandomShareResponse[] Shares { get; set; }
         public AesKey PrismAuth { get; set; }
         public string Email { get; set; }
 

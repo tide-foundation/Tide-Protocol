@@ -118,7 +118,7 @@ export default class DAuthJwtFlow {
       const signatures = flowCvk.clients.map((_) => new Uint8Array());
 
       // register cmk
-      await flowCmk.signUp(password, email, threshold, this.cmk);
+      await flowCmk.signUp(password, email, threshold, null, venPnt);
 
       // register cvk
       await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);

@@ -31,6 +31,7 @@ services:
       Settings__BearerKey: '5Fs4D8rzmI6eUur3zbw27ZeQ'
       Settings__Connection: 'Server=db_host;Database=db;User Id=sa;Password=P@ssw0rd;'
       Settings__Threshold: '3'
+      Settings__Features__DisableSignatures: 'false'
     depends_on:
       - 'db_host'
       - 'db_migration'

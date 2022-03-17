@@ -25,6 +25,7 @@ import DnsEntry from "../DnsEnrty";
 import DnsClient from "./DnsClient";
 import Guid from "../guid";
 import SetClient from "./SetClient";
+import RandRegistrationReq from "./RandRegistrationReq";
 
 export default class DAuthFlow {
   /**
@@ -40,38 +41,41 @@ export default class DAuthFlow {
    * @param {string} password
    * @param {string|string[]} email
    * @param {number} threshold
+   * @param {BigInt.BigInteger} cmk
+   * @param {C25519Point} vendor
    * @returns {Promise<AESKey|Error>}
    */
-  async signUp(password, email, threshold, cmk = random()) {
+  async signUp(password, email, threshold, cmk=null, vendor=null) {
     try {
       if (!email) throw new Error("email must have at least one item");
       const emails = typeof email === "string" ? [email] : email;
       const emailIndex = Math.floor(Math.random() * emails.length);
 
-      const prism = random();
       const g = C25519Point.fromString(password);
-
-      const prismAuth = AESKey.seed(g.times(prism).toArray());
-      const cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
 
       const ids = await this.clienSet.all(cli => cli.getClientId());
       const idBuffers = await this.clienSet.map(ids, cli => cli.getClientBuffer());
+      const guids = idBuffers.map(buff => new Guid(buff));
+
+      const randoms = await this.clienSet.map(guids, cli => cli.random(g, guids.values));
+
+      const cmkPub = randoms.values.map(rdm => rdm.cmkPub).reduce((sum, cmki, i) => cmki.add(sum));
+      const gPrism = randoms.values.map(rdm => rdm.password).reduce((sum, gPrismi, i)=> gPrismi.add(sum));
+
+      const prismAuth = AESKey.seed(gPrism.toArray());
 
       const prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
-      const cmkAuths = idBuffers.map(buff => cmkAuth.derive(buff));
+      console.log('prism1:', prismAuths.map(itm => itm.toString()));
 
-      const [, listCmk] = SecretShare.shareFromIds(cmk, ids.values, threshold, C25519Point.n);
-      const [, listPrism] = SecretShare.shareFromIds(prism, ids.values, threshold, C25519Point.n);
+      const mails = randoms.map((_, __, i) => emails[(emailIndex + i) % emails.length]);
+      const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
+      const randReq = randoms.map((_, key) => new RandRegistrationReq(prismAuths.get(key), mails.get(key), shares.get(key))) 
 
-      const cmks = ids.map((_, __, i) => listCmk[i]);
-      const prisms = ids.map((_, __, i) => listPrism[i]);
+      const signatures = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key)));
 
-      const signatures = await this.clienSet.map(idBuffers, (cli, _, key) =>
-        cli.signUp(prisms.get(key), cmks.get(key), prismAuths.get(key), cmkAuths.get(key), emails[(emailIndex + Number(key)) % emails.length]));
+      await this.addDns(signatures, new C25519Key(0, cmkPub));
 
-      await this.addDns(signatures, C25519Key.private(cmk));
-
-      return cmkAuth;
+      return prismAuth;
     } catch (err) {
       return Promise.reject(err);
     }
@@ -101,7 +105,7 @@ export default class DAuthFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    entry.sign(key);
+    //entry.sign(key);
     return dnsCln.addDns(entry);
   }
 
@@ -115,6 +119,8 @@ export default class DAuthFlow {
       const idGens = await this.clienSet.all(c => c.getClientGenerator())
       const prismAuths = idGens.map(idGen => prismAuth.derive(idGen.buffer));
       const tokens = idGens.map((_, i) => token.copy().sign(prismAuths.get(i), this.clienSet.get(i).userBuffer))
+      console.log('prism2:', prismAuths.map(itm => itm.toString()));
+
 
       const tranid = new Guid();
       const ids = idGens.map(idGen => idGen.id);
@@ -151,6 +157,8 @@ export default class DAuthFlow {
         .reduce((sum, rki) => sum.add(rki), C25519Point.infinity);
 
       const gPrism = gRPrism.times(rInv);
+      const prismAuth = AESKey.seed(gPrism.toArray());
+
       const [,token] = await pre_gRPrismis.values[0];
 
       return [AESKey.seed(gPrism.toArray()), token];

@@ -25,8 +25,11 @@ namespace Tide.Ork {
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllers(opt => opt.ModelBinderProviders.Insert(0, new C25519PointBinderProvider()))
-                .AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new C25519PointConverter()));
+            services.AddControllers(opt => opt.ModelBinderProviders.Insert(0, new MainBinderProvider()))
+                .AddJsonOptions(opt => {
+                    opt.JsonSerializerOptions.Converters.Add(new C25519PointConverter());
+                    opt.JsonSerializerOptions.Converters.Add(new AesKeyConverter());
+                });
 
             var settings = new Settings();
             Configuration.Bind(nameof(Settings), settings);

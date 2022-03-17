@@ -24,7 +24,7 @@ namespace Tide.Simulator.Contracts
         }
 
         private IEnumerable<IContract> Contracts() {
-            yield return new DnsContract(_blockchain, _lockObj, _logger);
+            yield return new DnsContract(_blockchain, _lockObj, _settings.Features, _logger);
             yield return new AuditTrailContract(_blockchain, _lockObj, _settings.Threshold, _logger);
         }
 

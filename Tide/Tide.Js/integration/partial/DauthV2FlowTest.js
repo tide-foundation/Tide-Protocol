@@ -41,6 +41,7 @@ async function signUp() {
 
     var { auth: auth0 } = await flow.signUp(pass, email, threshold);
 
+    /*
     flow = new DAuthV2Flow(user);
     flow.homeUrl = orkUrls[0];
     flow.vendorUrl = vendorUrl;
@@ -52,7 +53,7 @@ async function signUp() {
     var { auth: auth2 } = await flow.logIn(newPass);
     assert.equal(auth0.toString(), auth2.toString());
 
-    console.log(`all good for vuid ${flow.vuid}`);
+    console.log(`all good for vuid ${flow.vuid}`);*/
   } catch (error) {
     console.log(error);
   }

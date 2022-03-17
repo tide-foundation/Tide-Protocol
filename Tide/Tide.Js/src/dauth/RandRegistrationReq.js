@@ -14,13 +14,13 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 // @ts-check
 import { AESKey } from "cryptide";
-import RandomResponse from "./RandomResponse";
+import { RandomShareResponse } from "./RandomResponse";
 
 export default class RandRegistrationReq {
     /**
     * @param { AESKey } prismAuth
     * @param { string } email
-    * @param { RandomResponse[] } shares
+    * @param { RandomShareResponse[] } shares
     */
     constructor(prismAuth, email, shares) {
         this.prismAuth = prismAuth;
@@ -48,7 +48,7 @@ export default class RandRegistrationReq {
 
         const prismAuth = AESKey.from(obj.prismAuth)
         const email = obj.email;
-        const shares = obj.shares.map(shr => RandomResponse.from(shr));
+        const shares = obj.shares.map(RandomShareResponse.from);
         
         return new RandRegistrationReq(prismAuth, email, shares);
     }

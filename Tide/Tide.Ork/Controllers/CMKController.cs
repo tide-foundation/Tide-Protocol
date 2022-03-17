@@ -82,7 +82,7 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("random/{uid}")]
-        public ActionResult<RandomResponse[]> GetRandom([FromQuery] byte[] pass, [FromQuery] ICollection<Guid> ids)
+        public ActionResult<RandomResponse> GetRandom([FromQuery] byte[] pass, [FromQuery] ICollection<Guid> ids)
         {
             if (pass?.Length == 0) {
                 _logger.LogDebug("Random: The password cannot be null");
@@ -125,11 +125,12 @@ namespace Tide.Ork.Controllers
             }
 
             var gPassPrismi = gPass * prismi;            
+            var cmkPubi =  C25519Point.G * cmki;
             var prisms = EccSecretSharing.Share(prismi, idValues, _config.Threshold, C25519Point.N);
             var cmks = EccSecretSharing.Share(cmki, idValues, _config.Threshold, C25519Point.N);
             
             _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
-            return prisms.Select((prism, i) => new RandomResponse(gPassPrismi, prism, cmks[i])).ToArray();
+            return new RandomResponse(gPassPrismi, cmkPubi, prisms, cmks);
         }
 
         [HttpPut("random/{uid}")]
@@ -161,17 +162,19 @@ namespace Tide.Ork.Controllers
             var account = new CmkVault
             {
                 UserId = uid,
-                Prismi = rand.ComputePrism(),
+                Email = rand.Email,
                 Cmki = rand.ComputeCmk(),
-                Email = rand.Email
+                Prismi = rand.ComputePrism(),
+                PrismiAuth = rand.PrismAuth
             };
 
             var resp = await _manager.Add(account);
             if (!resp.Success) {
-                _logger.LogInformation($"CMK was not added for uid '{uid}'");
+                _logger.LogInformation($"Random: CMK was not added for uid '{uid}'");
                 return Problem(resp.Error);
             }
             
+            _logger.LogInformation($"Random: New registration for {uid}", uid);
             var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
             return _config.PrivateKey.Sign(m);
         }

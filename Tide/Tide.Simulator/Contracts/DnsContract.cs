@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tide.Core;
 using Tide.Simulator.Classes;
+using Tide.Simulator.Models;
 
 namespace Tide.Simulator.Contracts
 {
@@ -10,12 +11,14 @@ namespace Tide.Simulator.Contracts
     {
         private readonly IBlockLayer _blockchain;
         private readonly object _lockObj;
+        private readonly Features _features;
         private readonly ILogger _logger;
 
-        public DnsContract(IBlockLayer blockchain, object lockObj, ILogger logger)
+        public DnsContract(IBlockLayer blockchain, object lockObj, Features features, ILogger logger)
         {
             _blockchain = blockchain;
             _lockObj = lockObj;
+            _features = features;
             _logger = logger;
         }
 
@@ -30,7 +33,7 @@ namespace Tide.Simulator.Contracts
             try
             {
                 var dns = DnsEntry.Parse(transaction.Data);
-                if (!dns.VerifyForUId()) {
+                if (_features.DisableSignatures! && !dns.VerifyForUId()) {
                     _logger.LogInformation("Invalid client's signature for {0}", transaction.Index);
                     return new BadRequestObjectResult("Client's signature is invalid");
                 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.SecretSharing;
@@ -7,29 +9,35 @@ using Tide.Encryption.SecretSharing;
 namespace Tide.Ork.Models {
     public class RandomResponse
     {
-        public Guid Id { get; set; }
-        public byte[] Prism { get; set; }
-        public byte[] Cmk { get; set; }
         public C25519Point Password { get; set; }
+        public C25519Point CmkPub { get; set; }
+        public RandomShareResponse[] Shares { get; set; }
 
-        private readonly Lazy<BigInteger> _prismVal;
-        internal BigInteger PrismVal => _prismVal.Value;
-        
-        private readonly Lazy<BigInteger> _cmkVal;
-        internal BigInteger CmkVal => _cmkVal.Value;
+        public RandomResponse() { }
 
-        public RandomResponse() {
-            _prismVal = new Lazy<BigInteger>(() => new BigInteger(Prism, true, true));
-            _cmkVal = new Lazy<BigInteger>(() => new BigInteger(Cmk, true, true));
+        public RandomResponse(C25519Point pass, C25519Point pub, IReadOnlyList<Point> prisms, IReadOnlyList<Point> cmks)
+        {
+            Debug.Assert(prisms != null && cmks != null && prisms.Any() && cmks.Any(), $"Argument cannot be empty");
+            Debug.Assert(prisms.Count == cmks.Count, $"{nameof(prisms)} and {nameof(cmks)} must be the same");
+            Debug.Assert(!prisms.Where((_, i) => prisms[i].X != cmks[i].X).Any(), $"{nameof(prisms)} and {nameof(cmks)} must be the same");
+
+            Password = pass;
+            CmkPub = pub;
+            Shares = prisms.Select((_, i) => new RandomShareResponse {
+                Id = new Guid(cmks[i].X.ToByteArray(true, true)),
+                Prism = prisms[i].Y.ToByteArray(true, true),
+                Cmk = cmks[i].Y.ToByteArray(true, true)
+            }).ToArray();
         }
 
-        public RandomResponse(C25519Point pass, Point prism, Point cmk): this() {
-            Debug.Assert(prism?.X == cmk?.X, $"{nameof(prism)} and {nameof(cmk)} must be the same");
+        public class RandomShareResponse
+        {
+            public Guid Id { get; set; }
+            public byte[] Prism { get; set; }
+            public byte[] Cmk { get; set; }
 
-            Id = new Guid(prism.X.ToByteArray(true, true));
-            Prism = prism.Y.ToByteArray(true, true);
-            Cmk = cmk.Y.ToByteArray(true, true);
-            Password = pass;
+            internal BigInteger PrismVal => new BigInteger(Prism, true, true);
+            internal BigInteger CmkVal => new BigInteger(Cmk, true, true);
         }
     }
 }

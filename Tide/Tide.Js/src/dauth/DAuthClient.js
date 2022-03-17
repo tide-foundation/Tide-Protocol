@@ -90,7 +90,7 @@ export default class DAuthClient extends ClientBase {
    /**
    * @param {C25519Point} password
    * @param {import("../guid").default[]} ids
-   * @returns {Promise<RandomResponse[]>}
+   * @returns {Promise<RandomResponse>}
    */
    async random(password, ids) {
     if (!ids || ids.length <= 0) throw Error('ids are not defined');
@@ -103,7 +103,7 @@ export default class DAuthClient extends ClientBase {
 
     if (!resp.ok) return Promise.reject(new Error(resp.text));
 
-    return resp.body.map(json => RandomResponse.from(json))
+    return RandomResponse.from(resp.body);
   }
 
   /**
@@ -113,9 +113,9 @@ export default class DAuthClient extends ClientBase {
   async randomSignUp(body) {
     if (!body) throw Error("The arguments cannot be null");
 
-    var resp = await this._put(`/cmk/random/${this.userGuid}`).send(body)
+    var resp = await this._put(`/cmk/random/${this.userGuid}`).set("Content-Type", "application/json").send(JSON.stringify(body))
       .ok(res => res.status < 500);
-    
+
     if (!resp.ok) return  Promise.reject(new Error(resp.text));
     
     return resp.body;
