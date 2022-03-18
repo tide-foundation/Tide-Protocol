@@ -89,16 +89,18 @@ export default class DAuthClient extends ClientBase {
 
    /**
    * @param {C25519Point} password
+   * @param {C25519Point} vendor
    * @param {import("../guid").default[]} ids
    * @returns {Promise<RandomResponse>}
    */
-   async random(password, ids) {
+   async random(password, vendor, ids) {
     if (!ids || ids.length <= 0) throw Error('ids are not defined');
 
     const pass = encodeURIComponent(encodeBase64(password.toArray()));
+    const ven = encodeURIComponent(encodeBase64(vendor.toArray()));
     const args = ids.map(id => `ids=${id}`).join('&');
 
-    const resp = await this._get(`/cmk/random/${this.userGuid}?pass=${pass}&${args}`)
+    const resp = await this._get(`/cmk/random/${this.userGuid}?pass=${pass}&vendor=${ven}&${args}`)
       .ok(res => res.status < 500);
 
     if (!resp.ok) return Promise.reject(new Error(resp.text));

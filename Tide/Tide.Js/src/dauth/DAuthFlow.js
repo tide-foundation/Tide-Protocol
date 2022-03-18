@@ -51,17 +51,23 @@ export default class DAuthFlow {
       const emails = typeof email === "string" ? [email] : email;
       const emailIndex = Math.floor(Math.random() * emails.length);
 
+      const r = random();
       const g = C25519Point.fromString(password);
+      const gR = g.multiply(r);
 
       const ids = await this.clienSet.all(cli => cli.getClientId());
       const idBuffers = await this.clienSet.map(ids, cli => cli.getClientBuffer());
       const guids = idBuffers.map(buff => new Guid(buff));
 
-      const randoms = await this.clienSet.map(guids, cli => cli.random(g, guids.values));
+      const randoms = await this.clienSet.map(guids, cli => cli.random(gR, vendor, guids.values));
 
       const cmkPub = randoms.values.map(rdm => rdm.cmkPub).reduce((sum, cmki, i) => cmki.add(sum));
-      const gPrism = randoms.values.map(rdm => rdm.password).reduce((sum, gPrismi, i)=> gPrismi.add(sum));
+      const gRPrism = randoms.values.map(rdm => rdm.password).reduce((sum, gPrismi, i)=> gPrismi.add(sum));
+      const vendorCMK = randoms.values.map(rdm => rdm.vendorCMK).reduce((sum, gPrismi, i)=> gPrismi.add(sum));
+      const cvkAuth = AESKey.seed(vendorCMK.toArray());
 
+      const rInv = r.modInv(C25519Point.n);
+      const gPrism = gRPrism.times(rInv);
       const prismAuth = AESKey.seed(gPrism.toArray());
 
       const prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
@@ -75,7 +81,7 @@ export default class DAuthFlow {
 
       await this.addDns(signatures, new C25519Key(0, cmkPub));
 
-      return prismAuth;
+      return cvkAuth;
     } catch (err) {
       return Promise.reject(err);
     }

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Tide.Core;
 using Tide.Simulator.Classes;
@@ -59,7 +60,7 @@ namespace Tide.Simulator {
 
    
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime, ILogger<Startup> logger) {
 
             app.UseCors(config => config.AllowAnyHeader().AllowAnyMethod().WithOrigins(new []{"http://localhost:8080", "https://tideexplorer.azurewebsites.net" }).AllowCredentials());
 
@@ -68,6 +69,10 @@ namespace Tide.Simulator {
             //    app.UseDeveloperExceptionPage();
             //}
 
+            var conf = app.ApplicationServices.GetService<Settings>();
+            if (conf is not null) {
+                logger.LogInformation($"Configuration Features.\n{conf.Features.Display()}");
+            }
             app.UseDeveloperExceptionPage();
 
 

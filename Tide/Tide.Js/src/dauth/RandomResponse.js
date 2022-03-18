@@ -20,11 +20,13 @@ export default class RandomResponse {
     /**
     * @param {C25519Point} password
     * @param {C25519Point} cmkPub
+    * @param {C25519Point} vendorCMK
     * @param { RandomShareResponse[] } shares
     */
-    constructor(password, cmkPub, shares) {
+    constructor(password, cmkPub, vendorCMK, shares) {
         this.password = password;
         this.cmkPub = cmkPub;
+        this.vendorCMK = vendorCMK;
         this.shares = shares;
     }
 
@@ -35,6 +37,7 @@ export default class RandomResponse {
     toJSON() { return {
         cmkPub: Buffer.from(this.cmkPub.toArray()).toString('base64'),
         password: Buffer.from(this.password.toArray()).toString('base64'),
+        vendorCMK: Buffer.from(this.vendorCMK.toArray()).toString('base64'),
         shares: this.shares
     }}
 
@@ -43,14 +46,15 @@ export default class RandomResponse {
         if (!data) return null;
 
         const obj = typeof data === 'string' ? JSON.parse(data) : data;
-        if (!obj.password || !obj.cmkPub || !obj.shares)
+        if (!obj.password || !obj.cmkPub || !obj.vendorCMK || !obj.shares)
             throw Error(`The JSON is not in the correct format: ${data}`);
 
         const password = C25519Point.from(Buffer.from(obj.password, 'base64'));
         const cmkPub = C25519Point.from(Buffer.from(obj.cmkPub, 'base64'));
+        const vendorCMK = C25519Point.from(Buffer.from(obj.vendorCMK, 'base64'));
         const shares = obj.shares.map(RandomShareResponse.from);
 
-        return new RandomResponse(password, cmkPub, shares);
+        return new RandomResponse(password, cmkPub, vendorCMK, shares);
     }
 }
 

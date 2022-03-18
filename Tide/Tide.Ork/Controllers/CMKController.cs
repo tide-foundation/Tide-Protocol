@@ -82,11 +82,11 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("random/{uid}")]
-        public ActionResult<RandomResponse> GetRandom([FromQuery] byte[] pass, [FromQuery] ICollection<Guid> ids)
+        public ActionResult<RandomResponse> GetRandom([FromQuery] C25519Point pass, [FromQuery] C25519Point vendor, [FromQuery] ICollection<Guid> ids)
         {
-            if (pass?.Length == 0) {
-                _logger.LogDebug("Random: The password cannot be null");
-                return BadRequest($"The password cannot be null");
+            if (pass is null || vendor is null || pass.IsInfinity || vendor.IsInfinity) {
+                _logger.LogDebug("Random: The pass and vendor arguments are required");
+                return BadRequest($"The pass and vendor arguments are required");
             }
 
             if (ids == null || ids.Count < _config.Threshold) {
@@ -102,19 +102,10 @@ namespace Tide.Ork.Controllers
                 return BadRequest($"Ids cannot contain the value zero");
             }
 
-            C25519Point gPass;
-            try
+            if (!pass.IsValid || !vendor.IsValid)
             {
-                gPass = C25519Point.From(pass);
-                if (!gPass.IsValid) {
-                    _logger.LogInformation($"Random: Invalid point");
-                    return BadRequest("Invalid password");
-                }
-            }
-            catch (ArgumentException)
-            {
-                _logger.LogInformation($"Random: Invalid point with error");
-                return BadRequest("Invalid password");
+                _logger.LogInformation($"Random: The pass and vendor arguments must be a valid point");
+                return BadRequest("The pass and vendor arguments must be a valid point");
             }
 
             BigInteger prismi, cmki;
@@ -124,13 +115,15 @@ namespace Tide.Ork.Controllers
                 cmki = rdm.Generate(BigInteger.One);
             }
 
-            var gPassPrismi = gPass * prismi;            
+            var gPassPrismi = pass * prismi;
             var cmkPubi =  C25519Point.G * cmki;
+            var vendorCMKi  = vendor * cmki;
+            
             var prisms = EccSecretSharing.Share(prismi, idValues, _config.Threshold, C25519Point.N);
             var cmks = EccSecretSharing.Share(cmki, idValues, _config.Threshold, C25519Point.N);
             
             _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
-            return new RandomResponse(gPassPrismi, cmkPubi, prisms, cmks);
+            return new RandomResponse(gPassPrismi, cmkPubi, vendorCMKi, prisms, cmks);
         }
 
         [HttpPut("random/{uid}")]

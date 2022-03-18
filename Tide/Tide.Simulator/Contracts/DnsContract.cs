@@ -33,7 +33,7 @@ namespace Tide.Simulator.Contracts
             try
             {
                 var dns = DnsEntry.Parse(transaction.Data);
-                if (_features.DisableSignatures! && !dns.VerifyForUId()) {
+                if (!_features.DisableSignatures && !dns.VerifyForUId()) {
                     _logger.LogInformation("Invalid client's signature for {0}", transaction.Index);
                     return new BadRequestObjectResult("Client's signature is invalid");
                 }

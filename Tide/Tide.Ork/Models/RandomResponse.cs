@@ -11,11 +11,12 @@ namespace Tide.Ork.Models {
     {
         public C25519Point Password { get; set; }
         public C25519Point CmkPub { get; set; }
+        public C25519Point VendorCMK { get; set; }
         public RandomShareResponse[] Shares { get; set; }
 
         public RandomResponse() { }
 
-        public RandomResponse(C25519Point pass, C25519Point pub, IReadOnlyList<Point> prisms, IReadOnlyList<Point> cmks)
+        public RandomResponse(C25519Point pass, C25519Point pub, C25519Point vendorCMK, IReadOnlyList<Point> prisms, IReadOnlyList<Point> cmks)
         {
             Debug.Assert(prisms != null && cmks != null && prisms.Any() && cmks.Any(), $"Argument cannot be empty");
             Debug.Assert(prisms.Count == cmks.Count, $"{nameof(prisms)} and {nameof(cmks)} must be the same");
@@ -23,6 +24,7 @@ namespace Tide.Ork.Models {
 
             Password = pass;
             CmkPub = pub;
+            VendorCMK = vendorCMK;
             Shares = prisms.Select((_, i) => new RandomShareResponse {
                 Id = new Guid(cmks[i].X.ToByteArray(true, true)),
                 Prism = prisms[i].Y.ToByteArray(true, true),

@@ -1,4 +1,7 @@
-﻿namespace Tide.Simulator.Models {
+﻿using System;
+using System.Linq;
+
+namespace Tide.Simulator.Models {
     public class Settings {
         public string Connection { get; set; }
         public string BearerKey { get; set; }
@@ -16,6 +19,9 @@
 
     public class Features {
         public bool DisableSignatures { get; set; }
+
+        internal string Display() => string.Join(Environment.NewLine,
+            typeof(Features).GetProperties().Select(prop => $"{prop.Name}: {prop.GetValue(this, null)}"));
     }
 
     public class CosmosDbSettings {
