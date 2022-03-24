@@ -25,6 +25,7 @@ using Microsoft.Extensions.Logging;
 using Tide.Core;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
+using Tide.Encryption.SecretSharing;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 using Tide.Ork.Components.AuditTrail;
@@ -53,6 +54,91 @@ namespace Tide.Ork.Controllers
             _logger = new LoggerPipe(logger, settings, new LoggerConfig());
             _config = config;
             _features = settings.Features;
+        }
+
+        [HttpGet("random/{uid}")]
+        public ActionResult<CVKRandomResponse> GetRandom([FromQuery] ICollection<Guid> ids)
+        {
+            if (ids == null || ids.Count < _config.Threshold)
+            {
+                _logger.LogInformation("Random: The length of the ids ({length}) must be greater than or equal to {threshold}", ids?.Count, _config.Threshold);
+                return BadRequest($"The length of the ids must be greater than {_config.Threshold - 1}");
+            }
+
+            if (!ids.Contains(_config.Guid)) ids.Add(_config.Guid);
+
+            var idValues = ids.Select(id => new BigInteger(id.ToByteArray(), true, true)).ToList();
+            if (idValues.Any(id => id == 0))
+            {
+                _logger.LogInformation("Random: Ids cannot contain the value zero");
+                return BadRequest($"Ids cannot contain the value zero");
+            }
+
+            BigInteger cvki;
+            using (var rdm = new RandomField(C25519Point.N))
+            {
+                cvki = rdm.Generate(BigInteger.One);
+            }
+
+            var cvks = EccSecretSharing.Share(cvki, idValues, _config.Threshold, C25519Point.N);
+
+            _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
+            return new CVKRandomResponse(cvks) {
+                CvkPubi = C25519Point.G * cvki
+            };
+        }
+
+        [HttpPut("random/{uid}")]
+        public async Task<ActionResult<byte[]>> AddRandom([FromRoute] Guid vuid, [FromBody] CVKRandRegistrationReq rand)
+        {
+            if (vuid == Guid.Empty)
+            {
+                _logger.LogDebug("Random: The vuid must not be empty");
+                return BadRequest($"The vuid must not be empty");
+            }
+
+            if (rand is null || rand.Shares is null || rand.Shares.Length < _config.Threshold)
+            {
+                var args = new object[] { rand?.Shares?.Length, _config.Threshold };
+                _logger.LogInformation("Random: The length of the shares [length] must be greater than or equal to {threshold}", args);
+                return BadRequest($"The length of the ids must be greater than {_config.Threshold - 1}");
+            }
+
+            if (rand.Shares.Any(shr => shr.Id != _config.Guid))
+            {
+                var ids = string.Join(',', rand.Shares.Select(shr => shr.Id).Where(id => id != _config.Guid));
+                _logger.LogCritical("Random: Shares were sent to the wrong ORK: {ids}", ids);
+                return BadRequest($"Shares were sent to the wrong ORK: '{ids}'");
+            }
+
+            var isNew = !await _managerCvk.Exist(vuid);
+            if (!isNew)
+            {
+                _logger.LogInformation("Random: CMK already exists for {uid}", vuid);
+                return BadRequest("CMK already exists");
+            }
+
+            if (_features.Voucher)
+            {
+                var signer = await _keyIdManager.GetById(rand.KeyId);
+                if (signer == null)
+                    return BadRequest("Signer's key must be defined");
+
+                if (!signer.Key.Verify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), rand.Signature))
+                    return BadRequest("Signature is not valid");
+            }
+
+            var account = rand.CreateCvkVault(vuid);
+            var resp = await _managerCvk.SetOrUpdate(account);
+            if (!resp.Success)
+            {
+                _logger.LogError($"Random: CVK was not added for uid '{vuid}'");
+                return Problem(resp.Error);
+            }
+
+            _logger.LogInformation("Random: New CVK for {0} with pub {1}", vuid, rand.CvkPub.ToString());
+            var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
+            return _config.PrivateKey.Sign(m);
         }
 
         //TODO: there is not verification if the account already exists

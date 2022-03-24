@@ -118,7 +118,7 @@ namespace Tide.Ork.Controllers
             var gPassPrismi = pass * prismi;
             var cmkPubi =  C25519Point.G * cmki;
             var vendorCMKi  = vendor * cmki;
-            
+
             var prisms = EccSecretSharing.Share(prismi, idValues, _config.Threshold, C25519Point.N);
             var cmks = EccSecretSharing.Share(cmki, idValues, _config.Threshold, C25519Point.N);
             

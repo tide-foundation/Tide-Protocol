@@ -114,7 +114,7 @@ export default class DAuthJwtFlow {
 
       // register cmk
       this.cvkAuth = await flowCmk.signUp(password, email, threshold, null, venPnt);
-      
+
       // configure cvk ORKs
       this._genVuid();
       const flowCvk = await this._getCvkFlow(true);

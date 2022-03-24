@@ -71,7 +71,6 @@ export default class DAuthFlow {
       const prismAuth = AESKey.seed(gPrism.toArray());
 
       const prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
-      console.log('prism1:', prismAuths.map(itm => itm.toString()));
 
       const mails = randoms.map((_, __, i) => emails[(emailIndex + i) % emails.length]);
       const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
@@ -125,8 +124,6 @@ export default class DAuthFlow {
       const idGens = await this.clienSet.all(c => c.getClientGenerator())
       const prismAuths = idGens.map(idGen => prismAuth.derive(idGen.buffer));
       const tokens = idGens.map((_, i) => token.copy().sign(prismAuths.get(i), this.clienSet.get(i).userBuffer))
-      console.log('prism2:', prismAuths.map(itm => itm.toString()));
-
 
       const tranid = new Guid();
       const ids = idGens.map(idGen => idGen.id);
