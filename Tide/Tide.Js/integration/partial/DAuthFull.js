@@ -36,7 +36,7 @@ var orkUrls = [...Array(threshold)].map((_, i) => `http://ork${i+1}.local`); //t
     await signUp()
     await changePass(user, pass, newPass);
     await signIn(user, newPass);
-    await resetPass(user);
+    //await resetPass(user);
     //await reconstructPass(user);
 
     console.log(`all went well!!!`);
