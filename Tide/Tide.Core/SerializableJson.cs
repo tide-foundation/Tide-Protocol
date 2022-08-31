@@ -24,7 +24,7 @@ namespace Tide.Core
         {
             return new JsonSerializerOptions
             {
-                IgnoreNullValues = true, 
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull, 
                 PropertyNameCaseInsensitive = true
             };
         }

@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine3.13 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine3.14 AS base
 RUN  apk add --no-cache bash
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine3.13 as build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine3.13 as build
 WORKDIR /app/publish/
 RUN apk add --no-cache nodejs npm \
     && curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh > /app/publish/wait-for-it.sh \

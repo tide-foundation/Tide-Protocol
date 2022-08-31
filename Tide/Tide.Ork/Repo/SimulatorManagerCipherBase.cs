@@ -14,8 +14,10 @@ namespace Tide.Ork.Repo {
             _key = key;
         }
 
-        protected override T Map(string data) => !IsEncrypted ? SerializableByteBase<T>.Parse(data.Replace("\"", ""))
-            : SerializableByteBase<T>.Parse(_key.Decrypt(data.Replace("\"", "")));
+        protected override T Map(string data){
+            return(!IsEncrypted ? SerializableByteBase<T>.Parse(data.Replace("\"", "")) : SerializableByteBase<T>.Parse(_key.Decrypt(data.Replace("\"", ""))));
+        }
+
 
         protected override string Map(T entity) => !IsEncrypted ? entity.ToString() : _key.EncryptStr(entity);
     }
