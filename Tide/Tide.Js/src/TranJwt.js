@@ -53,7 +53,7 @@ export default class TranJwt {
     encodeMessage() { return `${this.encodeHead()}.${this.encodePayload()}` }
 
     /** @param {import("cryptide").C25519Key } key */
-    sign(key) { this.signature = encodeBase64Url(key.sign(this.encodeMessage())); }
+    sign(key) { this.signature = encodeBase64Url(key.sign(this.encodeMessage(), 'ecDSA')); }
 
     /** @param {import("cryptide").C25519Key } key */
     verify(key) { return key.verify(this.encodeMessage(), decodeBase64Url(this.signature)); }

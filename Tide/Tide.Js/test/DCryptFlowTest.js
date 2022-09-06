@@ -34,7 +34,7 @@ describe('DCryptFlow', function () {
         await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule)]);
 
         const ids = await Promise.all(flow.clients.map(cln => cln.getClientBuffer()));
-        const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
+        const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()]), 'ecDSA'));
 
         const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
         const cipher1 = Cipher.encrypt(secrets[0], tag, cvk);
@@ -69,7 +69,7 @@ describe('DCryptFlow', function () {
         ]);
         
         const ids = await Promise.all(flow.clients.map((cln) => cln.getClientBuffer()));
-        const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
+        const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()]), 'ecDSA'));
         
         const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
         const cipher1 = Cipher.encrypt(secrets[0], tag1, cvk);

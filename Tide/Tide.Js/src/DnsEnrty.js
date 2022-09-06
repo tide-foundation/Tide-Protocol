@@ -46,11 +46,11 @@ import { C25519Key, Hash } from "cryptide";
 }
 
   /** @param {C25519Key} key */
-  sign(key) {
+  sign(key, sigScheme) {
     if (!this.public)
       throw new Error("The public key must be provided");
     
-    this.signature = Buffer.from(key.sign(this.messageToSign())).toString('base64');
+    this.signature = Buffer.from(key.sign(this.messageToSign(), sigScheme)).toString('base64');
     return this.signature;
   }
 

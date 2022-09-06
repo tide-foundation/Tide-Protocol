@@ -93,7 +93,7 @@ export default class DCryptFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    entry.sign(key);
+    entry.sign(key, "ecDSA");
     return dnsCln.addDns(entry);
   }
 
