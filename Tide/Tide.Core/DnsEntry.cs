@@ -23,7 +23,7 @@ namespace Tide.Core
             if (string.IsNullOrEmpty(Signature) || string.IsNullOrEmpty(Public))
                 return false;
 
-            return GetPublicKey().Verify(MessageSigned(), Convert.FromBase64String(Signature));
+            return GetPublicKey().EdDSAVerify(MessageSigned(), Convert.FromBase64String(Signature));
         }
 
         public List<Uri> GetUrls() => Urls.Where(url => !string.IsNullOrWhiteSpace(url))

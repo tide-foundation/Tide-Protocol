@@ -43,7 +43,7 @@ namespace Tide.Ork.Classes {
             var blockData = new Transaction(contract, table, scope, index, _orkId, payload);
 
             var serializedPayload  = JsonConvert.SerializeObject(blockData.Data);
-            blockData.Sign = _private.Sign(Encoding.UTF8.GetBytes(serializedPayload));
+            blockData.Sign = _private.EdDSASign(Encoding.UTF8.GetBytes(serializedPayload));
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(blockData), Encoding.UTF8, "application/json");
             var response = (await _client.PostAsync("Simulator", stringContent));
