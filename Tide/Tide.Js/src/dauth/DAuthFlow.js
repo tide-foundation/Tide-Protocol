@@ -101,7 +101,7 @@ export default class DAuthFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    entry.sign(key, "ecDSA");
+    entry.sign(key, "edDSA");
     return dnsCln.addDns(entry);
   }
 
