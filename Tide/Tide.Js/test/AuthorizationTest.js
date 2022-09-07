@@ -83,14 +83,14 @@ describe('DnsClient', function () {
         entry.public = pubKey
         entry.signatures = []
         entry.orks = [];
-        entry.sign(prvKey, 'ecDSA');
+        entry.sign(prvKey, 'edDSA');
 
         await client.addDns(entry);
 
         //updating a dns entry
         const prvKeyNew = C25519Key.generate();
         entry.public = prvKeyNew.public();
-        entry.sign(prvKeyNew, 'ecDSA')
+        entry.sign(prvKeyNew, 'edDSA')
 
         const authToken = new TranJwt(user);
         authToken.sign(prvKey)
@@ -111,7 +111,7 @@ describe('DnsClient', function () {
         entry.public = pubKey
         entry.signatures = []
         entry.orks = [];
-        entry.sign(prvKey, 'ecDSA');
+        entry.sign(prvKey, 'edDSA');
 
         await client.addDns(entry);
 
