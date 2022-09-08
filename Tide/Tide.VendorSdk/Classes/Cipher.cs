@@ -110,7 +110,7 @@ namespace Tide.VendorSdk.Classes {
             var cipher = data.Take(EncryptionSize + TagSize).ToArray();
             var signature = data.Skip(EncryptionSize + TagSize).ToArray();
 
-            return key.Verify(cipher, signature.Skip(32).ToArray());
+            return key.EdDSAVerify(cipher, signature);
         }
  
         private static int HeadEnd(byte[] data)

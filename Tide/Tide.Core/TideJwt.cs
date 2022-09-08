@@ -72,7 +72,7 @@ namespace Tide.Core {
             return false;
         }
 
-        public bool Verify(C25519Key key) => key.Verify(GetMessageBytes(), GetSignatureBytes());
+        public bool Verify(C25519Key key) => key.EdDSAVerify(GetMessageBytes(), GetSignatureBytes());
 
         public void Sign(C25519Key key) => Signature = Base64UrlEncoder.Encode(key.Sign(GetMessageBytes()));
 
