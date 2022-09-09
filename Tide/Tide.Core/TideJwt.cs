@@ -74,7 +74,7 @@ namespace Tide.Core {
 
         public bool Verify(C25519Key key) => key.EdDSAVerify(GetMessageBytes(), GetSignatureBytes());
 
-        public void Sign(C25519Key key) => Signature = Base64UrlEncoder.Encode(key.Sign(GetMessageBytes()));
+        public void Sign(C25519Key key) => Signature = Base64UrlEncoder.Encode(key.EdDSASign(GetMessageBytes()));
 
         private byte[] GetMessageBytes() => Encoding.UTF8.GetBytes($"{_jwt.EncodedHeader}.{_jwt.EncodedPayload}");
         
