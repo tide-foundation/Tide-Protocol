@@ -20,10 +20,10 @@ namespace Tide.Core
         public string[] Publics { get; set; }
 
         public bool VerifyForUId() {
+
             if (string.IsNullOrEmpty(Signature) || string.IsNullOrEmpty(Public))
                 return false;
-
-            return GetPublicKey().Verify(MessageSigned(), Convert.FromBase64String(Signature));
+            return GetPublicKey().EdDSAVerify(MessageSignedBytes(), Convert.FromBase64String(Signature));
         }
 
         public List<Uri> GetUrls() => Urls.Where(url => !string.IsNullOrWhiteSpace(url))
@@ -38,6 +38,14 @@ namespace Tide.Core
         
         public byte[] MessageSigned() {
             return Utils.Hash(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
+        }
+
+        public byte[] MessageSignedSHA512() {
+            return Utils.HashSHA512(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
+        }
+
+        public byte[] MessageSignedBytes() {
+            return System.Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
         }
         
         protected override JsonSerializerOptions GetJsonOptions()

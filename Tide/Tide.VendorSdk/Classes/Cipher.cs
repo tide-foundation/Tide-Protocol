@@ -30,7 +30,7 @@ namespace Tide.VendorSdk.Classes {
             
             var bufferAsymmetric = key.Encrypt(toAsymmetricEncrypt).ToByteArray();
             var tagBuffer = BitConverter.GetBytes(tag);
-            var signature = key.Sign(bufferAsymmetric.Concat(tagBuffer).ToArray()).PadLeft(32 * 3);
+            var signature = key.EdDSASign(bufferAsymmetric.Concat(tagBuffer).ToArray()).PadLeft(32 * 3);
 
             var size =
               bufferAsymmetric.Length +
@@ -110,7 +110,7 @@ namespace Tide.VendorSdk.Classes {
             var cipher = data.Take(EncryptionSize + TagSize).ToArray();
             var signature = data.Skip(EncryptionSize + TagSize).ToArray();
 
-            return key.Verify(cipher, signature.Skip(32).ToArray());
+            return key.EdDSAVerify(cipher, signature);
         }
  
         private static int HeadEnd(byte[] data)

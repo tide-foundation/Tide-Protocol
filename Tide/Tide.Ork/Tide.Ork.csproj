@@ -9,7 +9,7 @@
     <PackageReference Include="App.Metrics.AspNetCore.Endpoints" Version="4.3.0" />
     <PackageReference Include="App.Metrics.AspNetCore.tracking" Version="4.3.0" />
     <PackageReference Include="App.Metrics.Formatters.Prometheus" Version="4.3.0" />
-    <PackageReference Include="Cryptide" Version="0.0.15" />
+    <PackageReference Include="Cryptide.Core" Version="0.0.18" />
     <PackageReference Include="MailKit" Version="3.3.0" />
     <PackageReference Include="LazyCache" Version="2.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />

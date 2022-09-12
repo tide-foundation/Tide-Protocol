@@ -74,7 +74,7 @@ namespace Tide.Ork.Controllers
                 if (signer == null)
                     return BadRequest("Signer's key must be defined");
 
-                if (!signer.Key.Verify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
+                if (!signer.Key.EdDSAVerify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
                     return BadRequest("Signature is not valid");
             }
 
@@ -86,7 +86,7 @@ namespace Tide.Ork.Controllers
             
             var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
             //TODO: The ork should not send the orkid because the client should already know
-            var signOrk = Convert.ToBase64String(_config.PrivateKey.Sign(m));
+            var signOrk = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m));
             resp.Content = new { orkid = _config.UserName, sign = signOrk };
             
             return resp;

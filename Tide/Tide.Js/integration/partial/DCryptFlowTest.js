@@ -53,7 +53,7 @@ async function singleDecryption() {
     await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule) ]);
 
     const ids = await Promise.all(flow.clients.map(cln => cln.getClientBuffer()));
-    const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
+    const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()]), 'edDSA'));
 
     const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
 
@@ -86,7 +86,7 @@ async function bulkDecryption() {
     ]);
 
     const ids = await Promise.all(flow.clients.map((cln) => cln.getClientBuffer()));
-    const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
+    const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()]), 'edDSA'));
 
     const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
 

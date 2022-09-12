@@ -46,11 +46,11 @@ import { C25519Key, Hash } from "cryptide";
 }
 
   /** @param {C25519Key} key */
-  sign(key) {
+  sign(key, sigScheme) {
     if (!this.public)
       throw new Error("The public key must be provided");
     
-    this.signature = Buffer.from(key.sign(this.messageToSign())).toString('base64');
+    this.signature = Buffer.from(key.sign(this.messageToSign(), sigScheme)).toString('base64'); // ecdsa needs hash here
     return this.signature;
   }
 
@@ -91,7 +91,7 @@ import { C25519Key, Hash } from "cryptide";
     var message = { id: this.id.toString(), orks: this.orks, 
       public: this.public.toString(), modifided: this.modifided };
     
-    return Hash.shaBuffer(JSON.stringify(message));
+    return JSON.stringify(message);
   }
 
   /** @private */

@@ -73,7 +73,7 @@ namespace Tide.Ork.Controllers
             
             var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
             //TODO: The ork should not send the orkid because the client should already know
-            var signature = Convert.ToBase64String(_config.PrivateKey.Sign(m));
+            var signature = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m));
             resp.Content = new { orkid = _config.UserName, sign = signature };
             
             return resp;

@@ -59,7 +59,7 @@ namespace Tide.VendorSdk.Controllers {
             var guids = await data.GetUrlIds();
             
             var signatures = guids.Select(orkId => orkId.ToByteArray().Concat(vuid.ToByteArray()))
-                .Select(msg => Config.PrivateKey.Sign(msg.ToArray())).ToList();
+                .Select(msg => Config.PrivateKey.EdDSASign(msg.ToArray())).ToList();
             
             await Repo.CreateUser(vuid, authKey, data.OrkUrls);
 

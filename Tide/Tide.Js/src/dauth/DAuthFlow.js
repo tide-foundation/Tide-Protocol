@@ -57,7 +57,7 @@ export default class DAuthFlow {
       const ids = await this.clienSet.all(cli => cli.getClientId());
       const idBuffers = await this.clienSet.map(ids, cli => cli.getClientBuffer());
 
-      const prismAuths = idBuffers.map(buff => prismAuth.derive(buff));
+      const prismAuths = idBuffers.map(buff => prismAuth.derive(buff));                                 
       const cmkAuths = idBuffers.map(buff => cmkAuth.derive(buff));
 
       const [, listCmk] = SecretShare.shareFromIds(cmk, ids.values, threshold, C25519Point.n);
@@ -101,7 +101,7 @@ export default class DAuthFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    entry.sign(key);
+    entry.sign(key, "edDSA");
     return dnsCln.addDns(entry);
   }
 
