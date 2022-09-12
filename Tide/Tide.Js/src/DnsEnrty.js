@@ -50,7 +50,7 @@ import { C25519Key, Hash } from "cryptide";
     if (!this.public)
       throw new Error("The public key must be provided");
     
-    this.signature = Buffer.from(key.sign(this.messageToSign(), sigScheme)).toString('base64'); // ecdsa needs hash here
+    this.signature = Buffer.from(key.sign(this.messageToSign(), "edDSA")).toString('base64'); // ecdsa needs hash here   // hardcoded edDSA here
     return this.signature;
   }
 
