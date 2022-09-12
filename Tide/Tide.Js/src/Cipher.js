@@ -45,7 +45,7 @@ export default class Cipher {
     
     const bufferAsymmetric = key.encrypt(toAsymmetricEncrypt).toArray();
     const tagBuffer = tag.toArray();
-    const signature = Buffer.from(Utils.padLeft(key.sign(Buffer.concat([bufferAsymmetric, tagBuffer]), 'edDSA'), 32 * 3));  /////////////// may present issues
+    const signature = Buffer.from(Utils.padLeft(key.sign(Buffer.concat([bufferAsymmetric, tagBuffer]), "edDSA"), 32 * 3));  /////////////// may present issues
     
     const size =
       bufferAsymmetric.length +
