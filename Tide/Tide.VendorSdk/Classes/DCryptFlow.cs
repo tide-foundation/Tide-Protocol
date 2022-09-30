@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,9 +23,9 @@ namespace Tide.VendorSdk.Classes
             _userId = new IdGenerator(vuid);
         }
 
-        public async Task<C25519Key> SignUp(AesKey cmkAuth, int threshold, Guid keyId, IReadOnlyList<byte[]> signatures)
+        public async Task<Tide.Encryption.Ed.Ed25519Key> SignUp(AesKey cmkAuth, int threshold, Guid keyId, IReadOnlyList<byte[]> signatures)
         {
-            var cvk = new C25519Key();
+            var cvk = new Tide.Encryption.Ed.Ed25519Key();
             var ids = await Task.WhenAll(Clients.Select(cln => cln.GetId()));
             var guids = await Task.WhenAll(Clients.Select(cln => cln.GetGuid()));
 
@@ -38,13 +39,13 @@ namespace Tide.VendorSdk.Classes
             return cvk;
         }
 
-        public async Task<byte[]> Decrypt(C25519Key prv, byte[] cipher)
+        public async Task<byte[]> Decrypt(Tide.Encryption.Ed.Ed25519Key prv, byte[] cipher)
             => (await this.DecryptBulk(prv, new List<byte[]>() { cipher })).First();
 
-        public async Task<List<byte[]>> DecryptBulk(C25519Key prv, params byte[][] ciphers)
+        public async Task<List<byte[]>> DecryptBulk(Tide.Encryption.Ed.Ed25519Key prv, params byte[][] ciphers)
             => await DecryptBulk(prv, ciphers as IReadOnlyList<byte[]>);
 
-        public async Task<List<byte[]>> DecryptBulk(C25519Key prv, IReadOnlyList<byte[]> ciphers)
+        public async Task<List<byte[]>> DecryptBulk(Tide.Encryption.Ed.Ed25519Key prv, IReadOnlyList<byte[]> ciphers)
         {
             var keyId = IdGenerator.Seed(prv.GetPublic().ToByteArray()).Guid;
             var challenges = await Task.WhenAll(Clients.Select(cli => cli.Challenge(VuId, keyId)));

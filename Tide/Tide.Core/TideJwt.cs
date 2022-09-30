@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 
 namespace Tide.Core {
     public class TideJwt
@@ -72,9 +72,9 @@ namespace Tide.Core {
             return false;
         }
 
-        public bool Verify(C25519Key key) => key.EdDSAVerify(GetMessageBytes(), GetSignatureBytes());
+        public bool Verify(Ed25519Key key) => key.EdDSAVerify(GetMessageBytes(), GetSignatureBytes());
 
-        public void Sign(C25519Key key) => Signature = Base64UrlEncoder.Encode(key.EdDSASign(GetMessageBytes()));
+        public void Sign(Ed25519Key key) => Signature = Base64UrlEncoder.Encode(key.EdDSASign(GetMessageBytes()));
 
         private byte[] GetMessageBytes() => Encoding.UTF8.GetBytes($"{_jwt.EncodedHeader}.{_jwt.EncodedPayload}");
         

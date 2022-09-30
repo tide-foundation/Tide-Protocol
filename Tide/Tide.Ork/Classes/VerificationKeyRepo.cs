@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Ork.Controllers;
 using Tide.Ork.Repo;
 
@@ -49,7 +49,7 @@ namespace Tide.Ork.Classes {
 
                 return dnsEntry is null ? null : new VerificationKey {
                     Id = dnsEntry.Id,
-                    Key = C25519Key.Parse(dnsEntry.Public)
+                    Key = Ed25519Key.Parse(dnsEntry.Public)
                 };
             }
 

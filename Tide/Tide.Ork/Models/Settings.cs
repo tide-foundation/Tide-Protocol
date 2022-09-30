@@ -1,6 +1,6 @@
 ﻿using System;
 using Tide.Encryption.AesMAC;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Ork.Classes;
 
 namespace Tide.Ork.Models {
@@ -41,7 +41,7 @@ namespace Tide.Ork.Models {
         public string SecretKey { get; set; }
         public string Username { get; set; }
 
-        public C25519Key GetPrivateKey() => C25519Key.Parse(Convert.FromBase64String(PrivateKey));
+        public Ed25519Key GetPrivateKey() => Ed25519Key.Parse(Convert.FromBase64String(PrivateKey));
         public AesKey GetSecretKey() => AesKey.Parse(SecretKey);
     }
 

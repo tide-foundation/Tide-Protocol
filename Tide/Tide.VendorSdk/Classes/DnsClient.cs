@@ -6,7 +6,7 @@ using System.Net;
 using Tide.Core;
 using System.Collections.Generic;
 using System.Linq;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using System.Text;
 
 namespace Tide.VendorSdk.Classes
@@ -44,10 +44,10 @@ namespace Tide.VendorSdk.Classes
 
         public async Task<bool> Exist(Guid uid) => await GetEntry(uid) != null;
 
-        public async Task<(List<Uri>, List<C25519Key>)> GetInfo(Guid uid)
+        public async Task<(List<Uri>, List<Ed25519Key>)> GetInfo(Guid uid)
         {
             var entry =  (await GetEntries(new Guid[] {uid})).FirstOrDefault();
-            if (entry == null) return (new List<Uri>(), new List<C25519Key>());
+            if (entry == null) return (new List<Uri>(), new List<Ed25519Key>());
             
             return (entry.GetUrls(), entry.GetPublics());
         }

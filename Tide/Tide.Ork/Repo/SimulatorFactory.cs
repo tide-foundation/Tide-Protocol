@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
 using Tide.Encryption.AesMAC;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
 
@@ -15,7 +15,7 @@ namespace Tide.Ork.Repo {
         private readonly string _orkId;
         private readonly IMemoryCache _cache;
         private readonly HttpContext _context;
-        private readonly C25519Key _private;
+        private readonly Ed25519Key _private;
 
         private bool IsCache => !_context.Request.Headers.TryGetValue("cache", out StringValues keys) ? false
             : (keys.FirstOrDefault() ?? string.Empty).Trim().ToLower() == "true";

@@ -1,6 +1,6 @@
 using System;
 using Tide.Core;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 
 namespace Tide.Ork.DTOs
 {
@@ -22,7 +22,7 @@ namespace Tide.Ork.DTOs
             return new KeyIdVault
             {
                 KeyId = this.KeyId,
-                Key = C25519Key.Parse(Convert.FromBase64String(Key))
+                Key = Ed25519Key.Parse(Convert.FromBase64String(Key))
             };
         }
 

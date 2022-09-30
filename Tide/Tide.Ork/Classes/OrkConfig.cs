@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Numerics;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Ork.Models;
 using Tide.VendorSdk.Classes;
 
@@ -10,7 +10,7 @@ namespace Tide.Ork.Classes {
 
         public string UserName { get; }
 
-        public C25519Key PrivateKey { get; }
+        public Ed25519Key PrivateKey { get; }
 
         public BigInteger Id => _IdGen.Id;
 

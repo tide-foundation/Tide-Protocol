@@ -25,6 +25,7 @@ using Microsoft.Extensions.Logging;
 using Tide.Core;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 using Tide.Ork.Components.AuditTrail;
@@ -63,7 +64,7 @@ namespace Tide.Ork.Controllers
             var account = new CvkVault
             {
                 VuId = vuid,
-                CvkPub = C25519Key.Parse(FromBase64(data[0])),
+                CvkPub = Tide.Encryption.Ed.Ed25519Key.Parse(FromBase64(data[0])),
                 CVKi = GetBigInteger(data[1]),
                 CvkiAuth = AesKey.Parse(FromBase64(data[2]))
             };
