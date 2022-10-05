@@ -14,6 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import C25519Key from "cryptide/src/c25519Key";
+import ed25519Key from "cryptide/src/ed25519Key";
 import MetaField from "./MetaField";
 import Validator from "validatorjs";
 
@@ -45,7 +46,7 @@ function testValidation() {
 }
 
 function testEncryption() {
-  var key = C25519Key.generate();
+  var key = ed25519Key.generate();
 
   var field = MetaField.fromText("message", "this is my secret message 🥵", false);
   field.encrypt(key);

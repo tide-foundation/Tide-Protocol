@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "big-integer": "1.6.36",
-    "cryptide": "2.0.21",
+    "cryptide": "2.1.0",
     "superagent": "^5.2.2",
     "validatorjs": "^3.22.1",
     "webpack-merge": "^5.1.1"

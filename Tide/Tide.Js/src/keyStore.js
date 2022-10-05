@@ -8,12 +8,12 @@
  */
 
 import Guid from "./guid";
-import { C25519Key, Hash } from "cryptide";
+import { C25519Key, Hash, ed25519Key } from "cryptide";
 
 export default class KeyStore {
-  /** @param {C25519Key} key */
+  /** @param {ed25519Key} key */
   constructor(key = null) {
-    /**@type {C25519Key}*/
+    /**@type {ed25519Key}*/
     this.key = key;
 
     /**@type {Guid}*/
@@ -32,7 +32,7 @@ export default class KeyStore {
   static from(data) {
     const rule = new KeyStore();
     rule.keyId = Guid.from(data.keyId);
-    rule.key = C25519Key.fromString(data.key);
+    rule.key = ed25519Key.fromString(data.key);
 
     return rule;
   }

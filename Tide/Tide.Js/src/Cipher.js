@@ -28,7 +28,7 @@ export default class Cipher {
   /**
    * @param {string|Uint8Array} data
    * @param {Num64} tag
-   * @param {C25519Key} key
+   * @param {ed25519Key} key
    */
   static encrypt(data, tag, key) {
     const buffer = typeof data === 'string' ? Buffer.from(data, "utf-8") : Buffer.from(data);
@@ -76,7 +76,7 @@ export default class Cipher {
 
   /**
    * @param {Uint8Array} data
-   * @param {C25519Key} key
+   * @param {ed25519Key} key
    */
   static decrypt(data, key) {
     let size = data[1] & 127;

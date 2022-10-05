@@ -14,7 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import superagent from "superagent";
-import { C25519Key, AESKey } from "cryptide";
+import { C25519Key, AESKey , ed25519Key} from "cryptide";
 import Guid from "./guid";
 import IdGenerator from "./IdGenerator";
 import { urlEncode } from "./dauth/ClientBase";
@@ -45,12 +45,12 @@ export default class VendorClient {
     this._idGen = null;
   }
 
-  /** @returns {Promise<{ orkUrls: string[]; pubKey: C25519Key; }>}   */
+  /** @returns {Promise<{ orkUrls: string[]; pubKey: ed25519Key; }>}   */
   async configuration() {
     const res = await superagent.get(`${this.url}/configuration`);
     return {
       orkUrls: res.body.orkUrls,
-      pubKey: C25519Key.from(res.body.pubKey),
+      pubKey: ed25519Key.from(res.body.pubKey),
     };
   }
 

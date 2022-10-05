@@ -76,7 +76,7 @@ export default class MetaField {
     return this._class.classify();
   }
 
-  /** @param {import("cryptide").C25519Key} key */
+  /** @param {import("cryptide").ed25519Key} key */
   encrypt(key) {
     if (this._isEncrypted)
       throw new Error(`Data is already encrypted`);
@@ -89,7 +89,7 @@ export default class MetaField {
     this._isEncrypted = true;
   }
 
-  /** @param {import("cryptide").C25519Key} key */
+  /** @param {import("cryptide").ed25519Key} key */
   decrypt(key) {
     if (!this._isEncrypted)
       throw new Error(`Data is already decrypted`);
