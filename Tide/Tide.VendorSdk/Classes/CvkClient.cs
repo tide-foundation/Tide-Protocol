@@ -42,7 +42,7 @@ namespace Tide.VendorSdk.Classes
             return _idGen.Guid;
         }
 
-        public async Task Add(Guid viud, BigInteger cvki, AesKey cvkiAuth, Tide.Encryption.Ed.Ed25519Key cvkPub, Guid keyId, byte[] signature)
+        public async Task Add(Guid viud, BigInteger cvki, AesKey cvkiAuth, Ed25519Key cvkPub, Guid keyId, byte[] signature)
         {
             var payload = JsonSerializer.Serialize(new[] {
                 cvkPub.ToByteArray(),
@@ -58,7 +58,7 @@ namespace Tide.VendorSdk.Classes
                 throw new HttpRequestException(response.ToString());
         }
 
-        public async Task<Tide.Encryption.Ed.Ed25519Key> GetPublic()
+        public async Task<Ed25519Key> GetPublic()
         {
             var response = await _client.GetAsync("api/public");
 
@@ -66,7 +66,7 @@ namespace Tide.VendorSdk.Classes
                 throw new HttpRequestException(response.ToString());
 
             var keyText = await response.Content.ReadAsStringAsync();
-            return Tide.Encryption.Ed.Ed25519Key.Parse(Convert.FromBase64String(keyText));
+            return Ed25519Key.Parse(Convert.FromBase64String(keyText));
         }
 
         public async Task<(byte[] Token, C25519Cipher Challenge)> Challenge(Guid viud, Guid keyId)

@@ -14,10 +14,10 @@ namespace Tide.VendorSdk.Classes {
         private static int EncryptionSize => 32 * 3;
         private static int AsymmetricSize => EncryptionSize * 2 + TagSize;
 
-        public static byte[] Encrypt(string buffer, ulong tag, Tide.Encryption.Ed.Ed25519Key key)
+        public static byte[] Encrypt(string buffer, ulong tag, Ed25519Key key)
             => Encrypt(Encoding.UTF8.GetBytes(buffer), tag, key);
 
-        public static byte[] Encrypt(byte[] buffer, ulong tag, Tide.Encryption.Ed.Ed25519Key key)
+        public static byte[] Encrypt(byte[] buffer, ulong tag, Ed25519Key key)
         {
             var toAsymmetricEncrypt =  Pad32(buffer);
             var bufferSymmetric = new byte[0];
@@ -60,7 +60,7 @@ namespace Tide.VendorSdk.Classes {
             return all;
         }
 
-        public static byte[] Decrypt(byte[] data, Tide.Encryption.Ed.Ed25519Key key)
+        public static byte[] Decrypt(byte[] data, Ed25519Key key)
         {
             var size = data[1] & 127;
             var sizeLength = 0;
@@ -103,7 +103,7 @@ namespace Tide.VendorSdk.Classes {
             return C25519Cipher.Parse(data.Take(32 * 3).ToArray());
         }
 
-        public static bool CheckAsymmetric(byte[] data, Tide.Encryption.Ed.Ed25519Key key)
+        public static bool CheckAsymmetric(byte[] data, Ed25519Key key)
         {
             if (data == null || data.Length != AsymmetricSize)
                 return false;
