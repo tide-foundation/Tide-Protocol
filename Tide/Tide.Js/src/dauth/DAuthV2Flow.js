@@ -24,6 +24,7 @@ import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
 import Guid from "../guid";
 import DnsClient from "./DnsClient";
+import bigInt from "big-integer";
 
 export default class DAuthV2Flow {
   /** @param {string|Guid} user */
