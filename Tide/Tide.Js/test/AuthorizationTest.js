@@ -1,4 +1,4 @@
-import { C25519Key, AESKey } from "cryptide";
+import { C25519Key, AESKey , ed25519Key} from "cryptide";
 import KeyClient from "../src/dauth/keyClient";
 import DnsClient from "../src/dauth/DnsClient";
 import RuleClient from "../src/dauth/RuleClient";
@@ -19,14 +19,14 @@ describe('KeyClient', function () {
         const client = new KeyClient(orkUrls[0]);
         
         //setting up a new vendor key
-        const prvKey = C25519Key.generate();
+        const prvKey = ed25519Key.generate();
         const pubKey = prvKey.public(); 
         const storedKey = new KeyStore(pubKey);
 
         await client.setOrUpdate(storedKey); 
         
         //updating a vendor key with a token
-        const prvKeyNew = C25519Key.generate();
+        const prvKeyNew = ed25519Key.generate();
         storedKey.key = prvKeyNew.public();
 
         const authToken = new TranJwt(storedKey.keyId);
@@ -43,14 +43,14 @@ describe('KeyClient', function () {
         const client = new KeyClient(orkUrls[0]);
         
         //setting up a new vendor key
-        const prvKey = C25519Key.generate();
+        const prvKey = ed25519Key.generate();
         const pubKey = prvKey.public(); 
         const storedKey = new KeyStore(pubKey);
 
         await client.setOrUpdate(storedKey);
         
         //updating without a token throws an error
-        storedKey.key = C25519Key.generate();
+        storedKey.key = ed25519Key.generate();
         await assert.rejects(async () => { await client.setOrUpdate(storedKey) }, Error);
 
         //updating with an expired token throws an error 
@@ -61,7 +61,7 @@ describe('KeyClient', function () {
         await assert.rejects(async () => { await client.delete(storedKey.keyId, authToken) }, Error);
 
         //updating with an invalid token throws an error 
-        const prvKeyNew = C25519Key.generate();
+        const prvKeyNew = ed25519Key.generate();
         authToken.validTo = new Date(Date.now() + 1000);
         authToken.sign(prvKeyNew);
 
@@ -75,7 +75,7 @@ describe('DnsClient', function () {
         const client = new DnsClient(orkUrls[0], user);
         
         //setting up a new dns entry
-        const prvKey = C25519Key.generate();
+        const prvKey = ed25519Key.generate();
         const pubKey = prvKey.public(); 
 
         const entry = new DnsEntry();
@@ -83,14 +83,14 @@ describe('DnsClient', function () {
         entry.public = pubKey
         entry.signatures = []
         entry.orks = [];
-        entry.sign(prvKey, 'edDSA');
+        entry.sign(prvKey);
 
         await client.addDns(entry);
 
         //updating a dns entry
-        const prvKeyNew = C25519Key.generate();
+        const prvKeyNew = ed25519Key.generate();
         entry.public = prvKeyNew.public();
-        entry.sign(prvKeyNew, 'edDSA')
+        entry.sign(prvKeyNew);
 
         const authToken = new TranJwt(user);
         authToken.sign(prvKey)
@@ -103,7 +103,7 @@ describe('DnsClient', function () {
         const client = new DnsClient(orkUrls[0], user);
         
         //setting up a new dns entry
-        const prvKey = C25519Key.generate();
+        const prvKey = ed25519Key.generate();
         const pubKey = prvKey.public(); 
 
         const entry = new DnsEntry();
@@ -111,7 +111,7 @@ describe('DnsClient', function () {
         entry.public = pubKey
         entry.signatures = []
         entry.orks = [];
-        entry.sign(prvKey, 'edDSA');
+        entry.sign(prvKey);
 
         await client.addDns(entry);
 
@@ -128,7 +128,7 @@ describe('DnsClient', function () {
         await assert.rejects(async () => { await client.addDns(entry, authToken) }, Error);
 
         //updating with an invalid token throws an error 
-        const prvKeyNew = C25519Key.generate();
+        const prvKeyNew = ed25519Key.generate();
         authToken.validTo = new Date(Date.now() + 1000);
         authToken.sign(prvKeyNew);
 
@@ -144,7 +144,7 @@ describe('RuleClient', function () {
         const cmkCln = new DCryptClient(orkUrls[0], user);
 
         //setting up a new CMK
-        const cvkPrv = C25519Key.generate();
+        const cvkPrv = ed25519Key.generate();
         const cvkPub = cvkPrv.public(); 
         const cvkStored = new KeyStore(cvkPub);
         const cvkAuth = new AESKey();
@@ -174,7 +174,7 @@ describe('RuleClient', function () {
         const cmkCln = new DCryptClient(orkUrls[0], user);
 
         //setting up a new CMK
-        const cvkPrv = C25519Key.generate();
+        const cvkPrv = ed25519Key.generate();
         const cvkPub = cvkPrv.public(); 
         const cvkStored = new KeyStore(cvkPub);
         const cvkAuth = new AESKey();
@@ -198,7 +198,7 @@ describe('RuleClient', function () {
         await assert.rejects(async () => { await ruleCln.setOrUpdate(rule, authToken) }, Error);
 
         //updating with an invalid token throws an error 
-        const cvkPrvNew = C25519Key.generate();
+        const cvkPrvNew = ed25519Key.generate();
         authToken.validTo = new Date(Date.now() + 10000);
         authToken.sign(cvkPrvNew);
 
