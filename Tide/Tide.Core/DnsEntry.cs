@@ -30,10 +30,10 @@ namespace Tide.Core
             .Select(url => new Uri(url)).ToList();
 
         public List<Ed25519Key> GetPublics() => Publics.Where(pub => !string.IsNullOrWhiteSpace(pub))
-            .Select(pub => Ed25519Key.Parse(pub.Trim())).ToList();
+            .Select(pub => Ed25519Key.ParsePublic(pub.Trim())).ToList();
 
         public Ed25519Key GetPublicKey() {
-            return Ed25519Key.Parse(Public);
+            return Ed25519Key.ParsePublic(Public);
         }
         
         public byte[] MessageSigned() {

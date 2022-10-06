@@ -49,7 +49,7 @@ namespace Tide.Ork.Classes {
 
                 return dnsEntry is null ? null : new VerificationKey {
                     Id = dnsEntry.Id,
-                    Key = Ed25519Key.Parse(dnsEntry.Public)
+                    Key = Ed25519Key.ParsePublic(dnsEntry.Public)
                 };
             }
 

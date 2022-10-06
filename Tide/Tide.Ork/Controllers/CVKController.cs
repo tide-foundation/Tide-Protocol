@@ -64,7 +64,7 @@ namespace Tide.Ork.Controllers
             var account = new CvkVault
             {
                 VuId = vuid,
-                CvkPub = Ed25519Key.Parse(FromBase64(data[0])),
+                CvkPub = Ed25519Key.ParsePublic(FromBase64(data[0])),
                 CVKi = GetBigInteger(data[1]),
                 CvkiAuth = AesKey.Parse(FromBase64(data[2]))
             };

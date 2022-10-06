@@ -66,7 +66,7 @@ namespace Tide.VendorSdk.Classes
                 throw new HttpRequestException(response.ToString());
 
             var keyText = await response.Content.ReadAsStringAsync();
-            return Ed25519Key.Parse(Convert.FromBase64String(keyText));
+            return Ed25519Key.ParsePublic(Convert.FromBase64String(keyText));
         }
 
         public async Task<(byte[] Token, C25519Cipher Challenge)> Challenge(Guid viud, Guid keyId)
