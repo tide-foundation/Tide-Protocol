@@ -22,7 +22,7 @@ namespace Tide.Ork.DTOs
             return new KeyIdVault
             {
                 KeyId = this.KeyId,
-                Key = Ed25519Key.Parse(Convert.FromBase64String(Key))
+                Key = Ed25519Key.ParsePublic(Convert.FromBase64String(Key))
             };
         }
 

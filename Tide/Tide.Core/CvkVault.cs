@@ -31,7 +31,7 @@ namespace Tide.Core
         protected override void SetItems(IReadOnlyList<byte[]> data)
         {
             VuId = new Guid(data[0]);
-            CvkPub = data[1].Length != 0 ? Ed25519Key.Parse(data[1]) : null;
+            CvkPub = data[1].Length != 0 ? Ed25519Key.ParsePublic(data[1]) : null;
             CVKi = new BigInteger(data[2], true, true);
             CvkiAuth = AesKey.Parse(data[3]);
         }
