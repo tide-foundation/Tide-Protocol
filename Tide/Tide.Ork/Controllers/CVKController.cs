@@ -117,7 +117,7 @@ namespace Tide.Ork.Controllers
             }
 
             _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Returning cvk from {vuid}");
-            var cvki = lagrangian <= 0 ? account.CVKi : (account.CVKi * lagrangian).Mod(C25519Point.N);
+            var cvki = lagrangian <= 0 ? account.CVKi : (account.CVKi * lagrangian).Mod(Ed25519.N);
             return account.CvkiAuth.Encrypt(cvki.ToByteArray(true, true));
         }
 
