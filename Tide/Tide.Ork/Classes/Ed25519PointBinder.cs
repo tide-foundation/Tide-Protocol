@@ -6,7 +6,7 @@ using Tide.Encryption.Ed;
 
 namespace Tide.Ork.Classes {
 
-    public class C25519PointBinder : IModelBinder
+    public class Ed25519PointBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext context)
         {

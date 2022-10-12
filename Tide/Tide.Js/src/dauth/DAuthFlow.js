@@ -49,8 +49,9 @@ export default class DAuthFlow {
       const emails = typeof email === "string" ? [email] : email;
       const emailIndex = Math.floor(Math.random() * emails.length);
 
+      const prism = random();
       const g = ed25519Point.fromString(password);
-      const prism = bigInt(ed25519Point.find_scalar_that_makes_multiple_of_ed25519_G(g, BigInt(random().toString())).toString());
+      
       const prismAuth = AESKey.seed(g.times(prism).toArray());
       const cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
 
@@ -138,7 +139,7 @@ export default class DAuthFlow {
 
       const n = bigInt(ed25519Point.order.toString());
       const g = ed25519Point.fromString(pass);
-      const r = bigInt(ed25519Point.find_scalar_that_makes_multiple_of_ed25519_G(g, BigInt(random().toString())).toString());
+      const r = random();
       const gR = g.times(r);
 
       const ids = await pre_ids;
