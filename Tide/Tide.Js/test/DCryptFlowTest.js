@@ -1,4 +1,4 @@
-import { C25519Key, AESKey } from "cryptide";
+import { C25519Key, AESKey , ed25519Key} from "cryptide";
 import DCryptFlow from "../src/dauth/DCryptFlow";
 import KeyClientSet from "../src/dauth/keyClientSet";
 import RuleClientSet from "../src/dauth/RuleClientSet";
@@ -21,7 +21,7 @@ describe('DCryptFlow', function () {
         const flow = new DCryptFlow(urls, userId);
         const ruleCln = new RuleClientSet(urls, userId);
         const keyCln = new KeyClientSet(urls);
-        const vendorKey = C25519Key.generate();
+        const vendorKey = ed25519Key.generate();
         
         const msgs = ["😃The magical realist style and thematic substance of One Hundred Years of Solitude😄",
             "established it as"];
@@ -34,7 +34,7 @@ describe('DCryptFlow', function () {
         await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule)]);
 
         const ids = await Promise.all(flow.clients.map(cln => cln.getClientBuffer()));
-        const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()]), 'edDSA'));
+        const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
 
         const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
         const cipher1 = Cipher.encrypt(secrets[0], tag, cvk);
@@ -51,7 +51,7 @@ describe('DCryptFlow', function () {
         const flow = new DCryptFlow(urls, userId);
         const ruleCln = new RuleClientSet(urls, userId);
         const keyCln = new KeyClientSet(urls);
-        const vendorKey = C25519Key.generate();
+        const vendorKey = ed25519Key.generate();
         
         const msgs = [ "😃The magical realist style and thematic substance of One Hundred Years of Solitude😄",
             "established it as",
@@ -69,7 +69,7 @@ describe('DCryptFlow', function () {
         ]);
         
         const ids = await Promise.all(flow.clients.map((cln) => cln.getClientBuffer()));
-        const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()]), 'edDSA'));
+        const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
         
         const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
         const cipher1 = Cipher.encrypt(secrets[0], tag1, cvk);

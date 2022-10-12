@@ -26,7 +26,7 @@ namespace Tide.Ork {
 
             services.AddControllers(options =>
             {
-                options.ModelBinderProviders.Insert(0, new C25519PointBinderProvider());
+                options.ModelBinderProviders.Insert(0, new Ed25519PointBinderProvider());
             }).AddNewtonsoftJson();
 
             

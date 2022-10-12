@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { AESKey, Hash, Utils, C25519Point, C25519Key } from "cryptide";
+import { AESKey, Hash, Utils, C25519Point, C25519Key, ed25519Key, ed25519Point } from "cryptide";
 import Tags from "../tags";
 import DAuthFlow from "./DAuthFlow";
 import IdGenerator from "../IdGenerator";
@@ -24,6 +24,7 @@ import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
 import Guid from "../guid";
 import DnsClient from "./DnsClient";
+import bigInt from "big-integer";
 
 export default class DAuthV2Flow {
   /** @param {string|Guid} user */
@@ -62,18 +63,18 @@ export default class DAuthV2Flow {
    * @param {string} password
    * @param {string|string[]} email
    * @param {number} threshold
-   * @returns {Promise<{ vuid: Guid; cvk: C25519Key; auth: AESKey; }>}
+   * @returns {Promise<{ vuid: Guid; cvk: ed25519Key; auth: AESKey; }>}
    */
   async signUp(password, email, threshold) {
     try {
       const vendorCln = this._getVendorClient();
       const { pubKey } = await vendorCln.configuration();
 
-      if (!this.cmk) this.cmk = Utils.random(1, C25519Point.n.subtract(1));
+      if (!this.cmk) this.cmk = Utils.random(1, bigInt((ed25519Point.order - BigInt(1)).toString()));
       this.cvkAuth = AESKey.seed(pubKey.y.times(this.cmk).toArray());
       this._genVuid();
 
-      const cvk = C25519Key.generate();
+      const cvk = ed25519Key.generate();
       const flowCmk = await this._getCmkFlow();
       const flowCvk = await this._getCvkFlow();
       const keyCln = new KeyClientSet(this.cmkUrls);

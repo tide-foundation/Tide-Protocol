@@ -2,7 +2,7 @@
 import DAuthV2Flow from "../dauth/DAuthV2Flow";
 import DAuthJwtFlow from "../dauth/DAuthJwtFlow";
 import DAuthCmkJwtFlow from "../dauth/DAuthCmkJwtFlow";
-import { CP256Key, C25519Key, EcKeyFormat } from "cryptide";
+import { CP256Key, C25519Key, EcKeyFormat , ed25519Key} from "cryptide";
 import Account from "./models/Account";
 import TideConfiguration from "./models/TideConfiguration";
 import { encode } from "../jwtToken";
@@ -11,6 +11,7 @@ import BigInt from "big-integer";
 import SilentLogin from "../SilentLogin";
 
 export { C25519Key };
+export { ed25519Key };
 export default class TideAuthentication {
   /**
    * Tide Authentication Module
@@ -234,7 +235,7 @@ export default class TideAuthentication {
 
   validateReturnUrl(returnUrl, hashedReturnUrl) {
     try {
-      var pubkey = C25519Key.from(this.config.vendorPublic);
+      var pubkey = ed25519Key.from(this.config.vendorPublic);
       return pubkey.verify(returnUrl, Buffer.from(hashedReturnUrl, "base64"));
     } catch (error) {
       return false;

@@ -30,7 +30,7 @@ import MetaField from "@/assets/ts/MetaField";
 // @ts-ignore
 import Num64 from "../../../../Tide.Js/src/Num64";
 // @ts-ignore
-import { C25519Key } from "../../../../Tide.Js/src/export/TideAuthentication";
+import { ed25519Key } from "../../../../Tide.Js/src/export/TideAuthentication";
 
 interface Field {
   Name: string;
@@ -44,10 +44,10 @@ interface DynamicForm {
 export default class Form extends Base {
   fields: any[] = [];
   encrypted: boolean = true;
-  key: C25519Key;
+  key: ed25519Key;
 
   mounted() {
-    this.key = C25519Key.fromString(this.mainStore.getState.account!.encryptionKey);
+    this.key = ed25519Key.fromString(this.mainStore.getState.account!.encryptionKey);
     const formData = this.mainStore.getState.config.formData;
     var raw = JSON.parse(JSON.stringify(formData));
     var structure = raw.structure as any[];

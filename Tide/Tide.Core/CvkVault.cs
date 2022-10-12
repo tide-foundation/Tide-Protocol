@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Tide.Encryption;
 using Tide.Encryption.AesMAC;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 
 namespace Tide.Core
 {
@@ -11,7 +11,7 @@ namespace Tide.Core
     {
         public Guid Id => VuId;
         public Guid VuId { get; set; }
-        public C25519Key CvkPub { get; set; }
+        public Ed25519Key CvkPub { get; set; }
         public BigInteger CVKi { get; set; }
         public AesKey CvkiAuth { get; set; }
 
@@ -31,7 +31,7 @@ namespace Tide.Core
         protected override void SetItems(IReadOnlyList<byte[]> data)
         {
             VuId = new Guid(data[0]);
-            CvkPub = data[1].Length != 0 ? C25519Key.Parse(data[1]) : null;
+            CvkPub = data[1].Length != 0 ? Ed25519Key.ParsePublic(data[1]) : null;
             CVKi = new BigInteger(data[2], true, true);
             CvkiAuth = AesKey.Parse(data[3]);
         }

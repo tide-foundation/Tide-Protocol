@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Encryption.Tools;
 
 namespace Tide.Core
@@ -29,11 +29,11 @@ namespace Tide.Core
         public List<Uri> GetUrls() => Urls.Where(url => !string.IsNullOrWhiteSpace(url))
             .Select(url => new Uri(url)).ToList();
 
-        public List<C25519Key> GetPublics() => Publics.Where(pub => !string.IsNullOrWhiteSpace(pub))
-            .Select(pub => C25519Key.Parse(pub.Trim())).ToList();
+        public List<Ed25519Key> GetPublics() => Publics.Where(pub => !string.IsNullOrWhiteSpace(pub))
+            .Select(pub => Ed25519Key.ParsePublic(pub.Trim())).ToList();
 
-        public C25519Key GetPublicKey() {
-            return C25519Key.Parse(Public);
+        public Ed25519Key GetPublicKey() {
+            return Ed25519Key.ParsePublic(Public);
         }
         
         public byte[] MessageSigned() {

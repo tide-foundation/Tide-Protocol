@@ -24,6 +24,7 @@ using Microsoft.Extensions.Logging;
 using Tide.Core;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 using Tide.Ork.Components.AuditTrail;
@@ -95,12 +96,12 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Invalid parameter li");
             }
 
-            C25519Point g;
+            Ed25519Point g;
             try
             {
-                g = C25519Point.From(bytesPass);
-                if (!g.IsValid) {
-                    _logger.LogInformation($"Apply: Invalid point for {uid}");
+                g = Ed25519Point.From(bytesPass);
+                if (!g.IsValid()) {
+                   _logger.LogInformation($"Apply: Invalid point for {uid}");
                     return BadRequest("Invalid parameters");
                 }
             }
@@ -116,7 +117,7 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Invalid parameters");
             }
 
-            var gs = lagrangian <= 0 ? g * s : g * (s *  lagrangian).Mod(C25519Point.N);
+            var gs = lagrangian <= 0 ? g * s : g * (s *  lagrangian).Mod(Ed25519.N);
 
             _logger.LogInformation($"Login attempt for {uid}", uid, pass);
             return new ApplyResponse
@@ -129,7 +130,7 @@ namespace Tide.Ork.Controllers
         //TODO: Add throttling by ip and account separate
         [MetricAttribute("cmk", recordSuccess:true)]
         [HttpGet("auth/{uid}/{point}/{token}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] C25519Point point, [FromRoute] string token, [FromQuery] Guid tranid, [FromQuery] string li = null)
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] Ed25519Point point, [FromRoute] string token, [FromQuery] Guid tranid, [FromQuery] string li = null)
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken))
             {
@@ -161,7 +162,7 @@ namespace Tide.Ork.Controllers
             }
 
             _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Successful login for {uid}");
-            var cvkAuthi = (lagrangian <= 0 ? point * account.Cmki : point * (account.Cmki * lagrangian).Mod(C25519Point.N)).ToByteArray();
+            var cvkAuthi = (lagrangian <= 0 ? point * account.Cmki : point * (account.Cmki * lagrangian).Mod(Ed25519.N)).ToByteArray();
             return Ok(account.PrismiAuth.EncryptStr(cvkAuthi));
         }
 

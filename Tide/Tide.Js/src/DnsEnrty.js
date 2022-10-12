@@ -14,7 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
 import Guid from "./guid";
-import { C25519Key, Hash } from "cryptide";
+import { C25519Key, Hash , ed25519Key} from "cryptide";
 
 /**
  * @typedef {Object} JsonDnsEntry - creates a new type named 'SpecialType'
@@ -33,7 +33,7 @@ import { C25519Key, Hash } from "cryptide";
     this.id = new Guid();
     this.modifided = this.utcUnixSeconds();
     this.signature = "";
-    /** @type {C25519Key} */
+    /** @type {ed25519Key} */
     this.public = null;
     /** @type { string[] } */
     this.signatures = [];
@@ -45,12 +45,12 @@ import { C25519Key, Hash } from "cryptide";
     this.publics = [];
 }
 
-  /** @param {C25519Key} key */
-  sign(key, sigScheme) {
+  /** @param {ed25519Key} key */
+  sign(key) {
     if (!this.public)
       throw new Error("The public key must be provided");
     
-    this.signature = Buffer.from(key.sign(this.messageToSign(), "edDSA")).toString('base64'); // ecdsa needs hash here   // hardcoded edDSA here
+    this.signature = Buffer.from(key.sign(this.messageToSign())).toString('base64'); // ecdsa needs hash here   // hardcoded edDSA here
     return this.signature;
   }
 
@@ -77,7 +77,7 @@ import { C25519Key, Hash } from "cryptide";
     entry.id = Guid.from(json.id);
     entry.modifided = json.modifided;
     entry.signature = json.signature;
-    entry.public = C25519Key.from(json.public);
+    entry.public = ed25519Key.from(json.public);
     entry.signatures = json.signatures;
     entry.orks = json.orks;
     entry.urls = json.urls || entry.urls;

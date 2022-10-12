@@ -1,6 +1,6 @@
 ﻿using System;
 using Tide.Encryption.AesMAC;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 
 namespace Tide.VendorSdk.Classes
 {
@@ -13,7 +13,7 @@ namespace Tide.VendorSdk.Classes
         {
             return new VendorConfig
             {
-                PrivateKey = C25519Key.Parse(Convert.FromBase64String(PrivateKey)),
+                PrivateKey = Ed25519Key.Parse(Convert.FromBase64String(PrivateKey)),
                 SecretKey = AesKey.Parse(SecretKey)
             };
         }

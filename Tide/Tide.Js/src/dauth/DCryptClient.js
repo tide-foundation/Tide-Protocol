@@ -28,7 +28,7 @@ export default class DCryptClient extends ClientBase {
   }
 
   /**
-   * @param {import("cryptide").C25519Key} cvkPub
+   * @param {import("cryptide").ed25519Key} cvkPub
    * @param {import("big-integer").BigInteger} cvki
    * @param {AESKey} cvkAuthi
    * @param {Guid} signedKeyId

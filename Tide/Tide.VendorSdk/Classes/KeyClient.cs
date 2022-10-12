@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Net;
 using Tide.Core;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using System.Text;
 
 namespace Tide.VendorSdk.Classes
@@ -56,7 +56,7 @@ namespace Tide.VendorSdk.Classes
                 return new KeyIdVault
                 {
                     KeyId = this.KeyId,
-                    Key = C25519Key.Parse(Convert.FromBase64String(Key))
+                    Key = Ed25519Key.ParsePublic(Convert.FromBase64String(Key))
                 };
             }
 

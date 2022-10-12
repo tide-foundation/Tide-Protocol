@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,10 +12,10 @@ namespace Tide.VendorSdk.Classes
     public class DCryptFlowBulk
     {
         private readonly DnsClient _dns;
-        private readonly C25519Key _prv;
+        private readonly Ed25519Key _prv;
         private readonly Regex _rxBase64 = new Regex("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$", RegexOptions.Compiled);
 
-        public DCryptFlowBulk(C25519Key @private, Uri homeOrk)
+        public DCryptFlowBulk(Ed25519Key @private, Uri homeOrk)
         {
             _prv = @private;
             _dns = new DnsClient(homeOrk);

@@ -16,7 +16,7 @@
 import * as superagent from "superagent";
 import IdGenerator from "../IdGenerator";
 import Guid from "../guid";
-import { C25519Key } from "cryptide";
+import { C25519Key , ed25519Key} from "cryptide";
 import { ClientError } from "./Errors";
 
 export default class ClientBase {
@@ -72,10 +72,10 @@ export default class ClientBase {
     return this._clientId;
   }
 
-  /** @returns {Promise<C25519Key>} */
+  /** @returns {Promise<ed25519Key>} */
   async getPublic() {
     var res = await this._get("/public");
-    return C25519Key.from(res.text);
+    return ed25519Key.from(res.text);
   }
 
   async _setClientId() {

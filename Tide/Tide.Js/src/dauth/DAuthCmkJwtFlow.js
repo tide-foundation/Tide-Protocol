@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { AESKey, CP256Key, C25519Point } from "cryptide";
+import { AESKey, CP256Key, C25519Point , ed25519Point} from "cryptide";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
 import Guid from "../guid";
@@ -49,7 +49,7 @@ export default class DAuthCmkJwtFlow {
     if (!this.cmk) throw new Error("cmk must not be empty");
 
     try {
-      const venPnt = C25519Point.fromString(this.vendorPub.y.toArray());
+      const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
       this.cvkAuth = AESKey.seed(venPnt.times(this.cmk).toArray());
       this.vuid = IdGenerator.seed(this.userid.buffer, this.cvkAuth).guid;
 

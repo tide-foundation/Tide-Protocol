@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using System;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 
 namespace Tide.Ork.Classes
 {
-    public class C25519PointBinderProvider : IModelBinderProvider
+    public class Ed25519PointBinderProvider : IModelBinderProvider
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
@@ -13,8 +13,8 @@ namespace Tide.Ork.Classes
                 return null;
                 //throw new ArgumentNullException(nameof(context));
 
-            if (context.Metadata.ModelType == typeof(C25519Point))
-                return new BinderTypeModelBinder(typeof(C25519PointBinder));
+            if (context.Metadata.ModelType == typeof(Ed25519Point))
+                return new BinderTypeModelBinder(typeof(Ed25519PointBinder));
 
             return null;
         }
