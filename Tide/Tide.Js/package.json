@@ -40,7 +40,7 @@
     "esm": "^3.2.25",
     "html-webpack-plugin": "^4.3.0",
     "mocha": "^8.3.0",
-    "parcel": "^1.12.4",
+    "parcel": "^2.7.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },
