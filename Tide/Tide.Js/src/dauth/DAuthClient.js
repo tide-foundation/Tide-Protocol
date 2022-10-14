@@ -14,7 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 // @ts-check
 
-import { C25519Point, AESKey } from "cryptide";
+import { C25519Point, AESKey , ed25519Point} from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
 import TranToken from "../TranToken";
 
@@ -29,9 +29,9 @@ export default class DAuthClient extends ClientBase {
   }
 
   /** 
-   * @param {C25519Point} pass
+   * @param {ed25519Point} pass
    * @param {bigInt.BigInteger} li
-   *  @returns {Promise<[C25519Point, TranToken]>} */
+   *  @returns {Promise<[ed25519Point, TranToken]>} */
   async ApplyPrism(pass, li = null) {
     let url = `/cmk/prism/${this.userGuid}/${urlEncode(pass.toArray())}`;
     if (li) {
@@ -39,13 +39,13 @@ export default class DAuthClient extends ClientBase {
     }
 
     const res = await this._get(url);
-    return [ C25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
+    return [ ed25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
   }
 
   /**
    * @param { import("../guid").default } tranid
    * @param {TranToken} token
-   * @param {C25519Point} point
+   * @param {ed25519Point} point
    * @param {bigInt.BigInteger} li
    **/
   async signIn(tranid, token, point, li = null) {

@@ -60,7 +60,7 @@ namespace Tide.Ork.Test
         static byte[] randomData(int size = 8)
         {
             var buffer = new byte[size];
-            using (var rng = new RNGCryptoServiceProvider())
+            using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(buffer);
                 return buffer;

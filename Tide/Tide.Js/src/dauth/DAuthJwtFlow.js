@@ -13,12 +13,13 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { AESKey, Utils, C25519Point, C25519Key, CP256Key } from "cryptide";
+import { AESKey, Utils, C25519Point, C25519Key, CP256Key, ed25519Point, ed25519Key } from "cryptide";
 import DAuthFlow from "./DAuthFlow";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
 import Guid from "../guid";
 import DnsClient from "./DnsClient";
+import bigInt from "big-integer";
 
 export default class DAuthJwtFlow {
   /** @param {string|Guid} user */
@@ -56,20 +57,20 @@ export default class DAuthJwtFlow {
   /**
    * @param {string} password
    * @param {number} threshold
-   * @returns {Promise<{ vuid: Guid; cvk: C25519Key; auth: AESKey; }>}
+   * @returns {Promise<{ vuid: Guid; cvk: ed25519Key; auth: AESKey; }>}
    */
   async signUpCVK(password, threshold) {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
     try {
       const pre_flowCmk = this._getCmkFlow();
-      const venPnt = C25519Point.fromString(this.vendorPub.y.toArray());
+      const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
       const flowCmk = await pre_flowCmk;
 
       this.cvkAuth = await flowCmk.logIn(password, venPnt); 
       this._genVuid();
 
-      const cvk = C25519Key.generate();
+      const cvk = ed25519Key.generate();
       const flowCvk = await this._getCvkFlow(true);
 
       //vendor
@@ -97,18 +98,18 @@ export default class DAuthJwtFlow {
    * @param {string} password
    * @param {string|string[]} email
    * @param {number} threshold
-   * @returns {Promise<{ vuid: Guid; cvk: C25519Key; auth: AESKey; }>}
+   * @returns {Promise<{ vuid: Guid; cvk: ed25519Key; auth: AESKey; }>}
    */
   async signUp(password, email, threshold) {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
     try {
-      if (!this.cmk) this.cmk = Utils.random(1, C25519Point.n.subtract(1));
-      const venPnt = C25519Point.fromString(this.vendorPub.y.toArray());
+      if (!this.cmk) this.cmk = Utils.random(1, bigInt((ed25519Point.order - BigInt(1)).toString()));
+      const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
       this.cvkAuth = AESKey.seed(venPnt.times(this.cmk).toArray());
       this._genVuid();
 
-      const cvk = C25519Key.generate();
+      const cvk = ed25519Key.generate();
       const flowCmk = await this._getCmkFlow(true);
       const flowCvk = await this._getCvkFlow(true);
 
@@ -137,13 +138,13 @@ export default class DAuthJwtFlow {
   }
 
   /** @param {string} password
-   * @returns {Promise<{ vuid: Guid; cvk: C25519Key; auth: AESKey; }>} */
+   * @returns {Promise<{ vuid: Guid; cvk: ed25519Key; auth: AESKey; }>} */
   async logIn(password) {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
     try {
       const pre_flowCmk = this._getCmkFlow();
-      const venPnt = C25519Point.fromString(this.vendorPub.y.toArray());
+      const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
       const flowCmk = await pre_flowCmk;
 
       this.cvkAuth = await flowCmk.logIn(password, venPnt); 

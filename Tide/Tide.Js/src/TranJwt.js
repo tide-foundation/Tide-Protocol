@@ -52,10 +52,10 @@ export default class TranJwt {
 
     encodeMessage() { return `${this.encodeHead()}.${this.encodePayload()}` }
 
-    /** @param {import("cryptide").C25519Key } key */
+    /** @param {import("cryptide").ed25519Key } key */
     sign(key) { this.signature = encodeBase64Url(key.sign(this.encodeMessage())); }
 
-    /** @param {import("cryptide").C25519Key } key */
+    /** @param {import("cryptide").ed25519Key } key */
     verify(key) { return key.verify(this.encodeMessage(), decodeBase64Url(this.signature)); }
 
     toString() { return `${this.encodeHead()}.${this.encodePayload()}.${this.signature}` }

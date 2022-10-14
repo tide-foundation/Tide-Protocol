@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Tide.Encryption;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Encryption.Tools;
 
 namespace Tide.Core
@@ -11,13 +11,13 @@ namespace Tide.Core
     {
         public Guid Id => KeyId;
         public Guid KeyId { get; set; }
-        public C25519Key Key { get; set; }
+        public Ed25519Key Key { get; set; }
 
         public KeyIdVault() : base(1) { }
 
-        public KeyIdVault(C25519Key key) : base(1) { Set(key); }
+        public KeyIdVault(Ed25519Key key) : base(1) { Set(key); }
 
-        public void Set(C25519Key key) {
+        public void Set(Ed25519Key key) {
             Key = key;
             KeyId = new Guid(Utils.Hash(key.ToByteArray()).Take(16).ToArray());
         }
@@ -31,7 +31,7 @@ namespace Tide.Core
         protected override void SetItems(IReadOnlyList<byte[]> data)
         {
             KeyId = new Guid(data[0]);
-            Key = data[1].Any() ? new C25519Key(data[1]) : null;
+            Key = data[1].Any() ? new Ed25519Key(data[1]) : null;
         }
     }
 }

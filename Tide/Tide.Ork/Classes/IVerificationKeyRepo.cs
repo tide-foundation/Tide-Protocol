@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Tide.Core;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 
 namespace Tide.Ork.Classes
 {
@@ -13,6 +13,6 @@ namespace Tide.Ork.Classes
     internal class VerificationKey : IGuid
     {
         public Guid  Id { get; set; }
-        public C25519Key Key { get; set; }
+        public Ed25519Key Key { get; set; }
     }
 }

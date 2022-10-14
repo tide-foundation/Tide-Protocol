@@ -25,6 +25,7 @@ using Microsoft.Extensions.Logging;
 using Tide.Core;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Encryption.Tools;
 using Tide.Ork.Classes;
 using Tide.Ork.Components.AuditTrail;
@@ -63,7 +64,7 @@ namespace Tide.Ork.Controllers
             var account = new CvkVault
             {
                 VuId = vuid,
-                CvkPub = C25519Key.Parse(FromBase64(data[0])),
+                CvkPub = Ed25519Key.ParsePublic(FromBase64(data[0])),
                 CVKi = GetBigInteger(data[1]),
                 CvkiAuth = AesKey.Parse(FromBase64(data[2]))
             };
@@ -74,7 +75,7 @@ namespace Tide.Ork.Controllers
                 if (signer == null)
                     return BadRequest("Signer's key must be defined");
 
-                if (!signer.Key.Verify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
+                if (!signer.Key.EdDSAVerify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
                     return BadRequest("Signature is not valid");
             }
 
@@ -86,7 +87,7 @@ namespace Tide.Ork.Controllers
             
             var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
             //TODO: The ork should not send the orkid because the client should already know
-            var signOrk = Convert.ToBase64String(_config.PrivateKey.Sign(m));
+            var signOrk = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m));
             resp.Content = new { orkid = _config.UserName, sign = signOrk };
             
             return resp;
@@ -116,7 +117,7 @@ namespace Tide.Ork.Controllers
             }
 
             _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Returning cvk from {vuid}");
-            var cvki = lagrangian <= 0 ? account.CVKi : (account.CVKi * lagrangian).Mod(C25519Point.N);
+            var cvki = lagrangian <= 0 ? account.CVKi : (account.CVKi * lagrangian).Mod(Ed25519.N);
             return account.CvkiAuth.Encrypt(cvki.ToByteArray(true, true));
         }
 

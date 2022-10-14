@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Tide.Core;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 
 namespace Tide.Ork.Classes {
 
-    public class C25519PointBinder : IModelBinder
+    public class Ed25519PointBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext context)
         {
@@ -24,8 +24,8 @@ namespace Tide.Ork.Classes {
                 return Task.CompletedTask;
             }
 
-            var model = C25519Point.From(buffer);
-            if (!model.IsValid)
+            var model = Ed25519Point.From(buffer);
+            if (!model.IsValid())
             {
                 context.ModelState.TryAddModelError(fieldName, $"Is not a valid point.");
                 return Task.CompletedTask;

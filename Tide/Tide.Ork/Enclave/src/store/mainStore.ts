@@ -12,6 +12,10 @@ interface MainState extends Object {
   account?: Account;
 }
 
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 class MainStore extends Store<MainState> {
   protected data(): MainState {
     return {

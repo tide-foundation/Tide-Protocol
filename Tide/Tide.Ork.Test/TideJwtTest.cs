@@ -2,7 +2,7 @@ using System;
 using FluentAssertions;
 using Moq;
 using Tide.Core;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Xunit;
 
 namespace Tide.Ork.Test
@@ -12,7 +12,7 @@ namespace Tide.Ork.Test
         [Fact]
         public void VerifyShouldReturnTrue()
         {
-            var key = new C25519Key();
+            var key = new Ed25519Key();
 
             var jwt = new TideJwt(Guid.NewGuid());
             jwt.Sign(key);
@@ -27,8 +27,8 @@ namespace Tide.Ork.Test
         [Fact]
         public void VerifyShouldReturnFalse()
         {
-            var key = new C25519Key();
-            var keyTag = new C25519Key();
+            var key = new Ed25519Key();
+            var keyTag = new Ed25519Key();
 
             var jwt = new TideJwt(Guid.NewGuid());
             jwt.Sign(key);

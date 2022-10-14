@@ -10,17 +10,17 @@ using System.Web;
 using Microsoft.Extensions.Logging;
 using Tide.Core;
 using Newtonsoft.Json;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Ork.Controllers;
 
 namespace Tide.Ork.Classes {
     public class SimulatorClient {
         private readonly HttpClient _client;
-        private readonly C25519Key _private;
+        private readonly Ed25519Key _private;
         private readonly string _orkId;
         //private bool _registered; //TODO: Ask matt why is not used
 
-        public SimulatorClient(string url,string orkId, C25519Key privateKey) {
+        public SimulatorClient(string url,string orkId, Ed25519Key privateKey) {
             _private = privateKey;
             _orkId = orkId;
             _client = new HttpClient {BaseAddress = new Uri(url)};
@@ -43,7 +43,7 @@ namespace Tide.Ork.Classes {
             var blockData = new Transaction(contract, table, scope, index, _orkId, payload);
 
             var serializedPayload  = JsonConvert.SerializeObject(blockData.Data);
-            blockData.Sign = _private.Sign(Encoding.UTF8.GetBytes(serializedPayload));
+            blockData.Sign = _private.EdDSASign(Encoding.UTF8.GetBytes(serializedPayload));
 
             var stringContent = new StringContent(JsonConvert.SerializeObject(blockData), Encoding.UTF8, "application/json");
             var response = (await _client.PostAsync("Simulator", stringContent));

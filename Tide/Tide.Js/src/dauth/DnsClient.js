@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { C25519Key } from "cryptide";
+import { C25519Key, ed25519Key } from "cryptide";
 import superagent from "superagent";
 import DnsEntry from "../DnsEnrty";
 import Guid from "../guid";
@@ -55,12 +55,12 @@ export default class DnsClient {
     await req.send(entry.toString());
   }
 
-  /** @returns { Promise<[string[], C25519Key[]]> } */
+  /** @returns { Promise<[string[], ed25519Key[]]> } */
   async getInfoOrks() {
     const entry = await this.getDns();
     if (!entry) return [[], []];
     
-    const pubs = entry.publics.filter(pub => pub).map(pub => C25519Key.from(pub));
+    const pubs = entry.publics.filter(pub => pub).map(pub => ed25519Key.from(pub));
     const urls = entry.urls.filter(url => url);
 
     return [urls, pubs];

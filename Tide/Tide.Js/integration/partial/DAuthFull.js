@@ -33,10 +33,10 @@ var orkUrls = [...Array(threshold)].map((_, i) => `http://ork${i+1}.local`); //t
   try {
     console.log(`Trying a dAuth flow for... \nuserid: ${user} \nvvk: ${vendorPub.toString()}`);
 
-    await signUp()
+    await signUp();
     await changePass(user, pass, newPass);
     await signIn(user, newPass);
-    await resetPass(user);
+    //await resetPass(user);
     //await reconstructPass(user);
 
     console.log(`all went well!!!`);

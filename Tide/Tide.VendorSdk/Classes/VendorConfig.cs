@@ -15,13 +15,13 @@
 
 using Microsoft.IdentityModel.Tokens;
 using Tide.Encryption.AesMAC;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 
 namespace Tide.VendorSdk.Classes
 {
     public class VendorConfig
     {
-        public C25519Key PrivateKey { get; set; }
+        public Ed25519Key PrivateKey { get; set; }
         public AesKey SecretKey { get; set; }
         
         public SecurityKey GetSessionKey() => new SymmetricSecurityKey(SecretKey.Hash(new byte[32]));

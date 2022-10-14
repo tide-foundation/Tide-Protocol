@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using Tide.Encryption.Ecc;
+using Tide.Encryption.Ed;
 using Tide.Encryption.Tools;
 
 namespace Tide.Core
@@ -20,33 +20,41 @@ namespace Tide.Core
         public string[] Publics { get; set; }
 
         public bool VerifyForUId() {
+
             if (string.IsNullOrEmpty(Signature) || string.IsNullOrEmpty(Public))
                 return false;
-
-            return GetPublicKey().Verify(MessageSigned(), Convert.FromBase64String(Signature));
+            return GetPublicKey().EdDSAVerify(MessageSignedBytes(), Convert.FromBase64String(Signature));
         }
 
         public List<Uri> GetUrls() => Urls.Where(url => !string.IsNullOrWhiteSpace(url))
             .Select(url => new Uri(url)).ToList();
 
-        public List<C25519Key> GetPublics() => Publics.Where(pub => !string.IsNullOrWhiteSpace(pub))
-            .Select(pub => C25519Key.Parse(pub.Trim())).ToList();
+        public List<Ed25519Key> GetPublics() => Publics.Where(pub => !string.IsNullOrWhiteSpace(pub))
+            .Select(pub => Ed25519Key.ParsePublic(pub.Trim())).ToList();
 
-        public C25519Key GetPublicKey() {
-            return C25519Key.Parse(Public);
+        public Ed25519Key GetPublicKey() {
+            return Ed25519Key.ParsePublic(Public);
         }
         
         public byte[] MessageSigned() {
             return Utils.Hash(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
+        }
+
+        public byte[] MessageSignedSHA512() {
+            return Utils.HashSHA512(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
+        }
+
+        public byte[] MessageSignedBytes() {
+            return System.Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
         }
         
         protected override JsonSerializerOptions GetJsonOptions()
         {
             return new JsonSerializerOptions
             {
-                IgnoreNullValues = true,
                 PropertyNameCaseInsensitive = true,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
         }

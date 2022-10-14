@@ -15,7 +15,7 @@
 // @ts-check
 
 import DCryptClient from "./DCryptClient";
-import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare, AesSherableKey } from "cryptide";
+import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare, AesSherableKey, ed25519Key, ed25519Point } from "cryptide";
 import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
 import Guid from "../guid";
@@ -26,6 +26,7 @@ import RuleClientSet from "./RuleClientSet";
 import Rule from "../rule";
 import Tags from "../tags";
 import SetClient from "./SetClient";
+import bigInt from "big-integer";
 
 export default class DCryptFlow {
   /**
@@ -45,7 +46,7 @@ export default class DCryptFlow {
    * @param {Guid} signedKeyId
    * @param {Uint8Array[]} signatures
    */
-  async signUp(cmkAuth, threshold, signedKeyId, signatures, cvk = C25519Key.generate()) {
+  async signUp(cmkAuth, threshold, signedKeyId, signatures, cvk = ed25519Key.generate()) {
     try {
       if (!signatures && signatures.length != this.clienSet.length)
         throw new Error("Signatures are required");
@@ -73,7 +74,7 @@ export default class DCryptFlow {
    * @private 
    * @typedef {import("./DAuthClient").OrkSign} OrkSign
    * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
-   * @param {C25519Key} key */
+   * @param {ed25519Key} key */
    addDns(signatures, key) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
@@ -103,19 +104,19 @@ export default class DCryptFlow {
     
     const tranid = new Guid();
     const ids = idGens.map(idGen => idGen.id);
-    const lis = ids.map(id => SecretShare.getLi(id, ids.values, C25519Point.n));
+    const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
     const cvkAuths = idGens.map(idGen => concat(idGen.buffer, this.user.buffer)).map(buff => cmkAuth.derive(buff));
     const cipherCvks = this.clienSet.map(lis,(c, li, i) => c.getCvk(tranid, cvkAuths.get(i), li));
 
     const cvk = await cipherCvks.map((cvki, i) => BnInput.getBig(cvkAuths.get(i).decrypt(cvki)))
-      .reduce((sum, cvki) => sum.add(cvki).mod(C25519Point.n), BnInput.getBig(0));
+      .reduce((sum, cvki) => sum.add(cvki).mod(bigInt(ed25519Point.order.toString())), BnInput.getBig(0));
 
-    return C25519Key.private(cvk, noPublic);
+    return ed25519Key.private(cvk, noPublic);
   }
 
   /**
    * @param {Uint8Array[]} ciphers
-   * @param {C25519Key} prv
+   * @param {ed25519Key} prv
    * @returns {Promise<Uint8Array[]>}
    */
   async decryptBulk(ciphers, prv) {
@@ -135,7 +136,7 @@ export default class DCryptFlow {
       /** @type {Uint8Array[]} */
       const plains = new Array(ciphers.length);
       for (let j = 0; j < ciphers.length; j++) {
-        const partials = cipherPartials.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph[j])))
+        const partials = cipherPartials.map((cph, i) => C25519Point.from(sessionKeys[i].decrypt(cph[j]))) /////////////// potential catastrophic bug
           .map(pnt => new C25519Cipher(pnt, ciphs[j].c2));
         const plain = C25519Cipher.decryptShares(partials, ids);
   
@@ -157,7 +158,7 @@ export default class DCryptFlow {
 
   /**
    * @param {Uint8Array} cipher
-   * @param {C25519Key} prv
+   * @param {ed25519Key} prv
    * @returns {Promise<Uint8Array>}
    */
   async decrypt(cipher, prv) {
