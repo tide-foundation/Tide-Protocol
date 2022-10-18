@@ -106,20 +106,23 @@ export default class DAuthJwtFlow {
     try {
       if (!this.cmk) this.cmk = Utils.random(1, bigInt((ed25519Point.order - BigInt(1)).toString()));
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
-      this.cvkAuth = AESKey.seed(venPnt.times(this.cmk).toArray());
-      this._genVuid();
+     // this.cvkAuth = AESKey.seed(venPnt.times(this.cmk).toArray());
+     
 
-      const cvk = ed25519Key.generate();
+     // const cvk = ed25519Key.generate();
       const flowCmk = await this._getCmkFlow(true);
-      const flowCvk = await this._getCvkFlow(true);
 
       //vendor
       const keyId = Guid.seed(this.vendorPub.toArray());
       const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
-      const signatures = flowCvk.clients.map((_) => new Uint8Array());
 
       // register cmk
-      await flowCmk.signUp(password, email, threshold, this.cmk);
+      this.cvkAuth = await flowCmk.signUp(password, email, threshold, null, venPnt);
+
+      // configure cvk ORKs
+      this._genVuid();
+      const flowCvk = await this._getCvkFlow(true);
+      const signatures = flowCvk.clients.map((_) => new Uint8Array());
 
       // register cvk
       await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);

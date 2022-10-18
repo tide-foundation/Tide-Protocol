@@ -26,6 +26,7 @@ using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ecc;
 using Tide.Encryption.Ed;
 using Tide.Encryption.Tools;
+using Tide.Encryption.SecretSharing;
 using Tide.Ork.Classes;
 using Tide.Ork.Components.AuditTrail;
 using Tide.Ork.Models;
@@ -78,6 +79,97 @@ namespace Tide.Ork.Controllers
             resp.Content = new { orkid = _config.UserName, sign = signature };
             
             return resp;
+        }
+
+        [HttpGet("random/{uid}")]
+        public ActionResult<RandomResponse> GetRandom([FromQuery] Ed25519Point pass, [FromQuery] Ed25519Point vendor, [FromQuery] ICollection<Guid> ids)
+        {
+            if (pass is null || vendor is null ) {
+                _logger.LogDebug("Random: The pass and vendor arguments are required");
+                return BadRequest($"The pass and vendor arguments are required");
+            }
+          
+            if (ids == null || ids.Count < _config.Threshold) {
+                _logger.LogInformation("Random: The length of the ids ({length}) must be greater than or equal to {threshold}", ids?.Count, _config.Threshold);
+                return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
+            }
+
+            if (!ids.Contains(_config.Guid)) ids.Add(_config.Guid);
+            
+            var idValues = ids.Select(id => new BigInteger(id.ToByteArray(), true, true)).ToList();
+            if (idValues.Any(id => id == 0)) {
+                _logger.LogInformation("Random: Ids cannot contain the value zero");
+                return BadRequest($"Ids cannot contain the value zero");
+            }
+
+            if (!pass.IsValid() || !vendor.IsValid())
+            {
+                _logger.LogInformation($"Random: The pass and vendor arguments must be a valid point");
+                return BadRequest("The pass and vendor arguments must be a valid point");
+            }
+           
+            BigInteger prismi, cmki;
+            using (var rdm = new RandomField(Ed25519.N))
+            {
+                prismi = rdm.Generate(BigInteger.One);
+                cmki = rdm.Generate(BigInteger.One);
+            }
+
+            var gPassPrismi = pass * prismi;
+            var cmkPubi =  Ed25519.G * cmki;
+            var vendorCMKi  = vendor * cmki;
+            Console.WriteLine("--------------------------------------------{0}--{1} {2}",idValues[0],idValues[1],idValues[2]);
+            var prisms = EccSecretSharing.Share(prismi, idValues, _config.Threshold, Ed25519.N);
+            var cmks = EccSecretSharing.Share(cmki, idValues, _config.Threshold, Ed25519.N);
+            
+            _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
+            return new RandomResponse(gPassPrismi, cmkPubi, vendorCMKi, prisms, cmks);
+        }
+
+        [HttpPut("random/{uid}")]
+        public async Task<ActionResult<byte[]>> AddRandom([FromRoute] Guid uid, [FromBody] RandRegistrationReq rand)
+        {
+            if (uid == Guid.Empty) {
+                _logger.LogDebug("Random: The uid must not be empty");
+                return BadRequest($"The uid must not be empty");
+            }
+
+            if (rand is null || rand.Shares is null  || rand.Shares.Length < _config.Threshold) {
+                var args = new object[] { rand?.Shares?.Length, _config.Threshold };
+                _logger.LogInformation("Random: The length of the shares [length] must be greater than or equal to {threshold}", args);
+                return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
+            }
+
+            if (rand.Shares.Any(shr => shr.Id != _config.Guid)) {
+                var ids = string.Join(',', rand.Shares.Select(shr => shr.Id).Where(id => id != _config.Guid));
+                _logger.LogCritical("Random: Shares were sent to the wrong ORK: {ids}", ids);
+                return BadRequest($"Shares were sent to the wrong ORK: '{ids}'");
+            }
+
+            var isNew = !await _manager.Exist(uid);
+            if (!isNew) {
+                _logger.LogInformation("Random: CMK already exists for {uid}", uid);
+                return BadRequest("CMK already exists");
+            }
+
+            var account = new CmkVault
+            {
+                UserId = uid,
+                Email = rand.Email,
+                Cmki = rand.ComputeCmk(),
+                Prismi = rand.ComputePrism(),
+                PrismiAuth = rand.PrismAuth
+            };
+
+            var resp = await _manager.Add(account);
+            if (!resp.Success) {
+                _logger.LogInformation($"Random: CMK was not added for uid '{uid}'");
+                return Problem(resp.Error);
+            }
+            
+            _logger.LogInformation($"Random: New registration for {uid}", uid);
+            var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
+            return _config.PrivateKey.Sign(m);
         }
 
         [MetricAttribute("prism")]

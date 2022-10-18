@@ -7,7 +7,7 @@ using Tide.VendorSdk.Classes;
 namespace Tide.Ork.Classes {
     public class OrkConfig {
         private readonly IdGenerator _IdGen;
-
+        public int Threshold { get; }
         public string UserName { get; }
 
         public Ed25519Key PrivateKey { get; }
