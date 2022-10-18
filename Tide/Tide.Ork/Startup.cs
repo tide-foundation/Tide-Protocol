@@ -11,6 +11,7 @@ using Tide.Ork.Classes;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using VueCliMiddleware;
+using Tide.Ork.Models.Serialization;
 
 namespace Tide.Ork {
     public class Startup {
@@ -24,12 +25,11 @@ namespace Tide.Ork {
 
         public void ConfigureServices(IServiceCollection services) {
 
-            services.AddControllers(options =>
-            {
-                options.ModelBinderProviders.Insert(0, new Ed25519PointBinderProvider());
-            }).AddNewtonsoftJson();
-
-            
+            services.AddControllers(opt => opt.ModelBinderProviders.Insert(0, new MainBinderProvider()))
+                .AddJsonOptions(opt => {
+                    opt.JsonSerializerOptions.Converters.Add(new Ed25519PointConverter());
+                    opt.JsonSerializerOptions.Converters.Add(new AesKeyConverter());
+                });
 
             var settings = new Settings();
             Configuration.Bind(nameof(Settings), settings);

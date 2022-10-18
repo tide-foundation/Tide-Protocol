@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using System;
 using Tide.Encryption.Ed;
+using Tide.Encryption.AesMAC;
 
 namespace Tide.Ork.Classes
 {
-    public class Ed25519PointBinderProvider : IModelBinderProvider
+    public class MainBinderProvider : IModelBinderProvider
     {
         public IModelBinder GetBinder(ModelBinderProviderContext context)
         {
@@ -15,6 +16,9 @@ namespace Tide.Ork.Classes
 
             if (context.Metadata.ModelType == typeof(Ed25519Point))
                 return new BinderTypeModelBinder(typeof(Ed25519PointBinder));
+
+            if (context.Metadata.ModelType == typeof(AesKey))
+                return new BinderTypeModelBinder(typeof(AesKeyBinder));
 
             return null;
         }

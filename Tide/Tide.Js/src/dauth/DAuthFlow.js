@@ -54,15 +54,15 @@ export default class DAuthFlow {
       const g = ed25519Point.fromString(password);
       const gR = g.times(r);
 
-      const ids = await this.clienSet.all(cli => cli.getClientId());
+      const ids = await this.clienSet.all(cli => cli.getClientId()); 
       const idBuffers = await this.clienSet.map(ids, cli => cli.getClientBuffer());
       const guids = idBuffers.map(buff => new Guid(buff));
 
-      const randoms = await this.clienSet.map(guids, cli => cli.random(gR, vendor, guids.values));
+      const randoms = await this.clienSet.map(guids, cli => cli.random(gR, vendor, guids.values)); 
 
-      const cmkPub = randoms.values.map(rdm => rdm.cmkPub).reduce((sum, cmki, i) => cmki.add(sum));
-      const gRPrism = randoms.values.map(rdm => rdm.password).reduce((sum, gPrismi, i)=> gPrismi.add(sum));
-      const vendorCMK = randoms.values.map(rdm => rdm.vendorCMK).reduce((sum, gPrismi, i)=> gPrismi.add(sum));
+      const cmkPub = randoms.values.map(rdm => rdm.cmkPub).reduce((sum, cmki) => cmki.add(sum));
+      const gRPrism = randoms.values.map(rdm => rdm.password).reduce((sum, gPrismi)=> gPrismi.add(sum));
+      const vendorCMK = randoms.values.map(rdm => rdm.vendorCMK).reduce((sum, gPrismi)=> gPrismi.add(sum));
       const cvkAuth = AESKey.seed(vendorCMK.toArray());
 
       const rInv = r.modInv(bigInt(ed25519Point.order.toString()));
@@ -80,6 +80,20 @@ export default class DAuthFlow {
       const randReq = randoms.map((_, key) => new RandRegistrationReq(prismAuths.get(key), mails.get(key), shares.get(key))) 
 
       const signatures = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key)));
+
+      // Make apply request to test if 1st ran num gen == threshold rand num
+      const idGens = await this.clienSet.all(c => c.getClientGenerator())
+      const idss = idGens.map(idGen => idGen.id);
+      const lis = ids.map(id => SecretShare.getLi(id, idss.values, bigInt(ed25519Point.order.toString())));
+
+      const pre_gPrism2 = this.clienSet.map(lis, (cli, li) => cli.ApplyPrism(ed25519Point.g, li));
+      const gPrism2 = await pre_gPrism2.map(ki =>  ki[0])
+        .reduce((sum, rki) => sum.add(rki), ed25519Point.infinity);
+
+      var x = (gPrism2.getX().toString());
+      var y = (gPrism2.getY().toString());
+      return cvkAuth;
+      /// ends HEREEEE
 
       await this.addDns(signatures, new ed25519Key(0, cmkPub));
 

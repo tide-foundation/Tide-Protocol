@@ -16,7 +16,7 @@ namespace Tide.Ork.Models {
 
         public RandomResponse() { }
 
-        public RandomResponse(Ed25519Point pass, Ed25519Point pub, Ed25519Point vendorCMK, IReadOnlyList<Ed25519Point> prisms, IReadOnlyList<Ed25519Point> cmks)
+        public RandomResponse(Ed25519Point pass, Ed25519Point pub, Ed25519Point vendorCMK, IReadOnlyList<Point> prisms, IReadOnlyList<Point> cmks)
         {
             Debug.Assert(prisms != null && cmks != null && prisms.Any() && cmks.Any(), $"Argument cannot be empty");
             Debug.Assert(prisms.Count == cmks.Count, $"{nameof(prisms)} and {nameof(cmks)} must be the same");
@@ -25,7 +25,6 @@ namespace Tide.Ork.Models {
             Password = pass;
             CmkPub = pub;
             VendorCMK = vendorCMK;
-            Console.WriteLine("--------------------------{0}  {1}--",prisms,prisms[0].Y.ToByteArray(true, true));
             Shares = prisms.Select((_, i) => new RandomShareResponse {
                 Id = new Guid(cmks[i].X.ToByteArray(true, true)),
                 Prism = prisms[i].Y.ToByteArray(true, true),

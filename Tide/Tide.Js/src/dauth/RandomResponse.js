@@ -43,7 +43,6 @@ export default class RandomResponse {
 
     /** @param {string|object} data */
     static from(data) {
-        if (!data) return null;
 
         const obj = typeof data === 'string' ? JSON.parse(data) : data;
         if (!obj.password || !obj.cmkPub || !obj.vendorCMK || !obj.shares)

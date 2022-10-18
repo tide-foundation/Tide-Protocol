@@ -31,6 +31,7 @@ using Tide.Ork.Classes;
 using Tide.Ork.Components.AuditTrail;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
+using System.Collections.Generic;
 
 namespace Tide.Ork.Controllers
 {
@@ -118,7 +119,6 @@ namespace Tide.Ork.Controllers
             var gPassPrismi = pass * prismi;
             var cmkPubi =  Ed25519.G * cmki;
             var vendorCMKi  = vendor * cmki;
-            Console.WriteLine("--------------------------------------------{0}--{1} {2}",idValues[0],idValues[1],idValues[2]);
             var prisms = EccSecretSharing.Share(prismi, idValues, _config.Threshold, Ed25519.N);
             var cmks = EccSecretSharing.Share(cmki, idValues, _config.Threshold, Ed25519.N);
             
@@ -169,7 +169,7 @@ namespace Tide.Ork.Controllers
             
             _logger.LogInformation($"Random: New registration for {uid}", uid);
             var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
-            return _config.PrivateKey.Sign(m);
+            return _config.PrivateKey.EdDSASign(m);
         }
 
         [MetricAttribute("prism")]

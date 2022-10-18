@@ -128,9 +128,16 @@ export function urlEncode(data) {
 
 /** @param {string|Uint8Array|Buffer} data */
 function encodeBase64Url(data) {
-  const text = typeof data === "string" ? data : data instanceof Buffer ? data.toString("base64") : Buffer.from(data).toString("base64");
-
+  const text = encodeBase64(data);
   return text.replace(/\=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+}
+
+/** @param {string|Uint8Array|Buffer|bigInt.BigInteger} data */
+export function encodeBase64(data) {
+  return typeof data === "string" ? data
+    : data instanceof Buffer ? data.toString("base64")
+    : data instanceof Uint8Array ? Buffer.from(data).toString("base64")
+    : Buffer.from(data.toArray(256).value).toString("base64");
 }
 
 /** 
