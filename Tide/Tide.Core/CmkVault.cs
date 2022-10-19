@@ -16,6 +16,7 @@ namespace Tide.Core
         public AesKey PrismiAuth { get; set; }
         public AesKey CmkiAuth { get; set; }
         public string Email { get; set; }
+        public BigInteger Cmk2i { get; set; }
 
         public CmkVault() : base(1)
         {
@@ -32,6 +33,7 @@ namespace Tide.Core
             yield return PrismiAuth.ToByteArray();
             yield return CmkiAuth.ToByteArray();
             yield return Encoding.UTF8.GetBytes(Email);
+            yield return Cmk2i.ToByteArray(true, true);
         }
 
         protected override void SetItems(IReadOnlyList<byte[]> data)
@@ -42,6 +44,7 @@ namespace Tide.Core
             PrismiAuth = AesKey.Parse(data[3]);
             CmkiAuth = AesKey.Parse(data[4]);
             Email =  Encoding.UTF8.GetString(data[5]);
+            Cmk2i = new BigInteger(data[6], true, true);
         }
     }
 }

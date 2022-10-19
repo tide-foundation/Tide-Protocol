@@ -109,11 +109,12 @@ namespace Tide.Ork.Controllers
                 return BadRequest("The pass and vendor arguments must be a valid point");
             }
            
-            BigInteger prismi, cmki;
+            BigInteger prismi, cmki ,cmk2i;
             using (var rdm = new RandomField(Ed25519.N))
             {
                 prismi = rdm.Generate(BigInteger.One);
                 cmki = rdm.Generate(BigInteger.One);
+                cmk2i = rdm.Generate(BigInteger.One);
             }
 
             var gPassPrismi = pass * prismi;
@@ -121,9 +122,10 @@ namespace Tide.Ork.Controllers
             var vendorCMKi  = vendor * cmki;
             var prisms = EccSecretSharing.Share(prismi, idValues, _config.Threshold, Ed25519.N);
             var cmks = EccSecretSharing.Share(cmki, idValues, _config.Threshold, Ed25519.N);
+            var cmk2s = EccSecretSharing.Share(cmk2i, idValues, _config.Threshold, Ed25519.N);
             
             _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
-            return new RandomResponse(gPassPrismi, cmkPubi, vendorCMKi, prisms, cmks);
+            return new RandomResponse(gPassPrismi, cmkPubi, vendorCMKi, prisms, cmks,cmk2s);
         }
 
         [HttpPut("random/{uid}")]
@@ -158,7 +160,8 @@ namespace Tide.Ork.Controllers
                 Email = rand.Email,
                 Cmki = rand.ComputeCmk(),
                 Prismi = rand.ComputePrism(),
-                PrismiAuth = rand.PrismAuth
+                PrismiAuth = rand.PrismAuth,
+                Cmk2i = rand.ComputeCmk2()
             };
 
             var resp = await _manager.Add(account);
