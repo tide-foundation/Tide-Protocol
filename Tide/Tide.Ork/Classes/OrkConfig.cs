@@ -19,6 +19,7 @@ namespace Tide.Ork.Classes {
         public OrkConfig(Settings settings)
         {
             UserName =  settings.Instance.Username;
+            Threshold = settings.Instance.Threshold;
             PrivateKey = settings.Instance.GetPrivateKey();
             _IdGen = IdGenerator.Seed(PrivateKey.GetPublic().ToByteArray());
         }
