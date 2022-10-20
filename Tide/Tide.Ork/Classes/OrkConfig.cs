@@ -3,6 +3,7 @@ using System.Numerics;
 using Tide.Encryption.Ed;
 using Tide.Ork.Models;
 using Tide.VendorSdk.Classes;
+using Tide.Encryption.AesMAC;
 
 namespace Tide.Ork.Classes {
     public class OrkConfig {
@@ -15,11 +16,13 @@ namespace Tide.Ork.Classes {
         public BigInteger Id => _IdGen.Id;
 
         public Guid Guid => _IdGen.Guid;
+        public AesKey SecretKey { get;}
 
         public OrkConfig(Settings settings)
         {
             UserName =  settings.Instance.Username;
             PrivateKey = settings.Instance.GetPrivateKey();
+            SecretKey = settings.Instance.GetSecretKey();
             _IdGen = IdGenerator.Seed(PrivateKey.GetPublic().ToByteArray());
         }
     }

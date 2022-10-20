@@ -73,29 +73,18 @@ export default class DAuthFlow {
       //const cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
 
       const prismAuths = idBuffers.map(buff => prismAuth.derive(buff)); 
-      
+
       
       const mails = randoms.map((_, __, i) => emails[(emailIndex + i) % emails.length]);
       const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
       const randReq = randoms.map((_, key) => new RandRegistrationReq(prismAuths.get(key), mails.get(key), shares.get(key))) 
 
-      const signatures = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key)));
+      const randSignUpResponses = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key)));
 
-      // Make apply request to test if 1st ran num gen == threshold rand num
-      const idGens = await this.clienSet.all(c => c.getClientGenerator())
-      const idss = idGens.map(idGen => idGen.id);
-      const lis = ids.map(id => SecretShare.getLi(id, idss.values, bigInt(ed25519Point.order.toString())));
+      const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(prismAuths.get(i).decrypt(cipher))) // works
+      const signatures = randSignUpResponses.map(e => e[0]);
 
-      const pre_gPrism2 = this.clienSet.map(lis, (cli, li) => cli.ApplyPrism(ed25519Point.g, li));
-      const gPrism2 = await pre_gPrism2.map(ki =>  ki[0])
-        .reduce((sum, rki) => sum.add(rki), ed25519Point.infinity);
-
-      var x = (gPrism2.getX().toString());
-      var y = (gPrism2.getY().toString());
-      return cvkAuth;
-      /// ends HEREEEE
-
-      await this.addDns(signatures, new ed25519Key(0, cmkPub));
+      await this.addDns(signatures, new ed25519Key(0, cmkPub), tokens);
 
       return cvkAuth;
     } catch (err) {
@@ -107,8 +96,9 @@ export default class DAuthFlow {
    * @private 
    * @typedef {import("./DAuthClient").OrkSign} OrkSign
    * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
-   * @param {ed25519Key} key */
-  addDns(signatures, key) {
+   * @param {ed25519Key} key 
+   * @param {import("../Tools").Dictionary<TranToken>} tokens*/
+  addDns(signatures, key, tokens) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
     const cln = this.clienSet.get(index);
@@ -127,8 +117,25 @@ export default class DAuthFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    entry.sign(key);
-    return dnsCln.addDns(entry);
+    this.signEntry(entry, tokens);
+    //return dnsCln.addDns(entry);
+  }
+/**
+ * 
+ * @param {DnsEntry} entry 
+ * @param {import("../Tools").Dictionary<TranToken>} tokens
+ */
+  async signEntry(entry, tokens){
+    const idGens = await this.clienSet.all(c => c.getClientGenerator())
+    const ids = idGens.map(idGen => idGen.id);
+    const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
+
+    const tranid = new Guid();
+
+    const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, li));
+
+    //const signature = signatures.reduce((sum, sig) => (sum + sig) % ed25519Point.order);
+    //return signature;
   }
 
   /**

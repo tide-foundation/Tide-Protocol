@@ -18,6 +18,9 @@ import { C25519Point, AESKey , ed25519Point} from "cryptide";
 import ClientBase, { urlEncode, fromBase64 ,encodeBase64} from "./ClientBase";
 import TranToken from "../TranToken";
 import RandomResponse from "./RandomResponse";
+import DnsEntry from "../DnsEnrty";
+import superagent from "superagent";
+import Guid from "../guid";
 
 /** @typedef {{orkid: string, sign: string}} OrkSign */
 export default class DAuthClient extends ClientBase {
@@ -42,6 +45,22 @@ export default class DAuthClient extends ClientBase {
     const res = await this._get(url);
     return [ ed25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
   }
+
+    /**
+   * @param {import("../guid").default } tranid
+   * @param {TranToken} token
+   * @param {DnsEntry} entry
+   * @param {bigInt.BigInteger} li
+   **/
+     async signEntry(token, tranid, entry, li) {
+      const tkn = urlEncode(token.toArray());
+
+      const resp = await this._get(`/cmk/sign/${this.userGuid}/${tkn}?tranid=${tranid.toString()}&li=${li.toString(10)}`).set("Content-Type", "application/json").send(entry.toString())
+        .ok(res => res.status < 500);
+  
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
+      return fromBase64(resp.text);
+    }
 
   /**
    * @param { import("../guid").default } tranid
@@ -110,17 +129,16 @@ export default class DAuthClient extends ClientBase {
   
     /**
      * @param {import("./RandRegistrationReq").default} body
-     * @returns {Promise<OrkSign>}
+     * @returns {Promise<[OrkSign, string]>}
      */
     async randomSignUp(body) {
       if (!body) throw Error("The arguments cannot be null");
   
-      var resp = await this._put(`/cmk/random/${this.userGuid}`).set("Content-Type", "application/json").send(JSON.stringify(body))
+      const resp = await this._put(`/cmk/random/${this.userGuid}`).set("Content-Type", "application/json").send(JSON.stringify(body))
         .ok(res => res.status < 500);
   
       if (!resp.ok) return  Promise.reject(new Error(resp.text));
-      
-      return resp.body;
+      return [resp.body.signature, resp.body.encryptedToken];
     }
 
   /**

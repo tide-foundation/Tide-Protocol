@@ -127,7 +127,7 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpPut("random/{uid}")]
-        public async Task<ActionResult<byte[]>> AddRandom([FromRoute] Guid uid, [FromBody] RandRegistrationReq rand)
+        public async Task<ActionResult<AddRandomResponse>> AddRandom([FromRoute] Guid uid, [FromBody] RandRegistrationReq rand)
         {
             if (uid == Guid.Empty) {
                 _logger.LogDebug("Random: The uid must not be empty");
@@ -169,7 +169,50 @@ namespace Tide.Ork.Controllers
             
             _logger.LogInformation($"Random: New registration for {uid}", uid);
             var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
-            return _config.PrivateKey.EdDSASign(m);
+
+            var token = new TranToken();
+            token.Sign(_config.SecretKey); // token client will use to authetnicate on SignEntry endpoint
+            return new AddRandomResponse
+            {
+                Signature = _config.PrivateKey.EdDSASign(m),
+                EncryptedToken = account.PrismiAuth.Encrypt(token.ToByteArray())
+            };
+        }
+
+        //TODO: Add throttling by ip and account separate
+        [HttpGet("sign/{uid}/{token}")]
+        public async Task<ActionResult> SignEntry([FromRoute] Guid uid, [FromRoute] string token, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
+        {
+            if (!token.FromBase64UrlString(out byte[] bytesToken))
+            {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Invalid token format for {uid}");
+                return Unauthorized();
+            }
+
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
+            {
+                _logger.LogInformation("SignEntry: Invalid li for {uid}: '{li}' ", uid, li);
+                return BadRequest("Invalid parameter li");
+            }
+
+            var tran = TranToken.Parse(bytesToken);
+            var account = await _manager.GetById(uid);
+            if (account == null || tran == null || !tran.Check(_config.SecretKey)) { // checking that this ork was the one who signed this token (timestamp pretty much)
+                if (account == null)
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Account {uid} does not exist");
+                else
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Invalid token for {uid}");
+
+                return Unauthorized("Invalid account or signature");
+            }
+            
+            if (!tran.OnTime) {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Expired token for {uid}");
+                return StatusCode(418, new TranToken().ToString());
+            }
+            _logger.LogInformation("TOKEN Goood!");
+            return Unauthorized();
         }
 
         [MetricAttribute("prism")]
