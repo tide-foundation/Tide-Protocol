@@ -17,5 +17,8 @@ namespace Tide.Ork.Models {
         
         internal BigInteger ComputeCmk() => Shares.Select(shr => shr.CmkVal)
             .Aggregate((sum, cmk) => (sum + cmk) % Ed25519.N);
+
+        internal BigInteger ComputeCmk2() => Shares.Select(shr => shr.Cmk2Val)
+            .Aggregate((sum, cmk2) => (sum + cmk2) % Ed25519.N);
     }
 }

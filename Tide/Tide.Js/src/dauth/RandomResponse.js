@@ -62,11 +62,13 @@ export class RandomShareResponse {
     * @param {Guid} id 
     * @param { import("big-integer").BigInteger} cmk 
     * @param { import("big-integer").BigInteger} prism 
+    * @param { import("big-integer").BigInteger} cmk2 
     */
-    constructor(id, cmk, prism) {
+    constructor(id, cmk, prism,cmk2) {
         this.id = id
         this.cmk = cmk;
         this.prism = prism;
+        this.cmk2 = cmk2;
     }
 
     toString() { return JSON.stringify(this); }
@@ -77,7 +79,8 @@ export class RandomShareResponse {
         return {
             id: this.id.toString(),
             cmk: BnInput.getArray(this.cmk).toString('base64') ,
-            prism: BnInput.getArray(this.prism).toString('base64')
+            prism: BnInput.getArray(this.prism).toString('base64'),
+            cmk2: BnInput.getArray(this.cmk2).toString('base64') ,
         };
     }
 
@@ -86,13 +89,14 @@ export class RandomShareResponse {
         if (!data) return null;
 
         const obj = typeof data === 'string' ? JSON.parse(data) : data;
-        if (!obj.id || !obj.cmk || !obj.prism)
+        if (!obj.id || !obj.cmk || !obj.prism  || !obj.cmk2)
             throw Error(`The JSON is not in the correct format: ${data}`);
 
         const id = Guid.from(obj.id)
         const cmk = BnInput.getBig(Buffer.from(obj.cmk, 'base64'));
         const prism = BnInput.getBig(Buffer.from(obj.prism, 'base64'));
+        const cmk2 = BnInput.getBig(Buffer.from(obj.cmk2, 'base64'));
         
-        return new RandomShareResponse(id, cmk, prism);
+        return new RandomShareResponse(id, cmk, prism,cmk2);
     }
 }

@@ -106,7 +106,7 @@ export default class DAuthJwtFlow {
     try {
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
      // this.cvkAuth = AESKey.seed(venPnt.times(this.cmk).toArray());
-     
+      const cvk = C25519Key.generate();
 
      // const cvk = ed25519Key.generate();
       const flowCmk = await this._getCmkFlow(true);
