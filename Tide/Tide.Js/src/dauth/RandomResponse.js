@@ -20,12 +20,14 @@ export default class RandomResponse {
     /**
     * @param {ed25519Point} password
     * @param {ed25519Point} cmkPub
+    * @param {ed25519Point} cmk2Pub
     * @param {ed25519Point} vendorCMK
     * @param { RandomShareResponse[] } shares
     */
-    constructor(password, cmkPub, vendorCMK, shares) {
+    constructor(password, cmkPub, cmk2Pub, vendorCMK, shares) {
         this.password = password;
         this.cmkPub = cmkPub;
+        this.cmk2Pub = cmk2Pub;
         this.vendorCMK = vendorCMK;
         this.shares = shares;
     }
@@ -50,10 +52,11 @@ export default class RandomResponse {
 
         const password = ed25519Point.from(Buffer.from(obj.password, 'base64'));
         const cmkPub = ed25519Point.from(Buffer.from(obj.cmkPub, 'base64'));
+        const cmk2Pub = ed25519Point.from(Buffer.from(obj.cmk2Pub, 'base64'));
         const vendorCMK = ed25519Point.from(Buffer.from(obj.vendorCMK, 'base64'));
         const shares = obj.shares.map(RandomShareResponse.from);
 
-        return new RandomResponse(password, cmkPub, vendorCMK, shares);
+        return new RandomResponse(password, cmkPub, cmk2Pub, vendorCMK, shares);
     }
 }
 

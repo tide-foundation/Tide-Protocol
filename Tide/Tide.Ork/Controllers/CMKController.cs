@@ -119,13 +119,14 @@ namespace Tide.Ork.Controllers
 
             var gPassPrismi = pass * prismi;
             var cmkPubi =  Ed25519.G * cmki;
+            var cmkPub2i = Ed25519.G * cmk2i;
             var vendorCMKi  = vendor * cmki;
             var prisms = EccSecretSharing.Share(prismi, idValues, _config.Threshold, Ed25519.N);
             var cmks = EccSecretSharing.Share(cmki, idValues, _config.Threshold, Ed25519.N);
             var cmk2s = EccSecretSharing.Share(cmk2i, idValues, _config.Threshold, Ed25519.N);
             
             _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
-            return new RandomResponse(gPassPrismi, cmkPubi, vendorCMKi, prisms, cmks,cmk2s);
+            return new RandomResponse(gPassPrismi, cmkPubi, cmkPub2i, vendorCMKi, prisms, cmks, cmk2s);
         }
 
         [HttpPut("random/{uid}")]
@@ -183,8 +184,8 @@ namespace Tide.Ork.Controllers
         }
 
         //TODO: Add throttling by ip and account separate
-        [HttpGet("sign/{uid}/{token}")]
-        public async Task<ActionResult> SignEntry([FromRoute] Guid uid, [FromRoute] string token, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
+        [HttpGet("sign/{uid}/{token}/{cmkPub}/{cmk2Pub}")]
+        public async Task<ActionResult> SignEntry([FromRoute] Guid uid, [FromRoute] string token, [FromRoute] Ed25519Point cmkPub, [FromRoute] Ed25519Point cmk2Pub, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken))
             {
@@ -214,7 +215,7 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
-            _logger.LogInformation("TOKEN Goood!");
+            _logger.LogInformation("TOKEN Goood! " + cmk2Pub.GetX().ToString());
             return Unauthorized();
         }
 

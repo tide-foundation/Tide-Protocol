@@ -50,12 +50,13 @@ export default class DAuthClient extends ClientBase {
    * @param {import("../guid").default } tranid
    * @param {TranToken} token
    * @param {DnsEntry} entry
+   * @param {ed25519Point} cmk2Pub
    * @param {bigInt.BigInteger} li
    **/
-     async signEntry(token, tranid, entry, li) {
+    async signEntry(token, tranid, entry, cmk2Pub, li) {
       const tkn = urlEncode(token.toArray());
 
-      const resp = await this._get(`/cmk/sign/${this.userGuid}/${tkn}?tranid=${tranid.toString()}&li=${li.toString(10)}`).set("Content-Type", "application/json").send(entry.toString())
+      const resp = await this._get(`/cmk/sign/${this.userGuid}/${tkn}/${urlEncode(entry.public.y.toArray())}/${urlEncode(cmk2Pub.toArray())}?tranid=${tranid.toString()}&li=${li.toString(10)}`).set("Content-Type", "application/json").send(entry.toString())
         .ok(res => res.status < 500);
   
       if (!resp.ok) return  Promise.reject(new Error(resp.text));

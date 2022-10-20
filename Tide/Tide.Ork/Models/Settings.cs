@@ -41,9 +41,9 @@ namespace Tide.Ork.Models {
         public string SecretKey { get; set; }
         public string Username { get; set; }
         public int Threshold { get; set; }
-        public Instance() {
-            Threshold = 14;
-        }
+        //public Instance() {
+            //Threshold = 14;
+        //}
         public Ed25519Key GetPrivateKey() => Ed25519Key.Parse(Convert.FromBase64String(PrivateKey));
         public AesKey GetSecretKey() => AesKey.Parse(SecretKey);
     }

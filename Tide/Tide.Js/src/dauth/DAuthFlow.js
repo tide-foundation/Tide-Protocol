@@ -61,6 +61,7 @@ export default class DAuthFlow {
       const randoms = await this.clienSet.map(guids, cli => cli.random(gR, vendor, guids.values)); 
 
       const cmkPub = randoms.values.map(rdm => rdm.cmkPub).reduce((sum, cmki) => cmki.add(sum));
+      const cmk2Pub = randoms.values.map(rdm => rdm.cmk2Pub).reduce((sum, cmki) => cmki.add(sum));
       const gRPrism = randoms.values.map(rdm => rdm.password).reduce((sum, gPrismi)=> gPrismi.add(sum));
       const vendorCMK = randoms.values.map(rdm => rdm.vendorCMK).reduce((sum, gPrismi)=> gPrismi.add(sum));
       const cvkAuth = AESKey.seed(vendorCMK.toArray());
@@ -84,7 +85,9 @@ export default class DAuthFlow {
       const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(prismAuths.get(i).decrypt(cipher))) // works
       const signatures = randSignUpResponses.map(e => e[0]);
 
-      await this.addDns(signatures, new ed25519Key(0, cmkPub), tokens);
+
+
+      await this.addDns(signatures, new ed25519Key(0, cmkPub), cmk2Pub, tokens);
 
       return cvkAuth;
     } catch (err) {
@@ -97,8 +100,9 @@ export default class DAuthFlow {
    * @typedef {import("./DAuthClient").OrkSign} OrkSign
    * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
    * @param {ed25519Key} key 
+   * @param {ed25519Point} cmk2Pub
    * @param {import("../Tools").Dictionary<TranToken>} tokens*/
-  addDns(signatures, key, tokens) {
+  addDns(signatures, key, cmk2Pub, tokens) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
     const cln = this.clienSet.get(index);
@@ -117,22 +121,23 @@ export default class DAuthFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    this.signEntry(entry, tokens);
+    this.signEntry(entry, tokens, cmk2Pub);
     //return dnsCln.addDns(entry);
   }
 /**
  * 
  * @param {DnsEntry} entry 
  * @param {import("../Tools").Dictionary<TranToken>} tokens
+ * @param {ed25519Point} cmk2Pub
  */
-  async signEntry(entry, tokens){
+  async signEntry(entry, tokens, cmk2Pub){
     const idGens = await this.clienSet.all(c => c.getClientGenerator())
     const ids = idGens.map(idGen => idGen.id);
     const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
 
     const tranid = new Guid();
-
-    const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, li));
+    var c2 = cmk2Pub.getX().toString();
+    const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, cmk2Pub, li));
 
     //const signature = signatures.reduce((sum, sig) => (sum + sig) % ed25519Point.order);
     //return signature;
