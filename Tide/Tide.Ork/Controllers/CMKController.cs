@@ -215,7 +215,9 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
-            _logger.LogInformation("TOKEN Goood! " + cmk2Pub.GetX().ToString());
+            _logger.LogInformation("TOKEN Goood! " + (cmkPub + (Ed25519.G * (account.Cmki * lagrangian))).GetX().ToString());
+
+            _logger.LogInformation(_config.Threshold.ToString());
             return Unauthorized();
         }
 

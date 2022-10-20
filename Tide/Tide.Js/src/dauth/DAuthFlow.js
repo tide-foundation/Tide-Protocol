@@ -26,6 +26,7 @@ import DnsClient from "./DnsClient";
 import Guid from "../guid";
 import SetClient from "./SetClient";
 import RandRegistrationReq from "./RandRegistrationReq";
+import { Dictionary } from "../Tools";
 
 
 export default class DAuthFlow {
@@ -61,6 +62,9 @@ export default class DAuthFlow {
       const randoms = await this.clienSet.map(guids, cli => cli.random(gR, vendor, guids.values)); 
 
       const cmkPub = randoms.values.map(rdm => rdm.cmkPub).reduce((sum, cmki) => cmki.add(sum));
+
+      const partialPubs = randoms.map(pub => pub.cmkPub).map(pub => randoms.values.map(rdm => rdm.cmkPub).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(pub) ? sum : cmkPubi.add(sum) } ));
+
       const cmk2Pub = randoms.values.map(rdm => rdm.cmk2Pub).reduce((sum, cmki) => cmki.add(sum));
       const gRPrism = randoms.values.map(rdm => rdm.password).reduce((sum, gPrismi)=> gPrismi.add(sum));
       const vendorCMK = randoms.values.map(rdm => rdm.vendorCMK).reduce((sum, gPrismi)=> gPrismi.add(sum));
@@ -87,7 +91,7 @@ export default class DAuthFlow {
 
 
 
-      await this.addDns(signatures, new ed25519Key(0, cmkPub), cmk2Pub, tokens);
+      await this.addDns(signatures, new ed25519Key(0, cmkPub), partialPubs, cmk2Pub, tokens);
 
       return cvkAuth;
     } catch (err) {
@@ -100,9 +104,10 @@ export default class DAuthFlow {
    * @typedef {import("./DAuthClient").OrkSign} OrkSign
    * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
    * @param {ed25519Key} key 
+   * @param {Dictionary<ed25519Point>} partialCmkPubs
    * @param {ed25519Point} cmk2Pub
    * @param {import("../Tools").Dictionary<TranToken>} tokens*/
-  addDns(signatures, key, cmk2Pub, tokens) {
+  addDns(signatures, key, partialCmkPubs, cmk2Pub, tokens) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
     const cln = this.clienSet.get(index);
@@ -121,23 +126,26 @@ export default class DAuthFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    this.signEntry(entry, tokens, cmk2Pub);
+    this.signEntry(entry, tokens, partialCmkPubs, cmk2Pub);
     //return dnsCln.addDns(entry);
   }
 /**
  * 
  * @param {DnsEntry} entry 
  * @param {import("../Tools").Dictionary<TranToken>} tokens
+ * * @param {import("../Tools").Dictionary<ed25519Point>} partialPubs
  * @param {ed25519Point} cmk2Pub
  */
-  async signEntry(entry, tokens, cmk2Pub){
+  async signEntry(entry, tokens, partialPubs, cmk2Pub){
     const idGens = await this.clienSet.all(c => c.getClientGenerator())
     const ids = idGens.map(idGen => idGen.id);
     const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
 
     const tranid = new Guid();
     var c2 = cmk2Pub.getX().toString();
-    const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, cmk2Pub, li));
+    const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, partialPubs.get(i), cmk2Pub, li));
+
+
 
     //const signature = signatures.reduce((sum, sig) => (sum + sig) % ed25519Point.order);
     //return signature;
