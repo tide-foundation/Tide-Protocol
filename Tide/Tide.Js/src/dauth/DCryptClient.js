@@ -17,6 +17,7 @@ import { AESKey } from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
 import Guid from "../guid";
 import TranToken from "../TranToken";
+import CVKRandomResponse from "./CVKRandomResponse";
 
 export default class DCryptClient extends ClientBase {
   /**
@@ -48,6 +49,35 @@ export default class DCryptClient extends ClientBase {
     }
     
     return resp.body.content;
+  }
+  /**
+   * @param {import("../guid").default[]} ids
+   * @returns {Promise<CVKRandomResponse>}
+   */
+   async random(ids) {
+    if (!ids || ids.length <= 0) throw Error('ids are not defined');
+    const args = ids.map(id => `ids=${id}`).join('&');
+
+    const resp = await this._get(`/cvk/random/${this.userGuid}?${args}`)
+      .ok(res => res.status < 500);
+
+    if (!resp.ok) return Promise.reject(new Error(resp.text));
+
+    return CVKRandomResponse.from(resp.body);
+  }
+ /**
+     * @param {import("./CVKRandRegistrationReq").default} body
+     * @returns {Promise<OrkSign>}
+     */
+  async randomSignUp(body) {
+    if (!body) throw Error("The arguments cannot be null");
+
+    var resp = await this._put(`/cvk/random/${this.userGuid}`).set("Content-Type", "application/json").send(JSON.stringify(body))
+      .ok(res => res.status < 500);
+
+    if (!resp.ok) return  Promise.reject(new Error(resp.text));
+    
+    return resp.body;
   }
 
   /**

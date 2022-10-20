@@ -27,6 +27,7 @@ import Rule from "../rule";
 import Tags from "../tags";
 import SetClient from "./SetClient";
 import bigInt from "big-integer";
+import CVKRandRegistrationReq from "./CVKRandRegistrationReq";
 
 export default class DCryptFlow {
   /**
@@ -56,10 +57,20 @@ export default class DCryptFlow {
       const cvks = ids.map((_, __, i) => listCvk[i]);
 
       const idBuffers = await this.clienSet.map(ids, c => c.getClientBuffer());
+      const guids = idBuffers.map(buff => new Guid(buff));
+      const randoms = await this.clienSet.map(guids, cli => cli.random( guids.values)); 
+
+      
+      const cvkPub = randoms.values.map(rdm => rdm.cvkPub).reduce((sum, cvki) => cvki.add(sum));
+      const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
+
       const cvkAuths = idBuffers.map(buff => cmkAuth.derive(concat(buff, this.user.buffer)));
 
-      const orkSigns = await this.clienSet.map(cvkAuths, (cli, _, key) => 
-        cli.register(cvk.public(), cvks.get(key).x, cvkAuths.get(key), signedKeyId, signatures[key]));
+      const randReq = randoms.map((_, key) => new CVKRandRegistrationReq(cvkAuths.get(key), shares.get(key))) 
+
+      const orkSigns = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key)));
+      // const orkSigns = await this.clienSet.map(cvkAuths, (cli, _, key) => 
+      //   cli.register(cvk.public(), cvks.get(key).x, cvkAuths.get(key), signedKeyId, signatures[key]));
 
       await Promise.all([this.addDns(orkSigns, cvk),
         this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), orkSigns.keys)]);
