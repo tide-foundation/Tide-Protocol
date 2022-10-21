@@ -178,6 +178,8 @@ namespace Tide.Ork.Controllers
             token.Sign(_config.SecretKey); // token client will use to authetnicate on SignEntry endpoint
             return new AddRandomResponse
             {
+                CmkPub = Ed25519.G * rand.ComputeCmk(),
+                Cmk2Pub = Ed25519.G * rand.ComputeCmk2(),
                 Signature = _config.PrivateKey.EdDSASign(m),
                 EncryptedToken = account.PrismiAuth.Encrypt(token.ToByteArray())
             };
@@ -215,8 +217,8 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
-            _logger.LogInformation("TOKEN Goood! " + (cmkPub + (Ed25519.G * (account.Cmki * lagrangian))).GetX().ToString());
-
+            _logger.LogInformation("TOKEN Goood! " + (cmkPub + (Ed25519.G * (account.Cmki ))).GetX().ToString());
+            _logger.LogInformation("TOKEN Goood! " + (cmk2Pub + (Ed25519.G * (account.Cmk2i ))).GetX().ToString());
             _logger.LogInformation(_config.Threshold.ToString());
             return Unauthorized();
         }
