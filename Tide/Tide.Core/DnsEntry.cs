@@ -18,6 +18,13 @@ namespace Tide.Core
         public string[] Signatures { get; set; }
         public string[] Urls { get; set; }
         public string[] Publics { get; set; }
+        public string MessageToSign(){
+            var msg = new[]
+            { 
+                new { id = Id.ToString(), orks = Orks, Public = Public, modified = Modifided}
+            };
+            return JsonSerializer.Serialize(msg);
+        }
 
         public bool VerifyForUId() {
 

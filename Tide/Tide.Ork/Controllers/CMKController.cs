@@ -189,7 +189,7 @@ namespace Tide.Ork.Controllers
             {
                 CmkPub = Ed25519.G * (rand.ComputeCmk() * lagrangian),
                 Cmk2Pub = Ed25519.G * (rand.ComputeCmk2() * lagrangian),
-                Signature = _config.PrivateKey.EdDSASign(m),
+                Signature = new { orkid = _config.UserName, sign = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m))}, // OrkSign type
                 EncryptedToken = account.PrismiAuth.Encrypt(token.ToByteArray())
             };
         }
@@ -228,6 +228,8 @@ namespace Tide.Ork.Controllers
             }
             _logger.LogInformation("TOKEN Goood! " + (cmkPub + (Ed25519.G * (account.Cmki * lagrangian))).GetX().ToString());
             _logger.LogInformation("TOKEN Goood! " + (cmk2Pub + (Ed25519.G * (account.Cmk2i  * lagrangian))).GetX().ToString());
+
+            _logger.LogInformation("Dns " + entry.MessageToSign());
             _logger.LogInformation(_config.Threshold.ToString());
             return Unauthorized();
         }
