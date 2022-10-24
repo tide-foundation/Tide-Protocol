@@ -117,6 +117,8 @@ namespace Tide.Ork.Controllers
                 cmk2i = rdm.Generate(BigInteger.One);
             }
 
+            _logger.LogInformation("Cmki : " + cmki.ToString());
+
             var gPassPrismi = pass * prismi;
             var cmkPubi =  Ed25519.G * cmki;
             var cmkPub2i = Ed25519.G * cmk2i;
@@ -130,28 +132,35 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpPut("random/{uid}")]
-        public async Task<ActionResult<AddRandomResponse>> AddRandom([FromRoute] Guid uid, [FromBody] RandRegistrationReq rand)
+        public async Task<ActionResult<AddRandomResponse>> AddRandom([FromRoute] Guid uid, [FromBody] RandRegistrationReq rand, [FromQuery] string li = null)
         {
             if (uid == Guid.Empty) {
-                _logger.LogDebug("Random: The uid must not be empty");
+                _logger.LogDebug("AddRandom: The uid must not be empty");
                 return BadRequest($"The uid must not be empty");
             }
 
             if (rand is null || rand.Shares is null  || rand.Shares.Length < _config.Threshold) {
                 var args = new object[] { rand?.Shares?.Length, _config.Threshold };
-                _logger.LogInformation("Random: The length of the shares [length] must be greater than or equal to {threshold}", args);
+                _logger.LogInformation("AddRandom: The length of the shares [length] must be greater than or equal to {threshold}", args);
                 return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
             }
 
             if (rand.Shares.Any(shr => shr.Id != _config.Guid)) {
-                var ids = string.Join(',', rand.Shares.Select(shr => shr.Id).Where(id => id != _config.Guid));
-                _logger.LogCritical("Random: Shares were sent to the wrong ORK: {ids}", ids);
-                return BadRequest($"Shares were sent to the wrong ORK: '{ids}'");
+                var i = string.Join(',', rand.Shares.Select(shr => shr.Id).Where(id => id != _config.Guid));
+                _logger.LogCritical("AddRandom: Shares were sent to the wrong ORK: {ids}", i);
+                return BadRequest($"Shares were sent to the wrong ORK: '{i}'");
+            }
+
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
+            {
+                _logger.LogInformation("AddRandom: Invalid li for {uid}: '{li}' ", uid, li);
+                return BadRequest("Invalid parameter li");
             }
 
             var isNew = !await _manager.Exist(uid);
             if (!isNew) {
-                _logger.LogInformation("Random: CMK already exists for {uid}", uid);
+                _logger.LogInformation("AddRandom: CMK already exists for {uid}", uid);
                 return BadRequest("CMK already exists");
             }
 
@@ -167,19 +176,19 @@ namespace Tide.Ork.Controllers
 
             var resp = await _manager.Add(account);
             if (!resp.Success) {
-                _logger.LogInformation($"Random: CMK was not added for uid '{uid}'");
+                _logger.LogInformation($"AddRandom: CMK was not added for uid '{uid}'");
                 return Problem(resp.Error);
             }
             
-            _logger.LogInformation($"Random: New registration for {uid}", uid);
+            _logger.LogInformation($"AddRandom: New registration for {uid}", uid);
             var m = Encoding.UTF8.GetBytes(_config.UserName + uid.ToString());
 
             var token = new TranToken();
             token.Sign(_config.SecretKey); // token client will use to authetnicate on SignEntry endpoint
             return new AddRandomResponse
             {
-                CmkPub = Ed25519.G * rand.ComputeCmk(),
-                Cmk2Pub = Ed25519.G * rand.ComputeCmk2(),
+                CmkPub = Ed25519.G * (rand.ComputeCmk() * lagrangian),
+                Cmk2Pub = Ed25519.G * (rand.ComputeCmk2() * lagrangian),
                 Signature = _config.PrivateKey.EdDSASign(m),
                 EncryptedToken = account.PrismiAuth.Encrypt(token.ToByteArray())
             };
@@ -217,8 +226,8 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
-            _logger.LogInformation("TOKEN Goood! " + (cmkPub + (Ed25519.G * (account.Cmki ))).GetX().ToString());
-            _logger.LogInformation("TOKEN Goood! " + (cmk2Pub + (Ed25519.G * (account.Cmk2i ))).GetX().ToString());
+            _logger.LogInformation("TOKEN Goood! " + (cmkPub + (Ed25519.G * (account.Cmki * lagrangian))).GetX().ToString());
+            _logger.LogInformation("TOKEN Goood! " + (cmk2Pub + (Ed25519.G * (account.Cmk2i  * lagrangian))).GetX().ToString());
             _logger.LogInformation(_config.Threshold.ToString());
             return Unauthorized();
         }

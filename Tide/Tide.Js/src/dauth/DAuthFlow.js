@@ -84,7 +84,14 @@ export default class DAuthFlow {
       const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
       const randReq = randoms.map((_, key) => new RandRegistrationReq(prismAuths.get(key), mails.get(key), shares.get(key))) 
 
-      const randSignUpResponses = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key)));
+      //// Get lis for randomSignup <- consider finding a way to reuse lis
+      const idGens = await this.clienSet.all(c => c.getClientGenerator())
+      const idss = idGens.map(idGen => idGen.id);
+      const lis = idss.map(id => SecretShare.getLi(id, idss.values, bigInt(ed25519Point.order.toString())));
+      ///
+
+      const randSignUpResponses = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key), lis.get(key)));
+
       const partialPubs = randSignUpResponses.map(e => e[2]).map(p => randSignUpResponses.values.map(e => e[2]).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(p) ? sum : cmkPubi.add(sum)} ,ed25519Point.infinity));
       const partialPub2s = randSignUpResponses.map(e => e[3]).map(p => randSignUpResponses.values.map(e => e[3]).reduce((sum, cmk2Pubi) => { return cmk2Pubi.isEqual(p) ? sum : cmk2Pubi.add(sum)} ,ed25519Point.infinity));
       
