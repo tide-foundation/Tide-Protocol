@@ -75,22 +75,25 @@ namespace Tide.Ork.Controllers
                 return BadRequest($"Ids cannot contain the value zero");
             }
 
-            BigInteger cvki;
+            BigInteger cvki,cvk2i;
             using (var rdm = new RandomField(Ed25519.N))
             {
                 cvki = rdm.Generate(BigInteger.One);
+                cvk2i =rdm.Generate(BigInteger.One);
             }
             var cvkPubi = Ed25519.G * cvki;
+            var cvk2Pubi = Ed25519.G * cvk2i;
             var cvks = EccSecretSharing.Share(cvki, idValues, _config.Threshold, Ed25519.N);
+            var cvk2s = EccSecretSharing.Share(cvk2i, idValues, _config.Threshold, Ed25519.N);
 
             _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
-            return new CVKRandomResponse(cvkPubi, cvks) {
+            return new CVKRandomResponse(cvkPubi,cvk2Pubi, cvks,cvk2s) {
                 
             };
         }
 
         [HttpPut("random/{vuid}")]
-        public async Task<ActionResult<TideResponse>> AddRandom([FromRoute] Guid vuid, [FromBody] CVKRandRegistrationReq rand)
+        public async Task<ActionResult<CvkRandomResponseAdd>> AddRandom([FromRoute] Guid vuid, [FromBody] CVKRandRegistrationReq rand,[FromQuery] string li = null)
         {
             if (vuid == Guid.Empty)
             {
@@ -112,6 +115,12 @@ namespace Tide.Ork.Controllers
                 return BadRequest($"Shares were sent to the wrong ORK: '{ids}'");
             }
 
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
+            {
+                _logger.LogInformation("AddRandom: Invalid li for {uid}: '{li}' ", vuid, li);
+                return BadRequest("Invalid parameter li");
+            }
             var isNew = !await _managerCvk.Exist(vuid);
             if (!isNew)
             {
@@ -133,7 +142,8 @@ namespace Tide.Ork.Controllers
             {
                 VuId = vuid,
                 CVKi = rand.ComputeCvk(),
-                CvkPub = rand.CvkPub,
+                CVK2i = rand.ComputeCvk2(),
+                CvkPub = new Ed25519Key(Ed25519.G *(rand.ComputeCvk() * lagrangian)),
                 CvkiAuth = rand.CvkiAuth
             };
             var resp = await _managerCvk.SetOrUpdate(account);
@@ -146,11 +156,56 @@ namespace Tide.Ork.Controllers
             _logger.LogInformation("Random: New CVK for {0} with pub {1}", vuid, rand.CvkPub);
         
             var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
-            var signOrk = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m));
-            resp.Content = new { orkid = _config.UserName, sign = signOrk };
-            
-            return resp;
+            var token = new TranToken();
+            token.Sign(_config.SecretKey); // token client will use to authetnicate on SignEntry endpoint
+            //return resp;
+            return new CvkRandomResponseAdd
+            {
+                CvkPub = Ed25519.G * (rand.ComputeCvk() * lagrangian),
+                Cvk2Pub = Ed25519.G * (rand.ComputeCvk2() * lagrangian),
+                Signature = new { orkid = _config.UserName, sign = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m))}, // OrkSign type
+                EncryptedToken = account.CvkiAuth.Encrypt(token.ToByteArray())
+            };
         }
+
+
+        [HttpGet("sign/{vuid}/{token}/{cvkPub}/{cvk2Pub}")]
+        public async Task<ActionResult> SignEntry([FromRoute] Guid vuid, [FromRoute] string token, [FromRoute] Ed25519Point cvkPub, [FromRoute] Ed25519Point cvk2Pub, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
+        {
+            if (!token.FromBase64UrlString(out byte[] bytesToken))
+            {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"SignEntry: Invalid token format for {vuid}");
+                return Unauthorized();
+            }
+
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
+            {
+                _logger.LogInformation("SignEntry: Invalid li for {uid}: '{li}' ", vuid, li);
+                return BadRequest("Invalid parameter li");
+            }
+
+            var tran = TranToken.Parse(bytesToken);
+            var account = await _managerCvk.GetById(vuid);
+            if (account == null || tran == null || !tran.Check(_config.SecretKey)) { // checking that this ork was the one who signed this token (timestamp pretty much)
+                if (account == null)
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"SignEntry: Account {vuid} does not exist");
+                else
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"SignEntry: Invalid token for {vuid}");
+
+                return Unauthorized("Invalid account or signature");
+            }
+            
+            if (!tran.OnTime) {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"SignEntry: Expired token for {vuid}");
+                return StatusCode(418, new TranToken().ToString());
+            }
+           
+            _logger.LogInformation("TOKEN Goood! " + (cvkPub + (Ed25519.G * (account.CVKi * lagrangian))).GetX().ToString());
+            _logger.LogInformation("TOKEN Goood! " + (cvk2Pub + (Ed25519.G * (account.CVK2i * lagrangian))).GetX().ToString());
+            return Unauthorized();
+        }
+
         //TODO: there is not verification if the account already exists
         [HttpPut("{vuid}/{keyId}")]
         public async Task<ActionResult<TideResponse>> Add([FromRoute] Guid vuid, [FromRoute] Guid keyId, [FromBody] string[] data)

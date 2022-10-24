@@ -19,11 +19,13 @@ import Guid from "../guid";
 export default class CVKRandomResponse {
     /**
     * @param {ed25519Point} cvkPub
+    * @param {ed25519Point} cvk2Pub
     * @param { CVKRandomShareResponse[] } shares
     */
-    constructor(cvkPub,  shares) {
+    constructor(cvkPub, cvk2Pub, shares) {
         this.cvkPub = cvkPub;
         this.shares = shares;
+        this.cvk2Pub = cvk2Pub;
     }
 
     toString() { return JSON.stringify(this); }
@@ -32,6 +34,7 @@ export default class CVKRandomResponse {
     
     toJSON() { return {
         cvkPub: Buffer.from(this.cvkPub.toArray()).toString('base64'),
+        cvk2Pub: Buffer.from(this.cvk2Pub.toArray()).toString('base64'),
         shares: this.shares
     }}
 
@@ -39,13 +42,14 @@ export default class CVKRandomResponse {
     static from(data) {
 
         const obj = typeof data === 'string' ? JSON.parse(data) : data;
-        if (!obj.cvkPub ||  !obj.shares)
+        if (!obj.cvkPub || !obj.cvk2Pub || !obj.shares)
             throw Error(`The JSON is not in the correct format: ${data}`);
 
         const cvkPub = ed25519Point.from(Buffer.from(obj.cvkPub, 'base64'));
+        const cvk2Pub = ed25519Point.from(Buffer.from(obj.cvk2Pub, 'base64'));
         const shares = obj.shares.map(CVKRandomShareResponse.from);
 
-        return new CVKRandomResponse( cvkPub, shares);
+        return new CVKRandomResponse( cvkPub, cvk2Pub, shares);
     }
 }
 
@@ -53,10 +57,12 @@ export class CVKRandomShareResponse {
     /**
     * @param {Guid} id 
     * @param { import("big-integer").BigInteger} cvk 
+    *  @param { import("big-integer").BigInteger} cvk2 
     */
-    constructor(id, cvk) {
+    constructor(id, cvk, cvk2) {
         this.id = id
         this.cvk = cvk;
+        this.cvk2 =cvk2;
     }
 
     toString() { return JSON.stringify(this); }
@@ -67,6 +73,7 @@ export class CVKRandomShareResponse {
         return {
             id: this.id.toString(),
             cvk: BnInput.getArray(this.cvk).toString('base64') ,
+            cvk2: BnInput.getArray(this.cvk2).toString('base64') ,
         };
     }
 
@@ -75,13 +82,14 @@ export class CVKRandomShareResponse {
         if (!data) return null;
 
         const obj = typeof data === 'string' ? JSON.parse(data) : data;
-        if (!obj.id || !obj.cvk )
+        if (!obj.id || !obj.cvk || !obj.cvk2)
             throw Error(`The JSON is not in the correct format: ${data}`);
 
         const id = Guid.from(obj.id)
         const cvk = BnInput.getBig(Buffer.from(obj.cvk, 'base64'));
+        const cvk2 = BnInput.getBig(Buffer.from(obj.cvk2, 'base64'));
      
         
-        return new CVKRandomShareResponse(id, cvk);
+        return new CVKRandomShareResponse(id, cvk,cvk2);
     }
 }

@@ -100,7 +100,7 @@ export default class DAuthFlow {
 
 
 
-      await this.addDns(signatures, new ed25519Key(0, cmkPub), partialPubs,partialPub2s, tokens);
+      //await this.addDns(signatures, new ed25519Key(0, cmkPub), partialPubs,partialPub2s, tokens);
 
       return cvkAuth;
     } catch (err) {
