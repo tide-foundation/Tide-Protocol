@@ -13,6 +13,7 @@ namespace Tide.Core
         public Guid VuId { get; set; }
         public Ed25519Key CvkPub { get; set; }
         public BigInteger CVKi { get; set; }
+        public BigInteger CVK2i { get; set; }
         public AesKey CvkiAuth { get; set; }
 
         public CvkVault() : base(1)
@@ -26,6 +27,7 @@ namespace Tide.Core
             yield return CvkPub != null ? CvkPub.ToByteArray() : new byte[] { };
             yield return CVKi.ToByteArray(true, true);
             yield return CvkiAuth.ToByteArray();
+            yield return CVK2i.ToByteArray(true, true);
         }
 
         protected override void SetItems(IReadOnlyList<byte[]> data)
@@ -34,6 +36,7 @@ namespace Tide.Core
             CvkPub = data[1].Length != 0 ? Ed25519Key.ParsePublic(data[1]) : null;
             CVKi = new BigInteger(data[2], true, true);
             CvkiAuth = AesKey.Parse(data[3]);
+            CVK2i = new BigInteger(data[4], true, true);
         }
     }
 }

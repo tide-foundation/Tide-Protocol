@@ -34,6 +34,9 @@ namespace Tide.Ork.Controllers
         internal BigInteger ComputeCvk() => Shares.Select(shr => shr.CvkVal)
             .Aggregate((sum, cvk) => (sum + cvk) % Ed25519.N);
 
+        internal BigInteger ComputeCvk2() => Shares.Select(shr => shr.Cvk2Val)
+            .Aggregate((sum, cvk2) => (sum + cvk2) % Ed25519.N);
+
 
     }
 }

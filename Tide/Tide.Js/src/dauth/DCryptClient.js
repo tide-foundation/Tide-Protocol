@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { AESKey } from "cryptide";
+import { AESKey, ed25519Key ,ed25519Point} from "cryptide";
 import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
 import Guid from "../guid";
 import TranToken from "../TranToken";
@@ -67,18 +67,38 @@ export default class DCryptClient extends ClientBase {
   }
  /**
      * @param {import("./CVKRandRegistrationReq").default} body
-     * @returns {Promise<OrkSign>}
+     * * @param {import("../guid").default[]} ids
+     * @returns {Promise<[OrkSign, string,ed25519Point,ed25519Point]>}
      */
-  async randomSignUp(body) {
+  async randomSignUp(body,li) {
     if (!body) throw Error("The arguments cannot be null");
 
-    var resp = await this._put(`/cvk/random/${this.userGuid}`).set("Content-Type", "application/json").send(JSON.stringify(body))
+    var resp = await this._put(`/cvk/random/${this.userGuid}?li=${li.toString(10)}`).set("Content-Type", "application/json").send(JSON.stringify(body))
       .ok(res => res.status < 500);
 
     if (!resp.ok) return  Promise.reject(new Error(resp.text));
     
-    return resp.body;
+   // return resp.body;
+   return [resp.body.signature, resp.body.encryptedToken, ed25519Point.from(Buffer.from(resp.body.cvkPub, 'base64')),ed25519Point.from(Buffer.from(resp.body.cvk2Pub, 'base64'))];
   }
+
+    /**
+   * @param {import("../guid").default } tranid
+   * @param {TranToken} token
+   * @param {DnsEntry} entry
+   * @param {ed25519Point} partialPub
+   *  @param {ed25519Point} partialCvk2Pub
+   * @param {bigInt.BigInteger} li
+   **/
+     async signEntry(token, tranid, entry, partialPub, partialCvk2Pub, li) {
+      const tkn = urlEncode(token.toArray());
+
+      const resp = await this._get(`/cvk/sign/${this.userGuid}/${tkn}/${urlEncode(partialPub.toArray())}/${urlEncode(partialCvk2Pub.toArray())}?tranid=${tranid.toString()}&li=${li.toString(10)}`).set("Content-Type", "application/json").send(entry.toString())
+        .ok(res => res.status < 500);
+  
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
+      return fromBase64(resp.text);
+    }
 
   /**
    * @param { Guid } tranid

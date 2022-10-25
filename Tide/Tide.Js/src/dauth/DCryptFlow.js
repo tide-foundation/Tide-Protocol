@@ -28,6 +28,8 @@ import Tags from "../tags";
 import SetClient from "./SetClient";
 import bigInt from "big-integer";
 import CVKRandRegistrationReq from "./CVKRandRegistrationReq";
+import TranToken from "../TranToken";
+import { Dictionary } from "../Tools";
 
 export default class DCryptFlow {
   /**
@@ -52,27 +54,30 @@ export default class DCryptFlow {
       if (!signatures && signatures.length != this.clienSet.length)
         throw new Error("Signatures are required");
 
-      const ids = await this.clienSet.all(c => c.getClientId());
-      const listCvk = cvk.share(threshold, ids.values, true);
-      const cvks = ids.map((_, __, i) => listCvk[i]);
-
+      const idGens = await this.clienSet.all(c => c.getClientGenerator());
+      const ids = idGens.map(idGen => idGen.id);
       const idBuffers = await this.clienSet.map(ids, c => c.getClientBuffer());
       const guids = idBuffers.map(buff => new Guid(buff));
-      const randoms = await this.clienSet.map(guids, cli => cli.random( guids.values)); 
-
       
+      const randoms = await this.clienSet.map(guids, cli => cli.random( guids.values)); 
+ 
       const cvkPub = randoms.values.map(rdm => rdm.cvkPub).reduce((sum, cvki) => cvki.add(sum));
       const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
-
       const cvkAuths = idBuffers.map(buff => cmkAuth.derive(concat(buff, this.user.buffer)));
 
       const randReq = randoms.map((_, key) => new CVKRandRegistrationReq(cvkAuths.get(key), shares.get(key))) 
 
-      const orkSigns = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key)));
-      // const orkSigns = await this.clienSet.map(cvkAuths, (cli, _, key) => 
-      //   cli.register(cvk.public(), cvks.get(key).x, cvkAuths.get(key), signedKeyId, signatures[key]));
+      const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
+      const randSignUpResponses = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key), lis.get(key)));
 
-      await Promise.all([this.addDns(orkSigns, cvk),
+      const partialPubs = randSignUpResponses.map(e => e[2]).map(p => randSignUpResponses.values.map(e => e[2]).reduce((sum, cvkPubi) => { return cvkPubi.isEqual(p) ? sum : cvkPubi.add(sum)} ,ed25519Point.infinity)); 
+      const partialPub2s = randSignUpResponses.map(e => e[3]).map(p => randSignUpResponses.values.map(e => e[3]).reduce((sum, cvk2Pubi) => { return cvk2Pubi.isEqual(p) ? sum : cvk2Pubi.add(sum)} ,ed25519Point.infinity)); 
+      const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(cvkAuths.get(i).decrypt(cipher))) // works
+      const orkSigns = randSignUpResponses.map(e => e[0]);
+
+      //await this.addDns(signatures, new ed25519Key(0, cvkPub), partialPubs, tokens);
+      console.log(randSignUpResponses.map(e => e[0]));
+      await Promise.all([this.addDns(orkSigns,  new ed25519Key(0, cvkPub), partialPubs,partialPub2s, tokens),
         this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), orkSigns.keys)]);
 
       return cvk;
@@ -85,8 +90,11 @@ export default class DCryptFlow {
    * @private 
    * @typedef {import("./DAuthClient").OrkSign} OrkSign
    * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
-   * @param {ed25519Key} key */
-   addDns(signatures, key) {
+   * @param {ed25519Key} key 
+   * @param {Dictionary<ed25519Point>} partialCvkPubs
+   * @param {Dictionary<ed25519Point>} partialCvk2Pub
+   * @param {import("../Tools").Dictionary<TranToken>} tokens*/
+   addDns(signatures, key, partialCvkPubs, partialCvk2Pub, tokens) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
     const cln = this.clienSet.get(index);
@@ -105,8 +113,29 @@ export default class DCryptFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    entry.sign(key);
-    return dnsCln.addDns(entry);
+    this.signEntry(entry, tokens, partialCvkPubs,partialCvk2Pub);
+    //return dnsCln.addDns(entry);
+  }
+/**
+ * 
+ * @param {DnsEntry} entry 
+ * @param {import("../Tools").Dictionary<TranToken>} tokens
+ * * @param {import("../Tools").Dictionary<ed25519Point>} partialPubs
+ * * @param {import("../Tools").Dictionary<ed25519Point>} partialCvk2Pub
+ */
+  async signEntry(entry, tokens, partialPubs,partialCvk2Pub){
+    const idGens = await this.clienSet.all(c => c.getClientGenerator())
+    const ids = idGens.map(idGen => idGen.id);
+    const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
+
+    const tranid = new Guid();
+    //var c2 = cmk2Pub.getX().toString();
+    const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, partialPubs.get(i),partialCvk2Pub.get(i), li));
+
+
+
+    //const signature = signatures.reduce((sum, sig) => (sum + sig) % ed25519Point.order);
+    //return signature;
   }
 
   /** @param {AESKey} cmkAuth */
