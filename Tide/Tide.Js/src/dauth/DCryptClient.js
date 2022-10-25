@@ -97,7 +97,7 @@ export default class DCryptClient extends ClientBase {
         .ok(res => res.status < 500);
   
       if (!resp.ok) return  Promise.reject(new Error(resp.text));
-      return fromBase64(resp.text);
+      return BigInt(resp.text);
     }
 
   /**

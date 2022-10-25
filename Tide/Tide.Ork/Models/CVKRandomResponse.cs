@@ -32,7 +32,7 @@ namespace Tide.Ork.Models
 
         public CVKRandomResponse() {}
 
-        public CVKRandomResponse(Ed25519Point cvkPub, Ed25519Point cvk2Pub, IReadOnlyList<Point> cvk2s, IReadOnlyList<Point> cvks)
+        public CVKRandomResponse(Ed25519Point cvkPub, Ed25519Point cvk2Pub, IReadOnlyList<Point> cvks, IReadOnlyList<Point> cvk2s)
         {
             Debug.Assert(cvks != null && cvks.Any(), $"{nameof(cvks)} cannot be empty");
 

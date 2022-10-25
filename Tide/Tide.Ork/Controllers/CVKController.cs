@@ -57,7 +57,7 @@ namespace Tide.Ork.Controllers
             _features = settings.Features;
         }
 
-        [HttpGet("random/{uid}")]
+        [HttpGet("random/{vuid}")]
         public ActionResult<CVKRandomResponse> GetRandom([FromQuery] ICollection<Guid> ids)
         {
             if (ids == null || ids.Count < _config.Threshold)
@@ -153,12 +153,11 @@ namespace Tide.Ork.Controllers
                 return Problem(resp.Error);
             }
 
-            _logger.LogInformation("Random: New CVK for {0} with pub {1}", vuid, rand.CvkPub);
+            _logger.LogInformation("Random: New CVK for {0} with pub {1}", vuid, account.CvkPub);
         
             var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
             var token = new TranToken();
             token.Sign(_config.SecretKey); // token client will use to authetnicate on SignEntry endpoint
-            //return resp;
             return new CvkRandomResponseAdd
             {
                 CvkPub = Ed25519.G * (rand.ComputeCvk() * lagrangian),
@@ -169,8 +168,8 @@ namespace Tide.Ork.Controllers
         }
 
 
-        [HttpGet("sign/{vuid}/{token}/{cvkPub}/{cvk2Pub}")]
-        public async Task<ActionResult> SignEntry([FromRoute] Guid vuid, [FromRoute] string token, [FromRoute] Ed25519Point cvkPub, [FromRoute] Ed25519Point cvk2Pub, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
+        [HttpGet("sign/{vuid}/{token}/{partialCvkPub}/{partialCvk2Pub}")]
+        public async Task<ActionResult<String>> SignEntry([FromRoute] Guid vuid, [FromRoute] string token, [FromRoute] Ed25519Point partialCvkPub, [FromRoute] Ed25519Point partialCvk2Pub, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken))
             {
@@ -200,10 +199,14 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"SignEntry: Expired token for {vuid}");
                 return StatusCode(418, new TranToken().ToString());
             }
-           
-            _logger.LogInformation("TOKEN Goood! " + (cvkPub + (Ed25519.G * (account.CVKi * lagrangian))).GetX().ToString());
-            _logger.LogInformation("TOKEN Goood! " + (cvk2Pub + (Ed25519.G * (account.CVK2i * lagrangian))).GetX().ToString());
-            return Unauthorized();
+
+            var cvkPub = partialCvkPub + (Ed25519.G * (account.CVKi * lagrangian));
+            var cvk2Pub = partialCvk2Pub + (Ed25519.G * (account.CVK2i * lagrangian));
+
+            var s = Ed25519Dsa.Sign(account.CVK2i * lagrangian, account.CVKi * lagrangian, cvkPub, cvk2Pub, entry.MessageSignedBytes());
+
+            return s.ToString(); // signature
+         
         }
 
         //TODO: there is not verification if the account already exists

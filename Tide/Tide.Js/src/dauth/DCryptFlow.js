@@ -62,6 +62,7 @@ export default class DCryptFlow {
       const randoms = await this.clienSet.map(guids, cli => cli.random( guids.values)); 
  
       const cvkPub = randoms.values.map(rdm => rdm.cvkPub).reduce((sum, cvki) => cvki.add(sum));
+      const cvk2Pub = randoms.values.map(rdm => rdm.cvk2Pub).reduce((sum, cvk2i) => cvk2i.add(sum));
       const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
       const cvkAuths = idBuffers.map(buff => cmkAuth.derive(concat(buff, this.user.buffer)));
 
@@ -75,9 +76,8 @@ export default class DCryptFlow {
       const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(cvkAuths.get(i).decrypt(cipher))) // works
       const orkSigns = randSignUpResponses.map(e => e[0]);
 
-      //await this.addDns(signatures, new ed25519Key(0, cvkPub), partialPubs, tokens);
-      console.log(randSignUpResponses.map(e => e[0]));
-      await Promise.all([this.addDns(orkSigns,  new ed25519Key(0, cvkPub), partialPubs,partialPub2s, tokens),
+      //await this.addDns(orkSigns,  new ed25519Key(0, cvkPub), partialPubs,partialPub2s, tokens,cvk2Pub);
+      await Promise.all([this.addDns(orkSigns,  new ed25519Key(0, cvkPub), partialPubs,partialPub2s, tokens,cvk2Pub),
         this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), orkSigns.keys)]);
 
       return cvk;
@@ -93,8 +93,9 @@ export default class DCryptFlow {
    * @param {ed25519Key} key 
    * @param {Dictionary<ed25519Point>} partialCvkPubs
    * @param {Dictionary<ed25519Point>} partialCvk2Pub
-   * @param {import("../Tools").Dictionary<TranToken>} tokens*/
-   addDns(signatures, key, partialCvkPubs, partialCvk2Pub, tokens) {
+   * @param {import("../Tools").Dictionary<TranToken>} tokens
+   * @param {ed25519Point} cvk2Pub*/
+   async addDns(signatures, key, partialCvkPubs, partialCvk2Pub, tokens,cvk2Pub) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
     const cln = this.clienSet.get(index);
@@ -113,29 +114,33 @@ export default class DCryptFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    this.signEntry(entry, tokens, partialCvkPubs,partialCvk2Pub);
-    //return dnsCln.addDns(entry);
+    const entrySig = await  this.signEntry(entry, tokens, partialCvkPubs, partialCvk2Pub, cvk2Pub);
+
+    entry.signature = Buffer.from(entrySig).toString('base64');
+    return dnsCln.addDns(entry);
+   
   }
 /**
  * 
  * @param {DnsEntry} entry 
  * @param {import("../Tools").Dictionary<TranToken>} tokens
- * * @param {import("../Tools").Dictionary<ed25519Point>} partialPubs
- * * @param {import("../Tools").Dictionary<ed25519Point>} partialCvk2Pub
+ * @param {import("../Tools").Dictionary<ed25519Point>} partialPubs
+ * @param {import("../Tools").Dictionary<ed25519Point>} partialCvk2Pub
+ * @param {ed25519Point} cvk2Pub
  */
-  async signEntry(entry, tokens, partialPubs,partialCvk2Pub){
+  async signEntry(entry, tokens, partialPubs,partialCvk2Pub,cvk2Pub){
     const idGens = await this.clienSet.all(c => c.getClientGenerator())
     const ids = idGens.map(idGen => idGen.id);
     const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
 
     const tranid = new Guid();
-    //var c2 = cmk2Pub.getX().toString();
     const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, partialPubs.get(i),partialCvk2Pub.get(i), li));
 
+    const s = signatures.values.reduce((sum, sig) => (sum + sig) % ed25519Point.order); // todo: add proper mod function here without it being messy
 
-
-    //const signature = signatures.reduce((sum, sig) => (sum + sig) % ed25519Point.order);
-    //return signature;
+    const signature = ed25519Key.createSig(cvk2Pub, s);
+    return signature;
+ 
   }
 
   /** @param {AESKey} cmkAuth */
