@@ -20,11 +20,13 @@ export default class RandRegistrationReq {
     /**
     * @param { AESKey } prismAuth
     * @param { string } email
+    * @param { BigInt } cmki // used only for dns entry signing
     * @param { RandomShareResponse[] } shares
     */
-    constructor(prismAuth, email, shares) {
+    constructor(prismAuth, email, cmki, shares) {
         this.prismAuth = prismAuth;
         this.email = email;
+        this.cmki = cmki
         this.shares = shares;
     }
 
@@ -35,6 +37,7 @@ export default class RandRegistrationReq {
     toJSON() { return {
         prismAuth: this.prismAuth.toString(),
         email: this.email,
+        cmki: this.cmki.toString(),
         shares: this.shares
     }}
 
@@ -49,7 +52,8 @@ export default class RandRegistrationReq {
         const prismAuth = AESKey.from(obj.prismAuth)
         const email = obj.email;
         const shares = obj.shares.map(RandomShareResponse.from);
+        const cmki = BigInt(obj.cmki)
         
-        return new RandRegistrationReq(prismAuth, email, shares);
+        return new RandRegistrationReq(prismAuth, email, cmki, shares);
     }
 }

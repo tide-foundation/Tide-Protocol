@@ -11,6 +11,8 @@ namespace Tide.Ork.Models {
         public RandomShareResponse[] Shares { get; set; }
         public AesKey PrismAuth { get; set; }
         public string Email { get; set; }
+        public string Cmki { get; set; }
+        public BigInteger GetCmki() => BigInteger.Parse(Cmki);
 
         internal BigInteger ComputePrism() => Shares.Select(shr => shr.PrismVal)
             .Aggregate((sum, prism) => (sum + prism) % Ed25519.N);

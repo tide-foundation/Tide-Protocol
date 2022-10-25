@@ -131,13 +131,14 @@ export default class DAuthClient extends ClientBase {
   
     /**
      * @param {import("./RandRegistrationReq").default} body
-     * @param {import("../guid").default[]} ids
+     * @param {ed25519Point} partialCmkPub
+     * @param {ed25519Point} partialCmk2Pub
      * @returns {Promise<[OrkSign, string,ed25519Point,ed25519Point]>}
      */
-    async randomSignUp(body, li) {
+    async randomSignUp(body, partialCmkPub, partialCmk2Pub, li) {
       if (!body) throw Error("The arguments cannot be null");
   
-      const resp = await this._put(`/cmk/random/${this.userGuid}?li=${li.toString(10)}`).set("Content-Type", "application/json").send(JSON.stringify(body))
+      const resp = await this._put(`/cmk/random/${this.userGuid}/${urlEncode(partialCmkPub.toArray())}/${urlEncode(partialCmk2Pub.toArray())}?li=${li.toString(10)}`).set("Content-Type", "application/json").send(JSON.stringify(body))
         .ok(res => res.status < 500);
   
       if (!resp.ok) return  Promise.reject(new Error(resp.text));

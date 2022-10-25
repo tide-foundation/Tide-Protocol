@@ -117,7 +117,7 @@ namespace Tide.Ork.Controllers
                 cmk2i = rdm.Generate(BigInteger.One);
             }
 
-            _logger.LogInformation("Cmki : " + cmki.ToString());
+            _logger.LogInformation("CMki: " + cmki.ToString());
 
             var gPassPrismi = pass * prismi;
             var cmkPubi =  Ed25519.G * cmki;
@@ -128,13 +128,13 @@ namespace Tide.Ork.Controllers
             var cmk2s = EccSecretSharing.Share(cmk2i, idValues, _config.Threshold, Ed25519.N);
             
             _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
-            return new RandomResponse(gPassPrismi, cmkPubi, cmkPub2i, vendorCMKi, prisms, cmks, cmk2s);
+            return new RandomResponse(_config.UserName, gPassPrismi, cmkPubi, cmkPub2i, vendorCMKi, prisms, cmki, cmks, cmk2s);
         }
 
-        [HttpPut("random/{uid}")] // Also provide cmkPub and cmk2Pub points from function above (so these are non threshold)
+        [HttpPut("random/{uid}/{partialCmkPub}/{partialCmk2Pub}")] // Also provide cmkPub and cmk2Pub points from function above (so these are non threshold)
         // Also provide a partial DnsEntry for us to sign. It has to be partial because we don't have all the fields e.g. signatures
         // But we do have the fields we sign e.g. orkIDs and cmkPub, so it's possible
-        public async Task<ActionResult<AddRandomResponse>> AddRandom([FromRoute] Guid uid, [FromBody] RandRegistrationReq rand, [FromQuery] string li = null)
+        public async Task<ActionResult<AddRandomResponse>> AddRandom([FromRoute] Guid uid, [FromRoute] Ed25519Point partialCmkPub, [FromRoute] Ed25519Point partialCmk2Pub, [FromBody] RandRegistrationReq rand, [FromQuery] string li = null)
         {
             if (uid == Guid.Empty) {
                 _logger.LogDebug("AddRandom: The uid must not be empty");
@@ -175,6 +175,11 @@ namespace Tide.Ork.Controllers
                 PrismiAuth = rand.PrismAuth,
                 Cmk2i = rand.ComputeCmk2()
             };
+
+            _logger.LogInformation(rand.GetCmki().ToString());
+
+            _logger.LogInformation("Publicx: " + (partialCmkPub + (Ed25519.G * rand.GetCmki())).GetX());
+            _logger.LogInformation("Publicy: " + (partialCmkPub + (Ed25519.G * rand.GetCmki())).GetY());
 
 
             // find the rand value which has this ork's id.

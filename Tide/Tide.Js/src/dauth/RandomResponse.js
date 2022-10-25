@@ -22,12 +22,16 @@ export default class RandomResponse {
     * @param {ed25519Point} cmkPub
     * @param {ed25519Point} cmk2Pub
     * @param {ed25519Point} vendorCMK
+    * @param {BigInt} cmki_noThreshold
+    * @param {string} ork_userName
     * @param { RandomShareResponse[] } shares
     */
-    constructor(password, cmkPub, cmk2Pub, vendorCMK, shares) {
+    constructor(password, cmkPub, cmk2Pub, cmki_noThreshold, ork_userName, vendorCMK, shares) {
         this.password = password;
         this.cmkPub = cmkPub;
         this.cmk2Pub = cmk2Pub;
+        this.cmki_noThreshold = cmki_noThreshold;
+        this.ork_userName = ork_userName;
         this.vendorCMK = vendorCMK;
         this.shares = shares;
     }
@@ -40,6 +44,8 @@ export default class RandomResponse {
         cmkPub: Buffer.from(this.cmkPub.toArray()).toString('base64'),
         password: Buffer.from(this.password.toArray()).toString('base64'),
         vendorCMK: Buffer.from(this.vendorCMK.toArray()).toString('base64'),
+        cmki_noThreshold: this.cmki_noThreshold.toString(),
+        ork_userName: this.ork_userName,
         shares: this.shares
     }}
 
@@ -55,8 +61,10 @@ export default class RandomResponse {
         const cmk2Pub = ed25519Point.from(Buffer.from(obj.cmk2Pub, 'base64'));
         const vendorCMK = ed25519Point.from(Buffer.from(obj.vendorCMK, 'base64'));
         const shares = obj.shares.map(RandomShareResponse.from);
+        const cmki_noThreshold = BigInt(obj.cmki_noThreshold);
+        const ork_userName = obj.ork_userName;
 
-        return new RandomResponse(password, cmkPub, cmk2Pub, vendorCMK, shares);
+        return new RandomResponse(password, cmkPub, cmk2Pub, cmki_noThreshold, ork_userName, vendorCMK, shares);
     }
 }
 

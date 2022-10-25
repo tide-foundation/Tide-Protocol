@@ -63,49 +63,57 @@ export default class DAuthFlow {
 
       const cmkPub = randoms.values.map(rdm => rdm.cmkPub).reduce((sum, cmki) => cmki.add(sum));
 
-      //const partialPubs1 = randoms.map(pub => pub.cmkPub).map(pub => randoms.values.map(pub => pub.cmkPub).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(pub) ? sum : cmkPubi.add(sum) } ));
-
       const cmk2Pub = randoms.values.map(rdm => rdm.cmk2Pub).reduce((sum, cmki) => cmki.add(sum));
       const gRPrism = randoms.values.map(rdm => rdm.password).reduce((sum, gPrismi)=> gPrismi.add(sum));
       const vendorCMK = randoms.values.map(rdm => rdm.vendorCMK).reduce((sum, gPrismi)=> gPrismi.add(sum));
+      const cmkis = randoms.map(p => p.cmki_noThreshold); // add ork ID to dictionairies later
+      const orkIDs = randoms.map(p => p.ork_userName);
+      
       const cvkAuth = AESKey.seed(vendorCMK.toArray());
 
       const rInv = r.modInv(bigInt(ed25519Point.order.toString()));
       const gPrism = gRPrism.times(rInv);
       const prismAuth = AESKey.seed(gPrism.toArray());
 
-     // const prismAuth = AESKey.seed(g.times(prism).toArray());
-      //const cmkAuth = AESKey.seed(Buffer.from(cmk.toArray(256).value));
 
       const prismAuths = idBuffers.map(buff => prismAuth.derive(buff)); 
 
       
       const mails = randoms.map((_, __, i) => emails[(emailIndex + i) % emails.length]);
       const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
-      const randReq = randoms.map((_, key) => new RandRegistrationReq(prismAuths.get(key), mails.get(key), shares.get(key))) 
+      const randReq = randoms.map((_, key) => new RandRegistrationReq(prismAuths.get(key), mails.get(key), cmkis.get(key), shares.get(key))) 
 
       //// Get lis for randomSignup <- consider finding a way to reuse lis
       const idGens = await this.clienSet.all(c => c.getClientGenerator())
       const idss = idGens.map(idGen => idGen.id);
       const lis = idss.map(id => SecretShare.getLi(id, idss.values, bigInt(ed25519Point.order.toString())));
       ///
+      const partialPubs = randoms.map(p => randoms.values.map(p => p.cmkPub).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(p.cmkPub) ? sum : cmkPubi.add(sum)}, ed25519Point.infinity));
+      const partialPubs2 = randoms.map(p => randoms.values.map(p => p.cmk2Pub).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(p.cmk2Pub) ? sum : cmkPubi.add(sum)}, ed25519Point.infinity));
 
-      const randSignUpResponses = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key), lis.get(key)));
-
-      const partialPubs = randSignUpResponses.map(e => e[2]).map(p => randSignUpResponses.values.map(e => e[2]).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(p) ? sum : cmkPubi.add(sum)} ,ed25519Point.infinity));
-      const partialPub2s = randSignUpResponses.map(e => e[3]).map(p => randSignUpResponses.values.map(e => e[3]).reduce((sum, cmk2Pubi) => { return cmk2Pubi.isEqual(p) ? sum : cmk2Pubi.add(sum)} ,ed25519Point.infinity));
+      const randSignUpResponses = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key), partialPubs.get(key), partialPubs2.get(key), lis.get(key)));
+      ///
       
-      const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(prismAuths.get(i).decrypt(cipher))) // works
       const signatures = randSignUpResponses.map(e => e[0]);
 
 
 
-      await this.addDns(signatures, new ed25519Key(0, cmkPub), partialPubs,partialPub2s, tokens, cmk2Pub);
+      //await this.addDns(signatures, new ed25519Key(0, cmkPub), partialPubs,partialPub2s, tokens, cmk2Pub);
 
       return cvkAuth;
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  prepareDnsEntry(cmkPub, orkIds){
+    const cln = this.clienSet.get(0);
+    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
+
+    const entry = new DnsEntry();
+    entry.id = cln.userGuid;
+    entry.Public = new ed25519Key(0, cmkPub);
+    entry.orks = orkIds;
   }
 
   /**
