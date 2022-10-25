@@ -13,18 +13,11 @@ namespace Tide.Core
         public Guid Id { get; set; }
         public string[] Orks { get; set; }
         public string Public { get; set; }
-        public long Modifided { get; set; }
+        public long Modified { get; set; }
         public string Signature { get; set; }
         public string[] Signatures { get; set; }
         public string[] Urls { get; set; }
         public string[] Publics { get; set; }
-        public string MessageToSign(){
-            var msg = new[]
-            { 
-                new { id = Id.ToString(), orks = Orks, Public = Public, modified = Modifided}
-            };
-            return JsonSerializer.Serialize(msg);
-        }
 
         public bool VerifyForUId() {
 
@@ -44,15 +37,15 @@ namespace Tide.Core
         }
         
         public byte[] MessageSigned() {
-            return Utils.Hash(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
+            return Utils.Hash(JsonSerializer.Serialize(new { Id, Orks, Public, Modified }, GetJsonOptions()));
         }
 
         public byte[] MessageSignedSHA512() {
-            return Utils.HashSHA512(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
+            return Utils.HashSHA512(JsonSerializer.Serialize(new { Id, Orks, Public, Modified }, GetJsonOptions()));
         }
 
         public byte[] MessageSignedBytes() {
-            return System.Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { Id, Orks, Public, Modifided }, GetJsonOptions()));
+            return System.Text.Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { Id, Orks, Public, Modified }, GetJsonOptions()));
         }
         
         protected override JsonSerializerOptions GetJsonOptions()
@@ -73,7 +66,7 @@ namespace Tide.Core
             Id = basic.Id;
             Orks = basic.Orks;
             Public = basic.Public;
-            Modifided = basic.Modifided;
+            Modified = basic.Modified;
             Signature = basic.Signature;
             Signatures = basic.Signatures;
         }

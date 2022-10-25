@@ -80,7 +80,7 @@ describe('DnsClient', function () {
 
         const entry = new DnsEntry();
         entry.id = user;
-        entry.public = pubKey
+        entry.Public = pubKey
         entry.signatures = []
         entry.orks = [];
         entry.sign(prvKey);
@@ -89,7 +89,7 @@ describe('DnsClient', function () {
 
         //updating a dns entry
         const prvKeyNew = ed25519Key.generate();
-        entry.public = prvKeyNew.public();
+        entry.Public = prvKeyNew.public();
         entry.sign(prvKeyNew);
 
         const authToken = new TranJwt(user);
@@ -108,7 +108,7 @@ describe('DnsClient', function () {
 
         const entry = new DnsEntry();
         entry.id = user;
-        entry.public = pubKey
+        entry.Public = pubKey
         entry.signatures = []
         entry.orks = [];
         entry.sign(prvKey);

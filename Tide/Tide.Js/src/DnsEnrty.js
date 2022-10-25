@@ -19,9 +19,9 @@ import { C25519Key, Hash , ed25519Key} from "cryptide";
 /**
  * @typedef {Object} JsonDnsEntry - creates a new type named 'SpecialType'
  * @prop {string} id
- * @prop {number} modifided
+ * @prop {number} modified
  * @prop {string} signature
- * @prop {string} public
+ * @prop {string} Public
  * @prop {string[]} signatures
  * @prop {string[]} orks
  * @prop {string[]} urls
@@ -31,10 +31,10 @@ import { C25519Key, Hash , ed25519Key} from "cryptide";
  export default class DnsEntry {
   constructor() {
     this.id = new Guid();
-    this.modifided = this.utcUnixSeconds();
+    this.modified = this.utcUnixSeconds();
     this.signature = "";
     /** @type {ed25519Key} */
-    this.public = null;
+    this.Public = null;
     /** @type { string[] } */
     this.signatures = [];
     /** @type { string[] } */
@@ -42,12 +42,12 @@ import { C25519Key, Hash , ed25519Key} from "cryptide";
     /** @type { string[] } */
     this.urls = [];
     /** @type { string[] } */
-    this.publics = [];
+    this.Publics = [];
 }
 
   /** @param {ed25519Key} key */
   sign(key) {
-    if (!this.public)
+    if (!this.Public)
       throw new Error("The public key must be provided");
     
     this.signature = Buffer.from(key.sign(this.messageToSign())).toString('base64'); // ecdsa needs hash here   // hardcoded edDSA here
@@ -58,8 +58,8 @@ import { C25519Key, Hash , ed25519Key} from "cryptide";
     return JSON.stringify({ 
       id: this.id.toString(),
       orks: this.orks,
-      public: this.public.toString(),
-      modifided: this.modifided,
+      Public: this.Public.toString(),
+      modified: this.modified,
       signature: this.signature,
       signatures: this.signatures
     });
@@ -75,9 +75,9 @@ import { C25519Key, Hash , ed25519Key} from "cryptide";
     var entry = new DnsEntry();
 
     entry.id = Guid.from(json.id);
-    entry.modifided = json.modifided;
+    entry.modified = json.modified;
     entry.signature = json.signature;
-    entry.public = ed25519Key.from(json.public);
+    entry.Public = ed25519Key.from(json.Public);
     entry.signatures = json.signatures;
     entry.orks = json.orks;
     entry.urls = json.urls || entry.urls;
@@ -89,7 +89,7 @@ import { C25519Key, Hash , ed25519Key} from "cryptide";
   /** @private */
   messageToSign() {
     var message = { id: this.id.toString(), orks: this.orks, 
-      public: this.public.toString(), modifided: this.modifided };
+      Public: this.Public.toString() , modified: this.modified };
     
     return JSON.stringify(message);
   }

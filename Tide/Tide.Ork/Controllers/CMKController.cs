@@ -195,8 +195,8 @@ namespace Tide.Ork.Controllers
         }
 
         //TODO: Add throttling by ip and account separate
-        [HttpGet("sign/{uid}/{token}/{cmkPub}/{cmk2Pub}")]
-        public async Task<ActionResult> SignEntry([FromRoute] Guid uid, [FromRoute] string token, [FromRoute] Ed25519Point cmkPub, [FromRoute] Ed25519Point cmk2Pub, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
+        [HttpGet("sign/{uid}/{token}/{partialCmkPub}/{partialCmk2Pub}")]
+        public async Task<ActionResult<String>> SignEntry([FromRoute] Guid uid, [FromRoute] string token, [FromRoute] Ed25519Point partialCmkPub, [FromRoute] Ed25519Point partialCmk2Pub, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken))
             {
@@ -226,12 +226,13 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
-            _logger.LogInformation("TOKEN Goood! " + (cmkPub + (Ed25519.G * (account.Cmki * lagrangian))).GetX().ToString());
-            _logger.LogInformation("TOKEN Goood! " + (cmk2Pub + (Ed25519.G * (account.Cmk2i  * lagrangian))).GetX().ToString());
+            
+            var cmkPub = partialCmkPub + (Ed25519.G * (account.Cmki * lagrangian));
+            var cmk2Pub = partialCmk2Pub + (Ed25519.G * (account.Cmk2i * lagrangian));
 
-            _logger.LogInformation("Dns " + entry.MessageToSign());
-            _logger.LogInformation(_config.Threshold.ToString());
-            return Unauthorized();
+            var s = Ed25519Dsa.Sign(account.Cmk2i * lagrangian, account.Cmki * lagrangian, cmkPub, cmk2Pub, entry.MessageSignedBytes());
+
+            return s.ToString(); // signature
         }
 
         [MetricAttribute("prism")]

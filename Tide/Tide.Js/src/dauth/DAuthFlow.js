@@ -100,7 +100,7 @@ export default class DAuthFlow {
 
 
 
-      await this.addDns(signatures, new ed25519Key(0, cmkPub), partialPubs,partialPub2s, tokens);
+      await this.addDns(signatures, new ed25519Key(0, cmkPub), partialPubs,partialPub2s, tokens, cmk2Pub);
 
       return cvkAuth;
     } catch (err) {
@@ -115,8 +115,9 @@ export default class DAuthFlow {
    * @param {ed25519Key} key 
    * @param {Dictionary<ed25519Point>} partialCmkPubs
    * @param {Dictionary<ed25519Point>} partialCmk2Pubs
+   * @param {ed25519Point} cmk2Pub
    * @param {import("../Tools").Dictionary<TranToken>} tokens*/
-  addDns(signatures, key, partialCmkPubs, partialCmk2Pubs, tokens) {
+  async addDns(signatures, key, partialCmkPubs, partialCmk2Pubs, tokens, cmk2Pub) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
     const cln = this.clienSet.get(index);
@@ -124,7 +125,7 @@ export default class DAuthFlow {
 
     const entry = new DnsEntry();
     entry.id = cln.userGuid;
-    entry.public = key.public()
+    entry.Public = key.public()
 
     if (Array.isArray(signatures)) {
       entry.signatures = signatures.map(sig => sig.sign);
@@ -135,29 +136,33 @@ export default class DAuthFlow {
       entry.orks = signatures.values.map(val => val.orkid);
     }
 
-    this.signEntry(entry, tokens, partialCmkPubs, partialCmk2Pubs);
-    //return dnsCln.addDns(entry);
+    const entrySig = await this.signEntry(entry, tokens, partialCmkPubs, partialCmk2Pubs, cmk2Pub);
+
+    entry.signature = Buffer.from(entrySig).toString('base64');
+    return dnsCln.addDns(entry);
   }
 /**
  * 
  * @param {DnsEntry} entry 
  * @param {import("../Tools").Dictionary<TranToken>} tokens
  * * @param {import("../Tools").Dictionary<ed25519Point>} partialPubs
+ * @param {ed25519Point} cmk2Pub
  * @param {import("../Tools").Dictionary<ed25519Point>} partialCmk2Pubs
+ * @returns {Promise<Uint8Array>}
  */
-  async signEntry(entry, tokens, partialPubs, partialCmk2Pubs){
+  async signEntry(entry, tokens, partialPubs, partialCmk2Pubs, cmk2Pub){
     const idGens = await this.clienSet.all(c => c.getClientGenerator())
     const ids = idGens.map(idGen => idGen.id);
     const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
 
     const tranid = new Guid();
-    //var c2 = cmk2Pub.getX().toString();
     const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, partialPubs.get(i), partialCmk2Pubs.get(i), li));
 
+    // @ts-ignore // says there is error because it doesn't know initial type of sum
+    const s = signatures.values.reduce((sum, sig) => (sum + sig) % ed25519Point.order); // todo: add proper mod function here without it being messy
 
-
-    //const signature = signatures.reduce((sum, sig) => (sum + sig) % ed25519Point.order);
-    //return signature;
+    const signature = ed25519Key.createSig(cmk2Pub, s);
+    return signature;
   }
 
   /**

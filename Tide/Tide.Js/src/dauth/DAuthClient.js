@@ -52,6 +52,7 @@ export default class DAuthClient extends ClientBase {
    * @param {DnsEntry} entry
    * @param {ed25519Point} cmk2Pub
    * @param {bigInt.BigInteger} li
+   * @returns {Promise<BigInt>}
    **/
     async signEntry(token, tranid, entry, partialPub, cmk2Pub, li) {
       const tkn = urlEncode(token.toArray());
@@ -60,7 +61,7 @@ export default class DAuthClient extends ClientBase {
         .ok(res => res.status < 500);
   
       if (!resp.ok) return  Promise.reject(new Error(resp.text));
-      return fromBase64(resp.text);
+      return BigInt(resp.text);
     }
 
   /**

@@ -94,7 +94,7 @@ export default class DCryptFlow {
 
     const entry = new DnsEntry();
     entry.id = cln.userGuid;
-    entry.public = key.public()
+    entry.Public = key.public()
 
     if (Array.isArray(signatures)) {
       entry.signatures = signatures.map(sig => sig.sign);
