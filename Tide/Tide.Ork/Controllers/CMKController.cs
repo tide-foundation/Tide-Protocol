@@ -131,7 +131,9 @@ namespace Tide.Ork.Controllers
             return new RandomResponse(gPassPrismi, cmkPubi, cmkPub2i, vendorCMKi, prisms, cmks, cmk2s);
         }
 
-        [HttpPut("random/{uid}")]
+        [HttpPut("random/{uid}")] // Also provide cmkPub and cmk2Pub points from function above (so these are non threshold)
+        // Also provide a partial DnsEntry for us to sign. It has to be partial because we don't have all the fields e.g. signatures
+        // But we do have the fields we sign e.g. orkIDs and cmkPub, so it's possible
         public async Task<ActionResult<AddRandomResponse>> AddRandom([FromRoute] Guid uid, [FromBody] RandRegistrationReq rand, [FromQuery] string li = null)
         {
             if (uid == Guid.Empty) {
@@ -173,6 +175,11 @@ namespace Tide.Ork.Controllers
                 PrismiAuth = rand.PrismAuth,
                 Cmk2i = rand.ComputeCmk2()
             };
+
+
+            // find the rand value which has this ork's id.
+            // use that to make a signautre with
+            // s = sign( rand.cmk(orkid) , rand.cmk2(orkid) , cmkPub, cmk2Pub, dnsEntry)
 
             var resp = await _manager.Add(account);
             if (!resp.Success) {
