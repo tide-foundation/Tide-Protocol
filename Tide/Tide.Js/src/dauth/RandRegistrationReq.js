@@ -14,6 +14,8 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 // @ts-check
 import { AESKey } from "cryptide";
+import DnsEntry from "../DnsEnrty";
+import DnsClient from "./DnsClient";
 import { RandomShareResponse } from "./RandomResponse";
 
 export default class RandRegistrationReq {
@@ -22,12 +24,14 @@ export default class RandRegistrationReq {
     * @param { string } email
     * @param { BigInt } cmki // used only for dns entry signing
     * @param { RandomShareResponse[] } shares
+    * @param {DnsEntry} entry
     */
-    constructor(prismAuth, email, cmki, shares) {
+    constructor(prismAuth, email, cmki, shares, entry) {
         this.prismAuth = prismAuth;
         this.email = email;
-        this.cmki = cmki
+        this.cmki = cmki;
         this.shares = shares;
+        this.entry = entry;
     }
 
     toString() { return JSON.stringify(this); }
@@ -38,7 +42,8 @@ export default class RandRegistrationReq {
         prismAuth: this.prismAuth.toString(),
         email: this.email,
         cmki: this.cmki.toString(),
-        shares: this.shares
+        shares: this.shares,
+        entry: this.entry.toString()
     }}
 
     /** @param {string|object} data */
@@ -52,8 +57,9 @@ export default class RandRegistrationReq {
         const prismAuth = AESKey.from(obj.prismAuth)
         const email = obj.email;
         const shares = obj.shares.map(RandomShareResponse.from);
-        const cmki = BigInt(obj.cmki)
+        const cmki = BigInt(obj.cmki);
+        const entry = DnsEntry.from(obj.entry);
         
-        return new RandRegistrationReq(prismAuth, email, cmki, shares);
+        return new RandRegistrationReq(prismAuth, email, cmki, shares, entry);
     }
 }

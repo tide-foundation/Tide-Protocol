@@ -136,6 +136,9 @@ namespace Tide.Ork.Controllers
         // But we do have the fields we sign e.g. orkIDs and cmkPub, so it's possible
         public async Task<ActionResult<AddRandomResponse>> AddRandom([FromRoute] Guid uid, [FromRoute] Ed25519Point partialCmkPub, [FromRoute] Ed25519Point partialCmk2Pub, [FromBody] RandRegistrationReq rand, [FromQuery] string li = null)
         {
+            _logger.LogInformation("Underprepared Dns Entry: " + rand.entry);
+
+
             if (uid == Guid.Empty) {
                 _logger.LogDebug("AddRandom: The uid must not be empty");
                 return BadRequest($"The uid must not be empty");

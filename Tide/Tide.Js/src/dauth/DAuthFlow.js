@@ -78,10 +78,11 @@ export default class DAuthFlow {
 
       const prismAuths = idBuffers.map(buff => prismAuth.derive(buff)); 
 
+      const entry = this.prepareDnsEntry(cmkPub, orkIDs); ///////////// here is the partial entry
       
       const mails = randoms.map((_, __, i) => emails[(emailIndex + i) % emails.length]);
       const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
-      const randReq = randoms.map((_, key) => new RandRegistrationReq(prismAuths.get(key), mails.get(key), cmkis.get(key), shares.get(key))) 
+      const randReq = randoms.map((_, key) => new RandRegistrationReq(prismAuths.get(key), mails.get(key), cmkis.get(key), shares.get(key), entry)) // I pass partial entry here
 
       //// Get lis for randomSignup <- consider finding a way to reuse lis
       const idGens = await this.clienSet.all(c => c.getClientGenerator())
@@ -90,6 +91,7 @@ export default class DAuthFlow {
       ///
       const partialPubs = randoms.map(p => randoms.values.map(p => p.cmkPub).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(p.cmkPub) ? sum : cmkPubi.add(sum)}, ed25519Point.infinity));
       const partialPubs2 = randoms.map(p => randoms.values.map(p => p.cmk2Pub).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(p.cmk2Pub) ? sum : cmkPubi.add(sum)}, ed25519Point.infinity));
+
 
       const randSignUpResponses = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key), partialPubs.get(key), partialPubs2.get(key), lis.get(key)));
       ///
@@ -106,14 +108,22 @@ export default class DAuthFlow {
     }
   }
 
+  /**
+   * 
+   * @param {ed25519Point} cmkPub 
+   * @param {Dictionary<string>} orkIds 
+   * @returns {DnsEntry}
+   */
   prepareDnsEntry(cmkPub, orkIds){
-    const cln = this.clienSet.get(0);
-    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
+    const cln = this.clienSet.get(0); // chnage this later
+    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid); // you have to choose the same ork as the cln later
 
     const entry = new DnsEntry();
     entry.id = cln.userGuid;
     entry.Public = new ed25519Key(0, cmkPub);
-    entry.orks = orkIds;
+    entry.orks = orkIds.values;
+
+    return entry;
   }
 
   /**

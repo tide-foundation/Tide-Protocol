@@ -3,6 +3,7 @@ using System.Linq;
 using System.Numerics;
 using Tide.Encryption.AesMAC;
 using Tide.Encryption.Ed;
+using Tide.Core;
 using static Tide.Ork.Models.RandomResponse;
 
 namespace Tide.Ork.Models {
@@ -12,6 +13,8 @@ namespace Tide.Ork.Models {
         public AesKey PrismAuth { get; set; }
         public string Email { get; set; }
         public string Cmki { get; set; }
+        public string entry { get; set;}
+        public DnsEntry GetEntry() => DnsEntry.Parse(entry);
         public BigInteger GetCmki() => BigInteger.Parse(Cmki);
 
         internal BigInteger ComputePrism() => Shares.Select(shr => shr.PrismVal)
