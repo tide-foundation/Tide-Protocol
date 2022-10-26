@@ -82,13 +82,13 @@ export default class DAuthJwtFlow {
       await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);
 
       //test dauth and dcrypt
-      const { cvk: cvkTag } = await this.logIn(password);
+      const { auth: authTag } = await this.logIn(password);
 
-      if (cvk.toString() !== cvkTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
+      if (this.cvkAuth.toString() !== authTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 
       await flowCvk.confirm();
 
-      return { vuid: this.vuid, cvk: cvk, auth: vuidAuth };
+      return { vuid: this.vuid, cvk: cvk, auth: authTag };
     } catch (err) {
       return Promise.reject(err);
     }
@@ -127,13 +127,13 @@ export default class DAuthJwtFlow {
       await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);
 
       //test dauth and dcrypt
-      const { cvk: cvkTag } = await this.logIn(password);
+      const { auth: authTag } = await this.logIn(password);
 
-      //if (cvk.toString() !== cvkTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
+      if (this.cvkAuth.toString() !== authTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 
       await Promise.all([flowCmk.confirm(), flowCvk.confirm()]);
 
-      return { vuid: this.vuid, cvk: cvk, auth: vuidAuth };
+      return { vuid: this.vuid, cvk: cvk, auth: authTag };
     } catch (err) {
       return Promise.reject(err);
     }
@@ -158,7 +158,7 @@ export default class DAuthJwtFlow {
       const keyId = Guid.seed(this.vendorPub.toArray());
       const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
 
-      return { vuid: this.vuid, cvk: cvk, auth: vuidAuth };
+      return { vuid: this.vuid, cvk: cvk, auth: this.cvkAuth };
     } catch (err) {
       return Promise.reject(err);
     }

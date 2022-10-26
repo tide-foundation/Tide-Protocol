@@ -59,7 +59,7 @@ export default class DAuthCmkJwtFlow {
       const keyId = Guid.seed(this.vendorPub.toArray());
       const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
 
-      return { vuid: this.vuid, cvk: cvk, auth: vuidAuth };
+      return { vuid: this.vuid, cvk: cvk, auth: this.cvkAuth };
     } catch (err) {
       return Promise.reject(err);
     }

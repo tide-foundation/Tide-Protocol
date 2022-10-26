@@ -75,7 +75,7 @@ export default class DCryptFlow {
 
       const entry = this.prepareDnsEntry(cvkPub, orkIDs);
 
-      const randReq = randoms.map((_, key) => new CVKRandRegistrationReq(cvkAuths.get(key), shares.get(key),entry,cvkis.get(key),cvk2is.get(key))) 
+      const randReq = randoms.map((_, key) => new CVKRandRegistrationReq(cvkAuths.get(key), shares.get(key),entry,cvkis.get(key),cvk2is.get(key)));
      // const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, partialPubs.get(i),partialCvk2Pub.get(i), li));
 
       const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
