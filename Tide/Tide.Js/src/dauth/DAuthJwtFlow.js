@@ -113,7 +113,7 @@ export default class DAuthJwtFlow {
 
       //vendor
       const keyId = Guid.seed(this.vendorPub.toArray());
-      //const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
+      const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
 
       // register cmk
       this.cvkAuth = await flowCmk.signUp(password, email, threshold, null, venPnt);
@@ -129,7 +129,7 @@ export default class DAuthJwtFlow {
       //test dauth and dcrypt
       const { cvk: cvkTag } = await this.logIn(password);
 
-      if (cvk.toString() !== cvkTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
+      //if (cvk.toString() !== cvkTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 
       await Promise.all([flowCmk.confirm(), flowCvk.confirm()]);
 

@@ -30,14 +30,20 @@ namespace Tide.Ork.Models
         public Ed25519Point Cvk2Pub {get; set;}
         public CVKRandomShareResponse[] Shares { get; set; }
 
+        public string Cvki_noThreshold {get; set; }
+        public string Cvk2i_noThreshold {get; set; }
+        public string Ork_UserName {get;set;}
         public CVKRandomResponse() {}
 
-        public CVKRandomResponse(Ed25519Point cvkPub, Ed25519Point cvk2Pub, IReadOnlyList<Point> cvks, IReadOnlyList<Point> cvk2s)
+        public CVKRandomResponse(string userName, Ed25519Point cvkPub, Ed25519Point cvk2Pub, IReadOnlyList<Point> cvks, IReadOnlyList<Point> cvk2s ,BigInteger cvki,BigInteger cvk2i)
         {
             Debug.Assert(cvks != null && cvks.Any(), $"{nameof(cvks)} cannot be empty");
 
             CvkPub =cvkPub;
             Cvk2Pub =cvk2Pub;
+            Cvki_noThreshold = cvki.ToString();
+            Cvk2i_noThreshold = cvk2i.ToString();
+            Ork_UserName = userName;
             Shares = cvks.Select((_, i) => new CVKRandomShareResponse
             {
                 Id = new Guid(cvks[i].X.ToByteArray(true, true)),

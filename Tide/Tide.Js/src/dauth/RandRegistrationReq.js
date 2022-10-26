@@ -23,15 +23,17 @@ export default class RandRegistrationReq {
     * @param { AESKey } prismAuth
     * @param { string } email
     * @param { BigInt } cmki // used only for dns entry signing
+    * @param { BigInt } cmk2i
     * @param { RandomShareResponse[] } shares
     * @param {DnsEntry} entry
     */
-    constructor(prismAuth, email, cmki, shares, entry) {
+    constructor(prismAuth, email, cmki,cmk2i, shares, entry) {
         this.prismAuth = prismAuth;
         this.email = email;
         this.cmki = cmki;
         this.shares = shares;
         this.entry = entry;
+        this.cmk2i =cmk2i;
     }
 
     toString() { return JSON.stringify(this); }
@@ -42,6 +44,7 @@ export default class RandRegistrationReq {
         prismAuth: this.prismAuth.toString(),
         email: this.email,
         cmki: this.cmki.toString(),
+        cmk2i :this.cmk2i.toString(),
         shares: this.shares,
         entry: this.entry.toString()
     }}
@@ -58,8 +61,9 @@ export default class RandRegistrationReq {
         const email = obj.email;
         const shares = obj.shares.map(RandomShareResponse.from);
         const cmki = BigInt(obj.cmki);
+        const cmk2i =BigInt(obj.cmk2i);
         const entry = DnsEntry.from(obj.entry);
         
-        return new RandRegistrationReq(prismAuth, email, cmki, shares, entry);
+        return new RandRegistrationReq(prismAuth, email, cmki, cmk2i,shares, entry);
     }
 }

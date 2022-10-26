@@ -87,13 +87,13 @@ namespace Tide.Ork.Controllers
             var cvk2s = EccSecretSharing.Share(cvk2i, idValues, _config.Threshold, Ed25519.N);
 
             _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
-            return new CVKRandomResponse(cvkPubi,cvk2Pubi, cvks,cvk2s) {
+            return new CVKRandomResponse(_config.UserName,cvkPubi,cvk2Pubi, cvks,cvk2s,cvki,cvk2i) {
                 
             };
         }
 
-        [HttpPut("random/{vuid}")]
-        public async Task<ActionResult<CvkRandomResponseAdd>> AddRandom([FromRoute] Guid vuid, [FromBody] CVKRandRegistrationReq rand,[FromQuery] string li = null)
+        [HttpPut("random/{vuid}/{partialCvkPub}/{partialCvk2Pub}")]
+        public async Task<ActionResult<CvkRandomResponseAdd>> AddRandom([FromRoute] Guid vuid, [FromRoute] Ed25519Point partialCvkPub, [FromRoute] Ed25519Point partialCvk2Pub, [FromBody] CVKRandRegistrationReq rand,[FromQuery] string li = null)
         {
             if (vuid == Guid.Empty)
             {
@@ -155,15 +155,22 @@ namespace Tide.Ork.Controllers
 
             _logger.LogInformation("Random: New CVK for {0} with pub {1}", vuid, account.CvkPub);
         
+            var cvkPub = partialCvkPub + (Ed25519.G * rand.GetCvki());
+            var cvk2Pub = partialCvk2Pub + (Ed25519.G * rand.GetCvk2i());
+
+            var s = Ed25519Dsa.Sign(rand.GetCvk2i() , rand.GetCvki() , cvkPub, cvk2Pub, rand.GetEntry().MessageSignedBytes());
+
+
             var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
             var token = new TranToken();
             token.Sign(_config.SecretKey); // token client will use to authetnicate on SignEntry endpoint
             return new CvkRandomResponseAdd
             {
-                CvkPub = Ed25519.G * (rand.ComputeCvk() * lagrangian),
+                CvkPub = Ed25519.G * (rand.ComputeCvk() * lagrangian ),
                 Cvk2Pub = Ed25519.G * (rand.ComputeCvk2() * lagrangian),
                 Signature = new { orkid = _config.UserName, sign = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m))}, // OrkSign type
-                EncryptedToken = account.CvkiAuth.Encrypt(token.ToByteArray())
+                EncryptedToken = account.CvkiAuth.Encrypt(token.ToByteArray()),
+                S = s.ToString()
             };
         }
 

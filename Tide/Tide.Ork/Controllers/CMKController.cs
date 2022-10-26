@@ -128,7 +128,7 @@ namespace Tide.Ork.Controllers
             var cmk2s = EccSecretSharing.Share(cmk2i, idValues, _config.Threshold, Ed25519.N);
             
             _logger.LogInformation("Random: Generating random for [{orks}]", string.Join(',', ids));
-            return new RandomResponse(_config.UserName, gPassPrismi, cmkPubi, cmkPub2i, vendorCMKi, prisms, cmki, cmks, cmk2s);
+            return new RandomResponse(_config.UserName, gPassPrismi, cmkPubi, cmkPub2i, vendorCMKi, prisms, cmki,cmk2i, cmks, cmk2s);
         }
 
         [HttpPut("random/{uid}/{partialCmkPub}/{partialCmk2Pub}")] // Also provide cmkPub and cmk2Pub points from function above (so these are non threshold)
@@ -184,7 +184,10 @@ namespace Tide.Ork.Controllers
             _logger.LogInformation("Publicx: " + (partialCmkPub + (Ed25519.G * rand.GetCmki())).GetX());
             _logger.LogInformation("Publicy: " + (partialCmkPub + (Ed25519.G * rand.GetCmki())).GetY());
 
-
+            var cmkPub = partialCmkPub + (Ed25519.G * rand.GetCmki());
+            var cmk2Pub = partialCmk2Pub + (Ed25519.G * rand.GetCmk2i());
+            
+            var s = Ed25519Dsa.Sign(rand.GetCmk2i() ,rand.GetCmki() , cmkPub, cmk2Pub, rand.GetEntry().MessageSignedBytes());
             // find the rand value which has this ork's id.
             // use that to make a signautre with
             // s = sign( rand.cmk(orkid) , rand.cmk2(orkid) , cmkPub, cmk2Pub, dnsEntry)
@@ -205,7 +208,8 @@ namespace Tide.Ork.Controllers
                 CmkPub = Ed25519.G * (rand.ComputeCmk() * lagrangian),
                 Cmk2Pub = Ed25519.G * (rand.ComputeCmk2() * lagrangian),
                 Signature = new { orkid = _config.UserName, sign = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m))}, // OrkSign type
-                EncryptedToken = account.PrismiAuth.Encrypt(token.ToByteArray())
+                EncryptedToken = account.PrismiAuth.Encrypt(token.ToByteArray()),
+                S = s.ToString()
             };
         }
 

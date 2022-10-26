@@ -7,5 +7,6 @@ namespace Tide.Ork.Models {
         public byte[] EncryptedToken { get; set; }
         public Ed25519Point CmkPub {get ; set;}
         public Ed25519Point Cmk2Pub {get ; set;}
+        public string S {get; set;}
     }
 }

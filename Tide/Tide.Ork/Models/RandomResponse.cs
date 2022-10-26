@@ -14,13 +14,14 @@ namespace Tide.Ork.Models {
         public Ed25519Point Cmk2Pub { get; set; }
         public Ed25519Point VendorCMK { get; set; }
         public string Cmki_noThreshold { get; set;} // the raw cmk the ork generated as a0 for it's polynomial. Used to do Dns Signing
-                                                    // also change type. only doing this because js bigint doesn't support .fromByteArray or .fromBase64
+                                                    // also change type. only doing this because js bigint doesn't support .fromByteArray or .fromBase6
+        public string Cmk2i_noThreshold {get; set;}                                        
         public string Ork_userName {get; set;}
         public RandomShareResponse[] Shares { get; set; }
 
         public RandomResponse() { }
 
-        public RandomResponse(string username, Ed25519Point pass, Ed25519Point pub, Ed25519Point pub2, Ed25519Point vendorCMK, IReadOnlyList<Point> prisms, BigInteger cmki, IReadOnlyList<Point> cmks,IReadOnlyList<Point> cmk2s)
+        public RandomResponse(string username, Ed25519Point pass, Ed25519Point pub, Ed25519Point pub2, Ed25519Point vendorCMK, IReadOnlyList<Point> prisms, BigInteger cmki,BigInteger cmk2i, IReadOnlyList<Point> cmks,IReadOnlyList<Point> cmk2s)
         {
             Debug.Assert(prisms != null && cmks != null && cmk2s!= null && prisms.Any() && cmks.Any() && cmk2s.Any(), $"Argument cannot be empty");
             Debug.Assert(prisms.Count == cmks.Count, $"{nameof(prisms)} and {nameof(cmks)} must be the same");
@@ -33,6 +34,7 @@ namespace Tide.Ork.Models {
             Cmk2Pub = pub2;
             VendorCMK = vendorCMK;
             Cmki_noThreshold = cmki.ToString();
+            Cmk2i_noThreshold =cmk2i.ToString();
             Ork_userName = username;
             Shares = prisms.Select((_, i) => new RandomShareResponse {
                 Id = new Guid(cmks[i].X.ToByteArray(true, true)),

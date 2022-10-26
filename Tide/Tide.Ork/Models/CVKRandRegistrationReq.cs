@@ -30,6 +30,13 @@ namespace Tide.Ork.Controllers
         public AesKey CvkiAuth { get; set; }
         public Guid KeyId;
         public byte[] Signature;
+        public string entry { get; set;}
+        public DnsEntry GetEntry() => DnsEntry.Parse(entry);
+        public string Cvki {get; set;}
+        public BigInteger GetCvki() => BigInteger.Parse(Cvki);
+
+        public string Cvk2i {get; set;}
+        public BigInteger GetCvk2i() => BigInteger.Parse(Cvk2i);
 
         internal BigInteger ComputeCvk() => Shares.Select(shr => shr.CvkVal)
             .Aggregate((sum, cvk) => (sum + cvk) % Ed25519.N);

@@ -77,7 +77,7 @@ import { C25519Key, Hash , ed25519Key} from "cryptide";
     entry.id = Guid.from(json.id);
     entry.modified = json.modified;
     entry.signature = json.signature;
-    entry.Public = ed25519Key.from(json.Public);
+    entry.Public = json.Public==null ? ed25519Key.from(json.public) : ed25519Key.from(json.Public);
     entry.signatures = json.signatures;
     entry.orks = json.orks;
     entry.urls = json.urls || entry.urls;

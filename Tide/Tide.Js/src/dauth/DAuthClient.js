@@ -133,7 +133,7 @@ export default class DAuthClient extends ClientBase {
      * @param {import("./RandRegistrationReq").default} body
      * @param {ed25519Point} partialCmkPub
      * @param {ed25519Point} partialCmk2Pub
-     * @returns {Promise<[OrkSign, string,ed25519Point,ed25519Point]>}
+     * @returns {Promise<[OrkSign, string,ed25519Point,ed25519Point,bigint]>}
      */
     async randomSignUp(body, partialCmkPub, partialCmk2Pub, li) {
       if (!body) throw Error("The arguments cannot be null");
@@ -142,7 +142,7 @@ export default class DAuthClient extends ClientBase {
         .ok(res => res.status < 500);
   
       if (!resp.ok) return  Promise.reject(new Error(resp.text));
-      return [resp.body.signature, resp.body.encryptedToken, ed25519Point.from(Buffer.from(resp.body.cmkPub, 'base64')),ed25519Point.from(Buffer.from(resp.body.cmk2Pub, 'base64'))];
+      return [resp.body.signature, resp.body.encryptedToken, ed25519Point.from(Buffer.from(resp.body.cmkPub, 'base64')),ed25519Point.from(Buffer.from(resp.body.cmk2Pub, 'base64')),BigInt(resp.body.s)];
     }
 
   /**

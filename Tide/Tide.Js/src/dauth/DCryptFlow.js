@@ -61,23 +61,33 @@ export default class DCryptFlow {
       
       const randoms = await this.clienSet.map(guids, cli => cli.random( guids.values)); 
  
-      const cvkPub = randoms.values.map(rdm => rdm.cvkPub).reduce((sum, cvki) => cvki.add(sum));
-      const cvk2Pub = randoms.values.map(rdm => rdm.cvk2Pub).reduce((sum, cvk2i) => cvk2i.add(sum));
+      const cvkPub = randoms.values.map(rdm => rdm.cvkPub).reduce((sum, cvki) => cvki.add(sum),ed25519Point.infinity);
+      const cvk2Pub = randoms.values.map(rdm => rdm.cvk2Pub).reduce((sum, cvk2i) => cvk2i.add(sum),ed25519Point.infinity);
+      const cvkis = randoms.map(rdm => rdm.cvki_noThreshold);
+      const cvk2is = randoms.map(rdm => rdm.cvk2i_noThreshold);
+      const orkIDs =randoms.map(rdm => rdm.ork_UserName);
+    
+      const partialPubs = randoms.map(p => randoms.values.map(p => p.cvkPub).reduce((sum, cvkPubi) => { return cvkPubi.isEqual(p.cvkPub) ? sum : cvkPubi.add(sum)}, ed25519Point.infinity));
+      const partialPub2s = randoms.map(p => randoms.values.map(p => p.cvk2Pub).reduce((sum, cvkPubi) => { return cvkPubi.isEqual(p.cvk2Pub) ? sum : cvkPubi.add(sum)}, ed25519Point.infinity));
+
       const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
       const cvkAuths = idBuffers.map(buff => cmkAuth.derive(concat(buff, this.user.buffer)));
 
-      const randReq = randoms.map((_, key) => new CVKRandRegistrationReq(cvkAuths.get(key), shares.get(key))) 
+      const entry = this.prepareDnsEntry(cvkPub, orkIDs);
+
+      const randReq = randoms.map((_, key) => new CVKRandRegistrationReq(cvkAuths.get(key), shares.get(key),entry,cvkis.get(key),cvk2is.get(key))) 
+     // const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, partialPubs.get(i),partialCvk2Pub.get(i), li));
 
       const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
-      const randSignUpResponses = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key), lis.get(key)));
+      const randSignUpResponses = await this.clienSet.map(lis, (cli, _, key,i) => cli.randomSignUp(randReq.get(key), partialPubs.get(key),partialPub2s.get(key),lis.get(key)));
 
-      const partialPubs = randSignUpResponses.map(e => e[2]).map(p => randSignUpResponses.values.map(e => e[2]).reduce((sum, cvkPubi) => { return cvkPubi.isEqual(p) ? sum : cvkPubi.add(sum)} ,ed25519Point.infinity)); 
-      const partialPub2s = randSignUpResponses.map(e => e[3]).map(p => randSignUpResponses.values.map(e => e[3]).reduce((sum, cvk2Pubi) => { return cvk2Pubi.isEqual(p) ? sum : cvk2Pubi.add(sum)} ,ed25519Point.infinity)); 
-      const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(cvkAuths.get(i).decrypt(cipher))) // works
+      // const partialPubs = randSignUpResponses.map(e => e[2]).map(p => randSignUpResponses.values.map(e => e[2]).reduce((sum, cvkPubi) => { return cvkPubi.isEqual(p) ? sum : cvkPubi.add(sum)} ,ed25519Point.infinity)); 
+      // const partialPub2s = randSignUpResponses.map(e => e[3]).map(p => randSignUpResponses.values.map(e => e[3]).reduce((sum, cvk2Pubi) => { return cvk2Pubi.isEqual(p) ? sum : cvk2Pubi.add(sum)} ,ed25519Point.infinity)); 
+      const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(cvkAuths.get(i).decrypt(cipher))); // works
       const orkSigns = randSignUpResponses.map(e => e[0]);
+      const s = randSignUpResponses.values.map(e => e[4]).reduce((sum, sig) => (sum + sig) % ed25519Point.order); // todo: add proper mod function here without it being messy
 
-      //await this.addDns(orkSigns,  new ed25519Key(0, cvkPub), partialPubs,partialPub2s, tokens,cvk2Pub);
-      await Promise.all([this.addDns(orkSigns,  new ed25519Key(0, cvkPub), partialPubs,partialPub2s, tokens,cvk2Pub),
+      await Promise.all([this.addDns(orkSigns, cvk2Pub, entry,s),
         this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), orkSigns.keys)]);
 
       return cvk;
@@ -87,23 +97,36 @@ export default class DCryptFlow {
   }
 
   /**
+   * 
+   * @param {ed25519Point} cvkPub 
+   * @param {Dictionary<string>} orkIds 
+   * @returns {DnsEntry}
+   */
+   prepareDnsEntry(cvkPub, orkIds){
+    const cln = this.clienSet.get(0); // chnage this later
+    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid); // you have to choose the same ork as the cln later
+
+    const entry = new DnsEntry();
+    entry.id = cln.userGuid;
+    entry.Public = new ed25519Key(0, cvkPub);
+    entry.orks = orkIds.values;
+
+    return entry;
+  }
+
+
+  /**
    * @private 
    * @typedef {import("./DAuthClient").OrkSign} OrkSign
    * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
-   * @param {ed25519Key} key 
-   * @param {Dictionary<ed25519Point>} partialCvkPubs
-   * @param {Dictionary<ed25519Point>} partialCvk2Pub
-   * @param {import("../Tools").Dictionary<TranToken>} tokens
-   * @param {ed25519Point} cvk2Pub*/
-   async addDns(signatures, key, partialCvkPubs, partialCvk2Pub, tokens,cvk2Pub) {
+   * @param {ed25519Point} cvk2Pub
+   * @param {DnsEntry} entry
+   * @param {bigint} s*/
+   async addDns(signatures,cvk2Pub, entry,s) {
     const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
     const index = keys[Math.floor(Math.random() * keys.length)];
     const cln = this.clienSet.get(index);
     const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-
-    const entry = new DnsEntry();
-    entry.id = cln.userGuid;
-    entry.Public = key.public()
 
     if (Array.isArray(signatures)) {
       entry.signatures = signatures.map(sig => sig.sign);
@@ -113,10 +136,9 @@ export default class DCryptFlow {
       entry.signatures = signatures.values.map(val => val.sign);
       entry.orks = signatures.values.map(val => val.orkid);
     }
+    const signature = ed25519Key.createSig(cvk2Pub, s); 
 
-    const entrySig = await  this.signEntry(entry, tokens, partialCvkPubs, partialCvk2Pub, cvk2Pub);
-
-    entry.signature = Buffer.from(entrySig).toString('base64');
+    entry.signature = Buffer.from(signature).toString('base64');
     return dnsCln.addDns(entry);
    
   }

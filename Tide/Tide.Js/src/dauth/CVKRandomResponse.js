@@ -20,12 +20,18 @@ export default class CVKRandomResponse {
     /**
     * @param {ed25519Point} cvkPub
     * @param {ed25519Point} cvk2Pub
+    * @param {BigInt} cvki_noThreshold
+    * @param {BigInt} cvk2i_noThreshold
+    * @param {string} ork_UserName
     * @param { CVKRandomShareResponse[] } shares
     */
-    constructor(cvkPub, cvk2Pub, shares) {
+    constructor(cvkPub, cvk2Pub,cvki_noThreshold,cvk2i_noThreshold,ork_UserName, shares) {
         this.cvkPub = cvkPub;
         this.shares = shares;
         this.cvk2Pub = cvk2Pub;
+        this.cvki_noThreshold = cvki_noThreshold;
+        this.cvk2i_noThreshold =cvk2i_noThreshold;
+        this.ork_UserName = ork_UserName;
     }
 
     toString() { return JSON.stringify(this); }
@@ -35,6 +41,9 @@ export default class CVKRandomResponse {
     toJSON() { return {
         cvkPub: Buffer.from(this.cvkPub.toArray()).toString('base64'),
         cvk2Pub: Buffer.from(this.cvk2Pub.toArray()).toString('base64'),
+        cvki_noThreshold : this.cvki_noThreshold.toString(),
+        cvk2i_noThreshold : this.cvk2i_noThreshold.toString(),
+        ork_UserName :this.ork_UserName.toString(),
         shares: this.shares
     }}
 
@@ -47,9 +56,12 @@ export default class CVKRandomResponse {
 
         const cvkPub = ed25519Point.from(Buffer.from(obj.cvkPub, 'base64'));
         const cvk2Pub = ed25519Point.from(Buffer.from(obj.cvk2Pub, 'base64'));
+        const cvki_noThreshold = obj.cvki_noThreshold;
+        const cvk2i_noThreshold =obj.cvk2i_noThreshold;
+        const ork_UserName =obj.ork_UserName;
         const shares = obj.shares.map(CVKRandomShareResponse.from);
 
-        return new CVKRandomResponse( cvkPub, cvk2Pub, shares);
+        return new CVKRandomResponse( cvkPub, cvk2Pub,cvki_noThreshold,cvk2i_noThreshold,ork_UserName, shares);
     }
 }
 

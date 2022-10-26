@@ -68,18 +68,20 @@ export default class DCryptClient extends ClientBase {
  /**
      * @param {import("./CVKRandRegistrationReq").default} body
      * * @param {import("../guid").default[]} ids
-     * @returns {Promise<[OrkSign, string,ed25519Point,ed25519Point]>}
+     * @param {ed25519Point} partialCvkPub
+     * @param {ed25519Point} partialCvk2Pub
+     * @returns {Promise<[OrkSign, string,ed25519Point,ed25519Point,bigint]>}
      */
-  async randomSignUp(body,li) {
+  async randomSignUp(body,partialCvkPub,partialCvk2Pub,li) {
     if (!body) throw Error("The arguments cannot be null");
 
-    var resp = await this._put(`/cvk/random/${this.userGuid}?li=${li.toString(10)}`).set("Content-Type", "application/json").send(JSON.stringify(body))
+    var resp = await this._put(`/cvk/random/${this.userGuid}/${urlEncode(partialCvkPub.toArray())}/${urlEncode(partialCvk2Pub.toArray())}?li=${li.toString(10)}`).set("Content-Type", "application/json").send(JSON.stringify(body))
       .ok(res => res.status < 500);
 
     if (!resp.ok) return  Promise.reject(new Error(resp.text));
     
    // return resp.body;
-   return [resp.body.signature, resp.body.encryptedToken, ed25519Point.from(Buffer.from(resp.body.cvkPub, 'base64')),ed25519Point.from(Buffer.from(resp.body.cvk2Pub, 'base64'))];
+   return [resp.body.signature, resp.body.encryptedToken, ed25519Point.from(Buffer.from(resp.body.cvkPub, 'base64')),ed25519Point.from(Buffer.from(resp.body.cvk2Pub, 'base64')),BigInt(resp.body.s)];
   }
 
     /**
