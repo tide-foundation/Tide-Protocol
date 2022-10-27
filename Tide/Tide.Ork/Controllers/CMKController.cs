@@ -245,7 +245,7 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
-            
+         
             var cmkPub = partialCmkPub + (Ed25519.G * (account.Cmki * lagrangian));
             var cmk2Pub = partialCmk2Pub + (Ed25519.G * (account.Cmk2i * lagrangian));
 
@@ -274,6 +274,7 @@ namespace Tide.Ork.Controllers
             try
             {
                 g = Ed25519Point.From(bytesPass);
+                //testSafePoint(g) . Update after Cryptide C# implementation
                 if (!g.IsValid()) {
                    _logger.LogInformation($"Apply: Invalid point for {uid}");
                     return BadRequest("Invalid parameters");
@@ -285,19 +286,24 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Invalid parameters");
             }
 
-            var s = await _manager.GetPrism(uid);
+            var s = await _manager.GetPrism(uid); // Retrive CmkRecord. We need PrismAuthi =>  var account = await _manager.GetById(uid);
             if (s == BigInteger.Zero) {
                 _logger.LogInformation($"Apply: Account {uid} does not exist");
                 return BadRequest("Invalid parameters");
             }
 
             var gs = lagrangian <= 0 ? g * s : g * (s *  lagrangian).Mod(Ed25519.N);
-
+            // Get Current time from TranToken or directly 
+             var Token = new TranToken();
+             var Timestampi = Token.Ticks;
+             //var Purpose = "auth"; 
+             // var certTimei = HMac (Timestampi || uid || Purpose , mSecORKi);
             _logger.LogInformation($"Login attempt for {uid}", uid, pass);
             return new ApplyResponse
             {
                 Prism = gs.ToByteArray(),
-                Token = new TranToken().ToByteArray()
+                // Return aesEnc_PrismAuthi(Timestapmi, certTimei) as token // How to get PrismAuthi?
+                Token = new TranToken().ToByteArray() 
             };
         }
 
@@ -329,7 +335,9 @@ namespace Tide.Ork.Controllers
 
                 return Unauthorized("Invalid account or signature");
             }
-            
+
+            // Verify hmac(timestami ||userId || purpose , mSecOrki)== certTimei
+
             if (!tran.OnTime) {
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
@@ -337,8 +345,98 @@ namespace Tide.Ork.Controllers
 
             _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Successful login for {uid}");
             var cvkAuthi = (lagrangian <= 0 ? point * account.Cmki : point * (account.Cmki * lagrangian).Mod(Ed25519.N)).ToByteArray();
-            return Ok(account.PrismiAuth.EncryptStr(cvkAuthi));
+            return Ok(account.PrismiAuth.EncryptStr(cvkAuthi));// Check if return is needed?
         }
+
+        [MetricAttribute("cmk")]
+        [ThrottleAttribute("uid")]
+        [HttpGet("/{uid}/{user}")]
+        public async Task<ActionResult> CmkConvert([FromRoute] Guid uid, [FromRoute] string user, [FromQuery] string li = null)
+        {
+            if (!user.FromBase64UrlString(out byte[] bytesUser)) {
+                _logger.LogInformation($"Apply: Invalid pass for {uid}");
+                return BadRequest("Invalid parameters");
+            }
+
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian)) {
+                _logger.LogInformation("Apply: Invalid li for {uid}: '{li}' ", uid, li);
+                return BadRequest("Invalid parameter li");
+            }
+
+            Ed25519Point g;
+            try
+            {
+                g = Ed25519Point.From(bytesUser);
+                //testSafePoint(g) . Update after Cryptide C# implementation
+                if (!g.IsValid()) {
+                   _logger.LogInformation($"Apply: Invalid point for {uid}");
+                    return BadRequest("Invalid parameters");
+                }
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation($"Apply: Invalid point for {uid} with error");
+                return BadRequest("Invalid parameters");
+            }
+
+            var account = await _manager.GetById(uid);
+            if (account == null){
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Account {uid} does not exist");
+                return Unauthorized("Invalid account");
+            }
+
+            var gc = lagrangian <= 0 ? g * account.Cmki : g * (account.Cmki  *  lagrangian).Mod(Ed25519.N);
+            var gR = Ed25519.G; // account.gR => calculated at sign up
+            var gCMK = Ed25519.G ;// account.gCMK => calculated at sign up
+        
+            // Get Current time from TranToken or directly 
+             var Token = new TranToken();
+             var Timestampi = Token.Ticks;
+            // var Purpose = "auth"; 
+             // var certTimei = HMac (Timestampi || uid || Purpose , mSecORKi);
+            //var certTimei =0;
+            var ToEncrypt = ""; //gc.ToByteArray(), GetRandom , gCMK, certTimei;
+            _logger.LogInformation($"Login attempt for {uid}", uid);
+            return Ok(account.PrismiAuth.EncryptStr(ToEncrypt));
+        }
+
+          //TODO: Add throttling by ip and account separate
+        [MetricAttribute("cmk", recordSuccess:true)]
+        [HttpGet("auth/{uid}/{token}")]
+        public async Task<ActionResult> CmkAuthentication([FromRoute] Guid uid, [FromRoute] string encryptedData, [FromQuery] Guid tranid, [FromQuery] string li = null)
+        {
+            
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
+            {
+                _logger.LogInformation("Apply: Invalid li for {uid}: '{li}' ", uid, li);
+                return BadRequest("Invalid parameter li");
+            }
+
+            var account = await _manager.GetById(uid);
+           if (account == null){
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Account {uid} does not exist");
+                return Unauthorized("Invalid account or signature");
+            }
+            var data = account.PrismiAuth.DecryptStr(encryptedData);
+            //string Purpose = "auth";
+            // Verify hmac(timestami ||userId || purpose , mSecOrki)== certTimei
+            // verify Ontime with data.timestampi
+            // if (!tran.OnTime) {
+            //     _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Expired token for {uid}");
+            //     return StatusCode(418, new TranToken().ToString());
+            // }
+
+            // Verify H*CMKmul * r4] !=0
+            //Verify [r3 *r4] !=0
+
+            var blindH = 0; // 
+            var rs = BigInteger.One; // data.rs
+            var Si = (account.Cmk2i * rs + blindH * account.Cmki).ToString();
+            return Ok(account.PrismiAuth.EncryptStr(Si));
+        }
+
 
         [HttpPost("prism/{uid}/{prism}/{prismAuth}/{token}")]
         public async Task<ActionResult> ChangePrism([FromRoute] Guid uid, [FromRoute] string prism, [FromRoute] string prismAuth, [FromRoute] string token, [FromQuery] bool withCmk = false)

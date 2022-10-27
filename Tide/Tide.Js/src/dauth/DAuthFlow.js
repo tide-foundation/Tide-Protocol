@@ -185,16 +185,23 @@ export default class DAuthFlow {
 
       const idGens = await this.clienSet.all(c => c.getClientGenerator())
       const prismAuths = idGens.map(idGen => prismAuth.derive(idGen.buffer));
+      // decrypt(timestampi, certTimei) with PristAuthi
+      // Add userId timestampi ,certTimei , prismAuthi to verifyi /tokens
       const tokens = idGens.map((_, i) => token.copy().sign(prismAuths.get(i), this.clienSet.get(i).userBuffer))
+
+      //Calculate the deltaTime median(timestami[])-epochtimeUTC() ;( epochtimeUTC() = timestampi ?)
 
       const tranid = new Guid();
       const ids = idGens.map(idGen => idGen.id);
       const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
+      // Pass userId , timestampi ,certTimei, verifyi)
       const pre_ciphers = this.clienSet.map(lis, (cli, li, i) => cli.signIn(tranid, tokens.get(i), point, li));
 
       const cvkAuth = await pre_ciphers.map((cipher, i) => ed25519Point.from(prismAuths.get(i).decrypt(cipher)))
         .reduce((sum, cvkAuthi) => sum.add(cvkAuthi), ed25519Point.infinity);
 
+      // Add a full flow for cmk
+      // return S , VUID,timestamp2 for cvk flow
       return AESKey.seed(cvkAuth.toArray());
     } catch (err) {
       return Promise.reject(err);
@@ -221,8 +228,9 @@ export default class DAuthFlow {
       const gRPrism = await pre_gRPrismis.map(ki =>  ki[0])
         .reduce((sum, rki) => sum.add(rki), ed25519Point.infinity);
 
-      const gPrism = gRPrism.times(rInv);
-      const [,token] = await pre_gRPrismis.values[0];
+      const gPrism = gRPrism.times(rInv); 
+      const [,token] = await pre_gRPrismis.values[0]; 
+      //return the encryped value 
 
       return [AESKey.seed(gPrism.toArray()), token];
     } catch (err) {

@@ -281,6 +281,78 @@ namespace Tide.Ork.Controllers
             return account.CvkiAuth.Encrypt(cvki.ToByteArray(true, true));
         }
 
+        [MetricAttribute("cvk", recordSuccess:true)]
+        [HttpGet("{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}")]
+        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute]  BigInteger s, [FromRoute] string timestamp2 , [FromRoute]  Ed25519Point gSessKeyPub)
+        {
+            var account = await _managerCvk.GetById(vuid);
+            if (account == null) {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Unsuccessful login for {vuid}");
+                return Unauthorized($"Invalid account");
+            }
+            //Verify timestamp2 in recent (10 min)
+            // if (!timestamp2.OnTime) {
+            //     _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Expired token: {token}");
+            //     return StatusCode(408, new TranToken().ToString());
+            // }
+
+            //testSafePoint(gRmul) . Update after Cryptide C# implementation
+            if (!gRmul.IsValid()) {
+                _logger.LogInformation($"Apply: Invalid point for {vuid}");
+                return BadRequest("Invalid parameters");
+            }
+            //testSafePoint(gPassKeyPub) . Update after Cryptide C# implementation
+            if (!gSessKeyPub.IsValid()) {
+                _logger.LogInformation($"Apply: Invalid point for {vuid}");
+                return BadRequest("Invalid parameters");
+            }
+            //Add check for S!= order of G
+            if(s==0 ) {
+                _logger.LogInformation($"Apply: Invalid s for {vuid}");
+                return BadRequest("Invalid parameters");
+            }
+            var H =BigInteger.One ; // hash(gRmul | account.gCMKAuth | timestamp2 | gSessKeyPub) * hash ("CMK authentication")
+            var _8N = BigInteger.Parse("8");
+            if(Ed25519.G * (s * _8N) != gRmul  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCMKAuth
+                     _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
+                return BadRequest("Some consistent garbage");
+            }
+            
+            var CvkRi = Ed25519.G * account.CVK2i;
+            //var CvkH =  Hash(account.gCVKR | account.gCVK | timestamp2 | gSessKeyPub |vuid | challenge); //challenge is passed to frontend at the first GetChallenge() call
+            //var CVKSi = account.CVK2i +CVKH * account.CVKi;
+            //var ECDHi = Hash(gSessKeyPub * mSecORKi);
+            
+            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Returning  from {vuid}");
+            // Use ECDHi key and Encrypt CVKri, CVKSi
+            return account.CvkiAuth.Encrypt(account.CVK2i.ToByteArray(true, true));
+        }
+
+        //Api call for vender ork ????
+        [MetricAttribute("cvk", recordSuccess:true)]
+        [HttpGet("sign/{vuid}/{gCVKR}/{CVKS}/{timestamp2}/{gSessKeyPub}")]
+         public async Task<ActionResult<byte[]>> SignIn([FromRoute] Guid vuid, [FromRoute] Ed25519Point gCVKR, [FromRoute]  BigInteger CVKS, [FromRoute] string timestamp2 , [FromRoute]  Ed25519Point gSessKeyPub)
+        {
+            var account = await _managerCvk.GetById(vuid);
+            if (account == null) {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Unsuccessful login for {vuid}");
+                return Unauthorized($"Invalid account");
+            }
+            
+            var H =BigInteger.One ; // hash(gCVKR | account.gCVK | timestamp2 | gSessKeyPub | vuid | challenge) 
+            var _8N = BigInteger.Parse("8");
+            if(Ed25519.G * (CVKS * _8N) != gCVKR  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCVK
+                     _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
+                return BadRequest("Some consistent garbage");
+            }
+            
+            //var ECDH = Hash(gSessKeyPub * vvk);
+            
+            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Returning  from {vuid}");
+            // Use ECDH key and Encrypt access token
+            return account.CvkiAuth.Encrypt(account.CVK2i.ToByteArray(true, true));
+        }
+
         [HttpGet("challenge/{vuid}/{keyId}")]
         public async Task<ActionResult> Challenge([FromRoute] Guid vuid, [FromRoute] Guid keyId)
         {
