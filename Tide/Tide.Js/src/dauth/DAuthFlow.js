@@ -208,6 +208,37 @@ export default class DAuthFlow {
     }
   }
 
+  async logIn2(password, point){
+    try {
+      const [prismAuth, token] = await this.getPrismAuth(password);
+
+      const idGens = await this.clienSet.all(c => c.getClientGenerator())
+      const prismAuths = idGens.map(idGen => prismAuth.derive(idGen.buffer)); // Finalise prismauths with ork publics
+
+      
+      // decrypt(timestampi, certTimei) with PristAuthi
+      // Add userId timestampi ,certTimei , prismAuthi to verifyi /tokens
+      const tokens = idGens.map((_, i) => token.copy().sign(prismAuths.get(i), this.clienSet.get(i).userBuffer))
+
+      //Calculate the deltaTime median(timestami[])-epochtimeUTC() ;( epochtimeUTC() = timestampi ?)
+
+      const tranid = new Guid();
+      const ids = idGens.map(idGen => idGen.id);
+      const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
+      // Pass userId , timestampi ,certTimei, verifyi)
+      const pre_ciphers = this.clienSet.map(lis, (cli, li, i) => cli.signIn(tranid, tokens.get(i), point, li));
+
+      const cvkAuth = await pre_ciphers.map((cipher, i) => ed25519Point.from(prismAuths.get(i).decrypt(cipher)))
+        .reduce((sum, cvkAuthi) => sum.add(cvkAuthi), ed25519Point.infinity);
+
+      // Add a full flow for cmk
+      // return S , VUID,timestamp2 for cvk flow
+      return AESKey.seed(cvkAuth.toArray());
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   /** @param {string} pass
    * @returns {Promise<[AESKey, TranToken]>} */
   async getPrismAuth(pass) {
@@ -237,6 +268,37 @@ export default class DAuthFlow {
       return Promise.reject(err);
     }
   }
+
+    /**
+     *  @param {string} pass
+     *  @returns {Promise<[AESKey, TranToken]>} 
+    */
+     async getPrismAuth2(pass) {
+      try {
+        const pre_ids = this.clienSet.all(c => c.getClientId());
+  
+        const n = bigInt(ed25519Point.order.toString());
+        const a = ed25519Point.fromString(pass);
+        const r1 = random();
+        const aR = a.times(r1);
+  
+        const ids = await pre_ids;
+        const lis = ids.map((id) => SecretShare.getLi(id, ids.values, n)); // implement method to only use first 14 orks that reply
+  
+        const pre_aPrismis = this.clienSet.map(lis, (cli, li) => cli.ApplyPrism(aR, li));
+        const rInv = r1.modInv(n);
+  
+        const aRPrism = await pre_aPrismis.map(ki =>  ki[0])
+          .reduce((sum, rki) => sum.add(rki), ed25519Point.infinity);
+  
+        const aPrism = aRPrism.times(rInv); 
+        const [,token] = await pre_aPrismis.values[0];  
+  
+        return [AESKey.seed(aPrism.toArray()), token];
+      } catch (err) {
+        return Promise.reject(err);
+      }
+    }
 
   Recover() {
     return Promise.all(this.clients.map((cli) => cli.Recover()));
