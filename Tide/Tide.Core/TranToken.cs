@@ -12,6 +12,7 @@ namespace Tide.Core {
         public ulong Id { get; set; }
         public long Ticks { get; set; }
         public byte[] Signature { get; set; }
+        public byte[] CertTime {get; set;}
 
         public DateTime Time => DateTime.FromBinary(Ticks);
 

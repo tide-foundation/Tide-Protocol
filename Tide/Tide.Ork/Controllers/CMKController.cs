@@ -256,26 +256,29 @@ namespace Tide.Ork.Controllers
 
         [MetricAttribute("prism")]
         [ThrottleAttribute("uid")]
-        [HttpGet("prism/{uid}/{pass}")]
-        public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string pass, [FromQuery] string li = null)
+        [HttpGet("prism/{uid}/{gBlurUser}/{gBlurPass}")]
+        public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string gBlurUser, [FromRoute] string gBlurPass, [FromQuery] string li = null)
         {
-            if (!pass.FromBase64UrlString(out byte[] bytesPass)) {
+            if (!gBlurPass.FromBase64UrlString(out byte[] bytesPass)) {
                 _logger.LogInformation($"Apply: Invalid pass for {uid}");
                 return BadRequest("Invalid parameters");
             }
-
+            if (!gBlurUser.FromBase64UrlString(out byte[] bytesUser)) {
+                _logger.LogInformation($"Apply: Invalid user name for {uid}");
+                return BadRequest("Invalid parameters");
+            }
             var lagrangian = BigInteger.Zero;
             if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian)) {
                 _logger.LogInformation("Apply: Invalid li for {uid}: '{li}' ", uid, li);
                 return BadRequest("Invalid parameter li");
             }
 
-            Ed25519Point g;
+            Ed25519Point gBPass,gBUser;
             try
             {
-                g = Ed25519Point.From(bytesPass);
-                //testSafePoint(g) . Update after Cryptide C# implementation
-                if (!g.IsValid()) {
+                gBPass = Ed25519Point.From(bytesPass);
+                gBUser = Ed25519Point.From(bytesUser);
+                if (!gBPass.IsSafePoint() && !gBUser.IsSafePoint()) {
                    _logger.LogInformation($"Apply: Invalid point for {uid}");
                     return BadRequest("Invalid parameters");
                 }
@@ -286,35 +289,46 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Invalid parameters");
             }
 
-            var s = await _manager.GetPrism(uid); // Retrive CmkRecord. We need PrismAuthi =>  var account = await _manager.GetById(uid);
-            if (s == BigInteger.Zero) {
-                _logger.LogInformation($"Apply: Account {uid} does not exist");
-                return BadRequest("Invalid parameters");
+            var account = await _manager.GetById(uid);
+            if (account == null){
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Account {uid} does not exist");
+                return Unauthorized("Invalid account");
             }
+            _logger.LogInformation($"Login attempt for {uid}", uid, gBlurPass);
 
-            var gs = lagrangian <= 0 ? g * s : g * (s *  lagrangian).Mod(Ed25519.N);
+            var gBlurPassPrismi = lagrangian <= 0 ? gBPass * account.Prismi : gBPass * (account.Prismi *  lagrangian).Mod(Ed25519.N);
+            var gBlureCMKi = lagrangian <= 0 ? gBUser * account.Cmki : gBUser * (account.Cmki *  lagrangian).Mod(Ed25519.N);
+            
             // Get Current time from TranToken or directly 
-             var Token = new TranToken();
-             var Timestampi = Token.Ticks;
-             //var Purpose = "auth"; 
-             // var certTimei = HMac (Timestampi || uid || Purpose , mSecORKi);
-            _logger.LogInformation($"Login attempt for {uid}", uid, pass);
+            var Token = new TranToken();
+            var Purpose = "auth"; 
+            Token.CertTime  = _config.SecretKey.Hash(BitConverter.GetBytes(Token.Ticks)
+                .Concat(BitConverter.GetBytes(BitConverter.ToUInt64(uid.ToByteArray().Take(8).ToArray())))
+                .Concat(Encoding.ASCII.GetBytes(Purpose)).ToArray())
+                .Take(16).ToArray();
+
+            var CmkRes = new CmkResponse();
+            CmkRes.GBlureCMKi = gBlureCMKi.ToByteArray();
+            CmkRes.GR = (Ed25519.G * (account.Cmki * lagrangian)).ToByteArray(); // correct?
+            CmkRes.GCMK = (Ed25519.G * (account.Cmk2i * lagrangian)).ToByteArray();  // correct?
+            
             return new ApplyResponse
             {
-                Prism = gs.ToByteArray(),
-                // Return aesEnc_PrismAuthi(Timestapmi, certTimei) as token // How to get PrismAuthi?
-                Token = new TranToken().ToByteArray() 
+                Prism = gBlurPassPrismi.ToByteArray(),
+                EncryptedRes = account.PrismiAuth.Encrypt(CmkRes.ToByteArray()),
+                Token = new TranToken().ToByteArray()
+
             };
         }
 
         //TODO: Add throttling by ip and account separate
         [MetricAttribute("cmk", recordSuccess:true)]
-        [HttpGet("auth/{uid}/{point}/{token}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] Ed25519Point point, [FromRoute] string token, [FromQuery] Guid tranid, [FromQuery] string li = null)
+        [HttpGet("auth/{uid}/{timestampi}/{certTimei}/{token}")]
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] long timestampi, [FromRoute] string certTimei, [FromRoute] string token,  [FromQuery] string li = null)
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken))
             {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Invalid token format for {uid}");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid token format for {uid}");
                 return Unauthorized();
             }
 
@@ -329,23 +343,44 @@ namespace Tide.Ork.Controllers
             var account = await _manager.GetById(uid);
             if (account == null || tran == null || !tran.Check(account.PrismiAuth, uid.ToByteArray())) {
                 if (account == null)
-                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Account {uid} does not exist");
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Account {uid} does not exist");
                 else
-                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Invalid token for {uid}");
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid token for {uid}");
 
                 return Unauthorized("Invalid account or signature");
             }
 
-            // Verify hmac(timestami ||userId || purpose , mSecOrki)== certTimei
-
             if (!tran.OnTime) {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Expired token for {uid}");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
 
-            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Successful login for {uid}");
-            var cvkAuthi = (lagrangian <= 0 ? point * account.Cmki : point * (account.Cmki * lagrangian).Mod(Ed25519.N)).ToByteArray();
-            return Ok(account.PrismiAuth.EncryptStr(cvkAuthi));// Check if return is needed?
+            var Purpose = "auth";
+            var CertTimeTest  = _config.SecretKey.Hash(BitConverter.GetBytes(timestampi)
+                .Concat(BitConverter.GetBytes(BitConverter.ToUInt64(uid.ToByteArray().Take(8).ToArray())))
+                .Concat(Encoding.ASCII.GetBytes(Purpose)).ToArray())
+                .Take(16).ToArray();
+
+            // Verify hmac(timestami ||userId || purpose , mSecOrki)== certTimei
+            if(!CertTimeTest.SequenceEqual(Encoding.ASCII.GetBytes(certTimei))){ // CertTime != Encoding.ASCII.GetBytes(certTimei) 
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid certime  for {uid}");
+                return Unauthorized();
+            }       
+
+            var BlurHCMKMul = BigInteger.One; // get from request
+            var BlurR3 = BigInteger.One ; //get from request
+            var BlineRi = BigInteger.One; // how to get?
+
+             if(BlurHCMKMul !=0 && BlurR3 !=0){ 
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid request  for {uid}");
+                return Unauthorized();
+            }  
+            var BlindH = BlurHCMKMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication"));
+            var Si = BlineRi * BlurR3 + BlindH * account.Cmki;
+
+            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Successful login for {uid}");
+           // var cvkAuthi = (lagrangian <= 0 ? point * account.Cmki : point * (account.Cmki * lagrangian).Mod(Ed25519.N)).ToByteArray();
+            return Ok(account.PrismiAuth.EncryptStr(Si.ToString()));// Check if return is needed?
         }
 
         [MetricAttribute("cmk")]
