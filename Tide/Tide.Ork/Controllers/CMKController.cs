@@ -257,67 +257,41 @@ namespace Tide.Ork.Controllers
         [MetricAttribute("prism")]
         [ThrottleAttribute("uid")]
         [HttpGet("prism/{uid}/{gBlurUser}/{gBlurPass}")]
-        public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] string gBlurUser, [FromRoute] string gBlurPass, [FromQuery] string li = null)
-        {
-            if (!gBlurPass.FromBase64UrlString(out byte[] bytesPass)) {
-                _logger.LogInformation($"Apply: Invalid pass for {uid}");
-                return BadRequest("Invalid parameters");
-            }
-            if (!gBlurUser.FromBase64UrlString(out byte[] bytesUser)) {
-                _logger.LogInformation($"Apply: Invalid user name for {uid}");
-                return BadRequest("Invalid parameters");
-            }
-            var lagrangian = BigInteger.Zero;
-            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian)) {
-                _logger.LogInformation("Apply: Invalid li for {uid}: '{li}' ", uid, li);
-                return BadRequest("Invalid parameter li");
-            }
-
-            Ed25519Point gBPass,gBUser;
-            try
+        public async Task<ActionResult<ApplyResponse>> Apply([FromRoute] Guid uid, [FromRoute] Ed25519Point gBlurUser, [FromRoute] Ed25519Point gBlurPass)
+        { 
+            if (!gBlurPass.IsSafePoint() || !gBlurUser.IsSafePoint())
             {
-                gBPass = Ed25519Point.From(bytesPass);
-                gBUser = Ed25519Point.From(bytesUser);
-                if (!gBPass.IsSafePoint() && !gBUser.IsSafePoint()) {
-                   _logger.LogInformation($"Apply: Invalid point for {uid}");
+                   _logger.LogInformation($"Apply: Unsafe point for {uid}");
                     return BadRequest("Invalid parameters");
-                }
-            }
-            catch (ArgumentException)
-            {
-                _logger.LogInformation($"Apply: Invalid point for {uid} with error");
-                return BadRequest("Invalid parameters");
             }
 
             var account = await _manager.GetById(uid);
             if (account == null){
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Account {uid} does not exist");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Apply: Account {uid} does not exist");
                 return Unauthorized("Invalid account");
             }
             _logger.LogInformation($"Login attempt for {uid}", uid, gBlurPass);
 
-            var gBlurPassPrismi = lagrangian <= 0 ? gBPass * account.Prismi : gBPass * (account.Prismi *  lagrangian).Mod(Ed25519.N);
-            var gBlureCMKi = lagrangian <= 0 ? gBUser * account.Cmki : gBUser * (account.Cmki *  lagrangian).Mod(Ed25519.N);
+            var gBlurPassPrismi = gBlurPass * account.Prismi;
+            var gBlurUserCMKi = gBlurUser * account.Cmki;
             
-            // Get Current time from TranToken or directly 
-            var Token = new TranToken();
-            var Purpose = "auth"; 
-            Token.CertTime  = _config.SecretKey.Hash(BitConverter.GetBytes(Token.Ticks)
-                .Concat(BitConverter.GetBytes(BitConverter.ToUInt64(uid.ToByteArray().Take(8).ToArray())))
-                .Concat(Encoding.ASCII.GetBytes(Purpose)).ToArray())
-                .Take(16).ToArray();
+            var certTime = new TranToken();
+            var purpose = "auth";
+            var data_to_sign = Encoding.UTF8.GetBytes(uid.ToString() + purpose); // also includes timestamp inside TranToken object
+            certTime.Sign(_config.SecretKey, data_to_sign);
 
-            var CmkRes = new CmkResponse();
-            CmkRes.GBlureCMKi = gBlureCMKi.ToByteArray();
-            CmkRes.GR = (Ed25519.G * (account.Cmki * lagrangian)).ToByteArray(); // correct?
-            CmkRes.GCMK = (Ed25519.G * (account.Cmk2i * lagrangian)).ToByteArray();  // correct?
+            var responseToEncrypt = new ApplyResponseToEncrypt
+            {
+                GBlurUserCMKi = gBlurUserCMKi,
+                GBlindR = Ed25519.G * account.Cmk2i,
+                GCMK = Ed25519.G * account.Cmki, 
+                CertTime = certTime.ToByteArray()
+            };
             
             return new ApplyResponse
             {
-                Prism = gBlurPassPrismi.ToByteArray(),
-                EncryptedRes = account.PrismiAuth.Encrypt(CmkRes.ToByteArray()),
-                Token = new TranToken().ToByteArray()
-
+                GBlurPassPrism = gBlurPassPrismi.ToByteArray(),
+                EncReply = account.PrismiAuth.Encrypt(responseToEncrypt.ToJSON())
             };
         }
 

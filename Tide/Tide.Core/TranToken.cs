@@ -10,7 +10,7 @@ namespace Tide.Core {
         private const long _window = TimeSpan.TicksPerHour;
 
         public ulong Id { get; set; }
-        public long Ticks { get; set; }
+        public long Ticks { get; set; } // timestamp
         public byte[] Signature { get; set; }
         public byte[] CertTime {get; set;}
 
@@ -22,7 +22,7 @@ namespace Tide.Core {
         public TranToken()
         {
             Id = BitConverter.ToUInt64(Guid.NewGuid().ToByteArray().Take(8).ToArray());
-            Ticks = DateTime.UtcNow.Ticks;
+            Ticks = DateTime.UtcNow.Ticks;  // this to epoch time UTC
             Signature = new byte[0];
         }
 

@@ -17,7 +17,7 @@
 import bigInt from "big-integer";
 import DAuthClient from "./DAuthClient";
 import DAuthShare from "./DAuthShare";
-import { SecretShare, Utils, AESKey, ed25519Key, ed25519Point } from "cryptide";
+import { SecretShare, Utils, AESKey, ed25519Key, ed25519Point, Hash } from "cryptide";
 import TranToken from "../TranToken";
 import { concat } from "../Helpers";
 import { getArray } from "cryptide/src/bnInput";
@@ -27,6 +27,8 @@ import Guid from "../guid";
 import SetClient from "./SetClient";
 import RandRegistrationReq from "./RandRegistrationReq";
 import { Dictionary } from "../Tools";
+import ApplyResponseDecrypted from "./ApplyResponseDecrypted";
+import IdGenerator from "../IdGenerator";
 
 
 export default class DAuthFlow {
@@ -37,6 +39,7 @@ export default class DAuthFlow {
   constructor(urls, user, memory = false) {
     this.clients = urls.map((url) => new DAuthClient(url, user, memory));
     this.clienSet = new SetClient(this.clients);
+    this.userID = typeof user === 'string' ? IdGenerator.seed(user) : new IdGenerator(user); // Needed this out of neccessity
   }
 
   /**
@@ -208,36 +211,7 @@ export default class DAuthFlow {
     }
   }
 
-  async logIn2(password, point){
-    try {
-      const [prismAuth, token] = await this.getPrismAuth(password);
-
-      const idGens = await this.clienSet.all(c => c.getClientGenerator())
-      const prismAuths = idGens.map(idGen => prismAuth.derive(idGen.buffer)); // Finalise prismauths with ork publics
-
-      
-      // decrypt(timestampi, certTimei) with PristAuthi
-      // Add userId timestampi ,certTimei , prismAuthi to verifyi /tokens
-      const tokens = idGens.map((_, i) => token.copy().sign(prismAuths.get(i), this.clienSet.get(i).userBuffer))
-
-      //Calculate the deltaTime median(timestami[])-epochtimeUTC() ;( epochtimeUTC() = timestampi ?)
-
-      const tranid = new Guid();
-      const ids = idGens.map(idGen => idGen.id);
-      const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
-      // Pass userId , timestampi ,certTimei, verifyi)
-      const pre_ciphers = this.clienSet.map(lis, (cli, li, i) => cli.signIn(tranid, tokens.get(i), point, li));
-
-      const cvkAuth = await pre_ciphers.map((cipher, i) => ed25519Point.from(prismAuths.get(i).decrypt(cipher)))
-        .reduce((sum, cvkAuthi) => sum.add(cvkAuthi), ed25519Point.infinity);
-
-      // Add a full flow for cmk
-      // return S , VUID,timestamp2 for cvk flow
-      return AESKey.seed(cvkAuth.toArray());
-    } catch (err) {
-      return Promise.reject(err);
-    }
-  }
+  
 
   /** @param {string} pass
    * @returns {Promise<[AESKey, TranToken]>} */
@@ -269,32 +243,88 @@ export default class DAuthFlow {
     }
   }
 
+  async logIn2(username, password, point){
+    try {
+      var startTimer = Date.now();
+
+      const [gPassPrism, encryptedResponses, r2Inv] = await this.doConvert(username, password, point);  //getting r2Inv here is a little messy, but saves a headache
+
+      //decryption
+      const idGens = await this.clienSet.all(c => c.getClientGenerator()); //find way to only do this once
+      const prismAuths = idGens.map(idGen => gPassPrism.derive(idGen.buffer));
+
+      const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher)));
+      const gUserCMK = decryptedResponses.map(b => b.gBlurUserCMKi).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi)).times(r2Inv);
+
+      // functional function to append userID bytes to certTime bytes FAST
+      const create_payload = (certTime_bytes) => {
+        const newArray = new Uint8Array(this.userID.buffer.length + certTime_bytes.length);
+        newArray.set(this.userID.buffer);
+        newArray.set(certTime_bytes, this.userID.buffer.length);
+        return newArray // returns userID + certTime
+      }
+      // test createpayload here
+      const VERIFYi = decryptedResponses.map((response, i) => new TranToken().sign(prismAuths.get(i), create_payload(response.certTime.toArray())));
+
+      const deltaTime = // get median
+
+      
+      // decrypt(timestampi, certTimei) with PristAuthi
+      // Add userId timestampi ,certTimei , prismAuthi to verifyi /tokens
+      const tokens = idGens.map((_, i) => token.copy().sign(prismAuths.get(i), this.clienSet.get(i).userBuffer))
+
+      //Calculate the deltaTime median(timestami[])-epochtimeUTC() ;( epochtimeUTC() = timestampi ?)
+
+      const tranid = new Guid();
+      const ids = idGens.map(idGen => idGen.id);
+      const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
+      // Pass userId , timestampi ,certTimei, verifyi)
+      const pre_ciphers = this.clienSet.map(lis, (cli, li, i) => cli.signIn(tranid, tokens.get(i), point, li));
+
+      const cvkAuth = await pre_ciphers.map((cipher, i) => ed25519Point.from(prismAuths.get(i).decrypt(cipher)))
+        .reduce((sum, cvkAuthi) => sum.add(cvkAuthi), ed25519Point.infinity);
+
+      // Add a full flow for cmk
+      // return S , VUID,timestamp2 for cvk flow
+      return AESKey.seed(cvkAuth.toArray());
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
     /**
+     *  @param {string} username
      *  @param {string} pass
-     *  @returns {Promise<[AESKey, TranToken]>} 
+     *  @param {ed25519Point} gVVK
+     *  @returns {Promise<[AESKey, string[], bigInt.BigInteger]>} // Returns gPassprism + encrypted CMK values + r2Inv (to un-blur gBlurPassPrism)
     */
-     async getPrismAuth2(pass) {
+     async doConvert(username, pass, gVVK) {
       try {
         const pre_ids = this.clienSet.all(c => c.getClientId());
   
         const n = bigInt(ed25519Point.order.toString());
-        const a = ed25519Point.fromString(pass);
+        const gPass = ed25519Point.fromString(pass);
+        const gUser = ed25519Point.fromString(Guid.from(username).toString() + gVVK.toArray().toString()) // replace this with proper hmac + point to hash function || FIND WAY TO GET USER GUID
+
         const r1 = random();
-        const aR = a.times(r1);
+        const r2 = random();
+
+        const gBlurUser = gUser.times(r2);
+        const gBlurPass = gPass.times(r1);
   
         const ids = await pre_ids;
         const lis = ids.map((id) => SecretShare.getLi(id, ids.values, n)); // implement method to only use first 14 orks that reply
+        const pre_Prismis = this.clienSet.map(lis, (dAuthClient, li) => dAuthClient.Convert(gBlurUser, gBlurPass, li)); // li is not being sent to ORKs. Instead, when gBlurPassPRISM is returned, it is multiplied by li locally
+                                                                                                                        // would've been neater to do this mutliplication of point * li at gPassRPrism line
+        const r1Inv = r1.modInv(n);
+        const r2Inv = r2.modInv(n);
   
-        const pre_aPrismis = this.clienSet.map(lis, (cli, li) => cli.ApplyPrism(aR, li));
-        const rInv = r1.modInv(n);
-  
-        const aRPrism = await pre_aPrismis.map(ki =>  ki[0])
-          .reduce((sum, rki) => sum.add(rki), ed25519Point.infinity);
-  
-        const aPrism = aRPrism.times(rInv); 
-        const [,token] = await pre_aPrismis.values[0];  
-  
-        return [AESKey.seed(aPrism.toArray()), token];
+        const gPassRPrism = await pre_Prismis.map(a =>  a[0]) // li has already been multiplied above, so no need to do it here
+          .reduce((sum, point) => sum.add(point));
+        const gPassPrism = AESKey.seed(gPassRPrism.times(r1Inv).toArray()); 
+        const encryptedResponses = pre_Prismis.values.map(a => a[1]);
+
+        return [gPassPrism, encryptedResponses, r2Inv];
       } catch (err) {
         return Promise.reject(err);
       }

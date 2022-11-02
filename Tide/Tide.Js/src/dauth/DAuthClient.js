@@ -36,14 +36,22 @@ export default class DAuthClient extends ClientBase {
    * @param {ed25519Point} pass
    * @param {bigInt.BigInteger} li
    *  @returns {Promise<[ed25519Point, TranToken]>} */
-  async ApplyPrism(pass, li = null) {
+  async ApplyPrism(pass) {
     let url = `/cmk/prism/${this.userGuid}/${urlEncode(pass.toArray())}`;
-    if (li) {
-      url += `?li=${li.toString(10)}`
-    }
 
     const res = await this._get(url);
     return [ ed25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
+  }
+
+  /** 
+   * @param {ed25519Point} gBlurPass
+   * @param {ed25519Point} gBlurUser
+   *  @returns {Promise<[ed25519Point, string]>} */
+   async Convert(gBlurPass, gBlurUser, li) {
+    let url = `/cmk/prism/${this.userGuid}/${urlEncode(gBlurUser.toArray())}/${urlEncode(gBlurPass.toArray())}`;
+
+    const res = await this._get(url);
+    return [ ed25519Point.from(fromBase64(res.body.gBlurPassPrism)).times(li) , res.body.encReply]
   }
 
     /**

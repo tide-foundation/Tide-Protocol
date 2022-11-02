@@ -1,8 +1,7 @@
 ﻿namespace Tide.Ork.Models {
     public class ApplyResponse
     {
-        public byte[] EncryptedRes { get; set; }
-        public byte[] Token { get; set; }
-        public byte[] Prism { get; set; }
+        public byte[] EncReply { get; set; }
+        public byte[] GBlurPassPrism { get; set; }
     }
 }

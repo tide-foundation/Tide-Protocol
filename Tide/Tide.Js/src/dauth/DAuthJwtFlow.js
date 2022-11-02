@@ -170,10 +170,10 @@ export default class DAuthJwtFlow {
     try {
       const pre_flowCmk = this._getCmkFlow();
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
-      const flowCmk = await pre_flowCmk; 
+      const flowCmk = await pre_flowCmk;
 
       //this.blindSignature = await flowCmk.logIn(password, venPnt);   <-- Blind signature will veirfy to the Cvk orks that the user authenticated with the cmk orks
-      this.cvkAuth = await flowCmk.logIn(password, venPnt);  
+      this.cvkAuth = await flowCmk.logIn2(username, password, venPnt);  
       this._genVuid();
 
       const flowCvk = await this._getCvkFlow();
