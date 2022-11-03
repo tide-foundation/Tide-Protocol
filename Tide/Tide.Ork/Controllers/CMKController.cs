@@ -299,9 +299,9 @@ namespace Tide.Ork.Controllers
         //TODO: Add throttling by ip and account separate
         [MetricAttribute("cmk", recordSuccess:true)]
         [HttpGet("auth/{uid}/{certTimei}/{token}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromBody] byte[] authRequest, [FromQuery] string li = null)
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromBody] string authRequest, [FromQuery] string li = null)
         {
-            if (!token.FromBase64UrlString(out byte[] bytesToken) || !certTimei.FromBase64UrlString(out byte[] bytesCertTimei))
+            if (!token.FromBase64UrlString(out byte[] bytesToken) || !certTimei.FromBase64UrlString(out byte[] bytesCertTimei) || authRequest.FromBase64UrlString(out byte[] bytesRequest))
             {
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid token format for {uid}");
                 return Unauthorized();
@@ -336,7 +336,8 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid certime  for {uid}");
                 return Unauthorized();
             }  
-            string jsonStr = Encoding.UTF8.GetString(authRequest);
+            
+            string jsonStr = Encoding.UTF8.GetString(account.PrismiAuth.Decrypt(bytesRequest));
             var AuthReq = JsonConvert.DeserializeObject<AuthRequest>(jsonStr);
             var BlurHCmkMul = BigInteger.Parse(AuthReq.BlurHCmkMul);
             var BlurRMul = BigInteger.Parse(AuthReq.BlurRMul);
