@@ -32,6 +32,7 @@ using Tide.Ork.Components.AuditTrail;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Tide.Ork.Controllers
 {
@@ -283,7 +284,7 @@ namespace Tide.Ork.Controllers
             var responseToEncrypt = new ApplyResponseToEncrypt
             {
                 GBlurUserCMKi = gBlurUserCMKi,
-                GBlindRi = Ed25519.G * account.Cmk2i, //cmk2i or  random?
+                GCMK2 = Ed25519.G * account.Cmk2i,
                 GCMK = Ed25519.G * account.Cmki, 
                 CertTimei = Token.ToByteArray()
             };
@@ -334,19 +335,19 @@ namespace Tide.Ork.Controllers
             if(!CertTimeTest.SequenceEqual(CertTimei.Signature)){ // CertTime != Encoding.ASCII.GetBytes(certTimei) 
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid certime  for {uid}");
                 return Unauthorized();
-            }       
-            var AuthRequest = account.PrismiAuth.Decrypt(authRequest);
-            var BlurHCMKMuli =new BigInteger(AuthRequest.Skip(40).ToArray(), true, true); // get from request
-            //var BlurR3 = BigInteger.One ; //get from request
-            var BlindRi = account.Cmk2i; // how to get?
-
-            if(BlurHCMKMuli !=0 && BlindRi !=0){ 
+            }  
+            string jsonStr = Encoding.UTF8.GetString(authRequest);
+            var AuthReq = JsonConvert.DeserializeObject<AuthRequest>(jsonStr);
+            var BlurHCmkMul = BigInteger.Parse(AuthReq.BlurHCmkMul);
+            var BlurRMul = BigInteger.Parse(AuthReq.BlurRMul);
+            if( BlurHCmkMul !=0 &&  BlurRMul !=0){ 
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid request  for {uid}");
                 return Unauthorized();
             }  
-            var BlindH = BlurHCMKMuli * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication"));
-            var Si = BlindRi + BlindH * account.Cmki;
+            var BlindH = BlurHCmkMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication"));
+            //var BlindR = do we need to hash?
 
+            var Si = account.Cmk2i * BlurHCmkMul * BlurRMul+ BlindH * account.Cmki;
             return Ok(account.PrismiAuth.EncryptStr(Si.ToString()));
         }
 

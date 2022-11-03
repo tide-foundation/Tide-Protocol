@@ -7,7 +7,7 @@ namespace Tide.Ork.Models {
      public class ApplyResponseToEncrypt
     {
         public Ed25519Point GBlurUserCMKi {get; set;}
-        public Ed25519Point GBlindRi {get; set;}
+        public Ed25519Point GCMK2 {get; set;}
         public Ed25519Point GCMK {get; set;}
         public byte[] CertTimei {get; set;} // 32 byte size
 
@@ -16,7 +16,7 @@ namespace Tide.Ork.Models {
         {
             var buffer = new byte[224];
             GBlurUserCMKi.ToByteArray().CopyTo(buffer, 0); 
-            GBlindRi.ToByteArray().CopyTo(buffer, 64);
+            GCMK2.ToByteArray().CopyTo(buffer, 64);
             GCMK.ToByteArray().CopyTo(buffer, 128);
             CertTimei.CopyTo(buffer, 192);
             return buffer;

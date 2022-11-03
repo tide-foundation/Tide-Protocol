@@ -298,23 +298,19 @@ namespace Tide.Ork.Controllers
                 return StatusCode(408, new TranToken().ToString()); //Return this???
             }
 
-            if (!gRmul.IsSafePoint()) {
-                _logger.LogInformation($"Apply: Invalid point for {vuid}");
-                return BadRequest("Invalid parameters");
-            }
-            if (!gSessKeyPub.IsSafePoint()) {
+            if (!gRmul.IsSafePoint() || !gSessKeyPub.IsSafePoint()) {
                 _logger.LogInformation($"Apply: Invalid point for {vuid}");
                 return BadRequest("Invalid parameters");
             }
             //Add check for S!= order of G
-            if(s==0 ) {
+            if(s == 0  || s == Ed25519.N) {
                 _logger.LogInformation($"Apply: Invalid s for {vuid}");
                 return BadRequest("Invalid parameters");
             }
             var ToHashM = BitConverter.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray()).ToArray();
             var M = Ed25519Dsa.GetM(ToHashM);
             // hash(gRmul | account.gCMKAuth | timestamp2 | gSessKeyPub) * hash ("CMK authentication")
-            var ToHashH = gRmul.ToByteArray().Concat(ToHashM).ToArray(); // add account.gCMKAuth 
+            var ToHashH = gRmul.ToByteArray().Concat(ToHashM).Concat(Encoding.ASCII.GetBytes("CMK authentication")).ToArray(); // add account.gCMKAuth 
             var H = Ed25519Dsa.GetM(ToHashH) ; 
             var _8N = BigInteger.Parse("8");
             if(Ed25519.G * (s * _8N) != gRmul  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCMKAuth
@@ -322,10 +318,16 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Some consistent garbage");
             }
             
-            var CvkRi = Ed25519.G * account.CVK2i;
-            //var CvkH =  Hash(account.gCVKR | account.gCVK | timestamp2 | gSessKeyPub |vuid | challenge); //challenge is passed to frontend at the first GetChallenge() call
-            //var CVKSi = account.CVK2i +CVKH * account.CVKi;
-            //var ECDHi = Hash(gSessKeyPub * mSecORKi);
+            var MToHash = BitConverter.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray())
+                        .Concat(BitConverter.GetBytes(BitConverter.ToUInt64(vuid.ToByteArray().Take(8).ToArray())))
+                        .Concat(Encoding.ASCII.GetBytes(challenge)).ToArray();
+            var CVKM = Ed25519Dsa.GetM(account.CvkPub.ToByteArray().Concat(ToHashH).ToArray());
+            var CvkRi = Ed25519.G * account.CVK2i * CVKM;
+            var CvkH =  Ed25519Dsa.GetM((Ed25519.G * ( account.CVK2i * CVKM)).ToByteArray().
+                        Concat(account.CvkPub.ToByteArray()).Concat(ToHashH).ToArray());
+
+            var CVKSi = account.CVK2i +CvkH * account.CVKi;
+            var ECDHi = Ed25519Dsa.GetM(gSessKeyPub.ToByteArray().Concat(_config.SecretKey.ToByteArray()).ToArray());
             
             _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Returning  from {vuid}");
             // Use ECDHi key and Encrypt CVKri, CVKSi
