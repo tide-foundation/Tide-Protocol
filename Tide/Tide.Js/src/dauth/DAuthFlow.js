@@ -265,28 +265,10 @@ export default class DAuthFlow {
       }
       // test createpayload here
       const VERIFYi = decryptedResponses.map((response, i) => new TranToken().sign(prismAuths.get(i), create_payload(response.certTime.toArray())));
+      const deltaTime = median(decryptedResponses.map(a => a.certTime.ticks)) - Date.now();
 
-      const deltaTime = // get median
 
-      
-      // decrypt(timestampi, certTimei) with PristAuthi
-      // Add userId timestampi ,certTimei , prismAuthi to verifyi /tokens
-      const tokens = idGens.map((_, i) => token.copy().sign(prismAuths.get(i), this.clienSet.get(i).userBuffer))
-
-      //Calculate the deltaTime median(timestami[])-epochtimeUTC() ;( epochtimeUTC() = timestampi ?)
-
-      const tranid = new Guid();
-      const ids = idGens.map(idGen => idGen.id);
-      const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
-      // Pass userId , timestampi ,certTimei, verifyi)
-      const pre_ciphers = this.clienSet.map(lis, (cli, li, i) => cli.signIn(tranid, tokens.get(i), point, li));
-
-      const cvkAuth = await pre_ciphers.map((cipher, i) => ed25519Point.from(prismAuths.get(i).decrypt(cipher)))
-        .reduce((sum, cvkAuthi) => sum.add(cvkAuthi), ed25519Point.infinity);
-
-      // Add a full flow for cmk
-      // return S , VUID,timestamp2 for cvk flow
-      return AESKey.seed(cvkAuth.toArray());
+      return;
     } catch (err) {
       return Promise.reject(err);
     }
@@ -414,4 +396,15 @@ export default class DAuthFlow {
 
 function random() {
   return Utils.random(bigInt.one, bigInt((ed25519Point.order - BigInt(1)).toString()));
+}
+
+function median(numbers) {
+  const sorted = Array.from(numbers).sort((a, b) => a.sub(b));
+  const middle = Math.floor(sorted.length / 2);
+
+  if (sorted.length % 2 === 0) {
+      return (sorted[middle - 1].add(sorted[middle]).div(2));
+  }
+
+  return sorted[middle];
 }

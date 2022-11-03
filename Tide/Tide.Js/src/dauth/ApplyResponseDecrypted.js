@@ -39,9 +39,9 @@ export default class ApplyResponseDecrypted {
         if (!obj.gBlurUserCMKi || !obj.gBlindR || !obj.gCMK || !obj.certTime)
             throw Error(`ApplyResponseDecrypted: The JSON is not in the correct format: ${data}`);
 
-        const gBlurUserCMKi = ed25519Point.from(obj.gBlurUserCMKi);
-        const gBlindR = ed25519Point.from(obj.gBlindR);
-        const gCMK = ed25519Point.from(obj.gCMK);
+        const gBlurUserCMKi = ed25519Point.from(Buffer.from(obj.gBlurUserCMKi, 'base64'));
+        const gBlindR = ed25519Point.from(Buffer.from(obj.gBlindR, 'base64'));
+        const gCMK = ed25519Point.from(Buffer.from(obj.gCMK, 'base64'));
         const certTime = TranToken.from(obj.certTime);
         
         return new ApplyResponseDecrypted(gBlurUserCMKi, gBlindR, gCMK, certTime);
