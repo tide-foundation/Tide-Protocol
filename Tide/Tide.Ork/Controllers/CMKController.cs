@@ -275,17 +275,17 @@ namespace Tide.Ork.Controllers
             var gBlurPassPrismi = gBlurPass * account.Prismi;
             var gBlurUserCMKi = gBlurUser * account.Cmki;
             
-            var certTime = new TranToken();
+            var Token = new TranToken();
             var purpose = "auth";
-            var data_to_sign = Encoding.UTF8.GetBytes(uid.ToString() + purpose); // also includes timestamp inside TranToken object
-            certTime.Sign(_config.SecretKey, data_to_sign);
-
+            var data_to_sign = Encoding.UTF8.GetBytes(Token.Ticks.ToString() + uid.ToString() + purpose); // also includes timestamp inside TranToken object
+            Token.Sign(_config.SecretKey, data_to_sign);
+            Console.WriteLine("======================================" +Token.Signature.Length);
             var responseToEncrypt = new ApplyResponseToEncrypt
             {
                 GBlurUserCMKi = gBlurUserCMKi,
-                GBlindR = Ed25519.G * account.Cmk2i,
+                GBlindRi = Ed25519.G * account.Cmk2i, //cmk2i or  random?
                 GCMK = Ed25519.G * account.Cmki, 
-                CertTime = certTime.ToByteArray()
+                CertTimei = Token.ToByteArray()
             };
             
             return new ApplyResponse
@@ -297,23 +297,17 @@ namespace Tide.Ork.Controllers
 
         //TODO: Add throttling by ip and account separate
         [MetricAttribute("cmk", recordSuccess:true)]
-        [HttpGet("auth/{uid}/{timestampi}/{certTimei}/{token}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] long timestampi, [FromRoute] string certTimei, [FromRoute] string token,  [FromQuery] string li = null)
+        [HttpGet("auth/{uid}/{certTimei}/{token}")]
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromBody] byte[] authRequest, [FromQuery] string li = null)
         {
-            if (!token.FromBase64UrlString(out byte[] bytesToken))
+            if (!token.FromBase64UrlString(out byte[] bytesToken) || !certTimei.FromBase64UrlString(out byte[] bytesCertTimei))
             {
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid token format for {uid}");
                 return Unauthorized();
-            }
-
-            var lagrangian = BigInteger.Zero;
-            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
-            {
-                _logger.LogInformation("Apply: Invalid li for {uid}: '{li}' ", uid, li);
-                return BadRequest("Invalid parameter li");
-            }
-
+            }  
             var tran = TranToken.Parse(bytesToken);
+            var CertTimei = TranToken.Parse(bytesCertTimei);
+
             var account = await _manager.GetById(uid);
             if (account == null || tran == null || !tran.Check(account.PrismiAuth, uid.ToByteArray())) {
                 if (account == null)
@@ -323,38 +317,37 @@ namespace Tide.Ork.Controllers
 
                 return Unauthorized("Invalid account or signature");
             }
-
-            if (!tran.OnTime) {
+            if (!CertTimei.OnTime) {
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
 
             var Purpose = "auth";
-            var CertTimeTest  = _config.SecretKey.Hash(BitConverter.GetBytes(timestampi)
+            // var data_to_sign = Encoding.UTF8.GetBytes(CertTimei.Ticks.ToString() + uid.ToString() + Purpose); 
+            // var Token.Sign(_config.SecretKey, data_to_sign);
+            var CertTimeTest  = _config.SecretKey.Hash(BitConverter.GetBytes(CertTimei.Ticks)
                 .Concat(BitConverter.GetBytes(BitConverter.ToUInt64(uid.ToByteArray().Take(8).ToArray())))
                 .Concat(Encoding.ASCII.GetBytes(Purpose)).ToArray())
                 .Take(16).ToArray();
-
+            
             // Verify hmac(timestami ||userId || purpose , mSecOrki)== certTimei
-            if(!CertTimeTest.SequenceEqual(Encoding.ASCII.GetBytes(certTimei))){ // CertTime != Encoding.ASCII.GetBytes(certTimei) 
+            if(!CertTimeTest.SequenceEqual(CertTimei.Signature)){ // CertTime != Encoding.ASCII.GetBytes(certTimei) 
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid certime  for {uid}");
                 return Unauthorized();
             }       
+            var AuthRequest = account.PrismiAuth.Decrypt(authRequest);
+            var BlurHCMKMuli =new BigInteger(AuthRequest.Skip(40).ToArray(), true, true); // get from request
+            //var BlurR3 = BigInteger.One ; //get from request
+            var BlindRi = account.Cmk2i; // how to get?
 
-            var BlurHCMKMul = BigInteger.One; // get from request
-            var BlurR3 = BigInteger.One ; //get from request
-            var BlineRi = BigInteger.One; // how to get?
-
-             if(BlurHCMKMul !=0 && BlurR3 !=0){ 
+            if(BlurHCMKMuli !=0 && BlindRi !=0){ 
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid request  for {uid}");
                 return Unauthorized();
             }  
-            var BlindH = BlurHCMKMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication"));
-            var Si = BlineRi * BlurR3 + BlindH * account.Cmki;
+            var BlindH = BlurHCMKMuli * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication"));
+            var Si = BlindRi + BlindH * account.Cmki;
 
-            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Successful login for {uid}");
-           // var cvkAuthi = (lagrangian <= 0 ? point * account.Cmki : point * (account.Cmki * lagrangian).Mod(Ed25519.N)).ToByteArray();
-            return Ok(account.PrismiAuth.EncryptStr(Si.ToString()));// Check if return is needed?
+            return Ok(account.PrismiAuth.EncryptStr(Si.ToString()));
         }
 
         [MetricAttribute("cmk")]

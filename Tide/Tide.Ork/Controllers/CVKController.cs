@@ -282,8 +282,8 @@ namespace Tide.Ork.Controllers
         }
 
         [MetricAttribute("cvk", recordSuccess:true)]
-        [HttpGet("{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}")]
-        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute]  BigInteger s, [FromRoute] string timestamp2 , [FromRoute]  Ed25519Point gSessKeyPub)
+        [HttpGet("{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}")]
+        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] BigInteger s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge)
         {
             var account = await _managerCvk.GetById(vuid);
             if (account == null) {
@@ -291,18 +291,18 @@ namespace Tide.Ork.Controllers
                 return Unauthorized($"Invalid account");
             }
             //Verify timestamp2 in recent (10 min)
-            // if (!timestamp2.OnTime) {
-            //     _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Expired token: {token}");
-            //     return StatusCode(408, new TranToken().ToString());
-            // }
+            var Time= DateTime.FromBinary(timestamp2);
+            const long _window = TimeSpan.TicksPerMinute * 10;
+            if(!(Time >= DateTime.UtcNow.AddTicks(-_window) && Time <= DateTime.UtcNow.AddTicks(_window))){
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Expired");
+                return StatusCode(408, new TranToken().ToString()); //Return this???
+            }
 
-            //testSafePoint(gRmul) . Update after Cryptide C# implementation
-            if (!gRmul.IsValid()) {
+            if (!gRmul.IsSafePoint()) {
                 _logger.LogInformation($"Apply: Invalid point for {vuid}");
                 return BadRequest("Invalid parameters");
             }
-            //testSafePoint(gPassKeyPub) . Update after Cryptide C# implementation
-            if (!gSessKeyPub.IsValid()) {
+            if (!gSessKeyPub.IsSafePoint()) {
                 _logger.LogInformation($"Apply: Invalid point for {vuid}");
                 return BadRequest("Invalid parameters");
             }
@@ -311,7 +311,11 @@ namespace Tide.Ork.Controllers
                 _logger.LogInformation($"Apply: Invalid s for {vuid}");
                 return BadRequest("Invalid parameters");
             }
-            var H =BigInteger.One ; // hash(gRmul | account.gCMKAuth | timestamp2 | gSessKeyPub) * hash ("CMK authentication")
+            var ToHashM = BitConverter.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray()).ToArray();
+            var M = Ed25519Dsa.GetM(ToHashM);
+            // hash(gRmul | account.gCMKAuth | timestamp2 | gSessKeyPub) * hash ("CMK authentication")
+            var ToHashH = gRmul.ToByteArray().Concat(ToHashM).ToArray(); // add account.gCMKAuth 
+            var H = Ed25519Dsa.GetM(ToHashH) ; 
             var _8N = BigInteger.Parse("8");
             if(Ed25519.G * (s * _8N) != gRmul  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCMKAuth
                      _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
