@@ -21,6 +21,7 @@ import RandomResponse from "./RandomResponse";
 import DnsEntry from "../DnsEnrty";
 import superagent from "superagent";
 import Guid from "../guid";
+import bigInt from "big-integer";
 
 /** @typedef {{orkid: string, sign: string}} OrkSign */
 export default class DAuthClient extends ClientBase {
@@ -33,17 +34,6 @@ export default class DAuthClient extends ClientBase {
   }
 
   /** 
-   * @param {ed25519Point} pass
-   * @param {bigInt.BigInteger} li
-   *  @returns {Promise<[ed25519Point, TranToken]>} */
-  async ApplyPrism(pass) {
-    let url = `/cmk/prism/${this.userGuid}/${urlEncode(pass.toArray())}`;
-
-    const res = await this._get(url);
-    return [ ed25519Point.from(fromBase64(res.body.prism)), TranToken.from(res.body.token) ]
-  }
-
-  /** 
    * @param {ed25519Point} gBlurPass
    * @param {ed25519Point} gBlurUser
    *  @returns {Promise<[ed25519Point, string]>} */
@@ -52,6 +42,33 @@ export default class DAuthClient extends ClientBase {
 
     const res = await this._get(url);
     return [ ed25519Point.from(fromBase64(res.body.gBlurPassPrism)).times(li) , res.body.encReply]
+  }
+
+  /** 
+   * @param { string } encAuthRequest
+   * @param { TranToken } certTimei
+   * @param { TranToken } VERIFYi
+   *  @returns {Promise<string>} */
+   async Authenticate(encAuthRequest, certTimei, VERIFYi) {
+    const resp = await this._get(`/cmk/auth/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}`).set("Content-Type", "text/plain").send(encAuthRequest)
+        .ok(res => res.status < 500);
+
+    return resp.text;
+  }
+
+  /** 
+   * @param { bigInt.BigInteger } vuid
+   * @param { ed25519Point } gRmul
+   * @param { bigInt.BigInteger } s
+   * @param { number } timestamp2
+   * @param { ed25519Point } gSesskeyPub
+   * @param { string } challenge
+   *  @returns {Promise<string>} */
+   async SignInCVK(vuid, gRmul, s, timestamp2, gSesskeyPub, challenge) {
+    let url = `/cvk/${vuid.toString()}/${urlEncode(gRmul.toArray())}/${s.toString()}/${timestamp2.toString()}/${urlEncode(gSesskeyPub.toArray())}/${challenge}`;
+
+    const res = await this._get(url);
+    return res.text
   }
 
     /**
