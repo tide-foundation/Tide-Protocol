@@ -250,7 +250,10 @@ export default class DAuthFlow {
       const n = bigInt(ed25519Point.order.toString());
 
       const [gPassPrism, encryptedResponses, r2Inv, lis] = await this.doConvert(password, point);  //getting r2Inv here is a little messy, but saves a headache
-
+      
+      const cln = this.clienSet.get(0); // chnage this later
+      const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
+      const [urls, pubs,cmkpub] = await dnsCln.getInfoOrks(); // pubs is the list of mgOrki
       //decryption
       const idGens = await this.clienSet.all(c => c.getClientGenerator()); //find way to only do this once
       const prismAuths = idGens.map(idGen => gPassPrism.derive(idGen.buffer));
@@ -261,7 +264,8 @@ export default class DAuthFlow {
       const hash_gUserCMK = Hash.sha512Buffer(gUserCMK.toArray());
       const CMKmul = bigInt_fromBuffer(hash_gUserCMK.subarray(0, 32)); // first 32 bytes
       const VUID = bigInt_fromBuffer(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes
-      const gCMKAuth = gCMK.times(CMKmul); // get gCMK from DNS call at beginning
+
+      const gCMKAuth = cmkpub.y.times(CMKmul); // get gCMK from DNS call at beginning
 
       const Sesskey = random();
       const gSesskeyPub = ed25519Point.g.times(Sesskey);
@@ -284,7 +288,7 @@ export default class DAuthFlow {
       const timestamp2 = (Date.now() - startTimer) + deltaTime;
       
       const M = Hash.shaBuffer(timestamp2.toString() + Buffer.from(gSesskeyPub.toArray()).toString('base64')); // TODO: Add point.to_base64 function
-      const gRmul = gCMK2.times(r3); // get gCMK2 !!!
+      const gRmul = decryptedResponses.map((res) => res.gCMK2.times(r3)).get(0); // get gCMK2 !!!  Correct?????????
       const H = Hash.shaBuffer(Buffer.from(gRmul.toArray()).toString('base64') + Buffer.from(gCMKAuth.toArray()).toString('base64') + M.toString('base64'));
       const blurHCMKmul = bigInt_fromBuffer(H).times(CMKmul).times(r4).mod(n); // H * CMKmul * r4 % n
       const blurRmul = r3.times(r4).times(r5).mod(n);
@@ -304,8 +308,8 @@ export default class DAuthFlow {
       const challenge = {challenge: 'debug this'}; // insert Tide JWT here
       const encCVKsign = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge)));
 
-      var OrkPublics = []; // get from dns query
-      const ECDHi = OrkPublics.map(pub => AESKey.from(Hash.shaBuffer(pub.times(Sesskey).toArray())));
+      var OrkPublics = pubs; // get from dns query
+      const ECDHi = OrkPublics.map((pub) => AESKey.from(Hash.shaBuffer(pub.y.times(Sesskey).toArray())));
 
       // find lis for all cvk orks
       const decryptedCVKsign = await encCVKsign.map((enc, i) => JSON.parse(ECDHi[i].decrypt(enc))).map(json => [ed25519Point.from(json.CVKRi), bigInt(json.CVKSi)]) // create list of  [CVKRI, CVKSi]

@@ -55,18 +55,28 @@ export default class DnsClient {
     await req.send(entry.toString());
   }
 
-  /** @returns { Promise<[string[], ed25519Key[]]> } */
+  /** @returns { Promise<[string[], ed25519Key[],ed25519Key]> } */
   async getInfoOrks() {
     const entry = await this.getDns();
     if (!entry) return [[], []];
     
     const pubs = entry.publics.filter(pub => pub).map(pub => ed25519Key.from(pub));
+    const cmkpub = entry.Public;
     const urls = entry.urls.filter(url => url);
 
-    return [urls, pubs];
+    return [urls, pubs,cmkpub];
   }
 
   async exist() {
     return (await this.getDns()) != null;
+  }
+
+  /**
+   * @param {string} orkId
+   *  @returns {Promise<string>} */
+   async getOrkPub(orkId) {
+    let url = this.url+`/orks/${this.userGuid}`;
+    const res = await this._get(url);
+    return res.body.text;
   }
 }

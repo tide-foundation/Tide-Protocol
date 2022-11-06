@@ -127,7 +127,7 @@ export default class DAuthJwtFlow {
       await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);
 
       //test dauth and dcrypt
-      const { auth: authTag } = await this.logIn(password);
+      const { auth: authTag } = await this.logIn2(password);
 
       if (this.cvkAuth.toString() !== authTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 

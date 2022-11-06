@@ -23,27 +23,27 @@ export default class ApplyResponseDecrypted {
     /**
     * @param { ed25519Point } gBlurUserCMKi
     * @param { ed25519Point } gBlindR
-    * @param { ed25519Point } gCMK
+    * @param { ed25519Point } gCMK2
     * @param { TranToken } certTime
     */
-    constructor(gBlurUserCMKi, gBlindR, gCMK, certTime) {
+    constructor(gBlurUserCMKi, gBlindR, gCMK2, certTime) {
        this.gBlurUserCMKi = gBlurUserCMKi;
        this.gBlindR = gBlindR;
-       this.gCMK = gCMK;
+       this.gCMK2 = gCMK2;
        this.certTime = certTime;
     }
 
     /** @param {Buffer} data */
     static from(data) {
         const obj = JSON.parse(data.toString());
-        if (!obj.gBlurUserCMKi || !obj.gBlindR || !obj.gCMK || !obj.certTime)
+        if (!obj.gBlurUserCMKi || !obj.gBlindR || !obj.gCMK2 || !obj.certTime)
             throw Error(`ApplyResponseDecrypted: The JSON is not in the correct format: ${data}`);
 
         const gBlurUserCMKi = ed25519Point.from(Buffer.from(obj.gBlurUserCMKi, 'base64'));
         const gBlindR = ed25519Point.from(Buffer.from(obj.gBlindR, 'base64'));
-        const gCMK = ed25519Point.from(Buffer.from(obj.gCMK, 'base64'));
+        const gCMK2 = ed25519Point.from(Buffer.from(obj.gCMK2, 'base64'));
         const certTime = TranToken.from(obj.certTime);
         
-        return new ApplyResponseDecrypted(gBlurUserCMKi, gBlindR, gCMK, certTime);
+        return new ApplyResponseDecrypted(gBlurUserCMKi, gBlindR, gCMK2, certTime);
     }
 }

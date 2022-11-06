@@ -106,5 +106,13 @@ namespace Tide.Ork.Controllers
 
             return Unauthorized();
         }
+
+        [HttpGet("ork/{id}")]
+        public async Task<ActionResult<string>> GetByOrkId([FromRoute] string id)
+        {
+            var orkNode =_orkManager.GetById(id);
+            var orkInfoTask = await orkNode;
+            return orkInfoTask.PubKey;
+        }
     }
 }
