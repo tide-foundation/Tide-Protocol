@@ -22,28 +22,25 @@ import { RandomShareResponse } from "./RandomResponse";
 export default class ApplyResponseDecrypted {
     /**
     * @param { ed25519Point } gBlurUserCMKi
-    * @param { ed25519Point } gBlindR
     * @param { ed25519Point } gCMK2
-    * @param { TranToken } certTime
+    * @param { TranToken } certTimei
     */
-    constructor(gBlurUserCMKi, gBlindR, gCMK2, certTime) {
+    constructor(gBlurUserCMKi,  gCMK2, certTimei) {
        this.gBlurUserCMKi = gBlurUserCMKi;
-       this.gBlindR = gBlindR;
        this.gCMK2 = gCMK2;
-       this.certTime = certTime;
+       this.certTime = certTimei;
     }
 
     /** @param {Buffer} data */
     static from(data) {
         const obj = JSON.parse(data.toString());
-        if (!obj.gBlurUserCMKi || !obj.gBlindR || !obj.gCMK2 || !obj.certTime)
+        if (!obj.GBlurUserCMKi || !obj.GCMK2 || !obj.CertTimei)
             throw Error(`ApplyResponseDecrypted: The JSON is not in the correct format: ${data}`);
 
-        const gBlurUserCMKi = ed25519Point.from(Buffer.from(obj.gBlurUserCMKi, 'base64'));
-        const gBlindR = ed25519Point.from(Buffer.from(obj.gBlindR, 'base64'));
-        const gCMK2 = ed25519Point.from(Buffer.from(obj.gCMK2, 'base64'));
-        const certTime = TranToken.from(obj.certTime);
+        const gBlurUserCMKi = ed25519Point.from(Buffer.from(obj.GBlurUserCMKi, 'base64'));
+        const gCMK2 = ed25519Point.from(Buffer.from(obj.GCMK2, 'base64'));
+        const certTimei = TranToken.from(obj.CertTimei);
         
-        return new ApplyResponseDecrypted(gBlurUserCMKi, gBlindR, gCMK2, certTime);
+        return new ApplyResponseDecrypted(gBlurUserCMKi, gCMK2, certTimei);
     }
 }

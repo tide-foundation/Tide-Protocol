@@ -23,7 +23,7 @@ var newPass = "1234567";
 var email = "tmp@tide.org";
 var user = new Guid(); //A random user id key every time
 //var user = Guid.seed("admin"); //An user if from text
-//var user = Guid.from('77eb7ef8-b02e-1ad4-5a3d-5ede3778406d');
+var user = Guid.from('aef78a5b-3cbb-8d7b-1262-5f6b9506f8e1');
   
 //var vendorPub = CP256Key.generate(); //A random vendor key every time
 var vendorPub = CP256Key.from('35S3ysH0quRR4cHV05VP87YlNiZ2KDX9Cxe7JNIsC34oHXTwbTW0Of2AtbvjYeXhPgOBpboWf+20I8EiFtMyBKbNkrKd9RdqFN6v7PoLDS09MTAE91POUJhqv5MeKzqH');
@@ -33,8 +33,8 @@ var orkUrls = [...Array(threshold)].map((_, i) => `http://ork${i+1}.local`); //t
   try {
     console.log(`Trying a dAuth flow for... \nuserid: ${user} \nvvk: ${vendorPub.toString()}`);
 
-    await signUp();
-    await changePass(user, pass, newPass);
+    //await signUp();
+    //await changePass(user, pass, newPass);
     await signIn(user, newPass);
     //await resetPass(user);
     //await reconstructPass(user);
@@ -61,7 +61,7 @@ async function signIn(user, pass) {
   flowLogin.homeUrl = orkUrls[0];
   flowLogin.vendorPub = vendorPub;
   
-  var account =  await flowLogin.logIn(pass);
+  var account =  await flowLogin.logIn2(pass);
   console.log(`[signIn] vuid: ${account.vuid} cvk: ${account.cvk.toString()}`);
 }
 

@@ -280,12 +280,11 @@ namespace Tide.Ork.Controllers
             var purpose = "auth";
             var data_to_sign = Encoding.UTF8.GetBytes(Token.Ticks.ToString() + uid.ToString() + purpose); // also includes timestamp inside TranToken object
             Token.Sign(_config.SecretKey, data_to_sign);
-            Console.WriteLine("======================================" +Token.Signature.Length);
             var responseToEncrypt = new ApplyResponseToEncrypt
             {
-                GBlurUserCMKi = gBlurUserCMKi,
-                GCMK2 = Ed25519.G * account.Cmk2i,
-                GCMK = Ed25519.G * account.Cmki, 
+                GBlurUserCMKi = gBlurUserCMKi.ToByteArray(),
+                GCMK2 = (Ed25519.G * account.Cmk2i).ToByteArray(),
+                GCMK = (Ed25519.G * account.Cmki).ToByteArray(), 
                 CertTimei = Token.ToByteArray()
             };
             
@@ -299,7 +298,7 @@ namespace Tide.Ork.Controllers
         //TODO: Add throttling by ip and account separate
         [MetricAttribute("cmk", recordSuccess:true)]
         [HttpGet("auth/{uid}/{certTimei}/{token}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromBody] string authRequest, [FromQuery] string li = null)
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromBody] string authRequest)
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken) || !certTimei.FromBase64UrlString(out byte[] bytesCertTimei) || authRequest.FromBase64UrlString(out byte[] bytesRequest))
             {
@@ -340,15 +339,16 @@ namespace Tide.Ork.Controllers
             string jsonStr = Encoding.UTF8.GetString(account.PrismiAuth.Decrypt(bytesRequest));
             var AuthReq = JsonConvert.DeserializeObject<AuthRequest>(jsonStr);
             var BlurHCmkMul = BigInteger.Parse(AuthReq.BlurHCmkMul);
-            var BlurRMul = BigInteger.Parse(AuthReq.BlurRMul);
-            if( BlurHCmkMul !=0 &&  BlurRMul !=0){ 
+             // var BlurRMul = BigInteger.Parse(AuthReq.BlurRMul);
+            if( BlurHCmkMul !=0 ){ 
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid request  for {uid}");
                 return Unauthorized();
             }  
             var BlindH = BlurHCmkMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication"));
-            //var BlindR = do we need to hash?
-
-            var Si = account.Cmk2i * BlurHCmkMul * BlurRMul+ BlindH * account.Cmki;
+            var ToHash = (Ed25519.G * account.Cmk2i).ToByteArray().Concat(Encoding.ASCII.GetBytes(BlurHCmkMul.ToString())).ToArray();
+            var BlindR = Ed25519Dsa.GetM(ToHash);
+        
+            var Si = account.Cmk2i * BlindR + BlindH * account.Cmki;
             return Ok(account.PrismiAuth.EncryptStr(Si.ToString()));
         }
 

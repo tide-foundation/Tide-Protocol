@@ -257,9 +257,12 @@ export default class DAuthFlow {
       //decryption
       const idGens = await this.clienSet.all(c => c.getClientGenerator()); //find way to only do this once
       const prismAuths = idGens.map(idGen => gPassPrism.derive(idGen.buffer));
+      console.log(prismAuths.set(0,AESKey.from("AhBPL1XtuCCQCmF8nAGnIZS9INoBmD2XdKuRVs9TtwNChfYRwUUeLv7rqSsMKUC5sgGQ")));
+      console.log(prismAuths.set(1,AESKey.from("AhDy/x+si+JqnYmrm2bTVAfYIPBvkRBCy7WbRX0IFIQPCdkmlCr+upKayRJt3zQscJEA")));
+      console.log(prismAuths.set(2,AESKey.from("AhA+cClikwCUW0iRc+kYux2xII+3D/k4+3L1uQC2GopjbSgij3iCJIu1ehmpsT52WoaP")));
 
       const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher)));
-      const gUserCMK = decryptedResponses.map((b, i) => b.gBlurUserCMKi.times(lis.get(i))).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi)).times(r2Inv); // check li worked here
+      const gUserCMK = decryptedResponses.map((b, i) => b.gBlurUserCMKi.times(lis.get(i))).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi),ed25519Point.infinity).times(r2Inv); // check li worked here
 
       const hash_gUserCMK = Hash.sha512Buffer(gUserCMK.toArray());
       const CMKmul = bigInt_fromBuffer(hash_gUserCMK.subarray(0, 32)); // first 32 bytes
@@ -270,10 +273,10 @@ export default class DAuthFlow {
       const Sesskey = random();
       const gSesskeyPub = ed25519Point.g.times(Sesskey);
 
-      const r3 = bigInt(Hash.hmac(CMKmul.toString(), "internal R blinder")).mod(n);  // keep in mind number is being converted to string here
+      //const r3 = bigInt(Hash.hmac(CMKmul.toString(), "internal R blinder")).mod(n);  // keep in mind number is being converted to string here
       const r4 = random();
       const r4Inv = r4.modInv(n);
-      const r5 = random();
+      //const r5 = random();
 
       // functional function to append userID bytes to certTime bytes FAST
       const create_payload = (certTime_bytes) => {
@@ -286,24 +289,25 @@ export default class DAuthFlow {
       const VERIFYi = decryptedResponses.map((response, i) => new TranToken().sign(prismAuths.get(i), create_payload(response.certTime.toArray())));
       const deltaTime = median(decryptedResponses.map(a => a.certTime.ticks)) - Date.now();
       const timestamp2 = (Date.now() - startTimer) + deltaTime;
-      
+      const gCMK2 = decryptedResponses.map((res) => res.gCMK2).get(0); //Correct??
       const M = Hash.shaBuffer(timestamp2.toString() + Buffer.from(gSesskeyPub.toArray()).toString('base64')); // TODO: Add point.to_base64 function
-      const gRmul = decryptedResponses.map((res) => res.gCMK2.times(r3)).get(0); // get gCMK2 !!!  Correct?????????
-      const H = Hash.shaBuffer(Buffer.from(gRmul.toArray()).toString('base64') + Buffer.from(gCMKAuth.toArray()).toString('base64') + M.toString('base64'));
+      //const gRmul = decryptedResponses.map((res) => res.gCMK2.times(r3)).get(0); // get gCMK2 !!!  ???????
+      const H = Hash.shaBuffer( Buffer.from(gCMKAuth.toArray()).toString('base64') + M.toString('base64'));
       const blurHCMKmul = bigInt_fromBuffer(H).times(CMKmul).times(r4).mod(n); // H * CMKmul * r4 % n
-      const blurRmul = r3.times(r4).times(r5).mod(n);
+      //const blurRmul = r3.times(r4).times(r5).mod(n);
 
-      const jsonObject = (userID, certTimei, blurHCMKmul, blurRmul) =>  JSON.stringify( { userID: userID.toString(), certTimei: certTimei.toString(), blurHCMKmul: blurHCMKmul.toString(), blurRmul: blurRmul.toString() } );
-      const encAuthRequest = decryptedResponses.map((res, i) => prismAuths.get(i).encrypt(jsonObject(this.userID, res.certTime, blurHCMKmul, blurRmul)).toString('base64'));
+      const jsonObject = (userID, certTimei, blurHCMKmul) =>  JSON.stringify( { userID: userID.toString(), certTimei: certTimei.toString(), blurHCMKmul: blurHCMKmul.toString() } );
+      const encAuthRequest = decryptedResponses.map((res, i) => prismAuths.get(i).encrypt(jsonObject(this.userID, res.certTime, blurHCMKmul)).toString('base64'));
 
       const Encrypted_Si = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.Authenticate(encAuthRequest.get(i).toString('base64'), decryptedResponses.get(i).certTime, VERIFYi.get(i)));
       const Si_noLi = Encrypted_Si.values.map((encryptedSi, i) => bigInt_fromBuffer(prismAuths.get(i).decrypt(encryptedSi)));
       const S = Si_noLi.map((s, i) => s.times(lis.get(i))).reduce((sum, s) => s.add(sum).mod(n)).times(r4Inv).mod(n);  // Sum (Si % n) * r4Inv % n
 
-      const blindR = bigInt_fromBuffer(Hash.shaBuffer(blurHCMKmul.toString())).times(r5).mod(n);  
+      const blindR = bigInt_fromBuffer(Hash.shaBuffer(Buffer.from(gCMK2.toArray()).toString('base64') + blurHCMKmul.toString()) ).times(r4Inv).mod(n);  
 
       const H_int = bigInt_fromBuffer(H);
-      if(!ed25519Point.g.times(BigInt(8)).times(S).isEqual(gRmul.times(blindR).times(bigInt(8)).add(gCMKAuth.times(bigInt_fromBuffer(H))))) Promise.reject("Ork Blind Signature Invalid")
+      const gRmul = gCMK2.times(blindR); 
+      if(!ed25519Point.g.times(BigInt(8)).times(S).isEqual(gRmul.times(bigInt(8)).add(gCMKAuth.times(bigInt_fromBuffer(H))))) Promise.reject("Ork Blind Signature Invalid")
       
       const challenge = {challenge: 'debug this'}; // insert Tide JWT here
       const encCVKsign = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge)));
@@ -333,7 +337,7 @@ export default class DAuthFlow {
         const gPass = ed25519Point.fromString(pass);
         const gUser = ed25519Point.fromString(this.userID.guid.toString() + gVVK.toArray().toString()) // replace this with proper hmac + point to hash function
 
-        const r1 = random();
+        const r1 = bigInt.one;
         const r2 = random();
 
         const gBlurUser = gUser.times(r2);
@@ -342,16 +346,17 @@ export default class DAuthFlow {
         const ids = await pre_ids;
         const lis = ids.map((id) => SecretShare.getLi(id, ids.values, n)); // implement method to only use first 14 orks that reply
         const pre_Prismis = this.clienSet.map(lis, (dAuthClient, li) => dAuthClient.Convert(gBlurUser, gBlurPass, li)); // li is not being sent to ORKs. Instead, when gBlurPassPRISM is returned, it is multiplied by li locally
-                                                                                                                        // would've been neater to do this mutliplication of point * li at gPassRPrism line
+        // would've been neater to do this mutliplication of point * li at gPassRPrism line
+                                                                                                               
         const r1Inv = r1.modInv(n);
         const r2Inv = r2.modInv(n);
   
         const gPassRPrism = await pre_Prismis.map(a =>  a[0]) // li has already been multiplied above, so no need to do it here
-          .reduce((sum, point) => sum.add(point));
-
+          .reduce((sum, point) => sum.add(point),ed25519Point.infinity);
+      
         const gPassPrism = AESKey.seed(gPassRPrism.times(r1Inv).toArray()); 
         const encryptedResponses = await pre_Prismis.map(a => a[1]);
-
+        
         return [gPassPrism, encryptedResponses, r2Inv, lis];
       } catch (err) {
         return Promise.reject(err);
@@ -458,7 +463,7 @@ function median(numbers) {
   const middle = Math.floor(sorted.length / 2);
 
   if (sorted.length % 2 === 0) {
-      return (sorted[middle - 1].add(sorted[middle]).div(2));
+      return (sorted[middle - 1]+(sorted[middle])/(2));
   }
 
   return sorted[middle];

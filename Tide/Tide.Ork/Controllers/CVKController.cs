@@ -309,8 +309,9 @@ namespace Tide.Ork.Controllers
             }
             var ToHashM = BitConverter.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray()).ToArray();
             var M = Ed25519Dsa.GetM(ToHashM);
-            // hash(gRmul | account.gCMKAuth | timestamp2 | gSessKeyPub) * hash ("CMK authentication")
-            var ToHashH = gRmul.ToByteArray().Concat(ToHashM).Concat(Encoding.ASCII.GetBytes("CMK authentication")).ToArray(); // add account.gCMKAuth 
+            // hash(account.gCMKAuth | timestamp2 | gSessKeyPub) * hash ("CMK authentication")
+            //add account.gCMKAuth
+            var ToHashH = account.CvkiAuth.ToByteArray().Concat(ToHashM).Concat(Encoding.ASCII.GetBytes("CMK authentication")).ToArray(); // add account.gCMKAuth 
             var H = Ed25519Dsa.GetM(ToHashH) ; 
             var _8N = BigInteger.Parse("8");
             if(Ed25519.G * (s * _8N) != gRmul  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCMKAuth

@@ -41,7 +41,7 @@ export default class DAuthClient extends ClientBase {
     let url = `/cmk/prism/${this.userGuid}/${urlEncode(gBlurUser.toArray())}/${urlEncode(gBlurPass.toArray())}`;
 
     const res = await this._get(url);
-    return [ ed25519Point.from(fromBase64(res.body.gBlurPassPrism)).times(li) , res.body.encReply]
+    return [ ed25519Point.from(Buffer.from(res.body.gBlurPassPrism, 'base64')).times(li) , res.body.encReply]
   }
 
   /** 
