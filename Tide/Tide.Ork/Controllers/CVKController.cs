@@ -283,7 +283,7 @@ namespace Tide.Ork.Controllers
 
         [MetricAttribute("cvk", recordSuccess:true)]
         [HttpGet("{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}")]
-        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] BigInteger s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge)
+        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge)
         {
             var account = await _managerCvk.GetById(vuid);
             if (account == null) {
@@ -303,7 +303,8 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Invalid parameters");
             }
             //Add check for S!= order of G
-            if(s == 0  || s == Ed25519.N) {
+            var S = BigInteger.Parse(s);
+            if(S == BigInteger.Zero  || S == Ed25519.N) {
                 _logger.LogInformation($"Apply: Invalid s for {vuid}");
                 return BadRequest("Invalid parameters");
             }
@@ -314,7 +315,7 @@ namespace Tide.Ork.Controllers
             var ToHashH = account.CvkiAuth.ToByteArray().Concat(ToHashM).Concat(Encoding.ASCII.GetBytes("CMK authentication")).ToArray(); // add account.gCMKAuth 
             var H = Ed25519Dsa.GetM(ToHashH) ; 
             var _8N = BigInteger.Parse("8");
-            if(Ed25519.G * (s * _8N) != gRmul  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCMKAuth
+            if(Ed25519.G * (S * _8N) != gRmul  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCMKAuth
                      _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
                 return BadRequest("Some consistent garbage");
             }
