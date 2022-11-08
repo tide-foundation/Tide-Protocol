@@ -297,10 +297,10 @@ namespace Tide.Ork.Controllers
 
         //TODO: Add throttling by ip and account separate
         [MetricAttribute("cmk", recordSuccess:true)]
-        [HttpGet("auth/{uid}/{certTimei}/{token}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromBody] string authRequest)
+        [HttpGet("auth/{uid}/{certTimei}/{token}/{req}")]
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromRoute] string req)
         {
-            if (!token.FromBase64UrlString(out byte[] bytesToken) || !certTimei.FromBase64UrlString(out byte[] bytesCertTimei) || authRequest.FromBase64UrlString(out byte[] bytesRequest))
+            if (!token.FromBase64UrlString(out byte[] bytesToken) || !certTimei.FromBase64UrlString(out byte[] bytesCertTimei) || !req.FromBase64UrlString(out byte[] bytesRequest))
             {
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid token format for {uid}");
                 return Unauthorized();
@@ -309,7 +309,12 @@ namespace Tide.Ork.Controllers
             var CertTimei = TranToken.Parse(bytesCertTimei);
 
             var account = await _manager.GetById(uid);
-            if (account == null || tran == null || !tran.Check(account.PrismiAuth, uid.ToByteArray())) {
+
+            var buffer = new byte[uid.ToByteArray().Length + bytesCertTimei.Length];
+            uid.ToByteArray().CopyTo(buffer,0);
+            bytesCertTimei.CopyTo(buffer, uid.ToByteArray().Length);
+
+            if (account == null || tran == null || !tran.Check(account.PrismiAuth, buffer)) {
                 if (account == null)
                     _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Account {uid} does not exist");
                 else

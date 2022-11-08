@@ -50,7 +50,7 @@ export default class DAuthClient extends ClientBase {
    * @param { TranToken } VERIFYi
    *  @returns {Promise<string>} */
    async Authenticate(encAuthRequest, certTimei, VERIFYi) {
-    const resp = await this._get(`/cmk/auth/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}`).set("Content-Type", "text/plain").send(encAuthRequest)
+    const resp = await this._get(`/cmk/auth/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}/${urlEncode(encAuthRequest)}`)
         .ok(res => res.status < 500);
 
     return resp.text;
