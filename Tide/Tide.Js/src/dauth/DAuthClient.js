@@ -48,9 +48,10 @@ export default class DAuthClient extends ClientBase {
    * @param { string } encAuthRequest
    * @param { TranToken } certTimei
    * @param { TranToken } VERIFYi
+   * @param { ed25519Point } gCMK2
    *  @returns {Promise<string>} */
-   async Authenticate(encAuthRequest, certTimei, VERIFYi) {
-    const resp = await this._get(`/cmk/auth/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}/${urlEncode(encAuthRequest)}`)
+   async Authenticate(encAuthRequest, certTimei, VERIFYi,gCMK2) {
+    const resp = await this._get(`/cmk/auth/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}/${urlEncode(encAuthRequest)}/${urlEncode(gCMK2.toArray())}`) // Remove gCmk2 once confirm with the flow
         .ok(res => res.status < 500);
 
     return resp.text;

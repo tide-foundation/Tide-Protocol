@@ -263,7 +263,8 @@ export default class DAuthFlow {
 
       const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher))); // invalid sig
       const gUserCMK = decryptedResponses.map((b, i) => b.gBlurUserCMKi.times(lis.get(i))).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi),ed25519Point.infinity).times(r2Inv); // check li worked here
-
+      const gCMK2 = decryptedResponses.map((b, i) => b.gCMK2.times(lis.get(i))).reduce((sum, gCMK2) => sum.add(gCMK2),ed25519Point.infinity); //Correct??
+      
       const hash_gUserCMK = Hash.sha512Buffer(gUserCMK.toArray());
       const CMKmul = bigInt_fromBuffer(hash_gUserCMK.subarray(0, 32)); // first 32 bytes
       const VUID = bigInt_fromBuffer(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes
@@ -289,7 +290,7 @@ export default class DAuthFlow {
       const VERIFYi = decryptedResponses.map((response, i) => new TranToken().sign(prismAuths.get(i), create_payload(response.certTime.toArray())));
       const deltaTime = median(decryptedResponses.map(a => a.certTime.ticks)) - Date.now();
       const timestamp2 = (Date.now() - startTimer) + deltaTime;
-      const gCMK2 = decryptedResponses.map((res) => res.gCMK2).get(0); //Correct??
+     
       const M = Hash.shaBuffer(timestamp2.toString() + Buffer.from(gSesskeyPub.toArray()).toString('base64')); // TODO: Add point.to_base64 function
       //const gRmul = decryptedResponses.map((res) => res.gCMK2.times(r3)).get(0); // get gCMK2 !!!  ???????
       const H = Hash.shaBuffer( Buffer.from(gCMKAuth.toArray()).toString('base64') + M.toString('base64'));
@@ -299,7 +300,7 @@ export default class DAuthFlow {
       const jsonObject = (userID, certTimei, blurHCMKmul) =>  JSON.stringify( { UserID: userID.toString(), CertTime: certTimei.toString(), BlurHCMKmul: blurHCMKmul.toString() } );
       const encAuthRequest = decryptedResponses.map((res, i) => prismAuths.get(i).encrypt(jsonObject(this.userID.guid, res.certTime, blurHCMKmul)).toString('base64'));
 
-      const Encrypted_Si = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.Authenticate(encAuthRequest.get(i).toString('base64'), decryptedResponses.get(i).certTime, VERIFYi.get(i)));
+      const Encrypted_Si = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.Authenticate(encAuthRequest.get(i).toString('base64'), decryptedResponses.get(i).certTime, VERIFYi.get(i),gCMK2)); // Remove gCmk2 once confirm with the flow
       const Si_noLi = Encrypted_Si.values.map((encryptedSi, i) => bigInt_fromBuffer(prismAuths.get(i).decrypt(encryptedSi)));
       const S = Si_noLi.map((s, i) => s.times(lis.get(i))).reduce((sum, s) => s.add(sum).mod(n)).times(r4Inv).mod(n);  // Sum (Si % n) * r4Inv % n
 
@@ -307,7 +308,7 @@ export default class DAuthFlow {
 
       const H_int = bigInt_fromBuffer(H);
       const gRmul = gCMK2.times(blindR); 
-      if(!ed25519Point.g.times(BigInt(8)).times(S).isEqual(gRmul.times(bigInt(8)).add(gCMKAuth.times(bigInt_fromBuffer(H))))) {
+      if(!ed25519Point.g.times(BigInt(8)).times(S).isEqual(gRmul.times(bigInt(8)).add(gCMKAuth.times(bigInt_fromBuffer(H)).times(bigInt(8))))) {
         return Promise.reject("Ork Blind Signature Invalid")
       }
       

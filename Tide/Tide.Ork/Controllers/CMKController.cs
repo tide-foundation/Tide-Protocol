@@ -292,8 +292,8 @@ namespace Tide.Ork.Controllers
 
         //TODO: Add throttling by ip and account separate
         [MetricAttribute("cmk", recordSuccess:true)]
-        [HttpGet("auth/{uid}/{certTimei}/{token}/{req}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromRoute] string req)
+        [HttpGet("auth/{uid}/{certTimei}/{token}/{req}/{gCMK2}")]
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromRoute] string req, [FromRoute] Ed25519Point gCMK2) // Remove gCmk2 once confirm with the flow
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken) || !certTimei.FromBase64UrlString(out byte[] bytesCertTimei) || !req.FromBase64UrlString(out byte[] bytesRequest))
             {
@@ -341,7 +341,7 @@ namespace Tide.Ork.Controllers
                 return Unauthorized();
             }  
             var BlindH = BlurHCmkMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication"));
-            var ToHash = (Ed25519.G * account.Cmk2i).ToByteArray().Concat(Encoding.ASCII.GetBytes(BlurHCmkMul.ToString())).ToArray();
+            var ToHash = gCMK2.ToByteArray().Concat(Encoding.ASCII.GetBytes(BlurHCmkMul.ToString())).ToArray();
             var BlindR = Ed25519Dsa.GetM(ToHash);
         
             var Si = account.Cmk2i * BlindR + BlindH * account.Cmki;
