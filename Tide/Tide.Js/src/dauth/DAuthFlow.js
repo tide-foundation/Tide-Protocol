@@ -307,17 +307,20 @@ export default class DAuthFlow {
 
       const H_int = bigInt_fromBuffer(H);
       const gRmul = gCMK2.times(blindR); 
-      if(!ed25519Point.g.times(BigInt(8)).times(S).isEqual(gRmul.times(bigInt(8)).add(gCMKAuth.times(bigInt_fromBuffer(H))))) Promise.reject("Ork Blind Signature Invalid")
+      if(!ed25519Point.g.times(BigInt(8)).times(S).isEqual(gRmul.times(bigInt(8)).add(gCMKAuth.times(bigInt_fromBuffer(H))))) {
+        return Promise.reject("Ork Blind Signature Invalid")
+      }
       
       const challenge = {challenge: 'debug this'}; // insert Tide JWT here
       const encCVKsign = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge)));
 
       var OrkPublics = pubs; // get from dns query
-      const ECDHi = OrkPublics.map((pub) => AESKey.from(Hash.shaBuffer(pub.y.times(Sesskey).toArray())));
+      const ECDHi = OrkPublics.map(pub => AESKey.seed(Hash.shaBuffer(pub.y.times(Sesskey).toArray())));
 
       // find lis for all cvk orks
       const decryptedCVKsign = await encCVKsign.map((enc, i) => JSON.parse(ECDHi[i].decrypt(enc))).map(json => [ed25519Point.from(json.CVKRi), bigInt(json.CVKSi)]) // create list of  [CVKRI, CVKSi]
       // Sum the CVKRis and CVKSis, remember to add li (of cvk orks!)
+      const a = 'a';
       return;
     } catch (err) {
       return Promise.reject(err);
