@@ -293,22 +293,36 @@ export default class DAuthFlow {
      
       const M = Hash.shaBuffer(timestamp2.toString() + Buffer.from(gSesskeyPub.toArray()).toString('base64')); // TODO: Add point.to_base64 function
       //const gRmul = decryptedResponses.map((res) => res.gCMK2.times(r3)).get(0); // get gCMK2 !!!  ???????
-      const H = Hash.shaBuffer( Buffer.from(gCMKAuth.toArray()).toString('base64') + M.toString('base64'));
-      const blurHCMKmul = bigInt_fromBuffer(H).times(CMKmul).times(r4).mod(n); // H * CMKmul * r4 % n
+      const H = Hash.shaBuffer( Buffer.concat([Buffer.from(gCMKAuth.toArray()), M]));
+      const blurHCMKmul = bigInt_fromBuffer(H).times(CMKmul).times(r4); // H * CMKmul * r4 % n
       //const blurRmul = r3.times(r4).times(r5).mod(n);
 
       const jsonObject = (userID, certTimei, blurHCMKmul) =>  JSON.stringify( { UserID: userID.toString(), CertTime: certTimei.toString(), BlurHCMKmul: blurHCMKmul.toString() } );
       const encAuthRequest = decryptedResponses.map((res, i) => prismAuths.get(i).encrypt(jsonObject(this.userID.guid, res.certTime, blurHCMKmul)).toString('base64'));
 
-      const Encrypted_Si = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.Authenticate(encAuthRequest.get(i).toString('base64'), decryptedResponses.get(i).certTime, VERIFYi.get(i),gCMK2)); // Remove gCmk2 once confirm with the flow
+      const Encrypted_Si = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.Authenticate(encAuthRequest.get(i), decryptedResponses.get(i).certTime, VERIFYi.get(i),gCMK2)); // Remove gCmk2 once confirm with the flow
       const Si_noLi = Encrypted_Si.values.map((encryptedSi, i) => bigInt_fromBuffer(prismAuths.get(i).decrypt(encryptedSi)));
-      const S = Si_noLi.map((s, i) => s.times(lis.get(i))).reduce((sum, s) => s.add(sum).mod(n)).times(r4Inv).mod(n);  // Sum (Si % n) * r4Inv % n
+      const S = Si_noLi.map((s, i) => s.times(lis.get(i))).reduce((sum, s) => sum.add(s)).times(r4Inv).mod(n);  // Sum (Si) * r4Inv % n
 
-      const blindR = bigInt_fromBuffer(Hash.shaBuffer(Buffer.from(gCMK2.toArray()).toString('base64') + blurHCMKmul.toString()) ).times(r4Inv).mod(n);  
+      const addTwo = (one, two) => {
+        const newArray = new Uint8Array(one.length + two.length);
+        newArray.set(one);
+        newArray.set(two, one.length);
+        return newArray // returns userID + certTime
+      }
+      const blindR = bigInt_fromBuffer(Hash.sha512Buffer(Buffer.concat([gCMK2.toArray(), Buffer.from(blurHCMKmul.toString())])) ).times(r4Inv).mod(n);  
 
-      const H_int = bigInt_fromBuffer(H);
+      const string_hash = bigInt_fromBuffer(Hash.sha512Buffer("CMK authentication"));
       const gRmul = gCMK2.times(blindR); 
-      if(!ed25519Point.g.times(BigInt(8)).times(S).isEqual(gRmul.times(bigInt(8)).add(gCMKAuth.times(bigInt_fromBuffer(H)).times(bigInt(8))))) {
+
+      const AAAS = S.toString();
+      const AAAlis = lis.values.map(l => l.toString());
+      const AAAInv = r4Inv.toString();
+
+      const AAAgCMk2 = gCMK2.getX().toString();
+      const AAAgCmk2y = gCMK2.getY().toString();
+
+      if(!ed25519Point.g.times(BigInt(8)).times(S).isEqual(gRmul.times(bigInt(8)).add(gCMKAuth.times(bigInt_fromBuffer(H)).times(string_hash).times(BigInt(8))))) {
         return Promise.reject("Ork Blind Signature Invalid")
       }
       
@@ -455,7 +469,7 @@ export default class DAuthFlow {
  * @returns 
  */
 function bigInt_fromBuffer(buffer){
-  return bigInt.fromArray(Array.from(buffer), 256, false).mod(bigInt(ed25519Point.order.toString()))
+  return bigInt.fromArray(Array.from(buffer.reverse()), 256, false).mod(bigInt(ed25519Point.order.toString()))
 }
 
 function random() {

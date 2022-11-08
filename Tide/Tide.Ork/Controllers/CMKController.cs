@@ -340,12 +340,17 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Invalid request  for {uid}");
                 return Unauthorized();
             }  
-            var BlindH = BlurHCmkMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication"));
+            var BlindH = BlurHCmkMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication")).Mod(Ed25519.N);
             var ToHash = gCMK2.ToByteArray().Concat(Encoding.ASCII.GetBytes(BlurHCmkMul.ToString())).ToArray();
-            var BlindR = Ed25519Dsa.GetM(ToHash);
+            var BlindR = Ed25519Dsa.GetM(ToHash).Mod(Ed25519.N);
+
+            
+
         
-            var Si = account.Cmk2i * BlindR + BlindH * account.Cmki;
-            return Ok(account.PrismiAuth.EncryptStr(Si.ToString()));
+            var Si = (account.Cmk2i * BlindR + BlindH * account.Cmki).Mod(Ed25519.N);
+
+            _logger.LogInformation("S : " + Si.ToString());
+            return Ok(account.PrismiAuth.EncryptStr(Si.ToByteArray()));
         }
 
         [MetricAttribute("cmk")]
