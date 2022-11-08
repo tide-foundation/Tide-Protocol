@@ -297,7 +297,7 @@ export default class DAuthFlow {
       //const blurRmul = r3.times(r4).times(r5).mod(n);
 
       const jsonObject = (userID, certTimei, blurHCMKmul) =>  JSON.stringify( { UserID: userID.toString(), CertTime: certTimei.toString(), BlurHCMKmul: blurHCMKmul.toString() } );
-      const encAuthRequest = decryptedResponses.map((res, i) => prismAuths.get(i).encrypt(jsonObject(this.userID, res.certTime, blurHCMKmul)).toString('base64'));
+      const encAuthRequest = decryptedResponses.map((res, i) => prismAuths.get(i).encrypt(jsonObject(this.userID.guid, res.certTime, blurHCMKmul)).toString('base64'));
 
       const Encrypted_Si = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.Authenticate(encAuthRequest.get(i).toString('base64'), decryptedResponses.get(i).certTime, VERIFYi.get(i)));
       const Si_noLi = Encrypted_Si.values.map((encryptedSi, i) => bigInt_fromBuffer(prismAuths.get(i).decrypt(encryptedSi)));
