@@ -118,8 +118,6 @@ namespace Tide.Ork.Controllers
                 cmk2i = rdm.Generate(BigInteger.One);
             }
 
-            _logger.LogInformation("CMki: " + cmki.ToString());
-
             var gPassPrismi = pass * prismi;
             var cmkPubi =  Ed25519.G * cmki;
             var cmkPub2i = Ed25519.G * cmk2i;
@@ -180,10 +178,7 @@ namespace Tide.Ork.Controllers
                 Cmk2i = rand.ComputeCmk2()
             };
 
-            _logger.LogInformation(rand.GetCmki().ToString());
-
-            _logger.LogInformation("Publicx: " + (partialCmkPub + (Ed25519.G * rand.GetCmki())).GetX());
-            _logger.LogInformation("Publicy: " + (partialCmkPub + (Ed25519.G * rand.GetCmki())).GetY());
+            _logger.LogInformation("PRISM AUTH: " + rand.PrismAuth.ToString());
 
             var cmkPub = partialCmkPub + (Ed25519.G * rand.GetCmki());
             var cmk2Pub = partialCmk2Pub + (Ed25519.G * rand.GetCmk2i());
@@ -278,7 +273,7 @@ namespace Tide.Ork.Controllers
             
             var Token = new TranToken();
             var purpose = "auth";
-            var data_to_sign = Encoding.UTF8.GetBytes(Token.Ticks.ToString() + uid.ToString() + purpose); // also includes timestamp inside TranToken object
+            var data_to_sign = Encoding.UTF8.GetBytes(uid.ToString() + purpose); // also includes timestamp inside TranToken object
             Token.Sign(_config.SecretKey, data_to_sign);
             var responseToEncrypt = new ApplyResponseToEncrypt
             {
@@ -316,37 +311,33 @@ namespace Tide.Ork.Controllers
 
             if (account == null || tran == null || !tran.Check(account.PrismiAuth, buffer)) {
                 if (account == null)
-                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Account {uid} does not exist");
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Account {uid} does not exist");
                 else
-                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid token for {uid}");
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Invalid token for {uid}");
 
                 return Unauthorized("Invalid account or signature");
             }
             if (!CertTimei.OnTime) {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Expired token for {uid}");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Expired token for {uid}");
                 return StatusCode(418, new TranToken().ToString());
             }
 
-            var Purpose = "auth";
-            // var data_to_sign = Encoding.UTF8.GetBytes(CertTimei.Ticks.ToString() + uid.ToString() + Purpose); 
-            // var Token.Sign(_config.SecretKey, data_to_sign);
-            var CertTimeTest  = _config.SecretKey.Hash(BitConverter.GetBytes(CertTimei.Ticks)
-                .Concat(BitConverter.GetBytes(BitConverter.ToUInt64(uid.ToByteArray().Take(8).ToArray())))
-                .Concat(Encoding.ASCII.GetBytes(Purpose)).ToArray())
-                .Take(16).ToArray();
+            var purpose = "auth";
+            var data_to_sign = Encoding.UTF8.GetBytes(uid.ToString() + purpose);
             
             // Verify hmac(timestami ||userId || purpose , mSecOrki)== certTimei
-            if(!CertTimeTest.SequenceEqual(CertTimei.Signature)){ // CertTime != Encoding.ASCII.GetBytes(certTimei) 
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid certime  for {uid}");
+            if(!CertTimei.Check(_config.SecretKey, data_to_sign)){ // CertTime != Encoding.ASCII.GetBytes(certTimei) 
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Invalid certime  for {uid}");
                 return Unauthorized();
             }  
             
             string jsonStr = Encoding.UTF8.GetString(account.PrismiAuth.Decrypt(bytesRequest));
+            Console.WriteLine("JSON: " + jsonStr);
             var AuthReq = JsonConvert.DeserializeObject<AuthRequest>(jsonStr);
             var BlurHCmkMul = BigInteger.Parse(AuthReq.BlurHCmkMul);
              // var BlurRMul = BigInteger.Parse(AuthReq.BlurRMul);
-            if( BlurHCmkMul !=0 ){ 
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Invalid request  for {uid}");
+            if( BlurHCmkMul == BigInteger.Zero ){ 
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Invalid request  for {uid}");
                 return Unauthorized();
             }  
             var BlindH = BlurHCmkMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication"));

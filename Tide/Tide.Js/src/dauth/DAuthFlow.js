@@ -257,11 +257,11 @@ export default class DAuthFlow {
       //decryption
       const idGens = await this.clienSet.all(c => c.getClientGenerator()); //find way to only do this once
       const prismAuths = idGens.map(idGen => gPassPrism.derive(idGen.buffer));
-      console.log(prismAuths.set(0,AESKey.from("AhBPL1XtuCCQCmF8nAGnIZS9INoBmD2XdKuRVs9TtwNChfYRwUUeLv7rqSsMKUC5sgGQ")));
-      console.log(prismAuths.set(1,AESKey.from("AhDy/x+si+JqnYmrm2bTVAfYIPBvkRBCy7WbRX0IFIQPCdkmlCr+upKayRJt3zQscJEA")));
-      console.log(prismAuths.set(2,AESKey.from("AhA+cClikwCUW0iRc+kYux2xII+3D/k4+3L1uQC2GopjbSgij3iCJIu1ehmpsT52WoaP")));
+      console.log(prismAuths.set(0,AESKey.from("AhDjfscGPh1BAc6hnXqo/Bi9IAU01cv4hf1fZXO31u94fJDOVGoBq/grySd0cK3gyGId")));
+      console.log(prismAuths.set(1,AESKey.from("AhCG2ZppnPHD2lS3MiOitx4XICuMos8g7SxHCsZjsGYRw7WIXNBTRHiFxTvBfIIj20U4")));
+      console.log(prismAuths.set(2,AESKey.from("AhDRYcRSF67F3RnS1fv2svMBIOWXs4l1t044bXVxwW73CpFTyYnsAZLdU+SI6uthQJav")));
 
-      const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher)));
+      const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher))); // invalid sig
       const gUserCMK = decryptedResponses.map((b, i) => b.gBlurUserCMKi.times(lis.get(i))).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi),ed25519Point.infinity).times(r2Inv); // check li worked here
 
       const hash_gUserCMK = Hash.sha512Buffer(gUserCMK.toArray());
@@ -296,7 +296,7 @@ export default class DAuthFlow {
       const blurHCMKmul = bigInt_fromBuffer(H).times(CMKmul).times(r4).mod(n); // H * CMKmul * r4 % n
       //const blurRmul = r3.times(r4).times(r5).mod(n);
 
-      const jsonObject = (userID, certTimei, blurHCMKmul) =>  JSON.stringify( { userID: userID.toString(), certTimei: certTimei.toString(), blurHCMKmul: blurHCMKmul.toString() } );
+      const jsonObject = (userID, certTimei, blurHCMKmul) =>  JSON.stringify( { UserID: userID.toString(), CertTime: certTimei.toString(), BlurHCMKmul: blurHCMKmul.toString() } );
       const encAuthRequest = decryptedResponses.map((res, i) => prismAuths.get(i).encrypt(jsonObject(this.userID, res.certTime, blurHCMKmul)).toString('base64'));
 
       const Encrypted_Si = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.Authenticate(encAuthRequest.get(i).toString('base64'), decryptedResponses.get(i).certTime, VERIFYi.get(i)));
