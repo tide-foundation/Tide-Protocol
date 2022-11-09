@@ -32,7 +32,7 @@ using Tide.Ork.Components.AuditTrail;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Tide.Ork.Controllers
 {
@@ -330,27 +330,32 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Invalid certime  for {uid}");
                 return Unauthorized();
             }  
-            
+
+            Console.WriteLine("CMK " + account.Cmki.ToString());
+
             string jsonStr = Encoding.UTF8.GetString(account.PrismiAuth.Decrypt(bytesRequest));
-            Console.WriteLine("JSON: " + jsonStr);
-            var AuthReq = JsonConvert.DeserializeObject<AuthRequest>(jsonStr);
+            
+            var AuthReq = JsonSerializer.Deserialize<AuthRequest>(jsonStr);
+
             var BlurHCmkMul = BigInteger.Parse(AuthReq.BlurHCmkMul);
              // var BlurRMul = BigInteger.Parse(AuthReq.BlurRMul);
             if( BlurHCmkMul == BigInteger.Zero ){ 
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Invalid request  for {uid}");
                 return Unauthorized();
             }  
-            var BlindH = BlurHCmkMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication")).Mod(Ed25519.N);
-            var ToHash = gCMK2.ToByteArray().Concat(Encoding.ASCII.GetBytes(BlurHCmkMul.ToString())).ToArray();
+            var BlindH = (BlurHCmkMul * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication")).Mod(Ed25519.N)).Mod(Ed25519.N); // TODO: Create proper bigInt from hash function
+            var ToHash = Encoding.ASCII.GetBytes(account.Cmk2i.ToString()).Concat(Encoding.ASCII.GetBytes(BlurHCmkMul.ToString())).ToArray();
             var BlindR = Ed25519Dsa.GetM(ToHash).Mod(Ed25519.N);
 
-            
+            var response = new {
+                si = Convert.ToBase64String((BlindR + BlindH * account.Cmki).Mod(Ed25519.N).ToByteArray()),
+                gRi = Convert.ToBase64String((Ed25519.G * BlindR).ToByteArray())
+            };
+            Console.WriteLine("Blur: " + (Ed25519.G * BlurHCmkMul).GetX().ToString());
+            Console.WriteLine("BlindH: " + (account.Cmki).ToString());
 
-        
-            var Si = (account.Cmk2i * BlindR + BlindH * account.Cmki).Mod(Ed25519.N);
-
-            _logger.LogInformation("S : " + Si.ToString());
-            return Ok(account.PrismiAuth.EncryptStr(Si.ToByteArray()));
+            string b = JsonSerializer.Serialize(response);
+            return Ok(account.PrismiAuth.EncryptStr(b));
         }
 
         [MetricAttribute("cmk")]

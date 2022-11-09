@@ -58,7 +58,7 @@ export default class DAuthClient extends ClientBase {
   }
 
   /** 
-   * @param { bigInt.BigInteger } vuid
+   * @param { Guid } vuid
    * @param { ed25519Point } gRmul
    * @param { bigInt.BigInteger } s
    * @param { number } timestamp2
@@ -66,7 +66,21 @@ export default class DAuthClient extends ClientBase {
    * @param { string } challenge
    *  @returns {Promise<string>} */
    async SignInCVK(vuid, gRmul, s, timestamp2, gSesskeyPub, challenge) {
-    let url = `/cvk/${vuid.toString()}/${urlEncode(gRmul.toArray())}/${s.toString()}/${timestamp2.toString()}/${urlEncode(gSesskeyPub.toArray())}/${challenge}`;
+    let url = `/cvk/signin/${vuid}/${urlEncode(gRmul.toArray())}/${s.toString()}/${timestamp2.toString()}/${urlEncode(gSesskeyPub.toArray())}/${challenge}`;
+
+    const res = await this._get(url);
+    return res.text
+  }
+
+  /**
+   * @param {Guid} VUID
+   * @param {number} timestamp2
+   * @param {ed25519Point} gSesskeyPub
+   * @param {string} challenge
+   * @returns {Promise<string>}
+   */
+  async PreSignInCVK(VUID, timestamp2, gSesskeyPub, challenge){
+    let url = `/cvk/pre/${VUID}/${timestamp2.toString()}/${urlEncode(gSesskeyPub.toArray())}/${challenge}`;
 
     const res = await this._get(url);
     return res.text

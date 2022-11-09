@@ -282,10 +282,10 @@ namespace Tide.Ork.Controllers
         }
 
         [MetricAttribute("cvk", recordSuccess:true)]
-        [HttpGet("{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}")]
-        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge)
+        [HttpGet("signin/{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}")]
+        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] string timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge)
         {
-            var account = await _managerCvk.GetById(vuid);
+            var account = await _managerCvk.GetById(vuid); // find hardcoded vuid
             if (account == null) {
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Unsuccessful login for {vuid}");
                 return Unauthorized($"Invalid account");
@@ -334,6 +334,28 @@ namespace Tide.Ork.Controllers
             _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Returning  from {vuid}");
             // Use ECDHi key and Encrypt CVKri, CVKSi
             return account.CvkiAuth.Encrypt(account.CVK2i.ToByteArray(true, true));
+        }
+
+        [HttpGet("pre/{vuid}/{timestamp2}/{gSessKeyPub}/{challenge}")]
+        public async Task<ActionResult<byte[]>> PreSignCvk([FromRoute] Guid vuid, [FromRoute] string timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge)
+        {
+            var account = await _managerCvk.GetById(vuid); // find hardcoded vuid
+            if (account == null) {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"invalid VUID: {vuid}");
+                return Unauthorized($"Invalid account");
+            }
+            
+            // Hashes (timestamp2 || gSesskeyPub || Vuid || Challenge) in SHA256
+            var M_data_to_hash = Encoding.ASCII.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray()).Concat(vuid.ToByteArray()).Concat(Encoding.ASCII.GetBytes(challenge)).ToArray();
+            var M = Utils.Hash(M_data_to_hash);
+            
+            var gCVK_data_to_hash = account.CVK2i.ToByteArray().Concat(M).ToArray();
+            var gCVKRi = Ed25519.G * Ed25519Dsa.GetM(gCVK_data_to_hash).Mod(Ed25519.N); // not sha512 hash here TODO: clean this mess
+            
+            var ECDH_seed = Utils.Hash((gSessKeyPub * _config.PrivateKey.X).ToByteArray()); // CHECK THIS WORKS
+            var ECDHi = AesKey.Seed(ECDH_seed);
+
+            return Ok(ECDHi.EncryptStr(gCVKRi.ToByteArray()));
         }
 
         //Api call for vender ork ????
