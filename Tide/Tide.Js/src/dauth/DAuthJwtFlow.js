@@ -52,6 +52,7 @@ export default class DAuthJwtFlow {
   _genVuid() {
     if (!this.cvkAuth) throw new Error("cvkAuth is needed");
     this.vuid = IdGenerator.seed(this.userid.buffer, this.cvkAuth).guid;
+    const a = this.vuid.toString(); ////////// paste this into DAuthFlow.js VUID variable
   }
 
   /**

@@ -259,9 +259,9 @@ export default class DAuthFlow {
       //decryption
       const idGens = await this.clienSet.all(c => c.getClientGenerator()); //find way to only do this once
       const prismAuths = idGens.map(idGen => gPassPrism.derive(idGen.buffer));
-      console.log(prismAuths.set(0,AESKey.from("AhDjfscGPh1BAc6hnXqo/Bi9IAU01cv4hf1fZXO31u94fJDOVGoBq/grySd0cK3gyGId")));
-      console.log(prismAuths.set(1,AESKey.from("AhCG2ZppnPHD2lS3MiOitx4XICuMos8g7SxHCsZjsGYRw7WIXNBTRHiFxTvBfIIj20U4")));
-      console.log(prismAuths.set(2,AESKey.from("AhDRYcRSF67F3RnS1fv2svMBIOWXs4l1t044bXVxwW73CpFTyYnsAZLdU+SI6uthQJav")));
+      console.log(prismAuths.set(0,AESKey.from("AhBHieFvKLrhBht9DDXAKG+WID9aejrBlFdAm18u0tk4v8foaNV0oUg97fZIi7O0WJDq")));
+      console.log(prismAuths.set(1,AESKey.from("AhD+VKUK3pSBjMHNVIhuMAU0IASE7ehWaQFifCVBAWtlQlBWuO5CRo5BXxcIdMHvXuzf")));
+      console.log(prismAuths.set(2,AESKey.from("AhD0598tXUsFZjryxiPkp6SzIHkHXIaMx5b0Dr2GvCxrggnwNSF0tZg037eW+M7eCVK9")));
 
       const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher))); // invalid sig
       const gUserCMK = decryptedResponses.map((b, i) => b.gBlurUserCMKi.times(lis.get(i))).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi), ed25519Point.infinity).times(r2Inv); // check li worked here
@@ -269,11 +269,14 @@ export default class DAuthFlow {
       
       const hash_gUserCMK = Hash.sha512Buffer(gUserCMK.toArray());
       const CMKmul = bigInt_fromBuffer(hash_gUserCMK.subarray(0, 32)); // first 32 bytes
-      const VUID = IdGenerator.seed(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes
+      //const VUID = IdGenerator.seed(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes
+      const VUID = new IdGenerator(Guid.from('3672483e-059d-a322-f907-5a4653315d27')); // hardcoded
 
       const Sesskey = random();
       const gSesskeyPub = ed25519Point.g.times(Sesskey);
 
+      const deltaTime = median(decryptedResponses.map(a => a.certTime.ticks)) - Date.now();
+      const timestamp2 = (Date.now() - startTimer) + deltaTime;
       // Begin PreSignInCVK here to save time
       const challenge = {challenge: 'debug this'}; // insert Tide JWT here
       const pre_gCVKR = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.PreSignInCVK(VUID.guid, timestamp2, gSesskeyPub, JSON.stringify(challenge))); // Remove gCmk2 once confirm with the flow
@@ -292,8 +295,6 @@ export default class DAuthFlow {
       }
      
       const VERIFYi = decryptedResponses.map((response, i) => new TranToken().sign(prismAuths.get(i), create_payload(response.certTime.toArray())));
-      const deltaTime = median(decryptedResponses.map(a => a.certTime.ticks)) - Date.now();
-      const timestamp2 = (Date.now() - startTimer) + deltaTime;
      
       const M = Hash.shaBuffer(timestamp2.toString() + Buffer.from(gSesskeyPub.toArray()).toString('base64')); // TODO: Add point.to_base64 function
 
@@ -318,20 +319,20 @@ export default class DAuthFlow {
       }
 
       const cvkDnsCln = new DnsClient(cln.baseUrl, VUID.guid);
-      const [, vIdOrki, ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki
+      const [, vIdOrki, ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki   TODO: Try to get a Dictinairy here
 
-      const ECDHi = pubs.map(pub => AESKey.seed(Hash.shaBuffer(pub.y.times(Sesskey).toArray())));
+      const vIds = vIdOrki.map(key => IdGenerator.seed(key.toArray()).id);
+      const vLis = vIds.map(id => SecretShare.getLi(id, vIds, n)); // this works
 
+      const ECDHi = vIdOrki.map(pub => AESKey.seed(Hash.shaBuffer(pub.y.times(Sesskey).toArray())));
 
       const enc_gCVKR = await pre_gCVKR;
-      const gCVKR = enc_gCVKR.values.map((enc_gCVKRi, i) => ed25519Point.from(Buffer.from(ECDHi[i].decrypt(enc_gCVKRi), 'base64')).times()).reduce((sum, p) => sum.add(p), ed25519Point.infinity);  //array used. change later
-      
+      const gCVKR = enc_gCVKR.values.map((enc_gCVKRi, i) => ed25519Point.from(Buffer.from(ECDHi[i].decrypt(enc_gCVKRi), 'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p), ed25519Point.infinity);  //array used. change later
+
+      ///// Tested (everything works i guess) up to here --------
 
       const encCVKsign = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge)));
-
-      var OrkPublics = pubs; // get from dns query
       
-
       // find lis for all cvk orks
       const decryptedCVKsign = await encCVKsign.map((enc, i) => JSON.parse(ECDHi[i].decrypt(enc))).map(json => [ed25519Point.from(json.CVKRi), bigInt(json.CVKSi)]) // create list of  [CVKRI, CVKSi]
       // Sum the CVKRis and CVKSis, remember to add li (of cvk orks!)
