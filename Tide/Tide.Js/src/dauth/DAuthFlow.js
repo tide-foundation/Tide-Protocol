@@ -277,7 +277,7 @@ export default class DAuthFlow {
 
       const deltaTime = median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - startTimer;
       const timestamp2 = getCSharpTime(Date.now()) + deltaTime;
-      const AAA = getCSharpTime(Date.now()) - timestamp2;
+      const AAA =  median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - timestamp2;
       // Begin PreSignInCVK here to save time
       const challenge = {challenge: 'debug this'}; // insert Tide JWT here
       const pre_gCVKR = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.PreSignInCVK(VUID.guid, timestamp2, gSesskeyPub, JSON.stringify(challenge))); // Remove gCmk2 once confirm with the flow
@@ -331,7 +331,6 @@ export default class DAuthFlow {
       const gCVKR = enc_gCVKR.values.map((enc_gCVKRi, i) => ed25519Point.from(Buffer.from(ECDHi[i].decrypt(enc_gCVKRi), 'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p), ed25519Point.infinity);  //array used. change later
 
       ///// Tested (everything works i guess) up to here --------
-      const Atimestamp2 = timestamp2;
 
       const encCVKsign = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge), gCMKAuth));
       
@@ -492,5 +491,5 @@ function median(numbers) {
 }
 
 function getCSharpTime(ticks){
-  return (ticks * 1000)-  62135633528000;
+  return (ticks * 10000);
 }

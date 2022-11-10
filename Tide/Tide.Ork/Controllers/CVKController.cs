@@ -290,10 +290,11 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Unsuccessful login for {vuid}");
                 return Unauthorized($"Invalid account");
             }
+
             //Verify timestamp2 in recent (10 min)
             var Time= DateTime.FromBinary(timestamp2);
             const long _window = TimeSpan.TicksPerHour; //Check later
-            Console.WriteLine(" {0} {1} {2} {3}",_window.ToString(),Time,DateTime.UtcNow,timestamp2.ToString());
+
             if(!(Time >= DateTime.UtcNow.AddTicks(-_window) && Time <= DateTime.UtcNow.AddTicks(_window))){
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Expired");
                 return StatusCode(408, new TranToken().ToString()); //Return this???
@@ -309,18 +310,21 @@ namespace Tide.Ork.Controllers
                 _logger.LogInformation($"Apply: Invalid s for {vuid}");
                 return BadRequest("Invalid parameters");
             }
-            var ToHashM = BitConverter.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray()).ToArray();
-            //var M = Ed25519Dsa.GetM(ToHashM);
-            Console.WriteLine("----time {0}  pub {1}", timestamp2.ToString(), gSessKeyPub.GetX().ToString());
-            var ToHashH = gCMKAuth.ToByteArray().Concat(ToHashM).ToArray(); // add account.gCMKAuth 
-            Console.WriteLine("---- {0} {1}", BitConverter.ToString(ToHashH),Ed25519Dsa.GetM(ToHashH).Mod(Ed25519.N));
-            var H = Ed25519Dsa.GetM(ToHashH).Mod(Ed25519.N)  * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication")).Mod(Ed25519.N); 
-            Console.WriteLine("------H {0}  gMull {1} mod {2}",H,gRmul.GetX().ToString() , H.Mod(Ed25519.N));
+            var ToHashM = Encoding.ASCII.GetBytes(timestamp2.ToString() + Convert.ToBase64String(gSessKeyPub.ToByteArray())).ToArray();
+            var M = Utils.Hash(ToHashM);
+
+            var CmkAuthHash = Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication")).Mod(Ed25519.N);
+
+            var ToHashH = gCMKAuth.ToByteArray().Concat(M).ToArray(); // add account.gCMKAuth 
+            var H = new BigInteger(Utils.Hash(ToHashH)).Mod(Ed25519.N);
+
             var _8N = BigInteger.Parse("8");
-            if(Ed25519.G * (S * _8N) != gRmul  * _8N +  gCMKAuth *  (H * _8N) ){ // replace last Ed25519.G  with account.gCMKAuth
+            if((Ed25519.G * S).GetX().Equals((gRmul  +  gCMKAuth * H * CmkAuthHash).GetX())){ // replace last Ed25519.G  with account.gCMKAuth
                      _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
                 return BadRequest("Some consistent garbage");
             }
+
+            Console.WriteLine("CLEEEAAAAN");
             
             var MToHash = BitConverter.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray())
                         .Concat(BitConverter.GetBytes(BitConverter.ToUInt64(vuid.ToByteArray().Take(8).ToArray())))
