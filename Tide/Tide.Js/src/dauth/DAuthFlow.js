@@ -275,8 +275,9 @@ export default class DAuthFlow {
       const Sesskey = random();
       const gSesskeyPub = ed25519Point.g.times(Sesskey);
 
-      const deltaTime = median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - getCSharpTime(Date.now());
+      const deltaTime = median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - startTimer;
       const timestamp2 = getCSharpTime(Date.now()) + deltaTime;
+      const AAA = getCSharpTime(Date.now()) - timestamp2;
       // Begin PreSignInCVK here to save time
       const challenge = {challenge: 'debug this'}; // insert Tide JWT here
       const pre_gCVKR = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.PreSignInCVK(VUID.guid, timestamp2, gSesskeyPub, JSON.stringify(challenge))); // Remove gCmk2 once confirm with the flow
@@ -491,5 +492,5 @@ function median(numbers) {
 }
 
 function getCSharpTime(ticks){
-  return (ticks + 62135633528000) * 1000;
+  return (ticks * 1000)-  62135633528000;
 }
