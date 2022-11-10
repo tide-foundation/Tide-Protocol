@@ -332,7 +332,7 @@ export default class DAuthFlow {
       ///// Tested (everything works i guess) up to here --------
       const Atimestamp2 = timestamp2;
 
-      const encCVKsign = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge)));
+      const encCVKsign = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge), gCMKAuth));
       
       // find lis for all cvk orks
       const decryptedCVKsign = await encCVKsign.map((enc, i) => JSON.parse(ECDHi[i].decrypt(enc))).map(json => [ed25519Point.from(json.CVKRi), bigInt(json.CVKSi)]) // create list of  [CVKRI, CVKSi]

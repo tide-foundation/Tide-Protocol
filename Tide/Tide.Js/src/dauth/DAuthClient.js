@@ -64,9 +64,10 @@ export default class DAuthClient extends ClientBase {
    * @param { number } timestamp2
    * @param { ed25519Point } gSesskeyPub
    * @param { string } challenge
+   * @param {ed25519Point} gCMKAuth
    *  @returns {Promise<string>} */
-   async SignInCVK(vuid, gRmul, s, timestamp2, gSesskeyPub, challenge) {
-    let url = `/cvk/signin/${vuid}/${urlEncode(gRmul.toArray())}/${s.toString()}/${timestamp2.toString()}/${urlEncode(gSesskeyPub.toArray())}/${challenge}`;
+   async SignInCVK(vuid, gRmul, s, timestamp2, gSesskeyPub, challenge, gCMKAuth) {
+    let url = `/cvk/signin/${vuid}/${urlEncode(gRmul.toArray())}/${s.toString()}/${timestamp2.toString()}/${urlEncode(gSesskeyPub.toArray())}/${challenge}/${urlEncode(gCMKAuth.toArray())}`;
 
     const res = await this._get(url);
     return res.text
