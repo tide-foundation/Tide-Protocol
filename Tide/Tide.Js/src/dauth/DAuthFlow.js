@@ -315,7 +315,9 @@ export default class DAuthFlow {
 
       const string_hash = bigInt_fromBuffer(Hash.sha512Buffer("CMK authentication"));
 
-      if(!ed25519Point.g.times(S).isEqual(gRmul.add(gCMKAuth.times(H_int).times(string_hash)))) {
+      const _8N = BigInt(8);
+
+      if(!ed25519Point.g.times(S).times(_8N).isEqual(gRmul.times(_8N).add(gCMKAuth.times(H_int).times(string_hash).times(_8N)))) {
         return Promise.reject("Ork Blind Signature Invalid")
       }
 
@@ -332,7 +334,7 @@ export default class DAuthFlow {
 
       ///// Tested (everything works i guess) up to here --------
 
-      const encCVKsign = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge), gCMKAuth));
+      const encCVKsign = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge), gCMKAuth));
       
       // find lis for all cvk orks
       const decryptedCVKsign = await encCVKsign.map((enc, i) => JSON.parse(ECDHi[i].decrypt(enc))).map(json => [ed25519Point.from(json.CVKRi), bigInt(json.CVKSi)]) // create list of  [CVKRI, CVKSi]

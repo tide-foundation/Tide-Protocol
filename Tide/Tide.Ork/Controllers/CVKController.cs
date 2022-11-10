@@ -319,7 +319,7 @@ namespace Tide.Ork.Controllers
             var H = new BigInteger(Utils.Hash(ToHashH)).Mod(Ed25519.N);
 
             var _8N = BigInteger.Parse("8");
-            if((Ed25519.G * S).GetX().Equals((gRmul  +  gCMKAuth * H * CmkAuthHash).GetX())){ // replace last Ed25519.G  with account.gCMKAuth
+            if(!(Ed25519.G * S * _8N).GetX().Equals((gRmul * _8N  +  (gCMKAuth * H * CmkAuthHash * _8N)).GetX())){ // replace last Ed25519.G  with account.gCMKAuth
                      _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
                 return BadRequest("Some consistent garbage");
             }
