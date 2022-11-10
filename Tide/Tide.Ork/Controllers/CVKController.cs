@@ -282,8 +282,8 @@ namespace Tide.Ork.Controllers
         }
 
         [MetricAttribute("cvk", recordSuccess:true)]
-        [HttpGet("signin/{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}")]
-        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge)
+        [HttpGet("signin/{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}/{gCMKAuth}")]
+        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge,[FromRoute] Ed25519Point gCMKAuth)//remove cmkAuth later
         {
             var account = await _managerCvk.GetById(vuid); // find hardcoded vuid
             if (account == null) {
@@ -292,7 +292,8 @@ namespace Tide.Ork.Controllers
             }
             //Verify timestamp2 in recent (10 min)
             var Time= DateTime.FromBinary(timestamp2);
-            const long _window = TimeSpan.TicksPerMinute * 10;
+            const long _window = TimeSpan.TicksPerHour; //Check later
+            Console.WriteLine(" {0} {1} {2} {3}",_window.ToString(),Time,DateTime.UtcNow,timestamp2.ToString());
             if(!(Time >= DateTime.UtcNow.AddTicks(-_window) && Time <= DateTime.UtcNow.AddTicks(_window))){
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Expired");
                 return StatusCode(408, new TranToken().ToString()); //Return this???
@@ -309,13 +310,14 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Invalid parameters");
             }
             var ToHashM = BitConverter.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray()).ToArray();
-            var M = Ed25519Dsa.GetM(ToHashM);
-            // hash(account.gCMKAuth | timestamp2 | gSessKeyPub) * hash ("CMK authentication")
-            //add account.gCMKAuth
-            var ToHashH = account.CvkiAuth.ToByteArray().Concat(ToHashM).Concat(Encoding.ASCII.GetBytes("CMK authentication")).ToArray(); // add account.gCMKAuth 
-            var H = Ed25519Dsa.GetM(ToHashH) ; 
+            //var M = Ed25519Dsa.GetM(ToHashM);
+            Console.WriteLine("----time {0}  pub {1}", timestamp2.ToString(), gSessKeyPub.GetX().ToString());
+            var ToHashH = gCMKAuth.ToByteArray().Concat(ToHashM).ToArray(); // add account.gCMKAuth 
+            Console.WriteLine("---- {0} {1}", BitConverter.ToString(ToHashH),Ed25519Dsa.GetM(ToHashH).Mod(Ed25519.N));
+            var H = Ed25519Dsa.GetM(ToHashH).Mod(Ed25519.N)  * Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication")).Mod(Ed25519.N); 
+            Console.WriteLine("------H {0}  gMull {1} mod {2}",H,gRmul.GetX().ToString() , H.Mod(Ed25519.N));
             var _8N = BigInteger.Parse("8");
-            if(Ed25519.G * (S * _8N) != gRmul  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCMKAuth
+            if(Ed25519.G * (S * _8N) != gRmul  * _8N +  gCMKAuth *  (H * _8N) ){ // replace last Ed25519.G  with account.gCMKAuth
                      _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
                 return BadRequest("Some consistent garbage");
             }
