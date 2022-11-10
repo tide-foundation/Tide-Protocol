@@ -245,7 +245,7 @@ export default class DAuthFlow {
 
   async logIn2(password, point){
     try {
-      var startTimer = Date.now();
+      const startTimer = Date.now();
 
       const n = bigInt(ed25519Point.order.toString());
 
@@ -275,7 +275,7 @@ export default class DAuthFlow {
       const Sesskey = random();
       const gSesskeyPub = ed25519Point.g.times(Sesskey);
 
-      const deltaTime = median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - Date.now();
+      const deltaTime = Date.now() - median(decryptedResponses.values.map(a => getCSharpTime(Number(a.certTime.ticks.toString()))));
       const timestamp2 = (Date.now() - startTimer) + deltaTime;
       // Begin PreSignInCVK here to save time
       const challenge = {challenge: 'debug this'}; // insert Tide JWT here
@@ -488,4 +488,15 @@ function median(numbers) {
   }
 
   return sorted[middle];
+}
+
+function getCSharpTime(ticks){
+  //ticks are in nanotime; convert to microtime
+  var ticksToMicrotime = ticks / 10000;
+
+  //ticks are recorded from 1/1/1; get microtime difference from 1/1/1/ to 1/1/1970
+  var epochMicrotimeDiff = Math.abs(new Date(0, 0, 1).setFullYear(1));
+
+  //new date is ticks, converted to microtime, minus difference from epoch microtime
+  return Math.round(ticksToMicrotime - epochMicrotimeDiff);
 }
