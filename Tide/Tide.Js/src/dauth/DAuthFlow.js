@@ -313,7 +313,7 @@ export default class DAuthFlow {
       const S = Decrypted_json.map((s, i) => bigInt_fromBuffer(Buffer.from(s.si, 'base64')).times(lis.get(i))).reduce((sum, s) => sum.add(s)).times(r4Inv).mod(n);  // Sum (Si) * r4Inv % n
       const gRmul = Decrypted_json.map((s, i) => ed25519Point.from(Buffer.from(s.gRi, 'base64')).times(lis.get(i))).reduce((sum, s) => sum.add(s), ed25519Point.infinity).times(r4Inv);  // Sum (gRi) * r4Inv % n 
 
-      const string_hash = bigInt_fromBuffer(Hash.sha512Buffer("CMK authentication"));
+      const string_hash = bigInt_fromBuffer(Hash.shaBuffer("CMK authentication"));
 
       const _8N = BigInt(8);
 

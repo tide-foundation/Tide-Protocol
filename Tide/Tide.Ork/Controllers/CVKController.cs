@@ -304,22 +304,24 @@ namespace Tide.Ork.Controllers
                 _logger.LogInformation($"Apply: Invalid point for {vuid}");
                 return BadRequest("Invalid parameters");
             }
+            
             //Add check for S!= order of G
             var S = BigInteger.Parse(s);
-            if(S == BigInteger.Zero  || S == Ed25519.N) {
+            if(S == BigInteger.Zero || S == Ed25519.N) {
                 _logger.LogInformation($"Apply: Invalid s for {vuid}");
                 return BadRequest("Invalid parameters");
             }
+
             var ToHashM = Encoding.ASCII.GetBytes(timestamp2.ToString() + Convert.ToBase64String(gSessKeyPub.ToByteArray())).ToArray();
             var M = Utils.Hash(ToHashM);
 
-            var CmkAuthHash = Ed25519Dsa.GetM(Encoding.ASCII.GetBytes("CMK authentication")).Mod(Ed25519.N);
+            var CmkAuthHash = new BigInteger(Utils.Hash(Encoding.ASCII.GetBytes("CMK authentication"))).Mod(Ed25519.N);
 
             var ToHashH = gCMKAuth.ToByteArray().Concat(M).ToArray(); // add account.gCMKAuth 
             var H = new BigInteger(Utils.Hash(ToHashH)).Mod(Ed25519.N);
 
             var _8N = BigInteger.Parse("8");
-            if(!(Ed25519.G * S * _8N).GetX().Equals((gRmul * _8N  +  (gCMKAuth * H * CmkAuthHash * _8N)).GetX())){ // replace last Ed25519.G  with account.gCMKAuth
+            if(!(Ed25519.G * S * _8N).GetX().Equals((gRmul * _8N  +  (gCMKAuth * H * CmkAuthHash * _8N)).GetX())){ 
                      _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
                 return BadRequest("Some consistent garbage");
             }
