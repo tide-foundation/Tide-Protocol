@@ -275,7 +275,7 @@ export default class DAuthFlow {
       const Sesskey = random();
       const gSesskeyPub = ed25519Point.g.times(Sesskey);
 
-      const deltaTime = median(decryptedResponses.map(a => a.certTime.ticks)) - Date.now();
+      const deltaTime = median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - Date.now();
       const timestamp2 = (Date.now() - startTimer) + deltaTime;
       // Begin PreSignInCVK here to save time
       const challenge = {challenge: 'debug this'}; // insert Tide JWT here
@@ -330,6 +330,7 @@ export default class DAuthFlow {
       const gCVKR = enc_gCVKR.values.map((enc_gCVKRi, i) => ed25519Point.from(Buffer.from(ECDHi[i].decrypt(enc_gCVKRi), 'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p), ed25519Point.infinity);  //array used. change later
 
       ///// Tested (everything works i guess) up to here --------
+      const Atimestamp2 = timestamp2;
 
       const encCVKsign = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge)));
       
@@ -479,7 +480,7 @@ function random() {
 }
 
 function median(numbers) {
-  const sorted = Array.from(numbers).sort((a, b) => a.sub(b));
+  const sorted = Array.from(numbers).sort((a, b) => a - b);
   const middle = Math.floor(sorted.length / 2);
 
   if (sorted.length % 2 === 0) {

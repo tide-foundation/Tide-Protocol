@@ -283,7 +283,7 @@ namespace Tide.Ork.Controllers
 
         [MetricAttribute("cvk", recordSuccess:true)]
         [HttpGet("signin/{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}")]
-        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] string timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge)
+        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge)
         {
             var account = await _managerCvk.GetById(vuid); // find hardcoded vuid
             if (account == null) {
