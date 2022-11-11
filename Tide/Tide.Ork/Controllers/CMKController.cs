@@ -343,9 +343,9 @@ namespace Tide.Ork.Controllers
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Invalid request  for {uid}");
                 return Unauthorized();
             }  
-            var BlindH = (BlurHCmkMul * new BigInteger(Utils.Hash(Encoding.ASCII.GetBytes("CMK authentication"))).Mod(Ed25519.N)).Mod(Ed25519.N); // TODO: Create proper bigInt from hash function
+            var BlindH = (BlurHCmkMul * new BigInteger(Utils.Hash(Encoding.ASCII.GetBytes("CMK authentication")), true, false).Mod(Ed25519.N)).Mod(Ed25519.N); // TODO: Create proper bigInt from hash function
             var ToHash = Encoding.ASCII.GetBytes(account.Cmk2i.ToString()).Concat(Encoding.ASCII.GetBytes(BlurHCmkMul.ToString())).ToArray();
-            var BlindR = new BigInteger(Utils.Hash(ToHash)).Mod(Ed25519.N);
+            var BlindR = new BigInteger(Utils.Hash(ToHash), true, false).Mod(Ed25519.N);
 
             var response = new {
                 si = Convert.ToBase64String((BlindR + BlindH * account.Cmki).Mod(Ed25519.N).ToByteArray()),

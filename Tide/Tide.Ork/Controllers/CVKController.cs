@@ -333,9 +333,9 @@ namespace Tide.Ork.Controllers
                         .Concat(Encoding.UTF8.GetBytes(challenge)).ToArray();
             var CVKM = Utils.Hash(MToHash);
             var RToHash = (Ed25519.G * account.CVK2i).ToByteArray().Concat(CVKM).ToArray();
-            var CvkRi = new BigInteger(Utils.Hash(RToHash)).Mod(Ed25519.N);
+            var CvkRi = new BigInteger(Utils.Hash(RToHash), true, false).Mod(Ed25519.N);
             var CvkHToHash = gCVKR.ToByteArray().Concat(gCVK.ToByteArray()).Concat(CVKM).ToArray();
-            var CvkH =  new BigInteger(Utils.Hash(CvkHToHash)).Mod(Ed25519.N);
+            var CvkH =  new BigInteger(Utils.Hash(CvkHToHash), true, false).Mod(Ed25519.N);
             
             var CVKSi = CvkRi + CvkH *  account.CVKi;
             
