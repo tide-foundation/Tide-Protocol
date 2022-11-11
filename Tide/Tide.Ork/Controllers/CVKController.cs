@@ -315,10 +315,10 @@ namespace Tide.Ork.Controllers
             var ToHashM = Encoding.ASCII.GetBytes(timestamp2.ToString() + Convert.ToBase64String(gSessKeyPub.ToByteArray())).ToArray();
             var M = Utils.Hash(ToHashM);
 
-            var CmkAuthHash = new BigInteger(Utils.Hash(Encoding.ASCII.GetBytes("CMK authentication"))).Mod(Ed25519.N);
+            var CmkAuthHash = new BigInteger(Utils.Hash(Encoding.ASCII.GetBytes("CMK authentication")), true, false).Mod(Ed25519.N);
 
             var ToHashH = gCMKAuth.ToByteArray().Concat(M).ToArray(); // add account.gCMKAuth 
-            var H = new BigInteger(Utils.Hash(ToHashH)).Mod(Ed25519.N);
+            var H = new BigInteger(Utils.Hash(ToHashH), true, false).Mod(Ed25519.N);
 
             var _8N = BigInteger.Parse("8");
             if(!(Ed25519.G * S * _8N).GetX().Equals((gRmul * _8N  +  (gCMKAuth * H * CmkAuthHash * _8N)).GetX())){ 

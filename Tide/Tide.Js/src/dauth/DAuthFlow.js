@@ -301,7 +301,7 @@ export default class DAuthFlow {
 
       const H = Hash.shaBuffer( Buffer.concat([Buffer.from(gCMKAuth.toArray()), M]));
       const H_int = bigInt_fromBuffer(H);
-      const blurHCMKmul = (bigInt_fromBuffer(H).times(CMKmul).times(r4)); // H * CMKmul * r4 % n
+      const blurHCMKmul = (bigInt_fromBuffer(H).times(CMKmul).times(r4)).mod(n); // H * CMKmul * r4 % n
      
 
       const jsonObject = (userID, certTimei, blurHCMKmul) =>  JSON.stringify( { UserId: userID.toString(), CertTime: certTimei.toString(), BlurHCmkMul: blurHCMKmul.toString() } );
