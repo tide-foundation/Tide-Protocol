@@ -282,8 +282,8 @@ namespace Tide.Ork.Controllers
         }
 
         [MetricAttribute("cvk", recordSuccess:true)]
-        [HttpGet("signin/{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}/{gCMKAuth}")]
-        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge,[FromRoute] Ed25519Point gCMKAuth)//remove cmkAuth later
+        [HttpGet("signin/{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}/{gCMKAuth}/{gCVKR}/{gCVK}")]
+        public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge,[FromRoute] Ed25519Point gCMKAuth,[FromRoute] Ed25519Point gCVKR,[FromRoute] Ed25519Point gCVK)//remove cmkAuth  and gCVK later
         {
             var account = await _managerCvk.GetById(vuid); // find hardcoded vuid
             if (account == null) {
@@ -329,19 +329,21 @@ namespace Tide.Ork.Controllers
             Console.WriteLine("CLEEEAAAAN");
             
             var MToHash = BitConverter.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray())
-                        .Concat(BitConverter.GetBytes(BitConverter.ToUInt64(vuid.ToByteArray().Take(8).ToArray())))
-                        .Concat(Encoding.ASCII.GetBytes(challenge)).ToArray();
-            var CVKM = Ed25519Dsa.GetM(account.CvkPub.ToByteArray().Concat(ToHashH).ToArray());
-            var CvkRi = Ed25519.G * account.CVK2i * CVKM;
-            var CvkH =  Ed25519Dsa.GetM((Ed25519.G * ( account.CVK2i * CVKM)).ToByteArray().
-                        Concat(account.CvkPub.ToByteArray()).Concat(ToHashH).ToArray());
-
-            var CVKSi = account.CVK2i +CvkH * account.CVKi;
-            var ECDHi = Ed25519Dsa.GetM(gSessKeyPub.ToByteArray().Concat(_config.SecretKey.ToByteArray()).ToArray());
+                        .Concat(Encoding.UTF8.GetBytes(vuid.ToString()))
+                        .Concat(Encoding.UTF8.GetBytes(challenge)).ToArray();
+            var CVKM = Utils.Hash(MToHash);
+            var RToHash = (Ed25519.G * account.CVK2i).ToByteArray().Concat(CVKM).ToArray();
+            var CvkRi = new BigInteger(Utils.Hash(RToHash)).Mod(Ed25519.N);
+            var CvkHToHash = gCVKR.ToByteArray().Concat(gCVK.ToByteArray()).Concat(CVKM).ToArray();
+            var CvkH =  new BigInteger(Utils.Hash(CvkHToHash)).Mod(Ed25519.N);
             
-            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Returning  from {vuid}");
-            // Use ECDHi key and Encrypt CVKri, CVKSi
-            return account.CvkiAuth.Encrypt(account.CVK2i.ToByteArray(true, true));
+            var CVKSi = CvkRi + CvkH *  account.CVKi;
+            
+            var ECDH_seed = Utils.Hash((gSessKeyPub * _config.PrivateKey.X).ToByteArray()); // CHECK THIS WORKS
+            var ECDHi = AesKey.Seed(ECDH_seed);
+
+           // _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, "null", vuid, $"Returning cvk from {vuid}");
+            return Ok(ECDHi.EncryptStr(CVKSi.ToByteArray(true, true)));
         }
 
         [HttpGet("pre/{vuid}/{timestamp2}/{gSessKeyPub}/{challenge}")]

@@ -322,7 +322,7 @@ export default class DAuthFlow {
       }
 
       const cvkDnsCln = new DnsClient(cln.baseUrl, VUID.guid);
-      const [, vIdOrki, ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki   TODO: Try to get a Dictinairy here
+      const [, vIdOrki,cvkPub ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki   TODO: Try to get a Dictinairy here
 
       const vIds = vIdOrki.map(key => IdGenerator.seed(key.toArray()).id);
       const vLis = vIds.map(id => SecretShare.getLi(id, vIds, n)); // this works
@@ -333,11 +333,12 @@ export default class DAuthFlow {
       const gCVKR = enc_gCVKR.values.map((enc_gCVKRi, i) => ed25519Point.from(Buffer.from(ECDHi[i].decrypt(enc_gCVKRi), 'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p), ed25519Point.infinity);  //array used. change later
 
       ///// Tested (everything works i guess) up to here --------
-
-      const encCVKsign = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge), gCMKAuth));
+      
+      const encCVKsign = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge), gCMKAuth,gCVKR,cvkPub.y));
       
       // find lis for all cvk orks
-      const decryptedCVKsign = await encCVKsign.map((enc, i) => JSON.parse(ECDHi[i].decrypt(enc))).map(json => [ed25519Point.from(json.CVKRi), bigInt(json.CVKSi)]) // create list of  [CVKRI, CVKSi]
+      const CVKS = await encCVKsign.values.map((encCVKsigni, i) =>  bigInt_fromBuffer(Buffer.from(ECDHi[i].decrypt(encCVKsigni),'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p));  //array used. change later
+      //const decryptedCVKsign = await encCVKsign.map((enc, i) => JSON.parse(ECDHi[i].decrypt(enc))).map(json => [ed25519Point.from(json.CVKRi), bigInt(json.CVKSi)]) // create list of  [CVKRI, CVKSi]
       // Sum the CVKRis and CVKSis, remember to add li (of cvk orks!)
       const a = 'a';
       return;
