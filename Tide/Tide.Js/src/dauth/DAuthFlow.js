@@ -279,8 +279,8 @@ export default class DAuthFlow {
       const timestamp2 = getCSharpTime(Date.now()) + deltaTime;
       const AAA =  median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - timestamp2;
       // Begin PreSignInCVK here to save time
-      const challenge = {challenge: 'debug this'}; // insert Tide JWT here
-      const pre_gCVKR = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.PreSignInCVK(VUID.guid, timestamp2, gSesskeyPub, JSON.stringify(challenge))); // Remove gCmk2 once confirm with the flow
+      const jwt = {challenge: 'debug this'}; // insert Tide JWT here
+      const pre_gCVKR = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.PreSignInCVK(VUID.guid, timestamp2, gSesskeyPub, JSON.stringify(jwt))); // Remove gCmk2 once confirm with the flow
 
       const gCMKAuth = cmkpub.y.times(CMKmul); // get gCMK from DNS call at beginning
 
@@ -322,7 +322,7 @@ export default class DAuthFlow {
       }
 
       const cvkDnsCln = new DnsClient(cln.baseUrl, VUID.guid);
-      const [, vIdOrki,cvkPub ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki   TODO: Try to get a Dictinairy here
+      const [, vIdOrki, cvkPub ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki   TODO: Try to get a Dictinairy here
 
       const vIds = vIdOrki.map(key => IdGenerator.seed(key.toArray()).id);
       const vLis = vIds.map(id => SecretShare.getLi(id, vIds, n)); // this works
@@ -334,13 +334,21 @@ export default class DAuthFlow {
 
       ///// Tested (everything works i guess) up to here --------
       
-      const encCVKsign = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(challenge), gCMKAuth,gCVKR,cvkPub.y));
+      const encCVKsign = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(jwt), gCMKAuth, gCVKR, cvkPub.y));
       
       // find lis for all cvk orks
-      const CVKS = await encCVKsign.values.map((encCVKsigni, i) =>  bigInt_fromBuffer(Buffer.from(ECDHi[i].decrypt(encCVKsigni),'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p));  //array used. change later
+      const CVKS = await encCVKsign.values.map((encCVKsigni, i) =>  bigInt_fromBuffer(Buffer.from(ECDHi[i].decrypt(encCVKsigni),'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p)).mod(n);  //array used. change later
       //const decryptedCVKsign = await encCVKsign.map((enc, i) => JSON.parse(ECDHi[i].decrypt(enc))).map(json => [ed25519Point.from(json.CVKRi), bigInt(json.CVKSi)]) // create list of  [CVKRI, CVKSi]
       // Sum the CVKRis and CVKSis, remember to add li (of cvk orks!)
-      const a = 'a';
+
+      const H_cvk = bigInt_fromBuffer(Hash.sha512Buffer(Buffer.concat([Buffer.from(gCVKR.compress()), Buffer.from(cvkPub.y.compress()), Buffer.from(JSON.stringify(jwt))])));
+      const AH = H_cvk.toString();
+      if(!ed25519Point.g.times(CVKS).times(_8N).isEqual(gCVKR.times(_8N).add(cvkPub.y.times(H_cvk).times(_8N)))) {
+        return Promise.reject("Ork CVK Signature Invalid")
+      }
+
+      const a = 'fantastic. test with lib now';
+
       return;
     } catch (err) {
       return Promise.reject(err);

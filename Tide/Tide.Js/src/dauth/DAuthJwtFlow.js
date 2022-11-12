@@ -165,6 +165,7 @@ export default class DAuthJwtFlow {
     }
   }
 
+  /**@returns {string} */
   async logIn2(password){
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
@@ -173,17 +174,9 @@ export default class DAuthJwtFlow {
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
       const flowCmk = await pre_flowCmk;
 
-      //this.blindSignature = await flowCmk.logIn(password, venPnt);   <-- Blind signature will veirfy to the Cvk orks that the user authenticated with the cmk orks
-      this.cvkAuth = await flowCmk.logIn2( password, venPnt);  
-      this._genVuid();
-
-      const flowCvk = await this._getCvkFlow();
-      const cvk = await flowCvk.getKey(this.cvkAuth);
-
-      const keyId = Guid.seed(this.vendorPub.toArray());
-      const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
-
-      return { vuid: this.vuid, cvk: cvk, auth: this.cvkAuth }; // return vuid + jwt signature
+      const [tideJWT, cvkPubPem] = await flowCmk.logIn2( password, venPnt);  
+      
+      return {jwt: tideJWT, cvkPub: cvkPubPem}; // return vuid + jwt signature
     } catch (err) {
       return Promise.reject(err);
     }

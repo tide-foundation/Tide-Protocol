@@ -305,19 +305,18 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Invalid parameters");
             }
             
-            //Add check for S!= order of G
             var S = BigInteger.Parse(s);
             if(S == BigInteger.Zero || S == Ed25519.N) {
                 _logger.LogInformation($"Apply: Invalid s for {vuid}");
                 return BadRequest("Invalid parameters");
             }
 
-            var ToHashM = Encoding.ASCII.GetBytes(timestamp2.ToString() + Convert.ToBase64String(gSessKeyPub.ToByteArray())).ToArray();
-            var M = Utils.Hash(ToHashM);
+            var CMK_ToHashM = Encoding.ASCII.GetBytes(timestamp2.ToString() + Convert.ToBase64String(gSessKeyPub.ToByteArray())).ToArray();
+            var CMK_M = Utils.Hash(CMK_ToHashM);
 
             var CmkAuthHash = new BigInteger(Utils.Hash(Encoding.ASCII.GetBytes("CMK authentication")), true, false).Mod(Ed25519.N);
 
-            var ToHashH = gCMKAuth.ToByteArray().Concat(M).ToArray(); // add account.gCMKAuth 
+            var ToHashH = gCMKAuth.ToByteArray().Concat(CMK_M).ToArray(); // add account.gCMKAuth 
             var H = new BigInteger(Utils.Hash(ToHashH), true, false).Mod(Ed25519.N);
 
             var _8N = BigInteger.Parse("8");
@@ -326,24 +325,41 @@ namespace Tide.Ork.Controllers
                 return BadRequest("Some consistent garbage");
             }
 
-            Console.WriteLine("CLEEEAAAAN");
+            /// Standard EdDSA signature to sign challenge with CVKi from here on
+
+            var CVK_M = Encoding.ASCII.GetBytes(challenge).ToArray(); // perform JWT checking here first
             
-            var MToHash = BitConverter.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray())
-                        .Concat(Encoding.UTF8.GetBytes(vuid.ToString()))
-                        .Concat(Encoding.UTF8.GetBytes(challenge)).ToArray();
-            var CVKM = Utils.Hash(MToHash);
-            var RToHash = (Ed25519.G * account.CVK2i).ToByteArray().Concat(CVKM).ToArray();
-            var CvkRi = new BigInteger(Utils.Hash(RToHash), true, false).Mod(Ed25519.N);
-            var CvkHToHash = gCVKR.ToByteArray().Concat(gCVK.ToByteArray()).Concat(CVKM).ToArray();
-            var CvkH =  new BigInteger(Utils.Hash(CvkHToHash), true, false).Mod(Ed25519.N);
+            /// From RFC 8032 5.1.6.2:
+            /// Compute SHA-512(dom2(F, C) || prefix || PH(M)), where M is the
+            /// message to be signed.  Interpret the 64-octet digest as a little-
+            /// endian integer r.
+            ///
+            /// prefix : CVKRi   r : CVKRi
+            var CVKRi_ToHash = account.CVK2i.ToByteArray(true, false).Concat(CVK_M).ToArray();    
+            var CVKRi = new BigInteger(Utils.HashSHA512(CVKRi_ToHash), true, false).Mod(Ed25519.N);
             
-            var CVKSi = CvkRi + CvkH *  account.CVKi;
+            /// From RFC 8032 5.1.6.4:
+            /// Compute SHA512(dom2(F, C) || R || A || PH(M)), and interpret the
+            /// 64-octet digest as a little-endian integer k.
+            ///
+            /// R : gCVKR     A : gCVK     PH(M) : challenge    k : CVKH
+            var CVKH_ToHash = Ed25519Dsa.EncodeEd25519Point(gCVKR).Concat(Ed25519Dsa.EncodeEd25519Point(gCVK)).Concat(CVK_M).ToArray(); // implement point compression
+            var CVKH = new BigInteger(Utils.HashSHA512(CVKH_ToHash), true, false).Mod(Ed25519.N);
+
+            Console.WriteLine("H: " + CVKH.ToString());
+            
+            /// From RFC 8032 5.1.6.5:
+            /// Compute S = (r + k * s) mod L.  For efficiency, again reduce k
+            /// modulo L first.
+            ///
+            /// r: CVKRi    k : CVKH    s : CVKi
+            var CVKSi = (CVKRi + (CVKH * account.CVKi)).Mod(Ed25519.N);
             
             var ECDH_seed = Utils.Hash((gSessKeyPub * _config.PrivateKey.X).ToByteArray()); // CHECK THIS WORKS
             var ECDHi = AesKey.Seed(ECDH_seed);
 
-           // _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, "null", vuid, $"Returning cvk from {vuid}");
-            return Ok(ECDHi.EncryptStr(CVKSi.ToByteArray(true, true)));
+            // No need to return R : gCVKR as we already have it
+            return Ok(ECDHi.EncryptStr(CVKSi.ToByteArray(true, false)));
         }
 
         [HttpGet("pre/{vuid}/{timestamp2}/{gSessKeyPub}/{challenge}")]
@@ -355,12 +371,11 @@ namespace Tide.Ork.Controllers
                 return Unauthorized($"Invalid account");
             }
             
-            // Hashes (timestamp2 || gSesskeyPub || Vuid || Challenge) in SHA256
-            var M_data_to_hash = Encoding.ASCII.GetBytes(timestamp2).Concat(gSessKeyPub.ToByteArray()).Concat(vuid.ToByteArray()).Concat(Encoding.ASCII.GetBytes(challenge)).ToArray();
-            var M = Utils.Hash(M_data_to_hash);
+            var M_bytes = Encoding.ASCII.GetBytes(challenge).ToArray();
             
-            var gCVK_data_to_hash = account.CVK2i.ToByteArray().Concat(M).ToArray();
-            var gCVKRi = Ed25519.G * Ed25519Dsa.GetM(gCVK_data_to_hash).Mod(Ed25519.N); // not sha512 hash here TODO: clean this mess
+            var CVKRi_ToHash = account.CVK2i.ToByteArray(true, false).Concat(M_bytes).ToArray();
+            var CVKRi = new BigInteger(Utils.HashSHA512(CVKRi_ToHash), true, false).Mod(Ed25519.N);
+            var gCVKRi = Ed25519.G * CVKRi;
             
             var ECDH_seed = Utils.Hash((gSessKeyPub * _config.PrivateKey.X).ToByteArray()); // CHECK THIS WORKS
             var ECDHi = AesKey.Seed(ECDH_seed);
@@ -379,7 +394,7 @@ namespace Tide.Ork.Controllers
                 return Unauthorized($"Invalid account");
             }
             
-            var H =BigInteger.One ; // hash(gCVKR | account.gCVK | timestamp2 | gSessKeyPub | vuid | challenge) 
+            var H = BigInteger.One ; // hash(gCVKR | account.gCVK | timestamp2 | gSessKeyPub | vuid | challenge) 
             var _8N = BigInteger.Parse("8");
             if(Ed25519.G * (CVKS * _8N) != gCVKR  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCVK
                      _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");

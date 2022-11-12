@@ -119,14 +119,14 @@ export default class TideAuthentication {
         const flow = generateJwtFlow(username, orks, this.config.serverUrl, this.config.vendorPublic);
         flow.vendorPub = CP256Key.from(this.config.vendorPublic);
 
-        var { vuid, cvk } = await flow.logIn(password);
+        const { jwt, cvkPublic } = await flow.logIn2(password);
 
-        const jwtCvk = CP256Key.private(cvk.x);
-        const token = encode({ vuid: vuid.toString(), exp: serverTime }, jwtCvk);
+        //const jwtCvk = CP256Key.private(cvk.x);
+        //const token = encode({ vuid: vuid.toString(), exp: serverTime }, jwtCvk);
 
-        var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
+        //var cvkPublic = EcKeyFormat.PemPublic(jwtCvk);
 
-        this.account = new Account(username, vuid, token, cvkPublic, cvk);
+        this.account = new Account(username, vuid, jwt, cvkPublic, cvk);
 
         SilentLogin.SetAccount(this.account);
 
