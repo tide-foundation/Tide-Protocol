@@ -278,9 +278,10 @@ export default class DAuthFlow {
       const deltaTime = median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - startTimer;
       const timestamp2 = getCSharpTime(Date.now()) + deltaTime;
       const AAA =  median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - timestamp2;
+      
       // Begin PreSignInCVK here to save time
-      const jwt = {challenge: 'debug this'}; // insert Tide JWT here
-      const pre_gCVKR = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.PreSignInCVK(VUID.guid, timestamp2, gSesskeyPub, JSON.stringify(jwt))); // Remove gCmk2 once confirm with the flow
+      const jwt = createJWT_toSign(VUID.guid, gSesskeyPub, timestamp2); // Tide JWT here 
+      const pre_gCVKR = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.PreSignInCVK(VUID.guid, timestamp2, gSesskeyPub, jwt)); // Remove gCmk2 once confirm with the flow
 
       const gCMKAuth = cmkpub.y.times(CMKmul); // get gCMK from DNS call at beginning
 
@@ -331,23 +332,20 @@ export default class DAuthFlow {
 
       const enc_gCVKR = await pre_gCVKR;
       const gCVKR = enc_gCVKR.values.map((enc_gCVKRi, i) => ed25519Point.from(Buffer.from(ECDHi[i].decrypt(enc_gCVKRi), 'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p), ed25519Point.infinity);  //array used. change later
-
-      ///// Tested (everything works i guess) up to here --------
       
-      const encCVKsign = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, JSON.stringify(jwt), gCMKAuth, gCVKR, cvkPub.y));
-      
-      // find lis for all cvk orks
-      const CVKS = await encCVKsign.values.map((encCVKsigni, i) =>  bigInt_fromBuffer(Buffer.from(ECDHi[i].decrypt(encCVKsigni),'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p)).mod(n);  //array used. change later
-      //const decryptedCVKsign = await encCVKsign.map((enc, i) => JSON.parse(ECDHi[i].decrypt(enc))).map(json => [ed25519Point.from(json.CVKRi), bigInt(json.CVKSi)]) // create list of  [CVKRI, CVKSi]
-      // Sum the CVKRis and CVKSis, remember to add li (of cvk orks!)
+      const encrypted_CVKS = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, jwt, gCMKAuth, gCVKR, cvkPub.y));
+      const CVKS = await encrypted_CVKS.values.map((encCVKsigni, i) =>  bigInt_fromBuffer(Buffer.from(ECDHi[i].decrypt(encCVKsigni),'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p)).mod(n);  //array used. change later
 
-      const H_cvk = bigInt_fromBuffer(Hash.sha512Buffer(Buffer.concat([Buffer.from(gCVKR.compress()), Buffer.from(cvkPub.y.compress()), Buffer.from(JSON.stringify(jwt))])));
-      const AH = H_cvk.toString();
-      if(!ed25519Point.g.times(CVKS).times(_8N).isEqual(gCVKR.times(_8N).add(cvkPub.y.times(H_cvk).times(_8N)))) {
+      const H_cvk = bigInt_fromBuffer(Hash.sha512Buffer(Buffer.concat([Buffer.from(gCVKR.compress()), Buffer.from(cvkPub.y.compress()), Buffer.from(jwt)])));
+      
+      if(!ed25519Point.g.times(CVKS).times(_8N).isEqual(gCVKR.times(_8N).add(cvkPub.y.times(H_cvk).times(_8N)))) { // everything good. JWT should verify
         return Promise.reject("Ork CVK Signature Invalid")
       }
 
-      const a = 'fantastic. test with lib now';
+      const finalJWT = addSigtoJWT(jwt, gCVKR, CVKS);
+      const finalPem = new ed25519Key(0, cvkPub.y).getPemPublic();
+
+      /// IT WORKS! finalJWT can be verified by finalPem with ANY library out there that supports EdDSA!!!!
 
       return;
     } catch (err) {
@@ -503,4 +501,38 @@ function median(numbers) {
 
 function getCSharpTime(ticks){
   return (ticks * 10000);
+}
+
+/**
+ * @param {Guid} vuid 
+ * @param {Number} expTime
+ * @param {ed25519Point} gSessKeyPub 
+ * @returns {string}
+ */
+function createJWT_toSign(vuid, gSessKeyPub, expTime){
+  // header = {"typ": "JWT", "alg": "EdDSA", "crv": "Ed25519"} base64urlencoded
+  const header = 'eyJ0eXAiOiAiSldUIiwgImFsZyI6ICJFZERTQSIsICJjcnYiOiAiRWQyNTUxOSJ9.'; 
+  const payload = Buffer.from(JSON.stringify({vuid: vuid.toString(), exp: expTime, sessionKeyPub: Buffer.from(gSessKeyPub.compress()).toString('base64url')})).toString('base64url');
+  return header + payload;
+}
+
+/**
+* @param {string} jwt 
+* @param {ed25519Point} R 
+* @param {bigInt.BigInteger} s 
+* @returns {string}
+*/
+function addSigtoJWT(jwt, R, s) {
+  const sBuff = s.toArray(256).value;
+  while(sBuff.length < 32){sBuff.unshift(0);} // pad if array < 32
+  sBuff.reverse(); // to LE
+
+  const RBuff = Array.from(R.compress());
+  while(RBuff.length < 32){RBuff.unshift(0);} // pad if array < 32
+
+  var sig = Buffer.alloc(64);
+  sig.set(RBuff, 0);
+  sig.set(sBuff, 32);
+ 
+  return jwt + '.' + sig.toString('base64url');
 }

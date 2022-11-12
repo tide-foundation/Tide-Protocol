@@ -130,9 +130,7 @@ namespace Tide.Ork.Controllers
             return new RandomResponse(_config.UserName, gPassPrismi, cmkPubi, cmkPub2i, vendorCMKi, prisms, cmki,cmk2i, cmks, cmk2s);
         }
 
-        [HttpPut("random/{uid}/{partialCmkPub}/{partialCmk2Pub}")] // Also provide cmkPub and cmk2Pub points from function above (so these are non threshold)
-        // Also provide a partial DnsEntry for us to sign. It has to be partial because we don't have all the fields e.g. signatures
-        // But we do have the fields we sign e.g. orkIDs and cmkPub, so it's possible
+        [HttpPut("random/{uid}/{partialCmkPub}/{partialCmk2Pub}")]
         public async Task<ActionResult<AddRandomResponse>> AddRandom([FromRoute] Guid uid, [FromRoute] Ed25519Point partialCmkPub, [FromRoute] Ed25519Point partialCmk2Pub, [FromBody] RandRegistrationReq rand, [FromQuery] string li = null)
         {
             _logger.LogInformation("Underprepared Dns Entry: " + rand.entry);
@@ -187,6 +185,7 @@ namespace Tide.Ork.Controllers
             // find the rand value which has this ork's id.
             // use that to make a signautre with
             // s = sign( rand.cmk(orkid) , rand.cmk2(orkid) , cmkPub, cmk2Pub, dnsEntry)
+            // Or do encryption?
 
             var resp = await _manager.Add(account);
             if (!resp.Success) {
@@ -331,14 +330,12 @@ namespace Tide.Ork.Controllers
                 return Unauthorized();
             }  
 
-            Console.WriteLine("CMK " + account.Cmki.ToString());
-
             string jsonStr = Encoding.UTF8.GetString(account.PrismiAuth.Decrypt(bytesRequest));
             
             var AuthReq = JsonSerializer.Deserialize<AuthRequest>(jsonStr);
 
             var BlurHCmkMul = BigInteger.Parse(AuthReq.BlurHCmkMul);
-             // var BlurRMul = BigInteger.Parse(AuthReq.BlurRMul);
+
             if( BlurHCmkMul == BigInteger.Zero ){ 
                 _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Invalid request  for {uid}");
                 return Unauthorized();
@@ -351,100 +348,8 @@ namespace Tide.Ork.Controllers
                 si = Convert.ToBase64String((BlindR + BlindH * account.Cmki).Mod(Ed25519.N).ToByteArray()),
                 gRi = Convert.ToBase64String((Ed25519.G * BlindR).ToByteArray())
             };
-            Console.WriteLine("Blur: " + (Ed25519.G * BlurHCmkMul).GetX().ToString());
-            Console.WriteLine("BlindH: " + (account.Cmki).ToString());
 
-            string b = JsonSerializer.Serialize(response);
-            return Ok(account.PrismiAuth.EncryptStr(b));
-        }
-
-        [MetricAttribute("cmk")]
-        [ThrottleAttribute("uid")]
-        [HttpGet("/{uid}/{user}")]
-        public async Task<ActionResult> CmkConvert([FromRoute] Guid uid, [FromRoute] string user, [FromQuery] string li = null)
-        {
-            if (!user.FromBase64UrlString(out byte[] bytesUser)) {
-                _logger.LogInformation($"Apply: Invalid pass for {uid}");
-                return BadRequest("Invalid parameters");
-            }
-
-            var lagrangian = BigInteger.Zero;
-            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian)) {
-                _logger.LogInformation("Apply: Invalid li for {uid}: '{li}' ", uid, li);
-                return BadRequest("Invalid parameter li");
-            }
-
-            Ed25519Point g;
-            try
-            {
-                g = Ed25519Point.From(bytesUser);
-                //testSafePoint(g) . Update after Cryptide C# implementation
-                if (!g.IsValid()) {
-                   _logger.LogInformation($"Apply: Invalid point for {uid}");
-                    return BadRequest("Invalid parameters");
-                }
-            }
-            catch (ArgumentException)
-            {
-                _logger.LogInformation($"Apply: Invalid point for {uid} with error");
-                return BadRequest("Invalid parameters");
-            }
-
-            var account = await _manager.GetById(uid);
-            if (account == null){
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"Authenticate: Account {uid} does not exist");
-                return Unauthorized("Invalid account");
-            }
-
-            var gc = lagrangian <= 0 ? g * account.Cmki : g * (account.Cmki  *  lagrangian).Mod(Ed25519.N);
-            var gR = Ed25519.G; // account.gR => calculated at sign up
-            var gCMK = Ed25519.G ;// account.gCMK => calculated at sign up
-        
-            // Get Current time from TranToken or directly 
-             var Token = new TranToken();
-             var Timestampi = Token.Ticks;
-            // var Purpose = "auth"; 
-             // var certTimei = HMac (Timestampi || uid || Purpose , mSecORKi);
-            //var certTimei =0;
-            var ToEncrypt = ""; //gc.ToByteArray(), GetRandom , gCMK, certTimei;
-            _logger.LogInformation($"Login attempt for {uid}", uid);
-            return Ok(account.PrismiAuth.EncryptStr(ToEncrypt));
-        }
-
-          //TODO: Add throttling by ip and account separate
-        [MetricAttribute("cmk", recordSuccess:true)]
-        [HttpGet("auth/{uid}/{token}")]
-        public async Task<ActionResult> CmkAuthentication([FromRoute] Guid uid, [FromRoute] string encryptedData, [FromQuery] Guid tranid, [FromQuery] string li = null)
-        {
-            
-            var lagrangian = BigInteger.Zero;
-            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
-            {
-                _logger.LogInformation("Apply: Invalid li for {uid}: '{li}' ", uid, li);
-                return BadRequest("Invalid parameter li");
-            }
-
-            var account = await _manager.GetById(uid);
-           if (account == null){
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Account {uid} does not exist");
-                return Unauthorized("Invalid account or signature");
-            }
-            var data = account.PrismiAuth.DecryptStr(encryptedData);
-            //string Purpose = "auth";
-            // Verify hmac(timestami ||userId || purpose , mSecOrki)== certTimei
-            // verify Ontime with data.timestampi
-            // if (!tran.OnTime) {
-            //     _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"Authenticate: Expired token for {uid}");
-            //     return StatusCode(418, new TranToken().ToString());
-            // }
-
-            // Verify H*CMKmul * r4] !=0
-            //Verify [r3 *r4] !=0
-
-            var blindH = 0; // 
-            var rs = BigInteger.One; // data.rs
-            var Si = (account.Cmk2i * rs + blindH * account.Cmki).ToString();
-            return Ok(account.PrismiAuth.EncryptStr(Si));
+            return Ok(account.PrismiAuth.EncryptStr(JsonSerializer.Serialize(response)));
         }
 
 

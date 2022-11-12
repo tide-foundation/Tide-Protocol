@@ -174,48 +174,6 @@ namespace Tide.Ork.Controllers
             };
         }
 
-
-        [HttpGet("sign/{vuid}/{token}/{partialCvkPub}/{partialCvk2Pub}")]
-        public async Task<ActionResult<String>> SignEntry([FromRoute] Guid vuid, [FromRoute] string token, [FromRoute] Ed25519Point partialCvkPub, [FromRoute] Ed25519Point partialCvk2Pub, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
-        {
-            if (!token.FromBase64UrlString(out byte[] bytesToken))
-            {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"SignEntry: Invalid token format for {vuid}");
-                return Unauthorized();
-            }
-
-            var lagrangian = BigInteger.Zero;
-            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
-            {
-                _logger.LogInformation("SignEntry: Invalid li for {uid}: '{li}' ", vuid, li);
-                return BadRequest("Invalid parameter li");
-            }
-
-            var tran = TranToken.Parse(bytesToken);
-            var account = await _managerCvk.GetById(vuid);
-            if (account == null || tran == null || !tran.Check(_config.SecretKey)) { // checking that this ork was the one who signed this token (timestamp pretty much)
-                if (account == null)
-                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"SignEntry: Account {vuid} does not exist");
-                else
-                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"SignEntry: Invalid token for {vuid}");
-
-                return Unauthorized("Invalid account or signature");
-            }
-            
-            if (!tran.OnTime) {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"SignEntry: Expired token for {vuid}");
-                return StatusCode(418, new TranToken().ToString());
-            }
-
-            var cvkPub = partialCvkPub + (Ed25519.G * (account.CVKi * lagrangian));
-            var cvk2Pub = partialCvk2Pub + (Ed25519.G * (account.CVK2i * lagrangian));
-
-            var s = Ed25519Dsa.Sign(account.CVK2i * lagrangian, account.CVKi * lagrangian, cvkPub, cvk2Pub, entry.MessageSignedBytes());
-
-            return s.ToString(); // signature
-         
-        }
-
         //TODO: there is not verification if the account already exists
         [HttpPut("{vuid}/{keyId}")]
         public async Task<ActionResult<TideResponse>> Add([FromRoute] Guid vuid, [FromRoute] Guid keyId, [FromBody] string[] data)
@@ -254,40 +212,12 @@ namespace Tide.Ork.Controllers
         }
 
         [MetricAttribute("cvk", recordSuccess:true)]
-        [HttpGet("{vuid}/{token}")]
-        public async Task<ActionResult<byte[]>> GetCvk([FromRoute] Guid vuid, [FromRoute] string token, [FromQuery] Guid tranid, [FromQuery] string li = null)
-        {
-            var lagrangian = BigInteger.Zero;
-            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian)) {
-                _logger.LogInformation("Invalid li for {vuid}: '{li}' ", vuid, li);
-                return BadRequest("Invalid parameter li");
-            }
-
-            var tran = TranToken.Parse(FromBase64(token));
-
-            var account = await _managerCvk.GetById(vuid);
-            if (account == null || !tran.Check(account.CvkiAuth, vuid.ToByteArray())) {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Unsuccessful login for {vuid} with {token}");
-                return Unauthorized($"Invalid account or signature");
-            }
-
-            if (!tran.OnTime) {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Expired token: {token}");
-                return StatusCode(408, new TranToken().ToString());
-            }
-
-            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, vuid, $"Returning cvk from {vuid}");
-            var cvki = lagrangian <= 0 ? account.CVKi : (account.CVKi * lagrangian).Mod(Ed25519.N);
-            return account.CvkiAuth.Encrypt(cvki.ToByteArray(true, true));
-        }
-
-        [MetricAttribute("cvk", recordSuccess:true)]
         [HttpGet("signin/{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}/{gCMKAuth}/{gCVKR}/{gCVK}")]
         public async Task<ActionResult<byte[]>> SignCvk([FromRoute] Guid vuid, [FromRoute] Ed25519Point gRmul, [FromRoute] string s, [FromRoute] long timestamp2 , [FromRoute] Ed25519Point gSessKeyPub, [FromRoute] string challenge,[FromRoute] Ed25519Point gCMKAuth,[FromRoute] Ed25519Point gCVKR,[FromRoute] Ed25519Point gCVK)//remove cmkAuth  and gCVK later
         {
-            var account = await _managerCvk.GetById(vuid); // find hardcoded vuid
+            var account = await _managerCvk.GetById(vuid);
             if (account == null) {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Unsuccessful login for {vuid}");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, vuid, vuid, $"Unsuccessful login for {vuid}");
                 return Unauthorized($"Invalid account");
             }
 
@@ -296,7 +226,7 @@ namespace Tide.Ork.Controllers
             const long _window = TimeSpan.TicksPerHour; //Check later
 
             if(!(Time >= DateTime.UtcNow.AddTicks(-_window) && Time <= DateTime.UtcNow.AddTicks(_window))){
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Expired");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, vuid, vuid, $"Expired");
                 return StatusCode(408, new TranToken().ToString()); //Return this???
             }
 
@@ -321,7 +251,7 @@ namespace Tide.Ork.Controllers
 
             var _8N = BigInteger.Parse("8");
             if(!(Ed25519.G * S * _8N).GetX().Equals((gRmul * _8N  +  (gCMKAuth * H * CmkAuthHash * _8N)).GetX())){ 
-                     _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
+                _logger.LogInformation($"Apply: Invalid Blind Signature for {vuid}");
                 return BadRequest("Some consistent garbage");
             }
 
@@ -345,8 +275,6 @@ namespace Tide.Ork.Controllers
             /// R : gCVKR     A : gCVK     PH(M) : challenge    k : CVKH
             var CVKH_ToHash = Ed25519Dsa.EncodeEd25519Point(gCVKR).Concat(Ed25519Dsa.EncodeEd25519Point(gCVK)).Concat(CVK_M).ToArray(); // implement point compression
             var CVKH = new BigInteger(Utils.HashSHA512(CVKH_ToHash), true, false).Mod(Ed25519.N);
-
-            Console.WriteLine("H: " + CVKH.ToString());
             
             /// From RFC 8032 5.1.6.5:
             /// Compute S = (r + k * s) mod L.  For efficiency, again reduce k
@@ -358,6 +286,7 @@ namespace Tide.Ork.Controllers
             var ECDH_seed = Utils.Hash((gSessKeyPub * _config.PrivateKey.X).ToByteArray()); // CHECK THIS WORKS
             var ECDHi = AesKey.Seed(ECDH_seed);
 
+            _logger.LogInformation($"SignCvk: Returned challenge signature for VUID: {vuid}");
             // No need to return R : gCVKR as we already have it
             return Ok(ECDHi.EncryptStr(CVKSi.ToByteArray(true, false)));
         }
@@ -380,32 +309,8 @@ namespace Tide.Ork.Controllers
             var ECDH_seed = Utils.Hash((gSessKeyPub * _config.PrivateKey.X).ToByteArray()); // CHECK THIS WORKS
             var ECDHi = AesKey.Seed(ECDH_seed);
 
+            _logger.LogInformation($"PresignCvk: Returned encrypted gCVKRi for VUID: {vuid}");
             return Ok(ECDHi.EncryptStr(gCVKRi.ToByteArray()));
-        }
-
-        //Api call for vender ork ????
-        [MetricAttribute("cvk", recordSuccess:true)]
-        [HttpGet("sign/{vuid}/{gCVKR}/{CVKS}/{timestamp2}/{gSessKeyPub}")]
-         public async Task<ActionResult<byte[]>> SignIn([FromRoute] Guid vuid, [FromRoute] Ed25519Point gCVKR, [FromRoute]  BigInteger CVKS, [FromRoute] string timestamp2 , [FromRoute]  Ed25519Point gSessKeyPub)
-        {
-            var account = await _managerCvk.GetById(vuid);
-            if (account == null) {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Unsuccessful login for {vuid}");
-                return Unauthorized($"Invalid account");
-            }
-            
-            var H = BigInteger.One ; // hash(gCVKR | account.gCVK | timestamp2 | gSessKeyPub | vuid | challenge) 
-            var _8N = BigInteger.Parse("8");
-            if(Ed25519.G * (CVKS * _8N) != gCVKR  * _8N +  Ed25519.G *  (H * _8N) ){ // replace last Ed25519.G  with account.gCVK
-                     _logger.LogInformation($"Apply: Invalid  calculation for {vuid}");
-                return BadRequest("Some consistent garbage");
-            }
-            
-            //var ECDH = Hash(gSessKeyPub * vvk);
-            
-            _logger.LoginSuccessful(ControllerContext.ActionDescriptor.ControllerName, null, vuid, $"Returning  from {vuid}");
-            // Use ECDH key and Encrypt access token
-            return account.CvkiAuth.Encrypt(account.CVK2i.ToByteArray(true, true));
         }
 
         [HttpGet("challenge/{vuid}/{keyId}")]
