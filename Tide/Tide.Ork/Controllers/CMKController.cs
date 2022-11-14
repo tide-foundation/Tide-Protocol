@@ -44,6 +44,8 @@ namespace Tide.Ork.Controllers
         private readonly LoggerPipe _logger;
         private readonly ICmkManager _manager;
         private readonly OrkConfig _config;
+        private readonly string _orkId;
+        private readonly SimulatorOrkManager _orkManager;
 
         public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger, OrkConfig config, Settings settings)
         {
@@ -51,6 +53,10 @@ namespace Tide.Ork.Controllers
             _mail = mail;
             _logger = new LoggerPipe(logger, settings, new LoggerConfig());
             _config = config;
+            _orkId = settings.Instance.Username;
+
+            var cln = new SimulatorClient(settings.Endpoints.Simulator.Api, _orkId, settings.Instance.GetPrivateKey());
+            _orkManager = new SimulatorOrkManager(_orkId, cln);
         }
 
         //TODO: Move secrets out of the url
@@ -131,9 +137,49 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("genshard/{uid}")]
-        public ActionResult<CMKResponse> GenShard([FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
+        public async Task<ActionResult<CMKResponse>> GenShard([FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
         {
-            var CMKResToEncrypt = new CmkResponseToEncrypt(); // Pass the values to the constructor
+            BigInteger mSecOrki = _config.PrivateKey.X; 
+
+            var orkPubTasks = orkIds.Select(id => GetPubByOrkId(id)); // get ork Publics from simulator
+
+            /// Quick functions while Tasks are running
+            List<BigInteger> mgOrkj_Xs = orkIds.Select(id => new BigInteger(Encoding.ASCII.GetBytes(id), true, true).Mod(Ed25519.N)).ToList(); // check this is the same as other methods that generate BigInt from Guid
+            
+            long CMKtimestampi = DateTime.UtcNow.Ticks;
+            RandomField rdm = new RandomField(Ed25519.N); // random number generator
+
+            BigInteger sCMKi = rdm.Generate(BigInteger.One);
+            BigInteger sPRISMi = rdm.Generate(BigInteger.One);
+            BigInteger sCMK2i = rdm.Generate(BigInteger.One);
+
+            Ed25519Point gCMKi = Ed25519.G * sCMKi;
+            Ed25519Point gPRISMi = Ed25519.G * sPRISMi;
+            Ed25519Point gCMK2i = Ed25519.G * sCMK2i;
+            ///--------------------------------------
+
+            Ed25519Point[] mgOrkj = await Task.WhenAll(orkPubTasks); // wait for tasks to end
+
+            var ECDHij = mgOrkj.Select(pub => AesKey.Seed((pub * _config.PrivateKey.X).ToByteArray()));
+
+            //mgOrkj.Add(Ed25519.G * myPriv); // add own own pub to list ASK UV whether you should also encrypt your own share
+
+            List<Point> CMKYij = EccSecretSharing.Share(sCMKi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
+            List<Point> PRISMYij = EccSecretSharing.Share(sPRISMi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
+            List<Point> CMK2Yij = EccSecretSharing.Share(sCMK2i, mgOrkj_Xs, _config.Threshold, Ed25519.N);
+
+            // For tomorrow -- I was going to have this orks Id as the last element in the CMKYij array, but since JS will be passing ALL of the ids,
+            // there is no guarantee that this orks id will be the last element. So you have to create a function that searches through CMKYij and finds the Y
+            // value that corresponds to the X value of this ork. Remember the X value of this ork can be found with new BigInteger(Encoding.ASCII.GetBytes(id), true, true).Mod(Ed25519.N). Where Id is the GUID of the ork.
+            BigInteger CMKYi = CMKYij[CMKYij.Count() - 1].Y; // get this ORKs Y value for their X on the CMK polynomial. NOTE: Index is last as noted on mgOrkj line
+            BigInteger PRISMi = PRISMYij[PRISMYij.Count() - 1].Y;
+            BigInteger CMK2Yi = CMK2Yij[CMK2Yij.Count() - 1].Y;
+
+            /// All data is ready to be sent/encrypted from here
+
+            var CMKResToEncrypt = new CmkResponseToEncrypt {
+                
+            }; // Pass the values to the constructor
             var YCipher = new {
                 id = id,
                 yijCipher = Encrypt(CMKResToEncrypt.ToJSON())
@@ -444,5 +490,12 @@ namespace Tide.Ork.Controllers
         {
             return new BigInteger(FromBase64(number), true, true);
         }
+        private async Task<Ed25519Point> GetPubByOrkId(string id)
+        {
+            var orkNode =_orkManager.GetById(id);
+            var orkInfoTask = await orkNode;
+            return Ed25519Key.ParsePublic(orkInfoTask.PubKey).Y;
+        }
+
     }
 }

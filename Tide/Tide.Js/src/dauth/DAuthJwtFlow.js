@@ -174,6 +174,8 @@ export default class DAuthJwtFlow {
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
       const flowCmk = await pre_flowCmk;
 
+      // TODO: Use _getCvkFlow()
+
       const [tideJWT, cvkPubPem] = await flowCmk.logIn2( password, venPnt);  
       
       return {jwt: tideJWT, cvkPub: cvkPubPem}; // return vuid + jwt signature

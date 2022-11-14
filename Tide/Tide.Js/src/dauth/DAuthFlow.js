@@ -42,6 +42,21 @@ export default class DAuthFlow {
     this.userID = typeof user === 'string' ? IdGenerator.seed(user) : new IdGenerator(user); // Needed this out of neccessity
   }
 
+  async signUp2(password, email, vendor){
+    try{
+      if (!email) throw new Error("email must have at least one item");
+      const emails = typeof email === "string" ? [email] : email;
+
+      const r1 = random();
+      const r2 = random();
+
+      const gUser = ed25519Point.fromString(this.userID.guid.toString());
+      const gPass = ed25519Point.fromString(password);
+    }catch(err){
+
+    }
+  }
+
   /**
    * @param {string} password
    * @param {string|string[]} email
