@@ -130,20 +130,37 @@ namespace Tide.Ork.Controllers
             return new RandomResponse(_config.UserName, gPassPrismi, cmkPubi, cmkPub2i, vendorCMKi, prisms, cmki,cmk2i, cmks, cmk2s);
         }
 
-         [HttpGet("genshard/{uid}")]
+        [HttpGet("genshard/{uid}")]
         public ActionResult<CMKResponse> GenShard([FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
         {
             var CMKResToEncrypt = new CmkResponseToEncrypt(); // Pass the values to the constructor
-                 
+            var YCipher = new {
+                id = id,
+                yijCipher = Encrypt(CMKResToEncrypt.ToJSON())
+            };
+
             return new CMKResponse //// Change all the values 
             {
                 GCMKi = ,
-                YijCipher =   Encrypt(CMKResToEncrypt.ToJSON()),
+                YijCipher =  JsonSerializer.Serialize(YCipher), 
                 GMultiplied1 = ,
                 GMultiplied2 = ,
                 CMKtimestampi = 
             };
             
+        }
+
+        [HttpPut("set/{uid}")]
+        public async Task<ActionResult<String>> SetCMK([FromRoute] Guid uid,[FromBody] string[] data)
+        {
+            var response = new {
+                gCMKtesti  =   ,
+                gPRISMtesti  =   ,
+                gCMK2testi = ,
+                gCMKRi = 
+            };
+
+            return JsonSerializer.Serialize(response);
         }
 
 
