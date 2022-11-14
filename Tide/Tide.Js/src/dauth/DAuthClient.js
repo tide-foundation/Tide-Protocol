@@ -172,6 +172,26 @@ export default class DAuthClient extends ClientBase {
       return RandomResponse.from(resp.body);
     }
   
+      /** 
+   * @param {string[]} mIdORKij
+   * @param {Number} numKeys
+   * @param {ed25519Point} gMultiplier1
+   * @param {ed25519Point} gMultiplier2
+   * @returns {Promise<[ed25519Point, string,ed25519Point,ed25519Point,string]>}
+   */
+    async GenShard( mIdORKij , numKeys, gMultiplier1 , gMultiplier2) {
+      const gMul1 = urlEncode(gMultiplier1.toArray());
+      const gMul2 = urlEncode(gMultiplier2.toArray());
+      const orkIds = mIdORKij.map(id => `ids=${id}`).join('&');
+      
+      const resp = await this._get(`/cmk/genshard/${this.userGuid}?numKeys=${numKeys.toString()}&gMultiplier1=${gMul1}&gMultiplier2=${gMul2}&${orkIds}`)
+        .ok(res => res.status < 500);
+      
+      if (!resp.ok) return Promise.reject(new Error(resp.text));
+      return [ed25519Point.from(Buffer.from(resp.body.gCMKi, 'base64')), resp.body.yijCipher, ed25519Point.from(Buffer.from(resp.body.gMultiplied1, 'base64')), ed25519Point.from(Buffer.from(resp.body.gMultiplied2,'base64')), resp.body.cMKtimestampi]
+    }
+
+
     /**
      * @param {import("./RandRegistrationReq").default} body
      * @param {ed25519Point} partialCmkPub
