@@ -47,6 +47,8 @@ namespace Tide.Ork.Controllers
         private readonly IKeyIdManager _keyIdManager;
         private readonly OrkConfig _config;
         private readonly Features _features;
+        private readonly SimulatorOrkManager _orkManager; 
+        private readonly string _orkId;
 
         public CVKController(IKeyManagerFactory factory, ILogger<CVKController> logger, OrkConfig config, Settings settings)
         {
@@ -56,6 +58,9 @@ namespace Tide.Ork.Controllers
             _logger = new LoggerPipe(logger, settings, new LoggerConfig());
             _config = config;
             _features = settings.Features;
+            _orkId = settings.Instance.Username;
+             var cln = new Tide.Ork.Classes.SimulatorClient(settings.Endpoints.Simulator.Api, _orkId, settings.Instance.GetPrivateKey());
+            _orkManager = new SimulatorOrkManager(_orkId, cln);
         }
 
         [HttpGet("random/{vuid}")]
@@ -94,7 +99,7 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("genshard/{vuid}")]
-        public ActionResult<CMKResponse> GenShard([FromQuery] string numKeys, [FromQuery] string signi, [FromQuery] Ed25519Point gVoucher, [FromQuery] ICollection<string> orkIds)
+        public async Task<ActionResult<CMKResponse>> GenShard([FromQuery] string numKeys, [FromQuery] string signi, [FromQuery] Ed25519Point gVoucher, [FromQuery] ICollection<string> orkIds)
         {
             if (orkIds == null || orkIds.Count < _config.Threshold) {
                 _logger.LogInformation("Random: The length of the ids ({length}) must be greater than or equal to {threshold}", orkIds?.Count, _config.Threshold);
@@ -155,19 +160,30 @@ namespace Tide.Ork.Controllers
         }
 
 
-         [HttpGet("set/{uid}")]
-        public ActionResult<String> SetCVK([FromRoute] Guid uid,[FromQuery] string YijCipher, [FromQuery] string CVKtimestamp , [FromQuery] Ed25519Point gCMKAuth)
+        [HttpGet("set/{vuid}")]
+        public ActionResult<String> SetCVK([FromRoute] Guid vuid,[FromQuery] string YijCipher, [FromQuery] string CVKtimestamp , [FromQuery] Ed25519Point gCMKAuth)
         {
-            //Verify timestamp2 in recent (10 min)
+            if ( !YijCipher.FromBase64UrlString(out byte[] bytesYijCipher))
+            {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, vuid, vuid, $"Authenticate: Invalid format for {vuid}");
+                return Unauthorized();
+            }
+            //Verify timestamp2 in recent (10 min) ??
             var Time= DateTime.FromBinary(long.Parse(CVKtimestamp));
             const long _window = TimeSpan.TicksPerHour; //Check later
 
             if(!(Time >= DateTime.UtcNow.AddTicks(-_window) && Time <= DateTime.UtcNow.AddTicks(_window))){
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, uid, uid, $"Expired");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, vuid, vuid, $"Expired");
                 return StatusCode(408, new TranToken().ToString()); //Return this???
             }
-
+            
             //decrypt  YijCipher[19] 
+            var orkPub = GetPubByOrkId(_config.Guid.ToString()); // get ork Public from simulator
+            var ECDHij = AesKey.Seed((orkPub * _config.PrivateKey.X).ToByteArray());
+            
+            string jsonStr = Encoding.UTF8.GetString(ECDHij.Decrypt(bytesYijCipher));
+            
+            var CVKResponseDecrypted = JsonSerializer.Deserialize<CVKResponseToEncrypt>(jsonStr);
 
             var response = new {
                 gCVKtesti  =   ,
@@ -177,6 +193,8 @@ namespace Tide.Ork.Controllers
 
             return JsonSerializer.Serialize(response);
         }
+
+        
 
 
         [HttpPut("random/{vuid}/{partialCvkPub}/{partialCvk2Pub}")]
@@ -509,6 +527,13 @@ namespace Tide.Ork.Controllers
             }
 
             return lst;
+        }
+        
+        private async Task<Ed25519Point> GetPubByOrkId(string id)
+        {
+            var orkNode =_orkManager.GetById(id);
+            var orkInfoTask = await orkNode;
+            return Ed25519Key.ParsePublic(orkInfoTask.PubKey).Y;
         }
 
     }

@@ -223,6 +223,11 @@ namespace Tide.Ork.Controllers
         [HttpGet("set/{uid}")]
         public  ActionResult<String> SetCMK([FromRoute] Guid uid,[FromQuery] string YijCipher, [FromQuery] string CMKtimestamp, [FromQuery] Ed25519Point gPRISMAuth , [FromQuery] string emaili)
         {
+            if ( !YijCipher.FromBase64UrlString(out byte[] bytesYijCipher))
+            {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, uid, uid, $"Authenticate: Invalid format for {uid}");
+                return Unauthorized();
+            }  
             //Verify timestamp2 in recent (10 min)
             var Time= DateTime.FromBinary(long.Parse(CMKtimestamp));
             const long _window = TimeSpan.TicksPerHour; //Check later
@@ -232,11 +237,16 @@ namespace Tide.Ork.Controllers
                 return StatusCode(408, new TranToken().ToString()); //Return this???
             }
 
-            //decrypt  YijCipher[19] 
-
             var PRISMAuthi_seed = Utils.Hash((Ed25519Point.From(gPRISMAuth) * _config.PrivateKey.X ).ToByteArray());
             var PRISMAuthi = AesKey.Seed(PRISMAuthi_seed);
-   
+
+             //decrypt  YijCipher[19] 
+            var orkPub = GetPubByOrkId(_config.Guid.ToString()); // get ork Public from simulator
+            var ECDHij = AesKey.Seed((orkPub * _config.PrivateKey.X).ToByteArray());
+            
+            string jsonStr = Encoding.UTF8.GetString(ECDHij.Decrypt(bytesYijCipher));
+            
+            var CmkResponseDecrypted = JsonSerializer.Deserialize<CmkResponseToEncrypt>(jsonStr);
 
             var response = new {
                 gCMKtesti  =   ,
