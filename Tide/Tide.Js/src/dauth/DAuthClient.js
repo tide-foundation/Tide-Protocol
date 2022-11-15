@@ -179,7 +179,7 @@ export default class DAuthClient extends ClientBase {
    * @param {ed25519Point} gMultiplier2
    * @returns {Promise<[ed25519Point, string,ed25519Point,ed25519Point,string]>}
    */
-  async GenShard( mIdORKij , numKeys, gMultiplier1 , gMultiplier2) {
+  async genShard( mIdORKij , numKeys, gMultiplier1 , gMultiplier2) {
     const gMul1 = urlEncode(gMultiplier1.toArray());
     const gMul2 = urlEncode(gMultiplier2.toArray());
     const orkIds = mIdORKij.map(id => `ids=${id}`).join('&');
@@ -192,26 +192,49 @@ export default class DAuthClient extends ClientBase {
   }
 
   /** 
-   * @param {string} YijCipher
-   * @param {number} CMKtimestamp
+   * @param {string} yijCipher
+   * @param {number} cMKtimestamp
    * @param {ed25519Point} gPRISMAuth
    * @param {string} emaili
-   * @returns {Promise<[ed25519Point, ed25519Point,ed25519Point,ed25519Point]>}
+   * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point, ed25519Point]>}
    */
-  async SetCMK(YijCipher,CMKtimestamp ,gPRISMAuth ,emaili ) {
-    var body = [ urlEncode(YijCipher),
-      urlEncode(CMKtimestamp),
-      urlEncode(gPRISMAuth.toArray()),
-      urlEncode(emaili) ];
+  async setCMK(yijCipher,cMKtimestamp ,gPRISMAuth ,emaili ) {
+    const gPrismAuth = urlEncode(gPRISMAuth.toArray());
 
-    const resp = await this._put(`/cmk/set/${this.userGuid}`).set("Content-Type", "application/json").send(JSON.stringify(body))
-      .ok(res => res.status < 500);
+    const resp = await this._get(`/cmk/set/${this.userGuid}?yijCipher=${yijCipher}&cMKtimestamp=${cMKtimestamp.toString()}&gPrismAuth=${gPrismAuth}&emaili=${emaili}`)
   
     if (!resp.ok) return  Promise.reject(new Error(resp.text));
 
     const obj = JSON.parse(resp.body.toString());
     return [ed25519Point.from(Buffer.from(obj.gCMKtesti, 'base64')),  ed25519Point.from(Buffer.from(obj.gPRISMtesti, 'base64')),ed25519Point.from(Buffer.from(obj.gCMK2testi, 'base64')),ed25519Point.from(Buffer.from(obj.gCMKRi, 'base64'))];
 
+  }
+
+  /**
+   * @param {ed25519Point} gCMKtest 
+   * @param {ed25519Point} gPRISMtest 
+   * @param {ed25519Point} gCMK2test 
+   * @param {ed25519Point} gCMKR2
+   * @returns {Promise<BigInt>} 
+   */
+   async preCommit (gCMKtest , gPRISMtest, gCMK2test, gCMKR2){
+
+    const resp = await this._get(`/cmk/precommit/${this.userGuid}/${urlEncode(gCMKtest.toArray())}/${urlEncode(gPRISMtest.toArray())}/${urlEncode(gCMK2test.toArray())}/${urlEncode(gCMKR2.toArray())}`)
+        .ok(res => res.status < 500);
+  
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
+      return BigInt(resp.text);
+  }
+
+  /**
+   * @param {BigInt} cmks
+   */
+  async commit (cmks){
+    const resp = await this._put(`/cmk/commit/${this.userGuid}`).set("Content-Type", "application/json").send(cmks.toString())
+        .ok(res => res.status < 500);
+  
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
+      return resp.ok;
   }
 
     /**

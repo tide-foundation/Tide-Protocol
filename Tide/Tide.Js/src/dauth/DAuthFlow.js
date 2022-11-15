@@ -52,6 +52,9 @@ export default class DAuthFlow {
 
       const gUser = ed25519Point.fromString(this.userID.guid.toString());
       const gPass = ed25519Point.fromString(password);
+
+      const genShardResp = await this.clienSet.map(mIdORKij, cli => cli.genShard( mIdORKij , 3, gUser , gPass)); 
+
     }catch(err){
 
     }

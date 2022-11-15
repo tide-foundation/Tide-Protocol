@@ -33,6 +33,7 @@ using Tide.Ork.Components.AuditTrail;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
+using System.Text.Json;
 
 namespace Tide.Ork.Controllers
 {
@@ -91,6 +92,92 @@ namespace Tide.Ork.Controllers
                 
             };
         }
+
+        [HttpGet("genshard/{vuid}")]
+        public ActionResult<CMKResponse> GenShard([FromQuery] string numKeys, [FromQuery] string signi, [FromQuery] Ed25519Point gVoucher, [FromQuery] ICollection<string> orkIds)
+        {
+            if (orkIds == null || orkIds.Count < _config.Threshold) {
+                _logger.LogInformation("Random: The length of the ids ({length}) must be greater than or equal to {threshold}", orkIds?.Count, _config.Threshold);
+                return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
+            }
+
+            var orkPubTasks = orkIds.Select(id => GetPubByOrkId(id)); // get ork Publics from simulator
+
+            List<BigInteger> mgOrkj_Xs = orkIds.Select(id => new BigInteger(Encoding.ASCII.GetBytes(id), true, true).Mod(Ed25519.N)).ToList(); // check this is the same as other methods that generate BigInt from Guid
+            
+            if (mgOrkj_Xs.Any(id => id == 0)) {
+                _logger.LogInformation("Random: Ids cannot contain the value zero");
+                return BadRequest($"Ids cannot contain the value zero");
+            }
+
+            Ed25519Point[] mgOrkj = await Task.WhenAll(orkPubTasks); // wait for tasks to end
+
+            var ECDHij = mgOrkj.Select(pub => AesKey.Seed((pub * _config.PrivateKey.X).ToByteArray()));
+
+            long CVKtimestampi = DateTime.UtcNow.Ticks;
+            RandomField rdm = new RandomField(Ed25519.N); // random number generator
+
+            BigInteger sCVKi = rdm.Generate(BigInteger.One);
+            BigInteger sCVK2i = rdm.Generate(BigInteger.One);
+
+            Ed25519Point gCVKi = Ed25519.G * sCVKi;
+            Ed25519Point gCVK2i = Ed25519.G * sCVK2i; 
+
+            //mgOrkj.Add(Ed25519.G * myPriv); // add own own pub to list ASK UV whether you should also encrypt your own share
+
+            //Removing the X of this ork from the orklist and Add again . This will add this Ork Id as the last element. 
+            var OrkX = new BigInteger(Encoding.ASCII.GetBytes(_config.Guid.ToString()), true, true).Mod(Ed25519.N);
+            if (mgOrkj_Xs.Contains(OrkX)) mgOrkj_Xs.Remove(OrkX);
+            mgOrkj_Xs.Add(OrkX);
+
+            List<Point> CVKYij = EccSecretSharing.Share(sCVKi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
+            List<Point> CVK2Yij = EccSecretSharing.Share(sCVK2i, mgOrkj_Xs, _config.Threshold, Ed25519.N);
+
+            BigInteger CVKYi = CVKYij[CVKYij.Count() - 1].Y; 
+            BigInteger CVK2Yi = CVK2Yij[CVK2Yij.Count() - 1].Y;
+            // Remove the last point from list to get CVKYj ,  CVK2Yj
+            CVKYij.RemoveAt(CVKYij.Count()-1);
+            CVK2Yij.RemoveAt(CVK2Yij.Count()-1);
+
+            var CVKResToEncrypt = new CVKResponseToEncrypt(gCVKi, gCVK2i, CVKYij, CVK2Yij); // Pass the values to the constructor
+            var YCipher = new {
+                id = OrkX,
+                yijCipher = ECDHij.Encrypt(CVKResToEncrypt.ToJSON())
+            };
+
+            return new CVKResponse //// Change all the values 
+            {
+                GCVKi = gCVKi.ToByteArray() ,
+                YijCipher =  JsonSerializer.Serialize(YCipher), 
+                CVKtimestampi = CVKtimestampi.ToString()
+            };
+            
+        }
+
+
+         [HttpGet("set/{uid}")]
+        public ActionResult<String> SetCVK([FromRoute] Guid uid,[FromQuery] string YijCipher, [FromQuery] string CVKtimestamp , [FromQuery] Ed25519Point gCMKAuth)
+        {
+            //Verify timestamp2 in recent (10 min)
+            var Time= DateTime.FromBinary(long.Parse(CVKtimestamp));
+            const long _window = TimeSpan.TicksPerHour; //Check later
+
+            if(!(Time >= DateTime.UtcNow.AddTicks(-_window) && Time <= DateTime.UtcNow.AddTicks(_window))){
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, uid, uid, $"Expired");
+                return StatusCode(408, new TranToken().ToString()); //Return this???
+            }
+
+            //decrypt  YijCipher[19] 
+
+            var response = new {
+                gCVKtesti  =   ,
+                gCVK2testi = ,
+                gCVKRi = 
+            };
+
+            return JsonSerializer.Serialize(response);
+        }
+
 
         [HttpPut("random/{vuid}/{partialCvkPub}/{partialCvk2Pub}")]
         public async Task<ActionResult<CvkRandomResponseAdd>> AddRandom([FromRoute] Guid vuid, [FromRoute] Ed25519Point partialCvkPub, [FromRoute] Ed25519Point partialCvk2Pub, [FromBody] CVKRandRegistrationReq rand,[FromQuery] string li = null)

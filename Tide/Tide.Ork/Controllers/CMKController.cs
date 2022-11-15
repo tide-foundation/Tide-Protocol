@@ -137,8 +137,18 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("genshard/{uid}")]
-        public async Task<ActionResult<CMKResponse>> GenShard([FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
+        public async Task<ActionResult<CMKResponse>> GenShard([FromRoute] Guid uid, [FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
         {
+            if (!gMultiplier1.IsSafePoint() || !gMultiplier2.IsSafePoint())
+            {
+                   _logger.LogInformation($"Apply: Unsafe point for {uid}");
+                    return BadRequest("Invalid parameters");
+            }
+            if (orkIds == null || orkIds.Count < _config.Threshold) {
+                _logger.LogInformation("GenShard: The length of the ids ({length}) must be greater than or equal to {threshold}", orkIds?.Count, _config.Threshold);
+                return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
+            }
+              
             BigInteger mSecOrki = _config.PrivateKey.X; 
 
             var orkPubTasks = orkIds.Select(id => GetPubByOrkId(id)); // get ork Publics from simulator
@@ -146,6 +156,11 @@ namespace Tide.Ork.Controllers
             /// Quick functions while Tasks are running
             List<BigInteger> mgOrkj_Xs = orkIds.Select(id => new BigInteger(Encoding.ASCII.GetBytes(id), true, true).Mod(Ed25519.N)).ToList(); // check this is the same as other methods that generate BigInt from Guid
             
+            if (mgOrkj_Xs.Any(id => id == 0)) {
+                _logger.LogInformation("GenShard: Ids cannot contain the value zero");
+                return BadRequest($"Ids cannot contain the value zero");
+            }
+
             long CMKtimestampi = DateTime.UtcNow.Ticks;
             RandomField rdm = new RandomField(Ed25519.N); // random number generator
 
@@ -164,6 +179,11 @@ namespace Tide.Ork.Controllers
 
             //mgOrkj.Add(Ed25519.G * myPriv); // add own own pub to list ASK UV whether you should also encrypt your own share
 
+            //Removing the X of this ork from the orklist and Add again . This will add this Ork Id as the last element. 
+            var OrkX = new BigInteger(Encoding.ASCII.GetBytes(_config.Guid.ToString()), true, true).Mod(Ed25519.N);
+            if (mgOrkj_Xs.Contains(OrkX)) mgOrkj_Xs.Remove(OrkX);
+            mgOrkj_Xs.Add(OrkX);
+
             List<Point> CMKYij = EccSecretSharing.Share(sCMKi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
             List<Point> PRISMYij = EccSecretSharing.Share(sPRISMi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
             List<Point> CMK2Yij = EccSecretSharing.Share(sCMK2i, mgOrkj_Xs, _config.Threshold, Ed25519.N);
@@ -174,31 +194,50 @@ namespace Tide.Ork.Controllers
             BigInteger CMKYi = CMKYij[CMKYij.Count() - 1].Y; // get this ORKs Y value for their X on the CMK polynomial. NOTE: Index is last as noted on mgOrkj line
             BigInteger PRISMi = PRISMYij[PRISMYij.Count() - 1].Y;
             BigInteger CMK2Yi = CMK2Yij[CMK2Yij.Count() - 1].Y;
+            // Remove the last point from list to get CMKYj , PRISMYj , CMK2Yj
+            CMKYij.RemoveAt(CMKYij.Count()-1);
+            PRISMYij.RemoveAt(PRISMYij.Count()-1);
+            CMK2Yij.RemoveAt(CMK2Yij.Count()-1);
 
+            var gMultiplied1 = gMultiplier1 * sCMKi;
+            var gMultiplied2 = gMultiplier2 * sPRISMi ; 
             /// All data is ready to be sent/encrypted from here
 
-            var CMKResToEncrypt = new CmkResponseToEncrypt {
-                
-            }; // Pass the values to the constructor
+            var CMKResToEncrypt = new CmkResponseToEncrypt (CMKYij, PRISMYij, CMK2Yij, gCMKi, gPRISMi, gCMK2i ); 
             var YCipher = new {
-                id = id,
-                yijCipher = Encrypt(CMKResToEncrypt.ToJSON())
+                id = OrkX,
+                yijCipher = ECDHij.Encrypt(CMKResToEncrypt.ToJSON()) //Check????
             };
 
-            return new CMKResponse //// Change all the values 
+            return new CMKResponse  
             {
-                GCMKi = ,
+                GCMKi = gCMKi.ToByteArray() ,
                 YijCipher =  JsonSerializer.Serialize(YCipher), 
-                GMultiplied1 = ,
-                GMultiplied2 = ,
-                CMKtimestampi = 
+                GMultiplied1 = gMultiplied1,
+                GMultiplied2 = gMultiplied2,
+                CMKtimestampi = CMKtimestampi.ToString()
             };
             
         }
 
-        [HttpPut("set/{uid}")]
-        public async Task<ActionResult<String>> SetCMK([FromRoute] Guid uid,[FromBody] string[] data)
+        [HttpGet("set/{uid}")]
+        public  ActionResult<String> SetCMK([FromRoute] Guid uid,[FromQuery] string YijCipher, [FromQuery] string CMKtimestamp, [FromQuery] Ed25519Point gPRISMAuth , [FromQuery] string emaili)
         {
+            //Verify timestamp2 in recent (10 min)
+            var Time= DateTime.FromBinary(long.Parse(CMKtimestamp));
+            const long _window = TimeSpan.TicksPerHour; //Check later
+
+            if(!(Time >= DateTime.UtcNow.AddTicks(-_window) && Time <= DateTime.UtcNow.AddTicks(_window))){
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, uid, uid, $"Expired");
+                return StatusCode(408, new TranToken().ToString()); //Return this???
+            }
+
+            //decrypt  YijCipher[19] 
+
+            var PRISMAuthi_seed = Utils.Hash((Ed25519Point.From(gPRISMAuth) * _config.PrivateKey.X ).ToByteArray());
+            var PRISMAuthi = AesKey.Seed(PRISMAuthi_seed);
+   
+
             var response = new {
                 gCMKtesti  =   ,
                 gPRISMtesti  =   ,
@@ -209,6 +248,54 @@ namespace Tide.Ork.Controllers
             return JsonSerializer.Serialize(response);
         }
 
+        [HttpGet("precommit/{uid}/{gCMKtest}/{gPRISMtest}/{gCMK2test}/{gCMKR2}")]
+        public ActionResult<string> PreCommit([FromRoute] Guid uid, [FromRoute] Ed25519Point gCMKtest , [FromRoute] Ed25519Point  gPRISMtest, [FromRoute] Ed25519Point  gCMK2test , [FromRoute] Ed25519Point gCMKR2)
+        {
+            if (gCMKtest.IsEquals(gCMK) && gPRISMtest.IsEquals(gPRISM) && gCMK2test.IsEquals(gCMK2))
+            {
+                   _logger.LogInformation($"PreCommit: Unsafe point for {uid}");
+                    return BadRequest("Invalid parameters");
+            }
+
+
+
+
+
+
+            return CMKSi.ToString();
+        }
+
+
+
+        [HttpPut("[commit]/{uid}")]
+        public async Task<ActionResult<string>> Commit([FromRoute] Guid uid, [FromBody] string data)
+        {
+            
+
+            
+            
+            
+            
+            var account = new CmkVault
+            {
+                UserId = uid,
+                GCmk =    ,
+                Cmki = , 
+                Prismi = ,
+                PrismAuthi = ,
+                Cmk2i =  ,
+                GCmk2 =   ,
+                Email = 
+                          
+            };
+            var resp = await _manager.Add(account);
+            if (!resp.Success) {
+                _logger.LogInformation($"Commit: CMK was not added for uid '{uid}'");
+                return Problem(resp.Error);
+            }
+
+            return Ok();
+        }
 
         [HttpPut("random/{uid}/{partialCmkPub}/{partialCmk2Pub}")]
         public async Task<ActionResult<AddRandomResponse>> AddRandom([FromRoute] Guid uid, [FromRoute] Ed25519Point partialCmkPub, [FromRoute] Ed25519Point partialCmk2Pub, [FromBody] RandRegistrationReq rand, [FromQuery] string li = null)

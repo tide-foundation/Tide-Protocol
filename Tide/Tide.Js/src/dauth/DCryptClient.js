@@ -102,6 +102,42 @@ export default class DCryptClient extends ClientBase {
       return BigInt(resp.text);
     }
 
+  /** 
+   * @param {string[]} vIdORKij
+   * @param {number} numKeys
+   * @param {string} signi
+   * @param {ed25519Point} gVoucherPoint
+   * @returns {Promise<[ed25519Point, string,string]>}
+   */
+  async genShard(vIdORKij , numKeys, signi , gVoucherPoint) {
+    const gVoucher = urlEncode(gVoucherPoint.toArray());
+    const orkIds = vIdORKij.map(id => `ids=${id}`).join('&');
+        
+    const resp = await this._get(`/cvk/genshard/${this.userGuid}?numKeys=${numKeys.toString()}&signi=${signi}&gVoucher=${gVoucher}&${orkIds}`)
+      .ok(res => res.status < 500);
+        
+    if (!resp.ok) return Promise.reject(new Error(resp.text));
+    return [ed25519Point.from(Buffer.from(resp.body.gCVKi, 'base64')), resp.body.yijCipher, resp.body.cVKtimestampi]
+  }
+
+  /** 
+   * @param {string} yijCipher
+   * @param {number} cVKtimestamp
+   * @param {ed25519Point} gCMKAuth
+   * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point]>}
+   */
+  async setCVK(yijCipher,cVKtimestamp ,gCMKAuth) {
+    const GCMKAuth = urlEncode(gCMKAuth.toArray());
+
+    const resp = await this._get(`/cvk/set/${this.userGuid}?YijCipher=${yijCipher}&CVKtimestamp=${cVKtimestamp.toString()}&GCMKAuth=${GCMKAuth}`)
+  
+    if (!resp.ok) return  Promise.reject(new Error(resp.text));
+
+    const obj = JSON.parse(resp.body.toString());
+    return [ed25519Point.from(Buffer.from(obj.gCVKtesti, 'base64')),  ed25519Point.from(Buffer.from(obj.gCVK2testi, 'base64')), ed25519Point.from(Buffer.from(obj.gCVKRi, 'base64'))];
+
+  }
+
   /**
    * @param { Guid } tranid
    * @param {AESKey} key
