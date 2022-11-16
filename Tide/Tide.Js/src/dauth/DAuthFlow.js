@@ -554,3 +554,13 @@ function addSigtoJWT(jwt, R, s) {
  
   return jwt + '.' + sig.toString('base64url');
 }
+
+//The array  is a combined list from all the orks returns
+function sorting(array){
+  let sortedArray = array.sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to) ); //Sort based on 'from' first and 'to' next
+  console.log(sortedArray);
+  return sortedArray;
+  //after returned  the sorted array, the filtered list for particular sending ork will be filtered based on the filter function
+  let x = sortedArray.filter(element => element.to === 'ork1'); //x will return the list of object for sendong ork  to = 'ork1'
+  console.log(x);   
+}
