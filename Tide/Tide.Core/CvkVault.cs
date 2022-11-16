@@ -11,32 +11,35 @@ namespace Tide.Core
     {
         public Guid Id => VuId;
         public Guid VuId { get; set; }
-        public Ed25519Key CvkPub { get; set; }
+        public Ed25519Point GCVK { get; set; }
         public BigInteger CVKi { get; set; }
+        public AesKey GCvkAuth { get; set; }
         public BigInteger CVK2i { get; set; }
-        public AesKey CvkiAuth { get; set; }
+        public Ed25519Point GCVK2 { get; set; }
 
-        public CvkVault() : base(1)
+        public CvkVault() 
         {
-            CvkiAuth = new AesKey();
+           
         }
 
         protected override IEnumerable<byte[]> GetItems()
         {
             yield return VuId.ToByteArray();
-            yield return CvkPub != null ? CvkPub.ToByteArray() : new byte[] { };
+            yield return GCVK != null ? GCVK.ToByteArray() : new byte[] { };
             yield return CVKi.ToByteArray(true, true);
-            yield return CvkiAuth.ToByteArray();
+            yield return GCvkAuth.ToByteArray();
             yield return CVK2i.ToByteArray(true, true);
+            yield return GCVK2 != null ? GCVK2.ToByteArray() : new byte[] { };
         }
 
         protected override void SetItems(IReadOnlyList<byte[]> data)
         {
             VuId = new Guid(data[0]);
-            CvkPub = data[1].Length != 0 ? Ed25519Key.ParsePublic(data[1]) : null;
+            GCVK = data[1].Length != 0 ? Ed25519Point.From(data[1]) : null;
             CVKi = new BigInteger(data[2], true, true);
-            CvkiAuth = AesKey.Parse(data[3]);
+            GCvkAuth = AesKey.Parse(data[3]);
             CVK2i = new BigInteger(data[4], true, true);
+            GCVK2= data[5].Length != 0 ? Ed25519Point.From(data[5]) : null;
         }
     }
 }

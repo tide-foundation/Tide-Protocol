@@ -28,24 +28,24 @@ namespace Tide.Ork.Models {
             Shares = prisms.Select((_, i) => new CMKResponseShare {
                 CMKYj = cmks[i].Y.ToByteArray(true, true),
                 PRISMYj = prisms[i].Y.ToByteArray(true, true),
-                CMK2j = cmk2s[i].Y.ToByteArray(true, true)
+                CMK2Yj = cmk2s[i].Y.ToByteArray(true, true)
             }).ToArray();
             
         }
 
         // doing this because the size of ed25519 points will change in future
         public string ToJSON() => JsonSerializer.Serialize(this);
-
+            
 
     }
 
     public class CMKResponseShare {
         public byte[] CMKYj { get; set; }
         public byte[] PRISMYj { get; set; }
-        public byte[] CMK2j  { get; set; }
+        public byte[] CMK2Yj  { get; set; }
 
         internal BigInteger PrismjVal => new BigInteger(CMKYj, true, true);
         internal BigInteger CmkjVal => new BigInteger(PRISMYj, true, true);
-        internal BigInteger Cmk2jVal => new BigInteger(CMK2j , true, true);
+        internal BigInteger Cmk2jVal => new BigInteger(CMK2Yj , true, true);
     }
 }
