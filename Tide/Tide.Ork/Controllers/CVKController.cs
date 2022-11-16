@@ -102,7 +102,7 @@ namespace Tide.Ork.Controllers
         public async Task<ActionResult<CMKResponse>> GenShard([FromQuery] string numKeys, [FromQuery] string signi, [FromQuery] Ed25519Point gVoucher, [FromQuery] ICollection<string> orkIds)
         {
             if (orkIds == null || orkIds.Count < _config.Threshold) {
-                _logger.LogInformation("Random: The length of the ids ({length}) must be greater than or equal to {threshold}", orkIds?.Count, _config.Threshold);
+                _logger.LogInformation("GenShard: The length of the ids ({length}) must be greater than or equal to {threshold}", orkIds?.Count, _config.Threshold);
                 return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
             }
 
@@ -111,7 +111,7 @@ namespace Tide.Ork.Controllers
             List<BigInteger> mgOrkj_Xs = orkIds.Select(id => new BigInteger(Encoding.ASCII.GetBytes(id), true, true).Mod(Ed25519.N)).ToList(); // check this is the same as other methods that generate BigInt from Guid
             
             if (mgOrkj_Xs.Any(id => id == 0)) {
-                _logger.LogInformation("Random: Ids cannot contain the value zero");
+                _logger.LogInformation("GenShard: Ids cannot contain the value zero");
                 return BadRequest($"Ids cannot contain the value zero");
             }
 
@@ -165,7 +165,7 @@ namespace Tide.Ork.Controllers
         {
             if ( !YijCipher.FromBase64UrlString(out byte[] bytesYijCipher))
             {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, vuid, vuid, $"Authenticate: Invalid format for {vuid}");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, vuid, vuid, $"SetCVK: Invalid format for {vuid}");
                 return Unauthorized();
             }
             //Verify timestamp2 in recent (10 min) ??
@@ -194,7 +194,50 @@ namespace Tide.Ork.Controllers
             return JsonSerializer.Serialize(response);
         }
 
-        
+        [HttpGet("precommit/{vuid}/{gCVKtest}/{gCVK2test}/{gCVKR2}")]
+        public ActionResult<string> PreCommit([FromRoute] Guid vuid, [FromRoute] Ed25519Point gCVKtest , [FromRoute] Ed25519Point  gCVK2test, [FromRoute] Ed25519Point  gCVKR2 )
+        {
+            if (gCVKtest.IsEquals(gCVK) && gCVK2test.IsEquals(gCVK2))
+            {
+                   _logger.LogInformation($"PreCommit: Unsafe point for {vuid}");
+                    return BadRequest("Invalid parameters");
+            }
+
+
+
+
+
+
+            return CVKSi.ToString();
+        }
+
+        [HttpPut("[commit]/{vuid}")]
+        public async Task<ActionResult<string>> Commit([FromRoute] Guid vuid, [FromBody] string data)
+        {
+            
+
+            
+            
+            
+            
+            var account = new CvkVault
+            {
+                VuId = vuid,
+                GCVK =    ,
+                CVKi = , 
+                GCvkAuth = ,
+                CVK2i = ,
+                GCVK2 =  
+                          
+            };
+            var resp = await _managerCvk.SetOrUpdate(account);
+            if (!resp.Success) {
+                _logger.LogInformation($"Commit: CMK was not added for uid '{vuid}'");
+                return Problem(resp.Error);
+            }
+
+            return Ok();
+        }
 
 
         [HttpPut("random/{vuid}/{partialCvkPub}/{partialCvk2Pub}")]

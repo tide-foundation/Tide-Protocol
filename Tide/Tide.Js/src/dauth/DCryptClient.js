@@ -139,6 +139,32 @@ export default class DCryptClient extends ClientBase {
   }
 
   /**
+   * @param {ed25519Point} gCVKtest 
+   * @param {ed25519Point} gCVK2test 
+   * @param {ed25519Point} gCVKR2
+   * @returns {Promise<BigInt>} 
+   */
+   async preCommit (gCVKtest, gCVK2test, gCVKR2){
+
+    const resp = await this._get(`/cvk/precommit/${this.userGuid}/${urlEncode(gCVKtest.toArray())}/${urlEncode(gCVK2test.toArray())}/${urlEncode(gCVKR2.toArray())}`)
+        .ok(res => res.status < 500);
+  
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
+      return BigInt(resp.text);
+  }
+
+  /**
+   * @param {BigInt} cvks
+   */
+  async commit (cvks){
+    const resp = await this._put(`/cvk/commit/${this.userGuid}`).set("Content-Type", "application/json").send(cvks.toString())
+        .ok(res => res.status < 500);
+  
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
+      return resp.ok;
+  }
+
+  /**
    * @param { Guid } tranid
    * @param {AESKey} key
    * @param {bigInt.BigInteger} li

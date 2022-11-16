@@ -28,7 +28,7 @@ namespace Tide.Ork.Models
             Shares = cvks.Select((_, i) => new CVKResponseShare
             {
                 CVKYj = cvks[i].Y.ToByteArray(true, true),
-                CVK2j = cvk2s[i].Y.ToByteArray(true, true)
+                CVK2Yj = cvk2s[i].Y.ToByteArray(true, true)
             }).ToArray();
         }
 
@@ -38,9 +38,9 @@ namespace Tide.Ork.Models
         public class CVKResponseShare
         {
             public byte[] CVKYj { get; set; }
-            public byte[] CVK2j  {get; set;}
+            public byte[] CVK2Yj  {get; set;}
             internal BigInteger CvkjVal => new BigInteger(CVKYj, true, true);
-            internal BigInteger Cvk2jVal => new BigInteger(CVK2j , true, true);
+            internal BigInteger Cvk2jVal => new BigInteger(CVK2Yj , true, true);
         }
     }
 }
