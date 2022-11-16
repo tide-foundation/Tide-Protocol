@@ -151,16 +151,10 @@ namespace Tide.Ork.Controllers
               
             BigInteger mSecOrki = _config.PrivateKey.X; 
 
-            var orkPubTasks = orkIds.Select(id => GetPubByOrkId(id)); // get ork Publics from simulator
+            // Get ork Publics from simulator, searching with their usernames e.g. ork1
+            var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj)); 
 
             /// Quick functions while Tasks are running
-            List<BigInteger> mgOrkj_Xs = orkIds.Select(id => new BigInteger(Encoding.ASCII.GetBytes(id), true, true).Mod(Ed25519.N)).ToList(); // check this is the same as other methods that generate BigInt from Guid
-            
-            if (mgOrkj_Xs.Any(id => id == 0)) {
-                _logger.LogInformation("GenShard: Ids cannot contain the value zero");
-                return BadRequest($"Ids cannot contain the value zero");
-            }
-
             long CMKtimestampi = DateTime.UtcNow.Ticks;
             RandomField rdm = new RandomField(Ed25519.N); // random number generator
 
@@ -173,48 +167,41 @@ namespace Tide.Ork.Controllers
             Ed25519Point gCMK2i = Ed25519.G * sCMK2i;
             ///--------------------------------------
 
-            Ed25519Point[] mgOrkj = await Task.WhenAll(orkPubTasks); // wait for tasks to end
+            Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            var ECDHij = mgOrkj.Select(pub => AesKey.Seed((pub * _config.PrivateKey.X).ToByteArray()));
+            // Here we generate the X values of the polynomial through creating GUID from other orks publics, then generating a bigInt (the X) from those GUIDs
+            // This was based on how the JS creates the X values from publics in ClientBase.js and IdGenerator.js
+            var mgOrkj_Xs = mgOrkj_Keys.Select(pub => new BigInteger(new Guid(Utils.Hash(pub.ToByteArray())).ToByteArray(), true, true)); 
 
-            //mgOrkj.Add(Ed25519.G * myPriv); // add own own pub to list ASK UV whether you should also encrypt your own share
+            // Generate DiffieHellman Keys based on this ork's priv and other Ork's Pubs
+            AesKey[] ECDHij = mgOrkj_Keys.Select(key => AesKey.Seed((key.Y * mSecOrki).ToByteArray())).ToArray();
 
-            //Removing the X of this ork from the orklist and Add again . This will add this Ork Id as the last element. 
-            var OrkX = new BigInteger(Encoding.ASCII.GetBytes(_config.Guid.ToString()), true, true).Mod(Ed25519.N);
-            if (mgOrkj_Xs.Contains(OrkX)) mgOrkj_Xs.Remove(OrkX);
-            mgOrkj_Xs.Add(OrkX);
+            // Generate all of the polynomial points for the 3 secret values
+            IReadOnlyList<Point> CMKYij = EccSecretSharing.Share(sCMKi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
+            IReadOnlyList<Point> PRISMYij = EccSecretSharing.Share(sPRISMi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
+            IReadOnlyList<Point> CMK2Yij = EccSecretSharing.Share(sCMK2i, mgOrkj_Xs, _config.Threshold, Ed25519.N);
 
-            List<Point> CMKYij = EccSecretSharing.Share(sCMKi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
-            List<Point> PRISMYij = EccSecretSharing.Share(sPRISMi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
-            List<Point> CMK2Yij = EccSecretSharing.Share(sCMK2i, mgOrkj_Xs, _config.Threshold, Ed25519.N);
+            // Generate this Ork's X to find below
+            //BigInteger myX = new BigInteger(new Guid(Utils.Hash(_config.PrivateKey.GetPublic().ToByteArray())).ToByteArray(), true, true);
 
-            // For tomorrow -- I was going to have this orks Id as the last element in the CMKYij array, but since JS will be passing ALL of the ids,
-            // there is no guarantee that this orks id will be the last element. So you have to create a function that searches through CMKYij and finds the Y
-            // value that corresponds to the X value of this ork. Remember the X value of this ork can be found with new BigInteger(Encoding.ASCII.GetBytes(id), true, true).Mod(Ed25519.N). Where Id is the GUID of the ork.
-            BigInteger CMKYi = CMKYij[CMKYij.Count() - 1].Y; // get this ORKs Y value for their X on the CMK polynomial. NOTE: Index is last as noted on mgOrkj line
-            BigInteger PRISMi = PRISMYij[PRISMYij.Count() - 1].Y;
-            BigInteger CMK2Yi = CMK2Yij[CMK2Yij.Count() - 1].Y;
-            // Remove the last point from list to get CMKYj , PRISMYj , CMK2Yj
-            CMKYij.RemoveAt(CMKYij.Count()-1);
-            PRISMYij.RemoveAt(PRISMYij.Count()-1);
-            CMK2Yij.RemoveAt(CMK2Yij.Count()-1);
+            // Find this Ork's share -- Only to be used if we keep state, might not need later
+            //BigInteger CMKYi = CMKYij.Find(point => point.X == myX).Y;
+            //BigInteger PRISMYi = PRISMYij.Find(point => point.X == myX).Y;
+            //BigInteger CMK2Yi = CMK2Yij.Find(point => point.X == myX).Y;
+            ///-----------------------------------------------------------
 
-            var gMultiplied1 = gMultiplier1 * sCMKi;
-            var gMultiplied2 = gMultiplier2 * sPRISMi ; 
-            /// All data is ready to be sent/encrypted from here
-
-            var CMKResToEncrypt = new CmkResponseToEncrypt (CMKYij, PRISMYij, CMK2Yij, gCMKi, gPRISMi, gCMK2i ); 
-            var YCipher = new {
-                id = OrkX,
-                yijCipher = ECDHij.Encrypt(CMKResToEncrypt.ToJSON()) //Check????
-            };
+            Ed25519Point gMultiplied1 = gMultiplier1 * sCMKi;
+            Ed25519Point gMultiplied2 = gMultiplier2 * sPRISMi; 
+            
+            ResponseEncrypted YijCipher = new ResponseEncrypted( CMKYij, PRISMYij, CMK2Yij, gCMKi, gPRISMi, gCMK2i, orkIds.ToArray(), _config.UserName );
+            YijCipher.Encrypt(ECDHij);
 
             return new CMKResponse  
             {
                 GCMKi = gCMKi.ToByteArray() ,
-                YijCipher =  JsonSerializer.Serialize(YCipher), 
-                GMultiplied1 = gMultiplied1,
-                GMultiplied2 = gMultiplied2,
+                YijCipher =  YijCipher.ToJSON(), 
+                GMultiplied1 = gMultiplied1.ToByteArray(),
+                GMultiplied2 = gMultiplied2.ToByteArray(),
                 CMKtimestampi = CMKtimestampi.ToString()
             };
             
@@ -229,7 +216,7 @@ namespace Tide.Ork.Controllers
                 return Unauthorized();
             }  
             //Verify timestamp2 in recent (10 min)
-            var Time= DateTime.FromBinary(long.Parse(CMKtimestamp));
+            var Time = DateTime.FromBinary(long.Parse(CMKtimestamp));
             const long _window = TimeSpan.TicksPerHour; //Check later
 
             if(!(Time >= DateTime.UtcNow.AddTicks(-_window) && Time <= DateTime.UtcNow.AddTicks(_window))){
@@ -587,11 +574,11 @@ namespace Tide.Ork.Controllers
         {
             return new BigInteger(FromBase64(number), true, true);
         }
-        private async Task<Ed25519Point> GetPubByOrkId(string id)
+        private async Task<Ed25519Key> GetPubByOrkId(string id)
         {
             var orkNode =_orkManager.GetById(id);
             var orkInfoTask = await orkNode;
-            return Ed25519Key.ParsePublic(orkInfoTask.PubKey).Y;
+            return Ed25519Key.ParsePublic(orkInfoTask.PubKey);
         }
 
     }

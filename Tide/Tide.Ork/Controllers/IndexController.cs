@@ -37,12 +37,20 @@ namespace Tide.Ork.Controllers
             _orkManager = new SimulatorOrkManager(config.UserName, settings.BuildClient());
         }
  
-       [HttpGet("public")]
+        [HttpGet("public")]
         public ActionResult<string> GetPublic() {
             Response.Headers[HeaderNames.CacheControl] = "public, max-age=1800, immutable";
             Response.Headers[HeaderNames.Expires] = new[] { DateTime.UtcNow.AddSeconds(1800).ToString("R") };
             
             return _config.PrivateKey.GetPublic().ToString();
+        }
+
+        [HttpGet("username")]
+        public ActionResult<string> GetId() {
+            Response.Headers[HeaderNames.CacheControl] = "public, max-age=1800, immutable";
+            Response.Headers[HeaderNames.Expires] = new[] { DateTime.UtcNow.AddSeconds(1800).ToString("R") };
+            
+            return _config.UserName;
         }
 
         #if DEBUG
