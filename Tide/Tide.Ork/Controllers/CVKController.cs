@@ -106,18 +106,9 @@ namespace Tide.Ork.Controllers
                 return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
             }
 
-            var orkPubTasks = orkIds.Select(id => GetPubByOrkId(id)); // get ork Publics from simulator
+            BigInteger mSecOrki = _config.PrivateKey.X;
 
-            List<BigInteger> mgOrkj_Xs = orkIds.Select(id => new BigInteger(Encoding.ASCII.GetBytes(id), true, true).Mod(Ed25519.N)).ToList(); // check this is the same as other methods that generate BigInt from Guid
-            
-            if (mgOrkj_Xs.Any(id => id == 0)) {
-                _logger.LogInformation("GenShard: Ids cannot contain the value zero");
-                return BadRequest($"Ids cannot contain the value zero");
-            }
-
-            Ed25519Point[] mgOrkj = await Task.WhenAll(orkPubTasks); // wait for tasks to end
-
-            var ECDHij = mgOrkj.Select(pub => AesKey.Seed((pub * _config.PrivateKey.X).ToByteArray()));
+            var orkPubTasks = orkIds.Select(id => GetPubByOrkId(id)); // Get ork Publics from simulator, searching with their username e.g 'ork1'  
 
             long CVKtimestampi = DateTime.UtcNow.Ticks;
             RandomField rdm = new RandomField(Ed25519.N); // random number generator
@@ -128,32 +119,22 @@ namespace Tide.Ork.Controllers
             Ed25519Point gCVKi = Ed25519.G * sCVKi;
             Ed25519Point gCVK2i = Ed25519.G * sCVK2i; 
 
-            //mgOrkj.Add(Ed25519.G * myPriv); // add own own pub to list ASK UV whether you should also encrypt your own share
+            Ed25519Key[] mgOrkj_keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            //Removing the X of this ork from the orklist and Add again . This will add this Ork Id as the last element. 
-            var OrkX = new BigInteger(Encoding.ASCII.GetBytes(_config.Guid.ToString()), true, true).Mod(Ed25519.N);
-            if (mgOrkj_Xs.Contains(OrkX)) mgOrkj_Xs.Remove(OrkX);
-            mgOrkj_Xs.Add(OrkX);
+            var mgOrkj_Xs = mgOrkj_keys.Select(pub => new BigInteger(new Guid(Utils.Hash(pub.ToByteArray())).ToByteArray(), true, true)); 
+           
+            AesKey[] ECDHij = mgOrkj_keys.Select(key => AesKey.Seed((key.Y * mSecOrki).ToByteArray()));
+  
+            IReadOnlyList<Point> CVKYij = EccSecretSharing.Share(sCVKi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
+            IReadOnlyList<Point> CVK2Yij = EccSecretSharing.Share(sCVK2i, mgOrkj_Xs, _config.Threshold, Ed25519.N);
 
-            List<Point> CVKYij = EccSecretSharing.Share(sCVKi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
-            List<Point> CVK2Yij = EccSecretSharing.Share(sCVK2i, mgOrkj_Xs, _config.Threshold, Ed25519.N);
-
-            BigInteger CVKYi = CVKYij[CVKYij.Count() - 1].Y; 
-            BigInteger CVK2Yi = CVK2Yij[CVK2Yij.Count() - 1].Y;
-            // Remove the last point from list to get CVKYj ,  CVK2Yj
-            CVKYij.RemoveAt(CVKYij.Count()-1);
-            CVK2Yij.RemoveAt(CVK2Yij.Count()-1);
-
-            var CVKResToEncrypt = new CVKResponseToEncrypt(gCVKi, gCVK2i, CVKYij, CVK2Yij); // Pass the values to the constructor
-            var YCipher = new {
-                id = OrkX,
-                yijCipher = ECDHij.Encrypt(CVKResToEncrypt.ToJSON())
-            };
+            var CVKResToEncrypt = new CVKResponseToEncrypt(gCVKi, gCVK2i, CVKYij, CVK2Yij, orkIds.ToArray(), _config.UserName); // Pass the values to the constructor
+            CVKResToEncrypt.GetCVKShares(ECDHij);
 
             return new CVKResponse //// Change all the values 
             {
                 GCVKi = gCVKi.ToByteArray() ,
-                YijCipher =  JsonSerializer.Serialize(YCipher), 
+                YijCipher =  CVKResToEncrypt.ToJSON(), 
                 CVKtimestampi = CVKtimestampi.ToString()
             };
             
@@ -572,7 +553,7 @@ namespace Tide.Ork.Controllers
             return lst;
         }
         
-        private async Task<Ed25519Point> GetPubByOrkId(string id)
+        private async Task<Ed25519Key> GetPubByOrkId(string id)
         {
             var orkNode =_orkManager.GetById(id);
             var orkInfoTask = await orkNode;

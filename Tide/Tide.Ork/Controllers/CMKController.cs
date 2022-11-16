@@ -212,7 +212,7 @@ namespace Tide.Ork.Controllers
         {
             if ( !YijCipher.FromBase64UrlString(out byte[] bytesYijCipher))
             {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, uid, uid, $"Authenticate: Invalid format for {uid}");
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, uid, uid, $"SetCMK: Invalid format for {uid}");
                 return Unauthorized();
             }  
             //Verify timestamp2 in recent (10 min)
@@ -235,11 +235,21 @@ namespace Tide.Ork.Controllers
             
             var CmkResponseDecrypted = JsonSerializer.Deserialize<CmkResponseToEncrypt>(jsonStr);
 
+            BigInteger CMKYj= CmkResponseDecrypted.Shares.Select(shr => shr.CmkjVal).Aggregate((sum, cmk) => (sum + cmk) % Ed25519.N); //Add CMKYi
+            BigInteger PRISMj= CmkResponseDecrypted.Shares.Select(shr => shr.PrismjVal).Aggregate((sum, prism) => (sum + prism) % Ed25519.N); //Add prismi
+            BigInteger CMK2Yj= CmkResponseDecrypted.Shares.Select(shr => shr.Cmk2jVal).Aggregate((sum, cmk2) => (sum + cmk2) % Ed25519.N); //Add Cmk2i
+
+            var CMK_ToHashM = Encoding.ASCII.GetBytes( Convert.ToBase64String(gCMK.ToByteArray()) + CMKtimestamp.ToString() + uid.ToString()).ToArray();
+            var CMK_M = Utils.Hash(CMK_ToHashM);
+
+            var ToHashR = Encoding.ASCII.GetBytes( _config.PrivateKey.X.ToString()).Concat(CMK_M).ToArray(); 
+            var ri = new BigInteger(Utils.Hash(ToHashR), true, false).Mod(Ed25519.N);
+            
             var response = new {
-                gCMKtesti  =   ,
-                gPRISMtesti  =   ,
-                gCMK2testi = ,
-                gCMKRi = 
+                gCMKtesti  =  (Ed25519.G * CMKi ).ToByteArray() ,
+                gPRISMtesti  =  (Ed25519.G * PRISMi).ToByteArray() ,
+                gCMK2testi = (Ed25519.G * CMK2i).ToByteArray(),
+                gCMKRi = (Ed25519.G * ri).ToByteArray()
             };
 
             return JsonSerializer.Serialize(response);
@@ -253,7 +263,9 @@ namespace Tide.Ork.Controllers
                    _logger.LogInformation($"PreCommit: Unsafe point for {uid}");
                     return BadRequest("Invalid parameters");
             }
-
+            var R = gCMKR2 ; // Add org argreggation
+            var ToHashH = R.ToByteArray().Concat(gCMK2test.ToByteArray()).Concat(CMK_M).ToArray();
+            var H = Utils.Hash(ToHashH);
 
 
 
