@@ -113,7 +113,7 @@ export default class DAuthClient extends ClientBase {
    * @param {ed25519Point} point
    * @param {bigInt.BigInteger} li
    **/
-  async signIn(tranid, token, point, li = null) {
+  async signIn(tranid, token, point, li) {
     const tkn = urlEncode(token.toArray());
     const pnt = urlEncode(point.toArray());
 
@@ -177,7 +177,7 @@ export default class DAuthClient extends ClientBase {
    * @param {number} numKeys
    * @param {ed25519Point} gMultiplier1
    * @param {ed25519Point} gMultiplier2
-   * @returns {Promise<[ed25519Point, string,ed25519Point,ed25519Point,string]>}
+   * @returns {Promise<[ed25519Point, string, ed25519Point,ed25519Point,string]>}
    */
   async genShard( mIdORKij , numKeys, gMultiplier1 , gMultiplier2) {
     const gMul1 = urlEncode(gMultiplier1.toArray());
@@ -188,7 +188,7 @@ export default class DAuthClient extends ClientBase {
       .ok(res => res.status < 500);
       
     if (!resp.ok) return Promise.reject(new Error(resp.text));
-    return [ed25519Point.from(Buffer.from(resp.body.gCMKi, 'base64')), resp.body.yijCipher, ed25519Point.from(Buffer.from(resp.body.gMultiplied1, 'base64')), ed25519Point.from(Buffer.from(resp.body.gMultiplied2,'base64')), resp.body.cMKtimestampi]
+    return [ed25519Point.from(Buffer.from(resp.body.gCMKi, 'base64')), resp.body.yijCipher, ed25519Point.from(Buffer.from(resp.body.gMultiplied1, 'base64')), ed25519Point.from(Buffer.from(resp.body.gMultiplied2,'base64')), resp.body.cMKtimestampi];
   }
 
   /** 

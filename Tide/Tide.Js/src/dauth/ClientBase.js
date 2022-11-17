@@ -32,6 +32,7 @@ export default class ClientBase {
     this.url = baseUrl.origin + "/api";
     /** @type {IdGenerator} */
     this._clientId = null;
+    this._clientUsername = null;
     this._userId = typeof user === "string" ? IdGenerator.seed(user) : new IdGenerator(user);
   }
 
@@ -49,6 +50,13 @@ export default class ClientBase {
 
   get userUrl() {
     return urlEncode(this.userBuffer);
+  }
+
+  async getClientUsername(){
+    if (!this._clientUsername)
+      await this._setClientUsername();
+
+    return this._clientUsername;
   }
 
   async getClientId() {
@@ -81,6 +89,11 @@ export default class ClientBase {
   async _setClientId() {
     const key = await this.getPublic();
     this._clientId = IdGenerator.seed(key.toArray());
+  }
+
+  async _setClientUsername(){
+    var res = await this._get("/username");
+    this._clientUsername = res.text;
   }
 
   /** @param {string} path
