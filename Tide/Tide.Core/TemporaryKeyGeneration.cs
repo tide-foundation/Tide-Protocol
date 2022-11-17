@@ -1,26 +1,55 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Numerics;
-using System.Dynamic;
 using System.Text.Json;
 using System.Collections.Generic;
 using Tide.Encryption.SecretSharing;
 using Tide.Encryption.Ed;
 using Tide.Encryption.Tools;
 using Tide.Encryption.AesMAC;
+using System.Text.Json.Serialization;
 
 public class KeyGenerator
 {
-    private BigInteger MSecOrki {get;} // this ork's private scalar
-    private Ed25519Point MgOrki {get;} // this ork's public point
-    private string From_Username {get;} // this ork's username
-    public int Threshold => 3; // change me
+    private BigInteger MSecOrki { get; } // this ork's private scalar
+    internal AesKey MSecOrki_Key => AesKey.Seed(MSecOrki.ToByteArray(true, true));
+    private Ed25519Point MgOrki { get; } // this ork's public point
+    private string KeyID { get; }  // Guid to string()
+    private string My_Username { get; } // this ork's username
+    public int Threshold { get; } // change me
 
-    public string GenShard(Guid keyID, Ed25519Key[] mgOrkij, int numKeys, Ed25519Point[] gMultiplier, string[] to_userNames){
+    public KeyGenerator(BigInteger mSecOrki, Ed25519Point mgOrki, string keyID, string my_Username, int threshold)
+    {
+        MSecOrki = mSecOrki;
+        MgOrki = mgOrki;
+        KeyID = keyID;
+        My_Username = my_Username;
+        Threshold = threshold;
+    }
 
-        if (gMultiplier.All(multipler => multipler.IsSafePoint()))
+    public string GenShard(Ed25519Key[] mgOrkij, int numKeys, Ed25519Point[] gMultiplier, string[] to_userNames)
+    {
+
+        if (!gMultiplier.All(multipler => multipler.IsSafePoint()))
         {
-            throw new Exception("Not all points supplied are safe");
+            throw new Exception("GenShard: Not all points supplied are safe");
+        }
+        if (gMultiplier.Length != numKeys)
+        {
+            throw new Exception("GenShard: Length of gMultipliers must be the same as number of keys requested");
+        }
+        if (mgOrkij.Count() != to_userNames.Count())
+        {
+            throw new Exception("GenShard: Length of keys supplied is not equal to length of supplied ork usernames");
+        }
+        if (mgOrkij.Count() < 2)
+        {
+            throw new Exception("GenShard: Number of ork keys provided must be greater than 1");
+        }
+        if (numKeys < 1)
+        {
+            throw new Exception("GenShard: Number of keys requested must be at minimum 1");
         }
 
         // Generate DiffieHellman Keys based on this ork's priv and other Ork's Pubs
@@ -28,18 +57,18 @@ public class KeyGenerator
 
         // Here we generate the X values of the polynomial through creating GUID from other orks publics, then generating a bigInt (the X) from those GUIDs
         // This was based on how the JS creates the X values from publics in ClientBase.js and IdGenerator.js
-        var mgOrkj_Xs = mgOrkij.Select(pub => new BigInteger(new Guid(Utils.Hash(pub.ToByteArray())).ToByteArray(), true, true)); 
+        var mgOrkj_Xs = mgOrkij.Select(pub => new BigInteger(new Guid(Utils.Hash(pub.GetPublic().ToByteArray()).Take(16).ToArray()).ToByteArray(), true, true));
 
         long timestampi = DateTime.UtcNow.Ticks;
         RandomField rdm = new RandomField(Ed25519.N);
 
-        BigInteger[] k = new BigInteger[numKeys - 1];
-        Ed25519Point[] gK = new Ed25519Point[numKeys - 1];
-        List<IReadOnlyList<Point>> Yij = new List<IReadOnlyList<Point>>();
-        IEnumerable<ShareEncrypted> YCiphers;
-        List<Ed25519Point> gMultiplied = new List<Ed25519Point>();
+        BigInteger[] k = new BigInteger[numKeys];
+        Ed25519Point[] gK = new Ed25519Point[numKeys];
+        Point[][] Yij = new Point[numKeys][];
+        Ed25519Point[] gMultiplied = new Ed25519Point[numKeys];
 
-        for(int i = 0; i < numKeys; i++){
+        for (int i = 0; i < numKeys; i++)
+        {
             // Generate random k shard
             k[i] = rdm.Generate(BigInteger.One);
 
@@ -47,61 +76,173 @@ public class KeyGenerator
             gK[i] = Ed25519.G * k[i];
 
             // For each ORK, secret share value ki
-            Yij.Add(EccSecretSharing.Share(k[i], mgOrkj_Xs, Threshold, Ed25519.N));
+            Yij[i] = (EccSecretSharing.Share(k[i], mgOrkj_Xs, Threshold, Ed25519.N)).ToArray();
 
             // Multiply the required multipliers
-            foreach(Ed25519Point multiplier in gMultiplier){
-                gMultiplied.Add(multiplier * k[i]);
-            }
+            gMultiplied[i] = gMultiplier[i] * k[i];
         }
         // Encrypt shares and partial public with each ork key
-        YCiphers = to_userNames.Select((username, i) => encryptShares(ECDHij, Yij, i, username));
+        ShareEncrypted[] YCiphers = to_userNames.Select((username, i) => encryptShares(ECDHij, Yij, gK, i, timestampi, username)).ToArray();
 
-        GenShardResponse response = new GenShardResponse(gK[0], YCiphers, gMultiplied, timestampi);
+        GenShardResponse response = new GenShardResponse
+        {
+            GK = gK[0].ToByteArray(),
+            EncryptedOrkShares = YCiphers,
+            GMultipliers = gMultiplied.Select(multiplier => multiplier.ToByteArray()).ToArray(),
+            Timestampi = timestampi
+        };
 
         return JsonSerializer.Serialize(response);
     }
-
-    private AesKey createKey(Ed25519Point point){
-        if(MgOrki.IsEquals(point)){  // TODO: create more efficient isEquals function
-            return AesKey.Seed(MSecOrki.ToByteArray(true, true));
+    /// <summary>
+    /// <para>
+    /// Make sure orkShares provided are sorted in same order as mgOrkij. For example, orkshare[0].From = ork2 AND mgOrkij[0] = ork2's public.
+    /// This function cannot correlate orkId to public key unless it's in the same order
+    /// </para>
+    /// </summary>
+    public string SetKey(string[] orkShares, Ed25519Key[] mgOrkij)
+    {
+        IEnumerable<ShareEncrypted> encryptedShares = orkShares.Select(share => JsonSerializer.Deserialize<ShareEncrypted>(share)); // deserialize all ork shares back into objects
+        if (!encryptedShares.All(share => share.To.Equals(My_Username)))
+        {
+            throw new Exception("SetKey: One or more of the shares were sent to the incorrect ork");
         }
-        else{
+
+        // Decrypts only the shares that were sent to itself and the partial publics
+        AesKey[] ECDHij = mgOrkij.Select(key => createKey(key.Y)).ToArray();
+        IEnumerable<DataToEncrypt> decryptedShares = encryptedShares.Select((share, i) => decryptShares(share, ECDHij[i]));
+        if (!decryptedShares.All(share => share.KeyID.Equals(this.KeyID))) // check that no one is attempting to recreate someone else's key for their own account
+        {
+            throw new Exception("SetKey: KeyID of this share does not equal KeyID supplied");
+        }
+
+        // Verify the time difference is not material (30min)
+        long timestamp = Median(decryptedShares.Select(share => share.Timestampi).ToArray()); // get median of timestamps
+        if (!decryptedShares.All(share => VerifyDelay(share.Timestampi, timestamp)))
+        {
+            throw new Exception("SetKey: One or more of the shares has expired");
+        }
+
+        // Add own all previously encrypted gKs together to mitigate malicious user
+        // Also, aggregate all shares
+        // Also, generate sharded public key for final verification
+        IList<Ed25519Point> gK = new List<Ed25519Point>();
+        IList<BigInteger> Y = new List<BigInteger>();
+        IList<Ed25519Point> gKTest = new List<Ed25519Point>();
+        for (int i = 0; i < decryptedShares.First().PartialPubs.Count(); i++)
+        { // will iterate by the number of keys to build
+            gK.Add(decryptedShares.Aggregate(Ed25519.Infinity, (total, next) => total + Ed25519Point.From(next.PartialPubs[i])));
+            Y.Add(decryptedShares.Aggregate(BigInteger.Zero, (sum, point) => (sum + new BigInteger(point.Shares[i], true, true)) % Ed25519.N));
+            gKTest.Add(Ed25519.G * Y[i]);
+        }
+
+        // Encrypt latest state with this ork's private key
+        string data_to_encrypt = MSecOrki_Key.EncryptStr(JsonSerializer.Serialize(new StateData
+        {
+            KeyID = decryptedShares.First().KeyID,
+            Timestampi = timestamp,
+            gKn = gK.Select(point => point.ToByteArray()).ToArray(),
+            Yn = Y.Select(num => num.ToByteArray(true, true)).ToArray()
+        }));
+
+        // Generate EdDSA R from all the ORKs publics
+        byte[] MData_To_Hash = gK[0].ToByteArray().Concat(BitConverter.GetBytes(timestamp).Concat(Encoding.ASCII.GetBytes(this.KeyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
+        byte[] M = Utils.Hash(MData_To_Hash);
+
+        byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
+        BigInteger ri = new BigInteger(Utils.Hash(rData_To_Hash), true, false).Mod(Ed25519.N);
+        Ed25519Point gRi = Ed25519.G * ri;
+
+        var response = new SetKeyResponse
+        {
+            gKTesti = gKTest.Select(point => point.ToByteArray()).ToArray(),
+            gRi = gRi.ToByteArray(),
+            EncryptedData = data_to_encrypt
+        };
+        return JsonSerializer.Serialize(response);
+    }
+    private AesKey createKey(Ed25519Point point)
+    {
+        if (MgOrki.IsEquals(point))
+        {  // TODO: create more efficient isEquals function
+            return MSecOrki_Key;
+        }
+        else
+        {
             return AesKey.Seed((point * MSecOrki).ToByteArray());
         }
     }
-
-    private ShareEncrypted encryptShares(AesKey[] DHKeys, List<IReadOnlyList<Point>> shares, int index, string to_username){
-
-        var data_to_encrypt = new { shares = shares.Select(pointShares => pointShares[index]) };
-
-        var orkShare = new ShareEncrypted{
+    private ShareEncrypted encryptShares(AesKey[] DHKeys, Point[][] shares, Ed25519Point[] gK, int index, long timestampi, string to_username)
+    {
+        var data_to_encrypt = new DataToEncrypt
+        {
+            KeyID = this.KeyID,
+            Timestampi = timestampi,
+            Shares = shares.Select(pointShares => pointShares[index].Y.ToByteArray(true, true)).ToArray(),
+            PartialPubs = gK.Select(partialPub => partialPub.ToByteArray()).ToArray()
+        };
+        var orkShare = new ShareEncrypted
+        {
             To = to_username,
-            From = From_Username,
+            From = My_Username,
             EncryptedData = DHKeys[index].EncryptStr(JsonSerializer.Serialize(data_to_encrypt))
         };
-        
         return orkShare;
     }
 
-    private class ShareEncrypted {
-        public string To {get;set;} /// Ork Username the share will go to
-        public string From {get;set;} /// Ork Username the share is sent from
-        public string EncryptedData {get;set;} // this is the DataToEncrypt object encrypted
+
+
+    private DataToEncrypt decryptShares(ShareEncrypted encryptedShare, AesKey DHKey)
+    {
+        return JsonSerializer.Deserialize<DataToEncrypt>(DHKey.DecryptStr(encryptedShare.EncryptedData)); // decrypt encrypted share and create DataToEncrypt object
+    }
+    private bool VerifyDelay(long timestamp, long timestampi)
+    {
+        return (Math.Abs(timestamp - timestampi) < 18000000000); // Checks different between timestamps is less than 30 min
+    }
+    private long Median(long[] data)  // TODO: implement this somewhere better in Cryptide
+    {
+        Array.Sort(data);
+        if (data.Length % 2 == 0)
+            return (data[data.Length / 2 - 1] + data[data.Length / 2]) / 2;
+        else
+            return data[data.Length / 2];
     }
 
-    private class GenShardResponse {
-        public byte[] GK {get; set;} // represents G * k[i]  ToByteArray()
-        public ShareEncrypted[] EncryptedOrkShares {get; set;}
-        public byte[][] GMultipliers {get; set;}
-        public string Timestampi {get; set;}
-        public GenShardResponse(Ed25519Point gK, IEnumerable<ShareEncrypted> encryptedOrkShares, List<Ed25519Point> gMultipliers, long timestampi){
-            GK = gK.ToByteArray();
-            EncryptedOrkShares = encryptedOrkShares.ToArray();
-            GMultipliers = gMultipliers.Select(multiplier => multiplier.ToByteArray()).ToArray();
-            Timestampi = timestampi.ToString();
-        }
+    // USE BETTER OOP HERE> ITS DISGUSTING
+    public class StateData
+    {
+        public string KeyID { get; set; } // Guid of key to string()
+        public long Timestampi { get; set; }
+        public byte[][] gKn { get; set; }
+        public byte[][] Yn { get; set; }
+    }
+    public class SetKeyResponse
+    {
+        public byte[][] gKTesti { get; set; } //ed25519Points
+        public byte[] gRi { get; set; } //ed25519Point
+        public string EncryptedData { get; set; } // encrypted StateData
+    }
 
+    public class DataToEncrypt
+    {
+        public string KeyID { get; set; } // Guid of key to string()
+        public long Timestampi { get; set; }
+        public byte[][] Shares { get; set; }
+        public byte[][] PartialPubs { get; set; }
+    }
+    public class ShareEncrypted
+    {
+        public string To { get; set; } /// Ork Username the share will go to
+        public string From { get; set; } /// Ork Username the share is sent from
+        public string EncryptedData { get; set; } // this is the DataToEncrypt object encrypted
+    }
+    public class GenShardResponse
+    {
+        public byte[] GK { get; set; } // represents G * k[i]  ToByteArray()
+        public ShareEncrypted[] EncryptedOrkShares { get; set; }
+        public byte[][] GMultipliers { get; set; }
+        public long Timestampi { get; set; }
     }
 }
 
