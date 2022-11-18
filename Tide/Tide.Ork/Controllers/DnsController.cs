@@ -118,19 +118,22 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("orks/public")]
-        public async Task<ActionResult<string[]>> GetPubOrksByIds([FromQuery] string[] orkIds)
+        public async Task<ActionResult<string[]>> GetPubOrksByIds([FromQuery] string[] ids)
         {
-            string[] resp = new string [orkIds.Count()];
-            for (int i=0 ; i <orkIds.Count(); i++ )
+            Console.WriteLine("------------here");
+            string[] resp = new string [ids.Count()];
+            for (int i=0 ; i <ids.Count(); i++ )
             {
-                var orkNode =_orkManager.GetById(orkIds[i]);
+                var orkNode =_orkManager.GetById(ids[i]);
                 var orkInfoTask = await orkNode;
                 var response = new {
-                    orkId= orkIds[i] ,
+                    orkId= ids[i] ,
                     pub = Ed25519Key.ParsePublic(orkInfoTask.PubKey)
                 };
                 resp[i] = JsonSerializer.Serialize(response);
+                Console.WriteLine("------------here 2");
             }
+            Console.WriteLine("------------here 3");
             return resp ;
         }
     }

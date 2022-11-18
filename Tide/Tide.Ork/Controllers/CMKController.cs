@@ -139,14 +139,14 @@ namespace Tide.Ork.Controllers
         [HttpGet("genshard/{uid}")]
         public async Task<ActionResult<string>> GenShard([FromRoute] Guid uid, [FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
         {
-            KeyGenerator k = new KeyGenerator(_config.PrivateKey.X, _config.PrivateKey.GetPublic().Y, uid.ToString(), _config.UserName, _config.Threshold);
+            KeyGenerator k = new KeyGenerator(_config.PrivateKey.X, _config.PrivateKey.GetPublic().Y,  _config.UserName, _config.Threshold);
 
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj)); 
             var multipliers = new Ed25519Point[]{gMultiplier1, gMultiplier2};
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            return Ok(k.GenShard(mgOrkj_Keys, 3, multipliers, orkIds.ToArray()));
+            return Ok(k.GenShard(uid.ToString(), mgOrkj_Keys, 3, multipliers, orkIds.ToArray()));
             
         }
 

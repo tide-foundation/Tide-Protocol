@@ -29,6 +29,7 @@ import RandRegistrationReq from "./RandRegistrationReq";
 import { Dictionary } from "../Tools";
 import ApplyResponseDecrypted from "./ApplyResponseDecrypted";
 import IdGenerator from "../IdGenerator";
+import GenShardShareResponse from "./GenShardShareResponse";
 
 
 export default class DAuthFlow {
@@ -42,20 +43,41 @@ export default class DAuthFlow {
     this.userID = typeof user === 'string' ? IdGenerator.seed(user) : new IdGenerator(user); // Needed this out of neccessity
   }
 
-  async signUp2(password, email, vendor){
+  async signUp2(pass, email, gVVK){
     try{
       if (!email) throw new Error("email must have at least one item");
       const emails = typeof email === "string" ? [email] : email;
 
+      const pre_ids = this.clienSet.all(c => c.getClientId());
+      const n = bigInt(ed25519Point.order.toString());
+      const ids = await pre_ids;
+      const lis = ids.map((id) => SecretShare.getLi(id, ids.values, n)); // implement method to only use first 14 orks that reply
+
+      const cln = this.clienSet.get(0); 
+      const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
+      const [,pubs,, mIdORKs] = await dnsCln.getInfoOrks(); 
+      
+      
       const r1 = random();
       const r2 = random();
-
-      const gUser = ed25519Point.fromString(this.userID.guid.toString());
-      const gPass = ed25519Point.fromString(password);
-
-      const genShardResp = await this.clienSet.map(mIdORKij, cli => cli.genShard(mIdORKij, 3, gUser , gPass)); 
-      const gCMK = genShardResp.reduce((sum, p) => sum.add(p[0]), ed25519Point.infinity);
+  
+      const gPass = ed25519Point.fromString(pass);
+      const gUser = ed25519Point.fromString(this.userID.guid.toString() + gVVK.toArray().toString()) // replace this with proper hmac + point to hash function
+      const gBlurUser = gUser.times(r1);
+      const gBlurPass = gPass.times(r2);
+      const r1Inv = r1.modInv(n);
+      const r2Inv = r2.modInv(n);
       
+      const genShardResp = await this.clienSet.map(lis, (dAuthClient, li) => dAuthClient.genShard(mIdORKs,  3, gBlurUser , gBlurPass));
+
+      const gCMK = await genShardResp.map(a =>  a[0]).reduce((sum, point) => sum.add(point),ed25519Point.infinity);
+      const gMultiplied = await genShardResp.map(a =>  a[2]);
+      const gUserRCmk = gMultiplied.values.map(i =>  i[0]).reduce((sum, point) => sum.add(point),ed25519Point.infinity);
+      const gUserCmk = AESKey.seed(gUserRCmk.times(r1Inv).toArray()); 
+      const gPassRCmk = gMultiplied.values.map(i =>  i[1]).reduce((sum, point) => sum.add(point),ed25519Point.infinity);
+      const gPassCmk = AESKey.seed(gPassRCmk.times(r2Inv).toArray()); 
+      const shareEncrypted = await genShardResp.map(a =>  a[1]).map((s) => GenShardShareResponse.from(s));
+      var shareArray = Object.values(shareEncrypted);
       /**
        * @param {ed25519Point[]} share1 
        * @param {ed25519Point[]} share2 
@@ -63,7 +85,7 @@ export default class DAuthFlow {
       const addShare = (share1, share2) => {
         return share1.map((s, i) => s.add(share2[i]))
       }
-      const gMultiplied = genShardResp.values.map(p => p[2]).reduce((sum, next) => addShare(sum, next)); // adds all of the respective gMultipliers together
+      //const gMultiplied = genShardResp.values.map(p => p[2]).reduce((sum, next) => addShare(sum, next)); // adds all of the respective gMultipliers together
 
       const timestamp = median(genShardResp.values.map(resp => resp[3]));
       

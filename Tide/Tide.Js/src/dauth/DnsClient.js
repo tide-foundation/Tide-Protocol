@@ -55,16 +55,17 @@ export default class DnsClient {
     await req.send(entry.toString());
   }
 
-  /** @returns { Promise<[string[], ed25519Key[],ed25519Key]> } */
+  /** @returns { Promise<[string[], ed25519Key[],ed25519Key,string[]]> } */
   async getInfoOrks() {
     const entry = await this.getDns();
     if (!entry) return [[], []];
     
     const pubs = entry.publics.filter(pub => pub).map(pub => ed25519Key.from(pub));
     const cmkpub = entry.Public;
+    const orks = entry.orks;
     const urls = entry.urls.filter(url => url);
 
-    return [urls, pubs,cmkpub];
+    return [urls, pubs,cmkpub,orks];
   }
 
   async exist() {
@@ -85,7 +86,7 @@ export default class DnsClient {
    *  @returns {Promise<string[]>} */
    async getPubOrksByIds(ids) {
     const orkIds = ids.map(id => `ids=${id}`).join('&');
-    let url = this.url+`/orks/public/$${orkIds}`;
+    let url = this.url+`orks/public?${orkIds}`;
     const res = await this._get(url);
     return res.body;
   }

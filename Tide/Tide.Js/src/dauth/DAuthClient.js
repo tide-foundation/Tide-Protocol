@@ -182,14 +182,15 @@ export default class DAuthClient extends ClientBase {
   async genShard( mIdORKij , numKeys, gMultiplier1 , gMultiplier2) {
     const gMul1 = urlEncode(gMultiplier1.toArray());
     const gMul2 = urlEncode(gMultiplier2.toArray());
-    const orkIds = mIdORKij.map(id => `ids=${id}`).join('&');
+    const orkIds = mIdORKij.map(id => `orkIds=${id}`).join('&');
       
     const resp = await this._get(`/cmk/genshard/${this.userGuid}?numKeys=${numKeys.toString()}&gMultiplier1=${gMul1}&gMultiplier2=${gMul2}&${orkIds}`)
       .ok(res => res.status < 500);
       
     if (!resp.ok) return Promise.reject(new Error(resp.text));
-    const gMultiplied = JSON.parse(resp.body).gMultiplied.map(p => ed25519Point.from(Buffer.from(p, 'base64'))); // check this works
-    return [ed25519Point.from(Buffer.from(resp.body.gK, 'base64')), resp.body.EncryptedOrkShares, gMultiplied, parseInt(resp.body.cMKtimestampi)];
+    const parsedObj = JSON.parse(resp.text);
+    const gMultiplied = parsedObj.GMultipliers.map(p => ed25519Point.from(Buffer.from(p, 'base64'))); // check this works
+    return [ed25519Point.from(Buffer.from(parsedObj.GK, 'base64')), parsedObj.EncryptedOrkShares, gMultiplied, parseInt(parsedObj.CMKtimestampi)];
   }
 
   /** 
