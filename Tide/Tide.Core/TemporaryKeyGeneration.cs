@@ -60,7 +60,7 @@ public class KeyGenerator
         BigInteger[] k = new BigInteger[numKeys];
         Ed25519Point[] gK = new Ed25519Point[numKeys];
         Point[][] Yij = new Point[numKeys][];
-        Ed25519Point[] gMultiplied = new Ed25519Point[numKeys];
+        Ed25519Point[] gMultiplied = new Ed25519Point[gMultiplier.Count()];
 
         for (int i = 0; i < numKeys; i++)
         {
@@ -74,9 +74,11 @@ public class KeyGenerator
             Yij[i] = (EccSecretSharing.Share(k[i], mgOrkj_Xs, Threshold, Ed25519.N)).ToArray();
 
             // Multiply the required multipliers
-            try{
-                gMultiplied[i] = gMultiplier[i] * k[i];
-            }catch(NullReferenceException e){} // only multiply the available multipliers
+            if(i < gMultiplier.Count()){
+                try{
+                    gMultiplied[i] = gMultiplier[i] * k[i];
+                }catch(NullReferenceException e){} // only multiply the available multipliers
+            }
             
         }
         // Encrypt shares and partial public with each ork key
