@@ -16,29 +16,23 @@ public class KeyGenerator
     internal AesKey MSecOrki_Key => AesKey.Seed(MSecOrki.ToByteArray(true, true));
     private Ed25519Point MgOrki { get; } // this ork's public point
     internal Ed25519Key mgOrki_Key => new Ed25519Key(0, MgOrki);
-    private string KeyID { get; }  // Guid to string()
     private string My_Username { get; } // this ork's username
     public int Threshold { get; } // change me
 
-    public KeyGenerator(BigInteger mSecOrki, Ed25519Point mgOrki, string keyID, string my_Username, int threshold)
+    public KeyGenerator(BigInteger mSecOrki, Ed25519Point mgOrki, string my_Username, int threshold)
     {
         MSecOrki = mSecOrki;
         MgOrki = mgOrki;
-        KeyID = keyID;
         My_Username = my_Username;
         Threshold = threshold;
     }
 
-    public string GenShard(Ed25519Key[] mgOrkij, int numKeys, Ed25519Point[] gMultiplier, string[] to_userNames)
+    public string GenShard(string keyID, Ed25519Key[] mgOrkij, int numKeys, Ed25519Point[] gMultiplier, string[] to_userNames)
     {
 
         if (!gMultiplier.All(multipler => multipler.IsSafePoint()))
         {
             throw new Exception("GenShard: Not all points supplied are safe");
-        }
-        if (gMultiplier.Length != numKeys)
-        {
-            throw new Exception("GenShard: Length of gMultipliers must be the same as number of keys requested");
         }
         if (mgOrkij.Count() != to_userNames.Count())
         {
@@ -80,10 +74,13 @@ public class KeyGenerator
             Yij[i] = (EccSecretSharing.Share(k[i], mgOrkj_Xs, Threshold, Ed25519.N)).ToArray();
 
             // Multiply the required multipliers
-            gMultiplied[i] = gMultiplier[i] * k[i];
+            try{
+                gMultiplied[i] = gMultiplier[i] * k[i];
+            }catch(NullReferenceException e){} // only multiply the available multipliers
+            
         }
         // Encrypt shares and partial public with each ork key
-        ShareEncrypted[] YCiphers = to_userNames.Select((username, i) => encryptShares(ECDHij, Yij, gK, i, timestampi, username)).ToArray();
+        ShareEncrypted[] YCiphers = to_userNames.Select((username, i) => encryptShares(ECDHij, Yij, gK, i, timestampi, username, keyID)).ToArray();
 
         GenShardResponse response = new GenShardResponse
         {
@@ -99,7 +96,7 @@ public class KeyGenerator
     /// Make sure orkShares provided are sorted in same order as mgOrkij. For example, orkshare[0].From = ork2 AND mgOrkij[0] = ork2's public.
     /// This function cannot correlate orkId to public key unless it's in the same order
     /// </summary>
-    public string SetKey(string[] orkShares, Ed25519Key[] mgOrkij)
+    public string SetKey(string keyID, string[] orkShares, Ed25519Key[] mgOrkij)
     {
         IEnumerable<ShareEncrypted> encryptedShares = orkShares.Select(share => JsonSerializer.Deserialize<ShareEncrypted>(share)); // deserialize all ork shares back into objects
         if (!encryptedShares.All(share => share.To.Equals(My_Username)))
@@ -110,7 +107,7 @@ public class KeyGenerator
         // Decrypts only the shares that were sent to itself and the partial publics
         AesKey[] ECDHij = mgOrkij.Select(key => createKey(key.Y)).ToArray();
         IEnumerable<DataToEncrypt> decryptedShares = encryptedShares.Select((share, i) => decryptShares(share, ECDHij[i]));
-        if (!decryptedShares.All(share => share.KeyID.Equals(this.KeyID))) // check that no one is attempting to recreate someone else's key for their own account
+        if (!decryptedShares.All(share => share.KeyID.Equals(keyID))) // check that no one is attempting to recreate someone else's key for their own account
         {
             throw new Exception("SetKey: KeyID of this share does not equal KeyID supplied");
         }
@@ -148,7 +145,7 @@ public class KeyGenerator
         }));
 
         // Generate EdDSA R from all the ORKs publics
-        byte[] MData_To_Hash = gK[0].ToByteArray().Concat(BitConverter.GetBytes(timestamp).Concat(Encoding.ASCII.GetBytes(this.KeyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
+        byte[] MData_To_Hash = gK[0].ToByteArray().Concat(BitConverter.GetBytes(timestamp).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.HashSHA512(MData_To_Hash);
 
         byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
@@ -163,13 +160,13 @@ public class KeyGenerator
         };
         return JsonSerializer.Serialize(response);
     }
-    public BigInteger PreCommit(Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
+    public BigInteger PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
     {
         // Reastablish state
         SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
         StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(decryptedResponse.EncryptedData)); // decrypt encrypted state in response
 
-        if(!state.KeyID.Equals(this.KeyID))
+        if(!state.KeyID.Equals(keyID))
         {
             throw new Exception("PreCommit: KeyID of instanciated object does not equal that of previous state");
         }
@@ -178,7 +175,7 @@ public class KeyGenerator
             throw new Exception("PreCommit: State has expired");
         }
         Ed25519Point[] gKn = state.gKn.Select(bytes => Ed25519Point.From(bytes)).ToArray();
-        byte[] MData_To_Hash = gKn[0].ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(this.KeyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
+        byte[] MData_To_Hash = gKn[0].ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.Hash(MData_To_Hash);
 
         byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
@@ -209,13 +206,13 @@ public class KeyGenerator
         return Si;
     }
 
-    public bool Commit(BigInteger S, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
+    public bool Commit(string keyID, BigInteger S, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
     {
         // Reastablish state
         SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
         StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(decryptedResponse.EncryptedData)); // decrypt encrypted state in response
 
-        if(!state.KeyID.Equals(this.KeyID))
+        if(!state.KeyID.Equals(keyID))
         {
             throw new Exception("PreCommit: KeyID of instanciated object does not equal that of previous state");
         }
@@ -225,7 +222,7 @@ public class KeyGenerator
         }
 
         Ed25519Point gK = Ed25519Point.From(state.gKn[0]);
-        byte[] MData_To_Hash = gK.ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(this.KeyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
+        byte[] MData_To_Hash = gK.ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.Hash(MData_To_Hash);
 
         Ed25519Point R = mgOrkij.Aggregate(Ed25519.Infinity, (sum, next) => next.Y + sum) + R2;
@@ -249,11 +246,11 @@ public class KeyGenerator
             return AesKey.Seed((point * MSecOrki).ToByteArray());
         }
     }
-    private ShareEncrypted encryptShares(AesKey[] DHKeys, Point[][] shares, Ed25519Point[] gK, int index, long timestampi, string to_username)
+    private ShareEncrypted encryptShares(AesKey[] DHKeys, Point[][] shares, Ed25519Point[] gK, int index, long timestampi, string to_username, string keyID)
     {
         var data_to_encrypt = new DataToEncrypt
         {
-            KeyID = this.KeyID,
+            KeyID = keyID,
             Timestampi = timestampi,
             Shares = shares.Select(pointShares => pointShares[index].Y.ToByteArray(true, true)).ToArray(),
             PartialPubs = gK.Select(partialPub => partialPub.ToByteArray()).ToArray()
