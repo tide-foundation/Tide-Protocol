@@ -206,7 +206,7 @@ public class KeyGenerator
         return Si;
     }
 
-    public bool Commit(string keyID, BigInteger S, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
+    public CommitResponse Commit(string keyID, BigInteger S, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
     {
         // Reastablish state
         SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
@@ -214,11 +214,11 @@ public class KeyGenerator
 
         if(!state.KeyID.Equals(keyID))
         {
-            throw new Exception("PreCommit: KeyID of instanciated object does not equal that of previous state");
+            throw new Exception("Commit: KeyID of instanciated object does not equal that of previous state");
         }
         if(!VerifyDelay(state.Timestampi, DateTime.UtcNow.Ticks))
         {
-            throw new Exception("PreCommit: State has expired");
+            throw new Exception("Commit: State has expired");
         }
 
         Ed25519Point gK = Ed25519Point.From(state.gKn[0]);
@@ -233,7 +233,16 @@ public class KeyGenerator
         // Verify the Signature 
         bool valid = (Ed25519.G * S).IsEquals(R + (gK * H));
 
-        return valid;
+        if(!valid)
+        {
+            throw new Exception("Commit: Validation failed");
+        }
+
+        return new CommitResponse{
+            Timestampi = state.Timestampi,
+            gKn = state.gKn.Select(gK => Ed25519Point.From(gK)).ToArray(),
+            Yn = state.Yn.Select(Y => new BigInteger(Y, true, true)).ToArray()
+        };
     }
     private AesKey createKey(Ed25519Point point)
     {
@@ -284,6 +293,12 @@ public class KeyGenerator
     }
 
     // USE BETTER OOP HERE> ITS DISGUSTING
+    public class CommitResponse
+    {
+        public long Timestampi {get; set;}
+        public Ed25519Point[] gKn {get; set;}
+        public BigInteger[] Yn {get; set;}
+    }
     internal class StateData
     {
         public string KeyID { get; set; } // Guid of key to string()
