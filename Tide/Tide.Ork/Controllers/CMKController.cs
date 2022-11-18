@@ -137,73 +137,16 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("genshard/{uid}")]
-        public async Task<ActionResult<CMKResponse>> GenShard([FromRoute] Guid uid, [FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
+        public async Task<ActionResult<string>> GenShard([FromRoute] Guid uid, [FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
         {
-            if (!gMultiplier1.IsSafePoint() || !gMultiplier2.IsSafePoint())
-            {
-                   _logger.LogInformation($"Apply: Unsafe point for {uid}");
-                    return BadRequest("Invalid parameters");
-            }
-            if (orkIds == null || orkIds.Count < _config.Threshold) {
-                _logger.LogInformation("GenShard: The length of the ids ({length}) must be greater than or equal to {threshold}", orkIds?.Count, _config.Threshold);
-                return BadRequest($"The length of the ids must be greater than {_config.Threshold -1}");
-            }
-              
-            BigInteger mSecOrki = _config.PrivateKey.X; 
+            KeyGenerator k = new KeyGenerator(_config.PrivateKey.X, _config.PrivateKey.GetPublic().Y, uid.ToString(), _config.UserName, _config.Threshold);
 
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj)); 
-
-            /// Quick functions while Tasks are running
-            long CMKtimestampi = DateTime.UtcNow.Ticks;
-            RandomField rdm = new RandomField(Ed25519.N); // random number generator
-
-            BigInteger sCMKi = rdm.Generate(BigInteger.One);
-            BigInteger sPRISMi = rdm.Generate(BigInteger.One);
-            BigInteger sCMK2i = rdm.Generate(BigInteger.One);
-
-            Ed25519Point gCMKi = Ed25519.G * sCMKi;
-            Ed25519Point gPRISMi = Ed25519.G * sPRISMi;
-            Ed25519Point gCMK2i = Ed25519.G * sCMK2i;
-            ///--------------------------------------
-
+            var multipliers = new Ed25519Point[]{gMultiplier1, gMultiplier2};
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            // Here we generate the X values of the polynomial through creating GUID from other orks publics, then generating a bigInt (the X) from those GUIDs
-            // This was based on how the JS creates the X values from publics in ClientBase.js and IdGenerator.js
-            var mgOrkj_Xs = mgOrkj_Keys.Select(pub => new BigInteger(new Guid(Utils.Hash(pub.ToByteArray())).ToByteArray(), true, true)); 
-
-            // Generate DiffieHellman Keys based on this ork's priv and other Ork's Pubs
-            AesKey[] ECDHij = mgOrkj_Keys.Select(key => AesKey.Seed((key.Y * mSecOrki).ToByteArray())).ToArray();
-
-            // Generate all of the polynomial points for the 3 secret values
-            IReadOnlyList<Point> CMKYij = EccSecretSharing.Share(sCMKi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
-            IReadOnlyList<Point> PRISMYij = EccSecretSharing.Share(sPRISMi, mgOrkj_Xs, _config.Threshold, Ed25519.N);
-            IReadOnlyList<Point> CMK2Yij = EccSecretSharing.Share(sCMK2i, mgOrkj_Xs, _config.Threshold, Ed25519.N);
-
-            // Generate this Ork's X to find below
-            //BigInteger myX = new BigInteger(new Guid(Utils.Hash(_config.PrivateKey.GetPublic().ToByteArray())).ToByteArray(), true, true);
-
-            // Find this Ork's share -- Only to be used if we keep state, might not need later
-            //BigInteger CMKYi = CMKYij.Find(point => point.X == myX).Y;
-            //BigInteger PRISMYi = PRISMYij.Find(point => point.X == myX).Y;
-            //BigInteger CMK2Yi = CMK2Yij.Find(point => point.X == myX).Y;
-            ///-----------------------------------------------------------
-
-            Ed25519Point gMultiplied1 = gMultiplier1 * sCMKi;
-            Ed25519Point gMultiplied2 = gMultiplier2 * sPRISMi; 
-            
-            ResponseEncrypted YijCipher = new ResponseEncrypted( CMKYij, PRISMYij, CMK2Yij, gCMKi, gPRISMi, gCMK2i, orkIds.ToArray(), _config.UserName );
-            YijCipher.Encrypt(ECDHij);
-
-            return new CMKResponse  
-            {
-                GCMKi = gCMKi.ToByteArray() ,
-                YijCipher =  YijCipher.ToJSON(), 
-                GMultiplied1 = gMultiplied1.ToByteArray(),
-                GMultiplied2 = gMultiplied2.ToByteArray(),
-                CMKtimestampi = CMKtimestampi.ToString()
-            };
+            return Ok(k.GenShard(mgOrkj_Keys, 3, multipliers, orkIds.ToArray()));
             
         }
 
