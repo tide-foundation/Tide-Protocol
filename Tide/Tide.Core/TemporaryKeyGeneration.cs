@@ -15,6 +15,7 @@ public class KeyGenerator
     private BigInteger MSecOrki { get; } // this ork's private scalar
     internal AesKey MSecOrki_Key => AesKey.Seed(MSecOrki.ToByteArray(true, true));
     private Ed25519Point MgOrki { get; } // this ork's public point
+    internal Ed25519Key mgOrki_Key => new Ed25519Key(0, MgOrki);
     private string KeyID { get; }  // Guid to string()
     private string My_Username { get; } // this ork's username
     public int Threshold { get; } // change me
@@ -95,10 +96,8 @@ public class KeyGenerator
         return JsonSerializer.Serialize(response);
     }
     /// <summary>
-    /// <para>
     /// Make sure orkShares provided are sorted in same order as mgOrkij. For example, orkshare[0].From = ork2 AND mgOrkij[0] = ork2's public.
     /// This function cannot correlate orkId to public key unless it's in the same order
-    /// </para>
     /// </summary>
     public string SetKey(string[] orkShares, Ed25519Key[] mgOrkij)
     {
@@ -123,17 +122,20 @@ public class KeyGenerator
             throw new Exception("SetKey: One or more of the shares has expired");
         }
 
-        // Add own all previously encrypted gKs together to mitigate malicious user
-        // Also, aggregate all shares
-        // Also, generate sharded public key for final verification
-        IList<Ed25519Point> gK = new List<Ed25519Point>();
-        IList<BigInteger> Y = new List<BigInteger>();
-        IList<Ed25519Point> gKTest = new List<Ed25519Point>();
-        for (int i = 0; i < decryptedShares.First().PartialPubs.Count(); i++)
-        { // will iterate by the number of keys to build
-            gK.Add(decryptedShares.Aggregate(Ed25519.Infinity, (total, next) => total + Ed25519Point.From(next.PartialPubs[i])));
-            Y.Add(decryptedShares.Aggregate(BigInteger.Zero, (sum, point) => (sum + new BigInteger(point.Shares[i], true, true)) % Ed25519.N));
-            gKTest.Add(Ed25519.G * Y[i]);
+        int numKeys = decryptedShares.First().PartialPubs.Count();
+        Ed25519Point[] gK = new Ed25519Point[numKeys];
+        BigInteger[] Y = new BigInteger[numKeys];
+        Ed25519Point[] gKTest = new Ed25519Point[numKeys];
+        for (int i = 0; i < numKeys; i++) // will iterate by the number of keys to build
+        { 
+            // Add own all previously encrypted gKs together to mitigate malicious user
+            gK[i] = decryptedShares.Aggregate(Ed25519.Infinity, (total, next) => total + Ed25519Point.From(next.PartialPubs[i]));
+
+            // Aggregate all shares to form final Y coordinate
+            Y[i] = decryptedShares.Aggregate(BigInteger.Zero, (sum, point) => (sum + new BigInteger(point.Shares[i], true, true)) % Ed25519.N);
+
+            // Generate sharded public key for final verification
+            gKTest[i] = Ed25519.G * Y[i];
         }
 
         // Encrypt latest state with this ork's private key
@@ -147,10 +149,10 @@ public class KeyGenerator
 
         // Generate EdDSA R from all the ORKs publics
         byte[] MData_To_Hash = gK[0].ToByteArray().Concat(BitConverter.GetBytes(timestamp).Concat(Encoding.ASCII.GetBytes(this.KeyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
-        byte[] M = Utils.Hash(MData_To_Hash);
+        byte[] M = Utils.HashSHA512(MData_To_Hash);
 
         byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
-        BigInteger ri = new BigInteger(Utils.Hash(rData_To_Hash), true, false).Mod(Ed25519.N);
+        BigInteger ri = new BigInteger(Utils.HashSHA512(rData_To_Hash), true, false).Mod(Ed25519.N);
         Ed25519Point gRi = Ed25519.G * ri;
 
         var response = new SetKeyResponse
@@ -160,6 +162,81 @@ public class KeyGenerator
             EncryptedData = data_to_encrypt
         };
         return JsonSerializer.Serialize(response);
+    }
+    public BigInteger PreCommit(Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
+    {
+        // Reastablish state
+        SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
+        StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(decryptedResponse.EncryptedData)); // decrypt encrypted state in response
+
+        if(!state.KeyID.Equals(this.KeyID))
+        {
+            throw new Exception("PreCommit: KeyID of instanciated object does not equal that of previous state");
+        }
+        if(!VerifyDelay(state.Timestampi, DateTime.UtcNow.Ticks))
+        {
+            throw new Exception("PreCommit: State has expired");
+        }
+        Ed25519Point[] gKn = state.gKn.Select(bytes => Ed25519Point.From(bytes)).ToArray();
+        byte[] MData_To_Hash = gKn[0].ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(this.KeyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
+        byte[] M = Utils.Hash(MData_To_Hash);
+
+        byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
+        BigInteger ri = new BigInteger(Utils.Hash(rData_To_Hash), true, false).Mod(Ed25519.N);
+
+        // Verifying both publics
+        if(!gKntest.Select((gKtest, i) => gKtest.IsEquals(gKn[i])).All(verify => verify == true)){ // check all elements of gKtest[n] == gK[n]
+            throw new Exception("PreCommit: gKtest failed");
+        }
+
+        // This is done only on the first key
+        Ed25519Point R = mgOrkij.Aggregate(Ed25519.Infinity, (sum, next) => next.Y + sum) + R2;
+
+        // Prepare the signature message
+        byte[] HData_To_Hash = R.ToByteArray().Concat(gKn[0].ToByteArray()).Concat(M).ToArray();
+        BigInteger H = new BigInteger(Utils.HashSHA512(HData_To_Hash), true, false).Mod(Ed25519.N);
+
+
+        // Calculate the lagrange coefficient for this ORK
+        var mgOrkj_Xs = mgOrkij.Select(pub => new BigInteger(new Guid(Utils.Hash(pub.GetPublic().ToByteArray()).Take(16).ToArray()).ToByteArray(), true, true));
+        BigInteger my_X = new BigInteger(new Guid(Utils.Hash(this.mgOrki_Key.ToByteArray()).Take(16).ToArray()).ToByteArray(), true, true);
+        BigInteger li = EccSecretSharing.EvalLi(my_X, mgOrkj_Xs, Ed25519.N);
+
+        // Generate the partial signature
+        BigInteger Y = new BigInteger(state.Yn[0], true, true);
+        BigInteger Si = this.MSecOrki + ri + (H * Y * li);
+
+        return Si;
+    }
+
+    public bool Commit(BigInteger S, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
+    {
+        // Reastablish state
+        SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
+        StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(decryptedResponse.EncryptedData)); // decrypt encrypted state in response
+
+        if(!state.KeyID.Equals(this.KeyID))
+        {
+            throw new Exception("PreCommit: KeyID of instanciated object does not equal that of previous state");
+        }
+        if(!VerifyDelay(state.Timestampi, DateTime.UtcNow.Ticks))
+        {
+            throw new Exception("PreCommit: State has expired");
+        }
+
+        Ed25519Point gK = Ed25519Point.From(state.gKn[0]);
+        byte[] MData_To_Hash = gK.ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(this.KeyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
+        byte[] M = Utils.Hash(MData_To_Hash);
+
+        Ed25519Point R = mgOrkij.Aggregate(Ed25519.Infinity, (sum, next) => next.Y + sum) + R2;
+
+        byte[] HData_To_Hash = R.ToByteArray().Concat(gK.ToByteArray()).Concat(M).ToArray();
+        BigInteger H = new BigInteger(Utils.HashSHA512(HData_To_Hash), true, false).Mod(Ed25519.N);
+
+        // Verify the Signature 
+        bool valid = (Ed25519.G * S).IsEquals(R + (gK * H));
+
+        return valid;
     }
     private AesKey createKey(Ed25519Point point)
     {
