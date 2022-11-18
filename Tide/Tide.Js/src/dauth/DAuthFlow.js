@@ -14,7 +14,7 @@
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 // @ts-check
 
-import bigInt from "big-integer";
+import bigInt, { fromArray } from "big-integer";
 import DAuthClient from "./DAuthClient";
 import DAuthShare from "./DAuthShare";
 import { SecretShare, Utils, AESKey, ed25519Key, ed25519Point, Hash } from "cryptide";
@@ -53,7 +53,20 @@ export default class DAuthFlow {
       const gUser = ed25519Point.fromString(this.userID.guid.toString());
       const gPass = ed25519Point.fromString(password);
 
-      const genShardResp = await this.clienSet.map(mIdORKij, cli => cli.genShard( mIdORKij , 3, gUser , gPass)); 
+      const genShardResp = await this.clienSet.map(mIdORKij, cli => cli.genShard(mIdORKij, 3, gUser , gPass)); 
+      const gCMK = genShardResp.reduce((sum, p) => sum.add(p[0]), ed25519Point.infinity);
+      
+      /**
+       * @param {ed25519Point[]} share1 
+       * @param {ed25519Point[]} share2 
+       */
+      const addShare = (share1, share2) => {
+        return share1.map((s, i) => s.add(share2[i]))
+      }
+      const gMultiplied = genShardResp.values.map(p => p[2]).reduce((sum, next) => addShare(sum, next)); // adds all of the respective gMultipliers together
+
+      const timestamp = median(genShardResp.values.map(resp => resp[3]));
+      
 
     }catch(err){
 

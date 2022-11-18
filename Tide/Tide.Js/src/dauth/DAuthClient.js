@@ -177,7 +177,7 @@ export default class DAuthClient extends ClientBase {
    * @param {number} numKeys
    * @param {ed25519Point} gMultiplier1
    * @param {ed25519Point} gMultiplier2
-   * @returns {Promise<[ed25519Point, string, ed25519Point,ed25519Point,string]>}
+   * @returns {Promise<[ed25519Point, string, ed25519Point[], number]>}
    */
   async genShard( mIdORKij , numKeys, gMultiplier1 , gMultiplier2) {
     const gMul1 = urlEncode(gMultiplier1.toArray());
@@ -188,7 +188,8 @@ export default class DAuthClient extends ClientBase {
       .ok(res => res.status < 500);
       
     if (!resp.ok) return Promise.reject(new Error(resp.text));
-    return [ed25519Point.from(Buffer.from(resp.body.gCMKi, 'base64')), resp.body.yijCipher, ed25519Point.from(Buffer.from(resp.body.gMultiplied1, 'base64')), ed25519Point.from(Buffer.from(resp.body.gMultiplied2,'base64')), resp.body.cMKtimestampi];
+    const gMultiplied = JSON.parse(resp.body).gMultiplied.map(p => ed25519Point.from(Buffer.from(p, 'base64'))); // check this works
+    return [ed25519Point.from(Buffer.from(resp.body.gK, 'base64')), resp.body.EncryptedOrkShares, gMultiplied, parseInt(resp.body.cMKtimestampi)];
   }
 
   /** 
@@ -198,7 +199,7 @@ export default class DAuthClient extends ClientBase {
    * @param {string} emaili
    * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point, ed25519Point]>}
    */
-  async setCMK(yijCipher,cMKtimestamp ,gPRISMAuth ,emaili ) {
+  async setCMK(yijCipher,cMKtimestamp ,gPRISMAuth , emaili ) {
     const gPrismAuth = urlEncode(gPRISMAuth.toArray());
 
     const resp = await this._get(`/cmk/set/${this.userGuid}?yijCipher=${yijCipher}&cMKtimestamp=${cMKtimestamp.toString()}&gPrismAuth=${gPrismAuth}&emaili=${emaili}`)
