@@ -287,34 +287,34 @@ public class KeyGenerator
     }
 
     // USE BETTER OOP HERE> ITS DISGUSTING
-    public class StateData
+    internal class StateData
     {
         public string KeyID { get; set; } // Guid of key to string()
         public long Timestampi { get; set; }
         public byte[][] gKn { get; set; }
         public byte[][] Yn { get; set; }
     }
-    public class SetKeyResponse
+    internal class SetKeyResponse
     {
         public byte[][] gKTesti { get; set; } //ed25519Points
         public byte[] gRi { get; set; } //ed25519Point
         public string EncryptedData { get; set; } // encrypted StateData
     }
 
-    public class DataToEncrypt
+    internal class DataToEncrypt
     {
         public string KeyID { get; set; } // Guid of key to string()
         public long Timestampi { get; set; }
         public byte[][] Shares { get; set; }
         public byte[][] PartialPubs { get; set; }
     }
-    public class ShareEncrypted
+    internal class ShareEncrypted
     {
         public string To { get; set; } /// Ork Username the share will go to
         public string From { get; set; } /// Ork Username the share is sent from
         public string EncryptedData { get; set; } // this is the DataToEncrypt object encrypted
     }
-    public class GenShardResponse
+    internal class GenShardResponse
     {
         public byte[] GK { get; set; } // represents G * k[i]  ToByteArray()
         public ShareEncrypted[] EncryptedOrkShares { get; set; }
