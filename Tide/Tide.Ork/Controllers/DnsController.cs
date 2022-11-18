@@ -23,6 +23,8 @@ using Tide.Core;
 using Tide.Ork.Classes;
 using Tide.Ork.Models;
 using Tide.Ork.Repo;
+using System.Text.Json;
+using Tide.Encryption.Ed;
 
 namespace Tide.Ork.Controllers
 {
@@ -113,6 +115,23 @@ namespace Tide.Ork.Controllers
             var orkNode =_orkManager.GetById(id);
             var orkInfoTask = await orkNode;
             return orkInfoTask.PubKey;
+        }
+
+        [HttpGet("orks/public")]
+        public async Task<ActionResult<string[]>> GetPubOrksByIds([FromQuery] string[] orkIds)
+        {
+            string[] resp = new string [orkIds.Count()];
+            for (int i=0 ; i <orkIds.Count(); i++ )
+            {
+                var orkNode =_orkManager.GetById(orkIds[i]);
+                var orkInfoTask = await orkNode;
+                var response = new {
+                    orkId= orkIds[i] ,
+                    pub = Ed25519Key.ParsePublic(orkInfoTask.PubKey)
+                };
+                resp[i] = JsonSerializer.Serialize(response);
+            }
+            return resp ;
         }
     }
 }

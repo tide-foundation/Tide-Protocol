@@ -79,4 +79,14 @@ export default class DnsClient {
     const res = await this._get(url);
     return res.body.text;
   }
+
+  /**
+   * @param {string[]} ids
+   *  @returns {Promise<string[]>} */
+   async getPubOrksByIds(ids) {
+    const orkIds = ids.map(id => `ids=${id}`).join('&');
+    let url = this.url+`/orks/public/$${orkIds}`;
+    const res = await this._get(url);
+    return res.body;
+  }
 }

@@ -21,9 +21,9 @@ var threshold = 3;
 var pass = "123456";
 var newPass = "1234567";
 var email = "tmp@tide.org";
-var user = new Guid(); //A random user id key every time
+//var user = new Guid(); //A random user id key every time
 //var user = Guid.seed("admin"); //An user if from text
-var user = Guid.from('dbf78a5b-3cbb-8d7b-1262-5f6b9506f8e1');
+var user = Guid.from('41581384-b772-3852-ba9e-25529721a1be');
   
 //var vendorPub = CP256Key.generate(); //A random vendor key every time
 var vendorPub = CP256Key.from('35S3ysH0quRR4cHV05VP87YlNiZ2KDX9Cxe7JNIsC34oHXTwbTW0Of2AtbvjYeXhPgOBpboWf+20I8EiFtMyBKbNkrKd9RdqFN6v7PoLDS09MTAE91POUJhqv5MeKzqH');
