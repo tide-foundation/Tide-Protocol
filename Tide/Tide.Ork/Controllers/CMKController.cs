@@ -46,6 +46,7 @@ namespace Tide.Ork.Controllers
         private readonly OrkConfig _config;
         private readonly string _orkId;
         private readonly SimulatorOrkManager _orkManager;
+        private readonly KeyGenerator _keyGenerator;
 
         public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger, OrkConfig config, Settings settings)
         {
@@ -54,6 +55,7 @@ namespace Tide.Ork.Controllers
             _logger = new LoggerPipe(logger, settings, new LoggerConfig());
             _config = config;
             _orkId = settings.Instance.Username;
+            _keyGenerator = new KeyGenerator(_config.PrivateKey.X, _config.PrivateKey.GetPublic().Y, _config.UserName, _config.Threshold);
 
             var cln = new SimulatorClient(settings.Endpoints.Simulator.Api, _orkId, settings.Instance.GetPrivateKey());
             _orkManager = new SimulatorOrkManager(_orkId, cln);
@@ -137,107 +139,92 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("genshard/{uid}")]
-        public async Task<ActionResult<string>> GenShard([FromRoute] Guid uid, [FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
+        public async Task<ActionResult> GenShard([FromRoute] Guid uid, [FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
         {
+<<<<<<< HEAD
             KeyGenerator k = new KeyGenerator(_config.PrivateKey.X, _config.PrivateKey.GetPublic().Y,  _config.UserName, _config.Threshold);
 
+=======
+>>>>>>> b94cefceb0248b600eb698010a8b931ee75a5859
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj)); 
             var multipliers = new Ed25519Point[]{gMultiplier1, gMultiplier2};
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
+<<<<<<< HEAD
             return Ok(k.GenShard(uid.ToString(), mgOrkj_Keys, 3, multipliers, orkIds.ToArray()));
             
+=======
+            return Ok(_keyGenerator.GenShard(uid.ToString(), mgOrkj_Keys, Int32.Parse(numKeys), multipliers, orkIds.ToArray()));
+>>>>>>> b94cefceb0248b600eb698010a8b931ee75a5859
         }
 
         [HttpGet("set/{uid}")]
-        public  ActionResult<String> SetCMK([FromRoute] Guid uid,[FromQuery] string YijCipher, [FromQuery] string CMKtimestamp, [FromQuery] Ed25519Point gPRISMAuth , [FromQuery] string emaili)
+        public  async Task<ActionResult> SetCMK([FromRoute] Guid uid, [FromQuery] string[] YijCipher, [FromQuery] string CMKtimestamp, [FromQuery] ICollection<string> orkIds)
         {
-            if ( !YijCipher.FromBase64UrlString(out byte[] bytesYijCipher))
-            {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, uid, uid, $"SetCMK: Invalid format for {uid}");
-                return Unauthorized();
-            }  
-            //Verify timestamp2 in recent (10 min)
-            var Time = DateTime.FromBinary(long.Parse(CMKtimestamp));
-            const long _window = TimeSpan.TicksPerHour; //Check later
+            // Get ork Publics from simulator, searching with their usernames e.g. ork1
+            var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
+            Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            if(!(Time >= DateTime.UtcNow.AddTicks(-_window) && Time <= DateTime.UtcNow.AddTicks(_window))){
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, uid, uid, $"Expired");
-                return StatusCode(408, new TranToken().ToString()); //Return this???
+            string response;
+            try{
+                response = _keyGenerator.SetKey(uid.ToString(), YijCipher, mgOrkj_Keys);
+            }catch(Exception e){
+                _logger.LogInformation($"SetCMK: {e}", e);
+                return BadRequest(e);
             }
 
-            var PRISMAuthi_seed = Utils.Hash((Ed25519Point.From(gPRISMAuth) * _config.PrivateKey.X ).ToByteArray());
-            var PRISMAuthi = AesKey.Seed(PRISMAuthi_seed);
-
-             //decrypt  YijCipher[19] 
-            var orkPub = GetPubByOrkId(_config.Guid.ToString()); // get ork Public from simulator
-            var ECDHij = AesKey.Seed((orkPub * _config.PrivateKey.X).ToByteArray());
-            
-            string jsonStr = Encoding.UTF8.GetString(ECDHij.Decrypt(bytesYijCipher));
-            
-            var CmkResponseDecrypted = JsonSerializer.Deserialize<CmkResponseToEncrypt>(jsonStr);
-
-            BigInteger CMKYj= CmkResponseDecrypted.Shares.Select(shr => shr.CmkjVal).Aggregate((sum, cmk) => (sum + cmk) % Ed25519.N); //Add CMKYi
-            BigInteger PRISMj= CmkResponseDecrypted.Shares.Select(shr => shr.PrismjVal).Aggregate((sum, prism) => (sum + prism) % Ed25519.N); //Add prismi
-            BigInteger CMK2Yj= CmkResponseDecrypted.Shares.Select(shr => shr.Cmk2jVal).Aggregate((sum, cmk2) => (sum + cmk2) % Ed25519.N); //Add Cmk2i
-
-            var CMK_ToHashM = Encoding.ASCII.GetBytes( Convert.ToBase64String(gCMK.ToByteArray()) + CMKtimestamp.ToString() + uid.ToString()).ToArray();
-            var CMK_M = Utils.Hash(CMK_ToHashM);
-
-            var ToHashR = Encoding.ASCII.GetBytes( _config.PrivateKey.X.ToString()).Concat(CMK_M).ToArray(); 
-            var ri = new BigInteger(Utils.Hash(ToHashR), true, false).Mod(Ed25519.N);
-            
-            var response = new {
-                gCMKtesti  =  (Ed25519.G * CMKi ).ToByteArray() ,
-                gPRISMtesti  =  (Ed25519.G * PRISMi).ToByteArray() ,
-                gCMK2testi = (Ed25519.G * CMK2i).ToByteArray(),
-                gCMKRi = (Ed25519.G * ri).ToByteArray()
-            };
-
-            return JsonSerializer.Serialize(response);
+            return Ok(response);
         }
 
-        [HttpGet("precommit/{uid}/{gCMKtest}/{gPRISMtest}/{gCMK2test}/{gCMKR2}")]
-        public ActionResult<string> PreCommit([FromRoute] Guid uid, [FromRoute] Ed25519Point gCMKtest , [FromRoute] Ed25519Point  gPRISMtest, [FromRoute] Ed25519Point  gCMK2test , [FromRoute] Ed25519Point gCMKR2)
+        [HttpGet("precommit/{uid}")]
+        public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] string encryptedState, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point[] gKtest, [FromQuery] ICollection<string> orkIds)
         {
-            if (gCMKtest.IsEquals(gCMK) && gPRISMtest.IsEquals(gPRISM) && gCMK2test.IsEquals(gCMK2))
-            {
-                   _logger.LogInformation($"PreCommit: Unsafe point for {uid}");
-                    return BadRequest("Invalid parameters");
+            // Get ork Publics from simulator, searching with their usernames e.g. ork1
+            var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
+            Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
+
+            BigInteger S;
+
+            try{
+                S = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
+            }catch(Exception e){
+                _logger.LogInformation($"Commit: {e}", e);
+                return BadRequest(e);
             }
-            var R = gCMKR2 ; // Add org argreggation
-            var ToHashH = R.ToByteArray().Concat(gCMK2test.ToByteArray()).Concat(CMK_M).ToArray();
-            var H = Utils.Hash(ToHashH);
 
-
-
-
-
-            return CMKSi.ToString();
+            return Ok(S.ToString());
         }
 
-
-
-        [HttpPut("[commit]/{uid}")]
-        public async Task<ActionResult<string>> Commit([FromRoute] Guid uid, [FromBody] string data)
+        [HttpPut("commit/{uid}")]
+        public async Task<ActionResult> Commit([FromRoute] Guid uid, [FromQuery] string encryptedState, [FromQuery] string S, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gPRISMAuth, [FromQuery] string emaili, [FromQuery] ICollection<string> orkIds)
         {
+            // Get ork Publics from simulator, searching with their usernames e.g. ork1
+            var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
+            BigInteger S_int = BigInteger.Parse(S);
+            Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
             
+            KeyGenerator.CommitResponse commitResponse;
+            try{
+                commitResponse = _keyGenerator.Commit(uid.ToString(), S_int, mgOrkj_Keys, R2, encryptedState);
+            }catch(Exception e){
+                _logger.LogInformation($"Commit: {e}");
+                return BadRequest(e);
+            }
 
-            
-            
-            
-            
+            byte[] PRISMAuth_hash = Utils.Hash((gPRISMAuth * _config.PrivateKey.X).ToByteArray());
+            AesKey PRISMAuthi = AesKey.Seed(PRISMAuth_hash);
+
             var account = new CmkVault
             {
                 UserId = uid,
-                GCmk =    ,
-                Cmki = , 
-                Prismi = ,
-                PrismAuthi = ,
-                Cmk2i =  ,
-                GCmk2 =   ,
-                Email = 
+                GCmk = commitResponse.gKn[0],
+                Cmki = commitResponse.Yn[0], 
+                Prismi = commitResponse.Yn[1],
+                PrismAuthi = PRISMAuthi,
+                Cmk2i =  commitResponse.Yn[2],
+                GCmk2 =  commitResponse.gKn[2],
+                Email = emaili
                           
             };
             var resp = await _manager.Add(account);
