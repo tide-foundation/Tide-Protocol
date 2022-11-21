@@ -201,13 +201,17 @@ export default class DAuthClient extends ClientBase {
    * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point, ed25519Point, string]>}
    */
   async setCMK(yijCipher,CMKtimestamp, mIdORKij) {
-    const orkIds = mIdORKij.values.map(id => `orkIds=${id}`).join('&');
-    const resp = await this._get(`/cmk/set/${this.userGuid}?CMKtimestamp=${CMKtimestamp.toString()}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(yijCipher));
-    if (!resp.ok) return  Promise.reject(new Error(resp.text));
+    try{
+      const orkIds = mIdORKij.values.map(id => `orkIds=${id}`).join('&');
+      const resp = await this._get(`/cmk/set/${this.userGuid}?CMKtimestamp=${CMKtimestamp.toString()}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(yijCipher));
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
 
-    const obj = JSON.parse(resp.body.toString());
-    const gKTesti = obj.gKTesti.map(p => ed25519Point.from(Buffer.from(p, 'base64')));
-    return [gKTesti[0],  gKTesti[1], gKTesti[2], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.encrypedData];
+      const obj = JSON.parse(resp.text.toString());
+      const gKTesti = obj.gKTesti.map(p => ed25519Point.from(Buffer.from(p, 'base64')));
+      return [gKTesti[0],  gKTesti[1], gKTesti[2], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.encrypedData];
+    }catch(err){
+      return Promise.reject(err);
+    }
   }
 
 
