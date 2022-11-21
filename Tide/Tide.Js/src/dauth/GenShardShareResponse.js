@@ -22,12 +22,12 @@ export default class GenShardShareResponse {
     static from(data) {
 
         const obj = typeof data === 'string' ? JSON.parse(data) : data;
-        if (!obj.to || !obj.from || !obj.encryptedData )
+        if (!obj.To || !obj.From || !obj.EncryptedData)
             throw Error(`The JSON is not in the correct format: ${data}`);
 
-        const to = obj.to;
-        const from = obj.from;
-        const encryptedData = obj.encryptedData;
+        const to = obj.To;
+        const from = obj.From;
+        const encryptedData = obj.EncryptedData;
   
         return new GenShardShareResponse(to, from, encryptedData);
     }

@@ -191,7 +191,7 @@ export default class DAuthClient extends ClientBase {
     if (!resp.ok) return Promise.reject(new Error(resp.text));
     const parsedObj = JSON.parse(resp.text);
     const gMultiplied = parsedObj.GMultipliers.map(p => ed25519Point.from(Buffer.from(p, 'base64'))); // check this works
-    return [ed25519Point.from(Buffer.from(parsedObj.GK, 'base64')), parsedObj.EncryptedOrkShares, gMultiplied, parseInt(parsedObj.CMKtimestampi)];
+    return [ed25519Point.from(Buffer.from(parsedObj.GK, 'base64')), parsedObj.EncryptedOrkShares, gMultiplied, parseInt(parsedObj.Timestampi)];
   }
 
   /** 
