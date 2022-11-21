@@ -85,8 +85,7 @@ export default class DAuthFlow {
         return share.map(p =>GenShardShareResponse.from(p));
       }
       const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
-      const shareArray = shareEncrypted[0].concat(shareEncrypted[1].concat(shareEncrypted[2])) ; //need to fix this
-      let sortedShareArray = shareArray.sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to) ); //Sorting shareEncrypted based on 'from and then 'to'
+      const sortedShareArray = sorting(shareEncrypted);
 
       return {vuid : VUID, gCMKAuth : gCMKAuth, gPRISMAuth : gPRISMAuth, timestamp : timestamp, ciphers : sortedShareArray}
 
@@ -99,7 +98,7 @@ export default class DAuthFlow {
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
 
-      const pre_setCMKResponse = this.clienSet.all((DAuthClient, i) => DAuthClient.setCMK(ciphers.get(i), timestamp, mIdORKs));
+      const pre_setCMKResponse = this.clienSet.all((DAuthClient, i) => DAuthClient.setCMK(filtering(ciphers.filter(element => element.orkId === mIdORKs.get(i))), timestamp, mIdORKs));
 
       const idGens = await this.clienSet.all(c => c.getClientGenerator()); // implement method to only use first 14 orks that reply
       const ids = idGens.map(idGen => idGen.id);
@@ -618,11 +617,21 @@ function addSigtoJWT(jwt, R, s) {
 }
 
 //The array  is a combined list from all the orks returns
-function sorting(array){
-  let sortedArray = array.sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to) ); //Sort based on 'from' first and 'to' next
-  console.log(sortedArray);
-  return sortedArray;
-  //after returned  the sorted array, the filtered list for particular sending ork will be filtered based on the filter function
-  let x = sortedArray.filter(element => element.to === 'ork1'); //x will return the list of object for sendong ork  to = 'ork1'
-  console.log(x);   
+function sorting(shareEncrypted){
+  const shareArray = shareEncrypted[0].concat(shareEncrypted[1].concat(shareEncrypted[2])) ; //need to fix this
+  let sortedShareArray = shareArray.sort((a, b) => a.to.localeCompare(b.to) || a.from.localeCompare(b.from) ); //Sorting shareEncrypted based on 'to' and then 'from'
+  let newarray =[];
+  for(let i=0 ; i < sortedShareArray.length ; i++){
+    let e={
+      "orkId" : sortedShareArray[i].to,
+      "data" : JSON.stringify({To: sortedShareArray[i].to, From: sortedShareArray[i].from, EncryptedData: sortedShareArray[i].encryptedData})  
+    }
+    newarray.push(e);
+  }
+  return newarray;
+}
+
+function filtering(array){
+  let results = array.map(a => a.data);
+  return results;
 }

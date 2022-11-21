@@ -195,7 +195,7 @@ export default class DAuthClient extends ClientBase {
   }
 
  /** 
-   * @param {string} yijCipher
+   * @param {string[]} yijCipher
    * @param {number} CMKtimestamp
    * @param {Dictionary<string | null>} mIdORKij  // fix this null later
    * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point, ed25519Point, string]>}
