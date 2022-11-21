@@ -21,7 +21,7 @@ namespace Tide.Core
         public string Email { get; set; }
         
 
-        public CmkVault() 
+        public CmkVault() : base(1)
         {
             
         }

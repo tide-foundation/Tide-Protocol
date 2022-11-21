@@ -22,6 +22,7 @@ import DnsEntry from "../DnsEnrty";
 import superagent from "superagent";
 import Guid from "../guid";
 import bigInt from "big-integer";
+import { Dictionary } from "../Tools";
 
 /** @typedef {{orkid: string, sign: string}} OrkSign */
 export default class DAuthClient extends ClientBase {
@@ -173,7 +174,7 @@ export default class DAuthClient extends ClientBase {
     }
   
   /** 
-   * @param {string[]} mIdORKij
+   * @param {Dictionary<string | null>} mIdORKij  // fix this null later
    * @param {number} numKeys
    * @param {ed25519Point} gMultiplier1
    * @param {ed25519Point} gMultiplier2
@@ -182,7 +183,7 @@ export default class DAuthClient extends ClientBase {
   async genShard( mIdORKij , numKeys, gMultiplier1 , gMultiplier2) {
     const gMul1 = urlEncode(gMultiplier1.toArray());
     const gMul2 = urlEncode(gMultiplier2.toArray());
-    const orkIds = mIdORKij.map(id => `orkIds=${id}`).join('&');
+    const orkIds = mIdORKij.values.map(id => `orkIds=${id}`).join('&');
       
     const resp = await this._get(`/cmk/genshard/${this.userGuid}?numKeys=${numKeys.toString()}&gMultiplier1=${gMul1}&gMultiplier2=${gMul2}&${orkIds}`)
       .ok(res => res.status < 500);

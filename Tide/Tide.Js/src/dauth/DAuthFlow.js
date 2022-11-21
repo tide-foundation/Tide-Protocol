@@ -53,9 +53,7 @@ export default class DAuthFlow {
       const ids = await pre_ids;
       const lis = ids.map((id) => SecretShare.getLi(id, ids.values, n)); // implement method to only use first 14 orks that reply
 
-      const cln = this.clienSet.get(0); 
-      const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-      const [,pubs,, mIdORKs] = await dnsCln.getInfoOrks(); 
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
       
       
       const r1 = random();
@@ -70,14 +68,9 @@ export default class DAuthFlow {
       
       const genShardResp = await this.clienSet.map(lis, (dAuthClient, li) => dAuthClient.genShard(mIdORKs,  3, gBlurUser , gBlurPass));
 
-      const gCMK = await genShardResp.map(a =>  a[0]).reduce((sum, point) => sum.add(point),ed25519Point.infinity);
-      const gMultiplied = await genShardResp.map(a =>  a[2]);
-      const gUserRCmk = gMultiplied.values.map(i =>  i[0]).reduce((sum, point) => sum.add(point),ed25519Point.infinity);
-      const gUserCmk = AESKey.seed(gUserRCmk.times(r1Inv).toArray()); 
-      const gPassRCmk = gMultiplied.values.map(i =>  i[1]).reduce((sum, point) => sum.add(point),ed25519Point.infinity);
-      const gPassCmk = AESKey.seed(gPassRCmk.times(r2Inv).toArray()); 
-      const shareEncrypted = await genShardResp.map(a =>  a[1]).map((s) => GenShardShareResponse.from(s));
-      var shareArray = Object.values(shareEncrypted);
+      const gCMK = genShardResp.map(a =>  a[0]).reduce((sum, point) => sum.add(point), ed25519Point.infinity);
+
+      const shareEncrypted = genShardResp.map(a =>  a[1]).map(s => GenShardShareResponse.from(s));
       /**
        * @param {ed25519Point[]} share1 
        * @param {ed25519Point[]} share2 
@@ -85,10 +78,12 @@ export default class DAuthFlow {
       const addShare = (share1, share2) => {
         return share1.map((s, i) => s.add(share2[i]))
       }
-      //const gMultiplied = genShardResp.values.map(p => p[2]).reduce((sum, next) => addShare(sum, next)); // adds all of the respective gMultipliers together
+      const gMultiplied = genShardResp.values.map(p => p[2]).reduce((sum, next) => addShare(sum, next)); // adds all of the respective gMultipliers together
+      const gUserCMK = gMultiplied[0].times(r1Inv);
+      const gPassPrism = gMultiplied[1].times(r2Inv);
 
       const timestamp = median(genShardResp.values.map(resp => resp[3]));
-      
+      return 'a';
 
     }catch(err){
 

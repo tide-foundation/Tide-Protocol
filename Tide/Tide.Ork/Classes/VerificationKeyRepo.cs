@@ -58,7 +58,7 @@ namespace Tide.Ork.Classes {
 
                 return cvkEntry is null ? null : new VerificationKey {
                     Id = cvkEntry.Id,
-                    Key = cvkEntry.CvkPub
+                    Key =  new Ed25519Key(0, cvkEntry.GCVK)
                 };
             }
 

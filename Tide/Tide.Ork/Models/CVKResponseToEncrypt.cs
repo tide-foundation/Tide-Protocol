@@ -39,7 +39,7 @@ namespace Tide.Ork.Models
             this.ShareEncrypted = Shares.Select((share,i) => new ShareEncrypted{
                 To = this.To_Orks[i],
                 From = this.From_Ork,
-                EncryptedData = ECDHKeys[i].Encrypt(share.ToJSON())
+                EncryptedData = ECDHKeys[i].EncryptStr(share.ToJSON())
             }).ToArray();
         }
 

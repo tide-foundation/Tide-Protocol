@@ -61,6 +61,7 @@ namespace Tide.Ork.Controllers
             _orkManager = new SimulatorOrkManager(_orkId, cln);
         }
 
+        /*
         //TODO: Move secrets out of the url
         //TODO: there is not verification if the account already exists
         [HttpPut("{uid}/{prism}/{cmk}/{prismAuth}/{cmkAuth}/{email}")]
@@ -90,7 +91,7 @@ namespace Tide.Ork.Controllers
             
             return resp;
         }
-
+*/
         [HttpGet("random/{uid}")]
         public ActionResult<RandomResponse> GetRandom([FromQuery] Ed25519Point pass, [FromQuery] Ed25519Point vendor, [FromQuery] ICollection<Guid> ids)
         {
@@ -141,22 +142,12 @@ namespace Tide.Ork.Controllers
         [HttpGet("genshard/{uid}")]
         public async Task<ActionResult> GenShard([FromRoute] Guid uid, [FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
         {
-<<<<<<< HEAD
-            KeyGenerator k = new KeyGenerator(_config.PrivateKey.X, _config.PrivateKey.GetPublic().Y,  _config.UserName, _config.Threshold);
-
-=======
->>>>>>> b94cefceb0248b600eb698010a8b931ee75a5859
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj)); 
             var multipliers = new Ed25519Point[]{gMultiplier1, gMultiplier2};
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-<<<<<<< HEAD
-            return Ok(k.GenShard(uid.ToString(), mgOrkj_Keys, 3, multipliers, orkIds.ToArray()));
-            
-=======
             return Ok(_keyGenerator.GenShard(uid.ToString(), mgOrkj_Keys, Int32.Parse(numKeys), multipliers, orkIds.ToArray()));
->>>>>>> b94cefceb0248b600eb698010a8b931ee75a5859
         }
 
         [HttpGet("set/{uid}")]
@@ -278,7 +269,7 @@ namespace Tide.Ork.Controllers
                 Email = rand.Email,
                 Cmki = rand.ComputeCmk(),
                 Prismi = rand.ComputePrism(),
-                PrismiAuth = rand.PrismAuth,
+                PrismAuthi = rand.PrismAuth,
                 Cmk2i = rand.ComputeCmk2()
             };
 
@@ -309,7 +300,7 @@ namespace Tide.Ork.Controllers
                 CmkPub = Ed25519.G * (rand.ComputeCmk() * lagrangian),
                 Cmk2Pub = Ed25519.G * (rand.ComputeCmk2() * lagrangian),
                 Signature = new { orkid = _config.UserName, sign = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m))}, // OrkSign type
-                EncryptedToken = account.PrismiAuth.Encrypt(token.ToByteArray()),
+                EncryptedToken = account.PrismAuthi.Encrypt(token.ToByteArray()),
                 S = s.ToString()
             };
         }
@@ -391,7 +382,7 @@ namespace Tide.Ork.Controllers
             return new ApplyResponse
             {
                 GBlurPassPrism = gBlurPassPrismi.ToByteArray(),
-                EncReply = account.PrismiAuth.Encrypt(responseToEncrypt.ToJSON())
+                EncReply = account.PrismAuthi.Encrypt(responseToEncrypt.ToJSON())
             };
         }
 
@@ -414,7 +405,7 @@ namespace Tide.Ork.Controllers
             uid.ToByteArray().CopyTo(buffer,0);
             bytesCertTimei.CopyTo(buffer, uid.ToByteArray().Length);
 
-            if (account == null || tran == null || !tran.Check(account.PrismiAuth, buffer)) {
+            if (account == null || tran == null || !tran.Check(account.PrismAuthi, buffer)) {
                 if (account == null)
                     _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"Authenticate: Account {uid} does not exist");
                 else
@@ -436,7 +427,7 @@ namespace Tide.Ork.Controllers
                 return Unauthorized();
             }  
 
-            string jsonStr = Encoding.UTF8.GetString(account.PrismiAuth.Decrypt(bytesRequest));
+            string jsonStr = Encoding.UTF8.GetString(account.PrismAuthi.Decrypt(bytesRequest));
             
             var AuthReq = JsonSerializer.Deserialize<AuthRequest>(jsonStr);
 
@@ -455,10 +446,10 @@ namespace Tide.Ork.Controllers
                 gRi = Convert.ToBase64String((Ed25519.G * BlindR).ToByteArray())
             };
 
-            return Ok(account.PrismiAuth.EncryptStr(JsonSerializer.Serialize(response)));
+            return Ok(account.PrismAuthi.EncryptStr(JsonSerializer.Serialize(response)));
         }
 
-
+/*
         [HttpPost("prism/{uid}/{prism}/{prismAuth}/{token}")]
         public async Task<ActionResult> ChangePrism([FromRoute] Guid uid, [FromRoute] string prism, [FromRoute] string prismAuth, [FromRoute] string token, [FromQuery] bool withCmk = false)
         {
@@ -470,7 +461,7 @@ namespace Tide.Ork.Controllers
                 return _logger.Log(Unauthorized($"Unsuccessful change password for {uid}"),
                     $"Unsuccessful change password for {uid}. Account was not found");
 
-            var authKey = withCmk ? account.CmkiAuth : account.PrismiAuth;
+            var authKey = withCmk ? account.C : account.PrismiAuth;
             if (!tran.Check(authKey, toCheck))
                 return _logger.Log(Unauthorized($"Unsuccessful change password for {uid}"),
                     $"Unsuccessful change password for {uid} with {token}");
@@ -483,7 +474,7 @@ namespace Tide.Ork.Controllers
             await _manager.SetOrUpdate(account);
             return Ok();
         }
-
+*/
         //TODO: Make it last temporarily
         //TODO: Encrypt data with a random key
         [HttpGet("mail/{uid}")]

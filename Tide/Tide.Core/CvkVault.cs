@@ -17,7 +17,7 @@ namespace Tide.Core
         public BigInteger CVK2i { get; set; }
         public Ed25519Point GCVK2 { get; set; }
 
-        public CvkVault() 
+        public CvkVault() : base(1)
         {
            
         }

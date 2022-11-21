@@ -98,6 +98,7 @@ namespace Tide.Ork.Controllers
             };
         }
 
+        /*
         [HttpGet("genshard/{vuid}")]
         public async Task<ActionResult<CMKResponse>> GenShard([FromQuery] string numKeys, [FromQuery] string signi, [FromQuery] Ed25519Point gVoucher, [FromQuery] ICollection<string> orkIds)
         {
@@ -530,7 +531,7 @@ namespace Tide.Ork.Controllers
             _logger.LogInformation($"Confimed vuid {vuid}", vuid);
             return Ok();
         }
- 
+ */
         private byte[] FromBase64(string input)
         {
             return Convert.FromBase64String(input.DecodeBase64Url());
@@ -557,7 +558,7 @@ namespace Tide.Ork.Controllers
         {
             var orkNode =_orkManager.GetById(id);
             var orkInfoTask = await orkNode;
-            return Ed25519Key.ParsePublic(orkInfoTask.PubKey).Y;
+            return Ed25519Key.ParsePublic(orkInfoTask.PubKey);
         }
 
     }

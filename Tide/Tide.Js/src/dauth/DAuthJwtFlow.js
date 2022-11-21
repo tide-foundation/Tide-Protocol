@@ -140,6 +140,47 @@ export default class DAuthJwtFlow {
     }
   }
 
+  /**
+   * @param {string} password
+   * @param {string|string[]} email
+   * @param {number} threshold
+   * @returns {Promise<{ vuid: Guid; cvk: ed25519Key; auth: AESKey; }>}
+   */
+   async signUp2(password, email, threshold) {
+    if (!this.vendorPub) throw new Error("vendorPub must not be empty");
+
+    try {
+      const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
+     // this.cvkAuth = AESKey.seed(venPnt.times(this.cmk).toArray());
+
+     // const cvk = ed25519Key.generate();
+      const flowCmk = await this._getCmkFlow(true);
+
+      // register cmk
+      var a = await flowCmk.signUp2(password, email, venPnt);
+      var b = 0;
+      return b;
+      // configure cvk ORKs
+      this._genVuid();
+      const flowCvk = await this._getCvkFlow(true);
+      const signatures = flowCvk.clients.map((_) => new Uint8Array());
+
+      // register cvk
+      await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);
+
+      //test dauth and dcrypt
+      const { auth: authTag } = await this.logIn2(password);
+
+      if (this.cvkAuth.toString() !== authTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
+
+      await Promise.all([flowCmk.confirm(), flowCvk.confirm()]);
+
+      return { vuid: this.vuid, cvk: cvk, auth: authTag };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   /** @param {string} password
    * @returns {Promise<{ vuid: Guid; cvk: ed25519Key; auth: AESKey; }>} */
   async logIn(password) {

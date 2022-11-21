@@ -41,7 +41,10 @@ namespace Tide.Ork.Models {
                 EncryptedData = ECDHKeys[i].EncryptStr(share.ToJSON())
              }).ToArray();
         }
-        public string ToJSON() {
+        public string GetEncryptedShares() {
+            if (this.EncryptedShares == null){
+                throw new System.NullReferenceException("ResponseEncrypted: Shares were not encrypted beforehand. Make sure to encrypt them first");
+            }
             var toReturn = new {
                 EncryptedShares = this.EncryptedShares
             };
@@ -51,7 +54,7 @@ namespace Tide.Ork.Models {
     public class ShareEncrypted {
         public string To {get; set;} /// Ork Username the share will go to
         public string From {get; set;} /// Ork Username the share is sent from
-        public string EncryptedData {get; set;} // this is the CMK Response share encrypted
+        public string EncryptedData {get; set;} // this is the DataToEncrypt object encrypted
     }
     public class DataToEncrypt{
         public byte[] CMKYj { get; set; }
