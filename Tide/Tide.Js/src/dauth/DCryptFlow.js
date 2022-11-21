@@ -30,6 +30,7 @@ import bigInt from "big-integer";
 import CVKRandRegistrationReq from "./CVKRandRegistrationReq";
 import TranToken from "../TranToken";
 import { Dictionary } from "../Tools";
+import GenShardShareResponse from "./GenShardShareResponse";
 
 export default class DCryptFlow {
   /**
@@ -43,7 +44,54 @@ export default class DCryptFlow {
     this.ruleCln = new RuleClientSet(urls, user);
   }
 
-  async GenShardCVK(){
+  async GenShardCVK(singi,gVoucher){
+    try{
+      const n = bigInt(ed25519Point.order.toString());
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+      
+      
+      const genShardResp = await this.clienSet.all(dAuthClient => dAuthClient.genShard(mIdORKs,  2, singi , gVoucher));
+
+      const gCVK = genShardResp.map(a =>  a[0]).reduce((sum, point) => sum.add(point), ed25519Point.infinity);
+   
+      const timestamp = median(genShardResp.values.map(resp => resp[2])); 
+      
+      const mergeShare=(share) =>{
+        return share.map(p => GenShardShareResponse.from(p));
+      }
+      const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
+      const sortedShareArray = sorting(shareEncrypted);
+
+      return {timestamp : timestamp, ciphers : sortedShareArray}
+
+    }catch(err){
+      Promise.reject(err);
+    }
+    
+  }
+  async SetCVK(ciphers, timestamp,gCMKAuth){
+    try{
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+
+      const pre_setCVKResponse = this.clienSet.all((DAuthClient, i) => DAuthClient.setCVK(filtering(ciphers.filter(element => element.orkId === mIdORKs.get(i))), timestamp, mIdORKs));
+
+      const idGens = await this.clienSet.all(c => c.getClientGenerator()); // implement method to only use first 14 orks that reply
+      const ids = idGens.map(idGen => idGen.id);
+      const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString()))); 
+      
+      const AA = lis.map(li => li.toString());
+
+      const setCVKResponse = await pre_setCVKResponse;
+
+      const gCVKtest = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[0]).times(lis.get(i)), ed25519Point.infinity); // Does Sum ( gCVKtesti ) * li . Li here works because of ordered indexes
+      const gCVK2test = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[1]).times(lis.get(i)), ed25519Point.infinity);
+      const gCVKR2 = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[2]), ed25519Point.infinity); // Does Sum (gCMKR2)
+      const encryptedStatei = setCVKResponse.values.map(resp => resp[3]);
+
+      return {gTests : [gCVKtest, gCVK2test], gCMKR2 : gCVKR2, state : encryptedStatei};
+    }catch(err){
+      Promise.reject(err);
+    }
     
   }
 
@@ -239,4 +287,36 @@ export default class DCryptFlow {
   async confirm() {
     await this.clienSet.all(c => c.confirm());
   }
+  
+}
+function median(numbers) {
+  const sorted = Array.from(numbers).sort((a, b) => a - b);
+  const middle = Math.floor(sorted.length / 2);
+
+  if (sorted.length % 2 === 0) {
+      return (sorted[middle - 1]+(sorted[middle])/(2));
+  }
+
+  return sorted[middle];
+}
+
+
+//The array  is a combined list from all the orks returns
+function sorting(shareEncrypted){
+  const shareArray = shareEncrypted[0].concat(shareEncrypted[1].concat(shareEncrypted[2])) ; //need to fix this
+  let sortedShareArray = shareArray.sort((a, b) => a.to.localeCompare(b.to) || a.from.localeCompare(b.from) ); //Sorting shareEncrypted based on 'to' and then 'from'
+  let newarray =[];
+  for(let i=0 ; i < sortedShareArray.length ; i++){
+    let e={
+      "orkId" : sortedShareArray[i].to,
+      "data" : JSON.stringify({To: sortedShareArray[i].to, From: sortedShareArray[i].from, EncryptedData: sortedShareArray[i].encryptedData})  
+    }
+    newarray.push(e);
+  }
+  return newarray;
+}
+
+function filtering(array){
+  let results = array.map(a => a.data);
+  return results;
 }

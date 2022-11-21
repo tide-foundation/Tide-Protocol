@@ -18,6 +18,7 @@ import ClientBase, { urlEncode, fromBase64 } from "./ClientBase";
 import Guid from "../guid";
 import TranToken from "../TranToken";
 import CVKRandomResponse from "./CVKRandomResponse";
+import { Dictionary } from "../Tools";
 
 export default class DCryptClient extends ClientBase {
   /**
@@ -103,38 +104,43 @@ export default class DCryptClient extends ClientBase {
     }
 
   /** 
-   * @param {string[]} vIdORKij
+   * @param {Dictionary<string | null>} vIdORKij
    * @param {number} numKeys
-   * @param {string} signi
+   * @param {ed25519Point} sign
    * @param {ed25519Point} gVoucherPoint
    * @returns {Promise<[ed25519Point, string,string]>}
    */
-  async genShard(vIdORKij , numKeys, signi , gVoucherPoint) {
+  async genShard(vIdORKij , numKeys, sign, gVoucherPoint) {
     const gVoucher = urlEncode(gVoucherPoint.toArray());
-    const orkIds = vIdORKij.map(id => `ids=${id}`).join('&');
+    const signi = urlEncode(sign.toArray());
+    const orkIds = vIdORKij.values.map(id => `orkIds=${id}`).join('&');
         
     const resp = await this._get(`/cvk/genshard/${this.userGuid}?numKeys=${numKeys.toString()}&signi=${signi}&gVoucher=${gVoucher}&${orkIds}`)
       .ok(res => res.status < 500);
         
     if (!resp.ok) return Promise.reject(new Error(resp.text));
-    return [ed25519Point.from(Buffer.from(resp.body.gCVKi, 'base64')), resp.body.yijCipher, resp.body.cVKtimestampi]
+    const parsedObj = JSON.parse(resp.text);
+    return [ed25519Point.from(Buffer.from(parsedObj.GK, 'base64')), parsedObj.EncryptedOrkShares, parseInt(parsedObj.Timestampi)]
   }
 
   /** 
-   * @param {string} yijCipher
+   * @param {string[]} yijCipher
    * @param {number} cVKtimestamp
-   * @param {ed25519Point} gCMKAuth
-   * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point]>}
+   * @param {Dictionary<string| null>} mIdORKs
+   * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point , string]>}
    */
-  async setCVK(yijCipher,cVKtimestamp ,gCMKAuth) {
-    const GCMKAuth = urlEncode(gCMKAuth.toArray());
+  async setCVK(yijCipher,cVKtimestamp ,mIdORKs) {
+    try{
+      const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
+      const resp = await this._get(`/cvk/set/${this.userGuid}?CVKtimestamp=${cVKtimestamp.toString()}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(yijCipher));
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
 
-    const resp = await this._get(`/cvk/set/${this.userGuid}?YijCipher=${yijCipher}&CVKtimestamp=${cVKtimestamp.toString()}&GCMKAuth=${GCMKAuth}`)
-  
-    if (!resp.ok) return  Promise.reject(new Error(resp.text));
-
-    const obj = JSON.parse(resp.body.toString());
-    return [ed25519Point.from(Buffer.from(obj.gCVKtesti, 'base64')),  ed25519Point.from(Buffer.from(obj.gCVK2testi, 'base64')), ed25519Point.from(Buffer.from(obj.gCVKRi, 'base64'))];
+      const obj = JSON.parse(resp.text.toString());
+      const gKTesti = obj.gKTesti.map(p => ed25519Point.from(Buffer.from(p, 'base64')));
+      return [gKTesti[0],  gKTesti[1], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.encrypedData];
+    }catch(err){
+      return Promise.reject(err);
+    }
 
   }
 

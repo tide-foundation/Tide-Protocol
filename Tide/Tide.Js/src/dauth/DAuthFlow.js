@@ -88,7 +88,7 @@ export default class DAuthFlow {
       const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
       const sortedShareArray = sorting(shareEncrypted);
 
-      return {vuid : VUID, gCMKAuth : gCMKAuth, gPRISMAuth : gPRISMAuth, timestamp : timestamp, ciphers : sortedShareArray}
+      return {vuid : VUID, gCMKAuth : gCMKAuth, gPRISMAuth : gPRISMAuth, timestampCMK : timestamp, ciphersCMK : sortedShareArray}
 
     }catch(err){
       Promise.reject(err);
