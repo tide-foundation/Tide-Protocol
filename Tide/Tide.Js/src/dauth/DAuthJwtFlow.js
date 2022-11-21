@@ -163,7 +163,7 @@ export default class DAuthJwtFlow {
       const flowCvk = await this._getCvkFlow(true);
       
       // Aggregate shards
-      const pre_SetCMK = flowCmk.SetCMK(ciphers, timestamp);
+      const pre_SetCMK = await flowCmk.SetCMK(ciphers, timestamp);
 
       // create cvk shards
       //const pre_GenCVK = flowCvk.GenShardCVK();
