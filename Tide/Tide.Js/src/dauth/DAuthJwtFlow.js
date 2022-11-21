@@ -150,19 +150,30 @@ export default class DAuthJwtFlow {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
     try {
+      // get CMK Orks details
+      const pre_flowCmk = this._getCmkFlow(true);
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
-     // this.cvkAuth = AESKey.seed(venPnt.times(this.cmk).toArray());
+      const flowCmk = await pre_flowCmk;
 
-     // const cvk = ed25519Key.generate();
-      const flowCmk = await this._getCmkFlow(true);
+      // create cmk shards
+      const {vuid, gCMKAuth, gPRISMAuth, timestamp, ciphers} = await flowCmk.GenShardCMK(password, venPnt);
 
-      // register cmk
-      var a = await flowCmk.signUp2(password, email, venPnt);
+      // getCVK Ork details
+      this.vuid = vuid.guid;
+      const flowCvk = await this._getCvkFlow(true);
+      
+      // Aggregate shards
+      const pre_SetCMK = flowCmk.SetCMK(ciphers, timestamp);
+
+      // create cvk shards
+      //const pre_GenCVK = flowCvk.GenShardCVK();
+    
+
       var b = 0;
       return b;
       // configure cvk ORKs
       this._genVuid();
-      const flowCvk = await this._getCvkFlow(true);
+      //const flowCvk = await this._getCvkFlow(true);
       const signatures = flowCvk.clients.map((_) => new Uint8Array());
 
       // register cvk

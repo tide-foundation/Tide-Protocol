@@ -43,13 +43,8 @@ export default class DAuthFlow {
     this.userID = typeof user === 'string' ? IdGenerator.seed(user) : new IdGenerator(user); // Needed this out of neccessity
   }
 
-  async signUp2(pass, email, gVVK){
+  async GenShardCMK(pass, gVVK){
     try{
-      if (!email) throw new Error("email must have at least one item");
-      const emails = typeof email === "string" ? [email] : email;
-      const emailIndex = Math.floor(Math.random() * emails.length);
-
-      const pre_ids = this.clienSet.all(c => c.getClientId());
       const n = bigInt(ed25519Point.order.toString());
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
       
@@ -75,24 +70,17 @@ export default class DAuthFlow {
         return share1.map((s, i) => s.add(share2[i]))
       }
       const gMultiplied = genShardResp.values.map(p => p[2]).reduce((sum, next) => addShare(sum, next)); // adds all of the respective gMultipliers together
+
       const gUserCMK = gMultiplied[0].times(r1Inv);
       const gPassPrism = gMultiplied[1].times(r2Inv);
 
       const hash_gUserCMK = Hash.sha512Buffer(gUserCMK.toArray());
       const CMKmul = bigInt_fromBuffer(hash_gUserCMK.subarray(0, 32)); // first 32 bytes
-      const VUID = IdGenerator.seed(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes
 
-      const gCMKAuth = gCMK.times(CMKmul);
-
-      const timestamp = median(genShardResp.values.map(resp => resp[3]));
-
-      const ids = await pre_ids;
-      const lis = ids.map((id) => SecretShare.getLi(id, ids.values, n)); // implement method to only use first 14 orks that reply
-      
-      const AA = lis.map(li => li.toString());
-
-      const mails = genShardResp.map((_, __, i) => emails[(emailIndex + i) % emails.length]);
-
+      const VUID = IdGenerator.seed(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes 
+      const gCMKAuth = gCMK.times(CMKmul); 
+      const gPRISMAuth = ed25519Point.g.times(Hash.shaBuffer(gPassPrism.toArray())); 
+      const timestamp = median(genShardResp.values.map(resp => resp[3])); 
       const mergeShare=(share) =>{
         return share.map(p =>GenShardShareResponse.from(p));
       }
@@ -100,19 +88,38 @@ export default class DAuthFlow {
       const shareArray = shareEncrypted[0].concat(shareEncrypted[1].concat(shareEncrypted[2])) ; //need to fix this
       let sortedShareArray = shareArray.sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to) ); //Sorting shareEncrypted based on 'from and then 'to'
 
-      const setCMKResponse = await this.clienSet.all((DAuthClient, i) => DAuthClient.setCMK(timestamp, mails.get(i)));
+      return {vuid : VUID, gCMKAuth : gCMKAuth, gPRISMAuth : gPRISMAuth, timestamp : timestamp, ciphers : sortedShareArray}
+
+    }catch(err){
+      Promise.reject(err);
+    }
+  }
+
+  async SetCMK(ciphers, timestamp){
+    try{
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+
+      const pre_setCMKResponse = this.clienSet.all((DAuthClient, i) => DAuthClient.setCMK(ciphers.get(i), timestamp, mIdORKs));
+
+      const idGens = await this.clienSet.all(c => c.getClientGenerator()); // implement method to only use first 14 orks that reply
+      const ids = idGens.map(idGen => idGen.id);
+      const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString()))); 
+      
+      const AA = lis.map(li => li.toString());
+
+      const setCMKResponse = await pre_setCMKResponse;
 
       const gCMKtest = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[0]).times(lis.get(i)), ed25519Point.infinity); // Does Sum ( gCMKtesti ) * li . Li here works because of ordered indexes
       const gPRISMtest = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[1]).times(lis.get(i)), ed25519Point.infinity);
       const gCMK2test = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[2]).times(lis.get(i)), ed25519Point.infinity);
       const gCMKR2 = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[3]), ed25519Point.infinity); // Does Sum (gCMKR2)
+      const encryptedStatei = setCMKResponse.values.map(resp => resp[4]);
 
-
-      return 'a';
-
+      return {gTests : [gCMKtest, gPRISMtest, gCMK2test], gCMKR2 : gCMKR2, state : encryptedStatei};
     }catch(err){
-
+      Promise.reject(err);
     }
+    
   }
 
   /**

@@ -43,6 +43,10 @@ export default class DCryptFlow {
     this.ruleCln = new RuleClientSet(urls, user);
   }
 
+  async GenShardCVK(){
+    
+  }
+
   /**
    * @param {AESKey} cmkAuth
    * @param {number} threshold
