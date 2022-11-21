@@ -76,7 +76,7 @@ public class KeyGenerator
             // Multiply the required multipliers
             try{
                 gMultiplied[i] = gMultiplier[i] * k[i];
-            }catch(NullReferenceException e){} // only multiply the available multipliers
+            }catch(IndexOutOfRangeException e){} // only multiply the available multipliers
             
             
         }
