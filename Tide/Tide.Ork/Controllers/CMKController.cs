@@ -151,7 +151,7 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("set/{uid}")]
-        public  async Task<ActionResult> SetCMK([FromRoute] Guid uid, [FromQuery] string[] YijCipher, [FromQuery] string CMKtimestamp, [FromQuery] ICollection<string> orkIds)
+        public  async Task<ActionResult> SetCMK([FromRoute] Guid uid, [FromQuery] string CMKtimestamp, [FromQuery] ICollection<string> yijCipher, [FromQuery] ICollection<string> orkIds)
         {
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
@@ -159,7 +159,7 @@ namespace Tide.Ork.Controllers
 
             string response;
             try{
-                response = _keyGenerator.SetKey(uid.ToString(), YijCipher, mgOrkj_Keys);
+                response = _keyGenerator.SetKey(uid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
             }catch(Exception e){
                 _logger.LogInformation($"SetCMK: {e}", e);
                 return BadRequest(e);

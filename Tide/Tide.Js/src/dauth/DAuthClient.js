@@ -202,7 +202,8 @@ export default class DAuthClient extends ClientBase {
    */
   async setCMK(yijCipher,CMKtimestamp, mIdORKij) {
     const orkIds = mIdORKij.values.map(id => `orkIds=${id}`).join('&');
-    const resp = await this._get(`/cmk/set/${this.userGuid}?yijCipher=${yijCipher}&cMKtimestamp=${CMKtimestamp.toString()}&${orkIds}`)
+    const ciphers = yijCipher.map(cipher => `yijCipher=${cipher}`).join('&');
+    const resp = await this._get(`/cmk/set/${this.userGuid}?CMKtimestamp=${CMKtimestamp.toString()}&${ciphers}&${orkIds}`)
     if (!resp.ok) return  Promise.reject(new Error(resp.text));
 
     const obj = JSON.parse(resp.body.toString());
