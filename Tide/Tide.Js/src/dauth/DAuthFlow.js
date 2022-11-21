@@ -79,7 +79,7 @@ export default class DAuthFlow {
 
       const VUID = IdGenerator.seed(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes 
       const gCMKAuth = gCMK.times(CMKmul); 
-      const gPRISMAuth = ed25519Point.g.times(Hash.shaBuffer(gPassPrism.toArray())); 
+      const gPRISMAuth = ed25519Point.g.times(bigInt_fromBuffer(Hash.shaBuffer(gPassPrism.toArray()))); 
       const timestamp = median(genShardResp.values.map(resp => resp[3])); 
       const mergeShare=(share) =>{
         return share.map(p =>GenShardShareResponse.from(p));
