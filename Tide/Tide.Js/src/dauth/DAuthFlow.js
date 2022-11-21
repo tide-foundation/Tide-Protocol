@@ -81,8 +81,9 @@ export default class DAuthFlow {
       const gCMKAuth = gCMK.times(CMKmul); 
       const gPRISMAuth = ed25519Point.g.times(bigInt_fromBuffer(Hash.shaBuffer(gPassPrism.toArray()))); 
       const timestamp = median(genShardResp.values.map(resp => resp[3])); 
+      
       const mergeShare=(share) =>{
-        return share.map(p =>GenShardShareResponse.from(p));
+        return share.map(p => GenShardShareResponse.from(p));
       }
       const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
       const sortedShareArray = sorting(shareEncrypted);
