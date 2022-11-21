@@ -194,24 +194,22 @@ export default class DAuthClient extends ClientBase {
     return [ed25519Point.from(Buffer.from(parsedObj.GK, 'base64')), parsedObj.EncryptedOrkShares, gMultiplied, parseInt(parsedObj.Timestampi)];
   }
 
-  /** 
+ /** 
    * @param {string} yijCipher
-   * @param {number} cMKtimestamp
-   * @param {ed25519Point} gPRISMAuth
+   * @param {number} CMKtimestamp
    * @param {string} emaili
    * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point, ed25519Point]>}
    */
-  async setCMK(yijCipher,cMKtimestamp ,gPRISMAuth , emaili ) {
-    const gPrismAuth = urlEncode(gPRISMAuth.toArray());
-
-    const resp = await this._get(`/cmk/set/${this.userGuid}?yijCipher=${yijCipher}&cMKtimestamp=${cMKtimestamp.toString()}&gPrismAuth=${gPrismAuth}&emaili=${emaili}`)
-  
+  async setCMK(yijCipher,CMKtimestamp, emaili ) {
+    const resp = await this._get(`/cmk/set/${this.userGuid}?yijCipher=${yijCipher}&cMKtimestamp=${CMKtimestamp.toString()}&emaili=${emaili}`)
     if (!resp.ok) return  Promise.reject(new Error(resp.text));
 
     const obj = JSON.parse(resp.body.toString());
-    return [ed25519Point.from(Buffer.from(obj.gCMKtesti, 'base64')),  ed25519Point.from(Buffer.from(obj.gPRISMtesti, 'base64')),ed25519Point.from(Buffer.from(obj.gCMK2testi, 'base64')),ed25519Point.from(Buffer.from(obj.gCMKRi, 'base64'))];
+    const gKTesti = obj.gKTesti.map(p => ed25519Point.from(Buffer.from(p, 'base64')));
+    return [gKTesti[0],  gKTesti[1], gKTesti[2], ed25519Point.from(Buffer.from(obj.gRi, 'base64'))];
 
   }
+
 
   /**
    * @param {ed25519Point} gCMKtest 
