@@ -30,7 +30,7 @@ public class KeyGenerator
     public string GenShard(string keyID, Ed25519Key[] mgOrkij, int numKeys, Ed25519Point[] gMultiplier, string[] to_userNames)
     {
 
-        if (!gMultiplier.All(multipler => multipler.IsSafePoint()))
+        if (gMultiplier != null && !gMultiplier.All(multipler => multipler.IsSafePoint()))
         {
             throw new Exception("GenShard: Not all points supplied are safe");
         }
@@ -60,7 +60,7 @@ public class KeyGenerator
         BigInteger[] k = new BigInteger[numKeys];
         Ed25519Point[] gK = new Ed25519Point[numKeys];
         Point[][] Yij = new Point[numKeys][];
-        Ed25519Point[] gMultiplied = new Ed25519Point[gMultiplier.Count()];
+        Ed25519Point[] gMultiplied = new Ed25519Point[gMultiplier ==null ? 0 : gMultiplier.Count()];
 
         for (int i = 0; i < numKeys; i++)
         {
@@ -75,7 +75,8 @@ public class KeyGenerator
 
             // Multiply the required multipliers
             try{
-                gMultiplied[i] = gMultiplier[i] * k[i];
+                if(gMultiplier != null)
+                    gMultiplied[i] = gMultiplier[i] * k[i];
             }catch(IndexOutOfRangeException e){} // only multiply the available multipliers
             
             
@@ -87,7 +88,7 @@ public class KeyGenerator
         {
             GK = gK[0].ToByteArray(),
             EncryptedOrkShares = YCiphers,
-            GMultipliers = gMultiplied.Select(multiplier => multiplier.ToByteArray()).ToArray(),
+            GMultipliers =  gMultiplier == null ? null : gMultiplied.Select(multiplier => multiplier.ToByteArray()).ToArray(),
             Timestampi = timestampi
         };
 

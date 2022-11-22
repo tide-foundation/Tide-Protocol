@@ -62,6 +62,7 @@ namespace Tide.Ork.Controllers
             _orkId = settings.Instance.Username;
              var cln = new Tide.Ork.Classes.SimulatorClient(settings.Endpoints.Simulator.Api, _orkId, settings.Instance.GetPrivateKey());
             _orkManager = new SimulatorOrkManager(_orkId, cln);
+            _keyGenerator = new KeyGenerator(_config.PrivateKey.X, _config.PrivateKey.GetPublic().Y, _config.UserName, _config.Threshold);
         }
 
         [HttpGet("random/{vuid}")]
@@ -105,10 +106,10 @@ namespace Tide.Ork.Controllers
         {
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj)); 
-            var multipliers = new Ed25519Point[]{};
+            
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
-
-            return Ok(_keyGenerator.GenShard(vuid.ToString(), mgOrkj_Keys, Int32.Parse(numKeys), multipliers, orkIds.ToArray()));
+            
+            return Ok(_keyGenerator.GenShard(vuid.ToString(), mgOrkj_Keys, Int32.Parse(numKeys), null, orkIds.ToArray()));
         }
 
 

@@ -619,7 +619,7 @@ function addSigtoJWT(jwt, R, s) {
 
 //The array  is a combined list from all the orks returns
 function sorting(shareEncrypted){
-  const shareArray = shareEncrypted[0].concat(shareEncrypted[1].concat(shareEncrypted[2])) ; //need to fix this
+  const shareArray = shareEncrypted.flat() ; 
   let sortedShareArray = shareArray.sort((a, b) => a.to.localeCompare(b.to) || a.from.localeCompare(b.from) ); //Sorting shareEncrypted based on 'to' and then 'from'
   let newarray =[];
   for(let i=0 ; i < sortedShareArray.length ; i++){

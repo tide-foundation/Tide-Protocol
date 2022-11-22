@@ -62,14 +62,14 @@ export default class DCryptFlow {
       const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
       const sortedShareArray = sorting(shareEncrypted);
 
-      return {timestamp : timestamp, ciphers : sortedShareArray}
+      return {timestampCVK : timestamp, ciphersCVK : sortedShareArray}
 
     }catch(err){
       Promise.reject(err);
     }
     
   }
-  async SetCVK(ciphers, timestamp,gCMKAuth){
+  async SetCVK(ciphers, timestamp, gCMKAuth){
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
 
@@ -88,7 +88,7 @@ export default class DCryptFlow {
       const gCVKR2 = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[2]), ed25519Point.infinity); // Does Sum (gCMKR2)
       const encryptedStatei = setCVKResponse.values.map(resp => resp[3]);
 
-      return {gTests : [gCVKtest, gCVK2test], gCMKR2 : gCVKR2, state : encryptedStatei};
+      return {gTests : [gCVKtest, gCVK2test], gCVKR2 : gCVKR2, state : encryptedStatei};
     }catch(err){
       Promise.reject(err);
     }
@@ -303,7 +303,7 @@ function median(numbers) {
 
 //The array  is a combined list from all the orks returns
 function sorting(shareEncrypted){
-  const shareArray = shareEncrypted[0].concat(shareEncrypted[1].concat(shareEncrypted[2])) ; //need to fix this
+  const shareArray = shareEncrypted.flat() ; 
   let sortedShareArray = shareArray.sort((a, b) => a.to.localeCompare(b.to) || a.from.localeCompare(b.from) ); //Sorting shareEncrypted based on 'to' and then 'from'
   let newarray =[];
   for(let i=0 ; i < sortedShareArray.length ; i++){

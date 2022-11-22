@@ -137,7 +137,7 @@ export default class DCryptClient extends ClientBase {
 
       const obj = JSON.parse(resp.text.toString());
       const gKTesti = obj.gKTesti.map(p => ed25519Point.from(Buffer.from(p, 'base64')));
-      return [gKTesti[0],  gKTesti[1], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.encrypedData];
+      return [gKTesti[0],  gKTesti[1], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.EncryptedData];
     }catch(err){
       return Promise.reject(err);
     }
