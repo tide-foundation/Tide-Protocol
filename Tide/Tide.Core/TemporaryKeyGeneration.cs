@@ -165,8 +165,8 @@ public class KeyGenerator
     public BigInteger PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
     {
         // Reastablish state
-        SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
-        StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(decryptedResponse.EncryptedData)); // decrypt encrypted state in response
+       // SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
+        StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(EncSetKeyStatei)); // decrypt encrypted state in response
 
         if(!state.KeyID.Equals(keyID))
         {

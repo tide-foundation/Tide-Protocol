@@ -144,20 +144,27 @@ export default class DCryptClient extends ClientBase {
 
   }
 
-  /**
-   * @param {ed25519Point} gCVKtest 
-   * @param {ed25519Point} gCVK2test 
+   /**
+   * @param {ed25519Point[]} gTests 
+   * @param {Dictionary<string | null>} mIdORKs 
    * @param {ed25519Point} gCVKR2
+   * @param {string[]} EncSetCVKStatei
    * @returns {Promise<BigInt>} 
    */
-   async preCommit (gCVKtest, gCVK2test, gCVKR2){
-
-    const resp = await this._get(`/cvk/precommit/${this.userGuid}/${urlEncode(gCVKtest.toArray())}/${urlEncode(gCVK2test.toArray())}/${urlEncode(gCVKR2.toArray())}`)
-        .ok(res => res.status < 500);
-  
-      if (!resp.ok) return  Promise.reject(new Error(resp.text));
-      return BigInt(resp.text);
-  }
+    async preCommit (gTests, gCVKR2, EncSetCVKStatei,mIdORKs){
+      try{
+        const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
+        const R2 = urlEncode(gCVKR2.toArray());
+        const gCVKtest = urlEncode(gTests[0].toArray());
+        const gCVK2test = urlEncode(gTests[1].toArray());
+    
+        const resp = await this._get(`/cvk/precommit/${this.userGuid}?encryptedState=${EncSetCVKStatei.toString()}&R2=${R2}&gCVKtest=${gCVKtest}&gCVK2test=${gCVK2test}&${orkIds}`);
+        if (!resp.ok) return  Promise.reject(new Error(resp.text));
+        return BigInt(resp.text);
+      }catch(err){
+        return Promise.reject(err);
+      }
+    }
 
   /**
    * @param {BigInt} cvks

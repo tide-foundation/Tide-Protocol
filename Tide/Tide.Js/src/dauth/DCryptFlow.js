@@ -15,7 +15,7 @@
 // @ts-check
 
 import DCryptClient from "./DCryptClient";
-import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare, AesSherableKey, ed25519Key, ed25519Point } from "cryptide";
+import { C25519Point, AESKey, C25519Key, C25519Cipher, BnInput, SecretShare, AesSherableKey, ed25519Key, ed25519Point, Hash } from "cryptide";
 import KeyStore from "../keyStore";
 import Cipher from "../Cipher";
 import Guid from "../guid";
@@ -93,6 +93,37 @@ export default class DCryptFlow {
       Promise.reject(err);
     }
     
+  }
+
+  async PreCommit (gTests, gCVKR2, state, vuid, timestamp){
+    try{
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+      
+      const pre_commitCVKResponse = await this.clienSet.all((DAuthClient) => DAuthClient.preCommit(gTests, gCVKR2, state, mIdORKs));
+      
+      const CVKS = pre_commitCVKResponse.values.map(e => e[0]).reduce((sum, sig) => (sum + sig) % ed25519Point.order);
+
+      const CVKM = Hash.shaBuffer(Buffer.from(gTests[0].toArray()).toString('base64') + timestamp.toString() + vuid.guid.toString()); // TODO: Add point.to_base64 function
+      
+      //Any other ways to get public?
+      const cln = this.clienSet.get(0); // chnage this later
+      const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
+      const [, pubs, ,] = await dnsCln.getInfoOrks(); 
+      
+      const CVKR = pubs.map(pub => pub.y).reduce((sum, p) => p.add(sum)) + gCVKR2;
+
+      const CVKH = Hash.shaBuffer( Buffer.concat([Buffer.from(CVKR.toArray()),Buffer.from(gTests[0].toArray()), CVKM]));
+      const CVKH_int = bigInt_fromBuffer(CVKH);
+      
+      if(!ed25519Point.g.times(CVKS).isEqual(CVKR.add(gTests[0].times(CVKH_int)))) {
+        return Promise.reject("Ork Signature Invalid")
+      }
+
+
+    }catch(err){
+      Promise.reject(err);
+    }
+   
   }
 
   /**
@@ -319,4 +350,14 @@ function sorting(shareEncrypted){
 function filtering(array){
   let results = array.map(a => a.data);
   return results;
+}
+
+/**
+ * 
+ * @param {Buffer} buffer 
+ * @returns 
+ */
+ function bigInt_fromBuffer(buffer){
+  var a = Buffer.from(buffer);
+  return bigInt.fromArray(Array.from(a.reverse()), 256, false).mod(bigInt(ed25519Point.order.toString()))
 }

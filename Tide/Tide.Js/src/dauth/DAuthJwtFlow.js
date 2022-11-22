@@ -170,6 +170,13 @@ export default class DAuthJwtFlow {
 
       //Aggredate shards
       const pre_SetCVK = await flowCvk.SetCVK(ciphersCVK, timestampCVK, gCMKAuth);
+
+      const pre_CommitCMK = await flowCmk.PreCommit(pre_SetCMK.gTests, pre_SetCMK.gCMKR2, pre_SetCMK.state ,timestampCMK);
+
+      const commit_CMK = await flowCmk.Commit(pre_CommitCMK, pre_SetCMK.state, pre_SetCMK.gCMKR2, gPRISMAuth, email)
+
+      const pre_CommitCVK = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state,vuid,timestampCVK);
+     
     
 
       var b = 0;

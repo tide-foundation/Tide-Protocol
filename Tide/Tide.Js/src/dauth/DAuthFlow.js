@@ -122,6 +122,50 @@ export default class DAuthFlow {
     
   }
 
+  async PreCommit (gTests, gCMKR2, state, timestamp){
+    try{
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+      const pre_commitCMKResponse = await this.clienSet.all((DAuthClient) => DAuthClient.preCommit(gTests, gCMKR2, state, mIdORKs));
+      
+      const CMKS = pre_commitCMKResponse.values.map(e => e[0]).reduce((sum, sig) => (sum + sig) % ed25519Point.order);
+
+      const CMKM = Hash.shaBuffer(Buffer.from(gTests[0].toArray()).toString('base64') + timestamp.toString() + this.userID.guid.toString()); // TODO: Add point.to_base64 function
+      
+      //Any other ways to get public?
+      const cln = this.clienSet.get(0); // chnage this later
+      const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
+      const [, pubs, ,] = await dnsCln.getInfoOrks(); 
+      
+      const CMKR = pubs.map(pub => pub.y).reduce((sum, p) => p.add(sum)) + gCMKR2;
+
+      const CMKH = Hash.shaBuffer( Buffer.concat([Buffer.from(CMKR.toArray()),Buffer.from(gTests[0].toArray()), CMKM]));
+      const CMKH_int = bigInt_fromBuffer(CMKH);
+      
+      if(!ed25519Point.g.times(CMKS).isEqual(CMKR.add(gTests[0].times(CMKH_int)))) {
+        return Promise.reject("Ork Signature Invalid")
+      }
+
+      return {CMKS : CMKS};
+  
+    }catch(err){
+      Promise.reject(err);
+    }
+   
+  }
+
+  async Commit (CMKS, state, CMKR2, gPrismAuth , emaili){
+    try{
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+
+      const commitCMKResponse = await this.clienSet.all((DAuthClient) => DAuthClient.commit(CMKS, state, CMKR2, gPrismAuth, emaili, mIdORKs));
+
+    }catch(err){
+      Promise.reject(err);
+    }
+   
+  }
+
+
   /**
    * @param {string} password
    * @param {string|string[]} email

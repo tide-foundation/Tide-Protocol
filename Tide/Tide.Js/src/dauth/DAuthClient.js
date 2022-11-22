@@ -216,26 +216,42 @@ export default class DAuthClient extends ClientBase {
 
 
   /**
-   * @param {ed25519Point} gCMKtest 
-   * @param {ed25519Point} gPRISMtest 
-   * @param {ed25519Point} gCMK2test 
+   * @param {ed25519Point[]} gTests 
+   * @param {Dictionary<string | null>} mIdORKs 
    * @param {ed25519Point} gCMKR2
+   * @param {string[]} EncSetCMKStatei
    * @returns {Promise<BigInt>} 
    */
-   async preCommit (gCMKtest , gPRISMtest, gCMK2test, gCMKR2){
-
-    const resp = await this._get(`/cmk/precommit/${this.userGuid}/${urlEncode(gCMKtest.toArray())}/${urlEncode(gPRISMtest.toArray())}/${urlEncode(gCMK2test.toArray())}/${urlEncode(gCMKR2.toArray())}`)
-        .ok(res => res.status < 500);
+   async preCommit (gTests, gCMKR2, EncSetCMKStatei,mIdORKs){
+    try{
+      const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
+      const R2 = urlEncode(gCMKR2.toArray());
+      const gCMKtest = urlEncode(gTests[0].toArray());
+      const gPRISMtest = urlEncode(gTests[1].toArray());
+      const gCMK2test = urlEncode(gTests[2].toArray());
   
+      const resp = await this._get(`/cmk/precommit/${this.userGuid}?encryptedState=${EncSetCMKStatei.toString()}&R2=${R2}&gCMKtest=${gCMKtest}&gPRISMtest=${gPRISMtest}&gCMK2test=${gCMK2test}&${orkIds}`);
       if (!resp.ok) return  Promise.reject(new Error(resp.text));
       return BigInt(resp.text);
+    }catch(err){
+      return Promise.reject(err);
+    }
   }
 
   /**
    * @param {BigInt} cmks
+   * @param {string[]} EncSetCMKStatei
+   * @param {ed25519Point} gCMKR2
+   * @param {ed25519Point} gPrismAuth
+   * @param {string} emaili
+   * @param {Dictionary<string | null>} mIdORKs 
    */
-  async commit (cmks){
-    const resp = await this._put(`/cmk/commit/${this.userGuid}`).set("Content-Type", "application/json").send(cmks.toString())
+  async commit (cmks, EncSetCMKStatei, gCMKR2, gPrismAuth, emaili, mIdORKs){
+    const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
+    const R2 = urlEncode(gCMKR2.toArray());
+    const prismAuth = urlEncode(gPrismAuth.toArray());
+  
+    const resp = await this._put(`/cmk/commit/${this.userGuid}?encryptedState=${EncSetCMKStatei.toString()}&R2=${R2}&S=${cmks.toString()}&gPRISMAuth=${prismAuth}&emaili=${emaili}&${orkIds}`)
         .ok(res => res.status < 500);
   
       if (!resp.ok) return  Promise.reject(new Error(resp.text));

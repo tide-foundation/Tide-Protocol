@@ -169,13 +169,14 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("precommit/{uid}")]
-        public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] string encryptedState, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point[] gKtest, [FromQuery] ICollection<string> orkIds)
+        public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] string encryptedState, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCMKtest,[FromQuery] Ed25519Point gPRIMStest,[FromQuery] Ed25519Point gCMK2test, [FromQuery] ICollection<string> orkIds)
         {
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
             BigInteger S;
+            var gKtest = new Ed25519Point[]{gCMKtest, gPRIMStest,gCMK2test};
 
             try{
                 S = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);

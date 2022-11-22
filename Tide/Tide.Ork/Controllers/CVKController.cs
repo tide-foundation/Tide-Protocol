@@ -131,22 +131,26 @@ namespace Tide.Ork.Controllers
             return Ok(response);
         }
 
-        // [HttpGet("precommit/{vuid}/{gCVKtest}/{gCVK2test}/{gCVKR2}")]
-        // public ActionResult<string> PreCommit([FromRoute] Guid vuid, [FromRoute] Ed25519Point gCVKtest , [FromRoute] Ed25519Point  gCVK2test, [FromRoute] Ed25519Point  gCVKR2 )
-        // {
-        //     if (gCVKtest.IsEquals(gCVK) && gCVK2test.IsEquals(gCVK2))
-        //     {
-        //            _logger.LogInformation($"PreCommit: Unsafe point for {vuid}");
-        //             return BadRequest("Invalid parameters");
-        //     }
 
+        [HttpGet("precommit/{vuid}")]
+        public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] string encryptedState, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCVKtest, [FromQuery] Ed25519Point gCVK2test, [FromQuery] ICollection<string> orkIds)
+        {
+            // Get ork Publics from simulator, searching with their usernames e.g. ork1
+            var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
+            Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
+            BigInteger S;
+            var gKtest = new Ed25519Point[]{gCVKtest, gCVK2test};
 
+            try{
+                S = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
+            }catch(Exception e){
+                _logger.LogInformation($"Commit: {e}", e);
+                return BadRequest(e);
+            }
 
-
-
-        //     return CVKSi.ToString();
-        // }
+            return Ok(S.ToString());
+        }
 
         // [HttpPut("[commit]/{vuid}")]
         // public async Task<ActionResult<string>> Commit([FromRoute] Guid vuid, [FromBody] string data)
