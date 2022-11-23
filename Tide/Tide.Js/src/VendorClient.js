@@ -50,7 +50,7 @@ export default class VendorClient {
     const res = await superagent.get(`${this.url}/configuration`);
     return {
       orkUrls: res.body.orkUrls,
-      pubKey: ed25519Key.from(res.body.pubKey),
+      vendorPubKey: ed25519Key.from(res.body.pubKey),
     };
   }
 
