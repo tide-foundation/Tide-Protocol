@@ -47,7 +47,7 @@ export default class DAuthFlow {
     try{
       const n = bigInt(ed25519Point.order.toString());
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
-      
+
       const r1 = random();
       const r2 = random();
   
@@ -122,7 +122,7 @@ export default class DAuthFlow {
     
   }
 
-  async PreCommit (gTests, gCMKR2, state, timestamp){
+  async PreCommit (gTests, gCMKR2, state, timestampg, gPrismAuth, email){
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
       const pre_commitCMKResponse = await this.clienSet.all((DAuthClient) => DAuthClient.preCommit(gTests, gCMKR2, state, mIdORKs));
@@ -144,8 +144,8 @@ export default class DAuthFlow {
       if(!ed25519Point.g.times(CMKS).isEqual(CMKR.add(gTests[0].times(CMKH_int)))) {
         return Promise.reject("Ork Signature Invalid")
       }
-
-      return {CMKS : CMKS};
+      
+      const commitCMKResponse = await this.clienSet.all((DAuthClient) => DAuthClient.commit(CMKS, state, gCMKR2, gPrismAuth, email, mIdORKs));
   
     }catch(err){
       Promise.reject(err);
