@@ -19,6 +19,7 @@ namespace Tide.Core
         public BigInteger Cmk2i { get; set; }
          public Ed25519Point GCmk2 {get; set;}
         public string Email { get; set; }
+        public string CommitStatus {get; set;}
         
 
         public CmkVault() : base(1)
@@ -49,6 +50,7 @@ namespace Tide.Core
             Cmk2i = new BigInteger(data[5], true, true);
             GCmk2 = Ed25519Point.From(data[6]);
             Email =  Encoding.UTF8.GetString(data[7]);
+            CommitStatus = Encoding.UTF8.GetString(data[8]);
            
         }
     }

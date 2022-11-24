@@ -158,7 +158,7 @@ export default class DCryptClient extends ClientBase {
         const gCVKtest = urlEncode(gTests[0].toArray());
         const gCVK2test = urlEncode(gTests[1].toArray());
     
-        const resp = await this._get(`/cvk/precommit/${this.userGuid}?encryptedState=${EncSetCVKStatei.toString()}&R2=${R2}&gCVKtest=${gCVKtest}&gCVK2test=${gCVK2test}&${orkIds}`);
+        const resp = await this._get(`/cvk/precommit/${this.userGuid}?R2=${R2}&gCVKtest=${gCVKtest}&gCVK2test=${gCVK2test}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(EncSetCMKStatei));
         if (!resp.ok) return  Promise.reject(new Error(resp.text));
         return BigInt(resp.text);
       }catch(err){
@@ -168,15 +168,19 @@ export default class DCryptClient extends ClientBase {
 
   /**
    * @param {BigInt} cvks
+   * @param {string} EncSetCMKStatei
+   * @param {ed25519Point} gCvKR2
+   * @param {Dictionary<string | null>} mIdORKs 
    */
-  async commit (cvks){
-    const resp = await this._put(`/cvk/commit/${this.userGuid}`).set("Content-Type", "application/json").send(cvks.toString())
-        .ok(res => res.status < 500);
-  
-      if (!resp.ok) return  Promise.reject(new Error(resp.text));
-      return resp.ok;
-  }
+   async commit (cvks, EncSetCMKStatei, gCVKR2, mIdORKs){
+    const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
+    const R2 = urlEncode(gCVKR2.toArray());
 
+    const resp = await this._put(`/cvk/commit/${this.userGuid}?R2=${R2}&S=${cvks.toString()}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(EncSetCMKStatei))
+      .ok(res => res.status < 500);
+    if (!resp.ok) return  Promise.reject(new Error(resp.text));
+    return resp.ok;
+  }
   /**
    * @param { Guid } tranid
    * @param {AESKey} key

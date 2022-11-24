@@ -208,7 +208,7 @@ export default class DAuthClient extends ClientBase {
 
       const obj = JSON.parse(resp.text.toString());
       const gKTesti = obj.gKTesti.map(p => ed25519Point.from(Buffer.from(p, 'base64')));
-      return [gKTesti[0],  gKTesti[1], gKTesti[2], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.encrypedData];
+      return [gKTesti[0],  gKTesti[1], gKTesti[2], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.EncryptedData];
     }catch(err){
       return Promise.reject(err);
     }
@@ -219,18 +219,21 @@ export default class DAuthClient extends ClientBase {
    * @param {ed25519Point[]} gTests 
    * @param {Dictionary<string | null>} mIdORKs 
    * @param {ed25519Point} gCMKR2
-   * @param {string[]} EncSetCMKStatei
+   * @param {string} EncSetCMKStatei
+   * @param {ed25519Point} gPrismAuth
+   * @param {string} emaili
    * @returns {Promise<BigInt>} 
    */
-   async preCommit (gTests, gCMKR2, EncSetCMKStatei,mIdORKs){
+   async preCommit (gTests, gCMKR2, EncSetCMKStatei, gPrismAuth, emaili, mIdORKs){
     try{
       const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
       const R2 = urlEncode(gCMKR2.toArray());
       const gCMKtest = urlEncode(gTests[0].toArray());
       const gPRISMtest = urlEncode(gTests[1].toArray());
       const gCMK2test = urlEncode(gTests[2].toArray());
+      const prismAuth = urlEncode(gPrismAuth.toArray());
   
-      const resp = await this._get(`/cmk/precommit/${this.userGuid}?encryptedState=${EncSetCMKStatei.toString()}&R2=${R2}&gCMKtest=${gCMKtest}&gPRISMtest=${gPRISMtest}&gCMK2test=${gCMK2test}&${orkIds}`);
+      const resp = await this._get(`/cmk/precommit/${this.userGuid}?R2=${R2}&gCMKtest=${gCMKtest}&gPRISMtest=${gPRISMtest}&gCMK2test=${gCMK2test}&gPRISMAuth=${prismAuth}&emaili=${emaili}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(EncSetCMKStatei));
       if (!resp.ok) return  Promise.reject(new Error(resp.text));
       return BigInt(resp.text);
     }catch(err){
@@ -240,22 +243,18 @@ export default class DAuthClient extends ClientBase {
 
   /**
    * @param {BigInt} cmks
-   * @param {string[]} EncSetCMKStatei
+   * @param {string} EncSetCMKStatei
    * @param {ed25519Point} gCMKR2
-   * @param {ed25519Point} gPrismAuth
-   * @param {string} emaili
    * @param {Dictionary<string | null>} mIdORKs 
    */
-  async commit (cmks, EncSetCMKStatei, gCMKR2, gPrismAuth, emaili, mIdORKs){
+  async commit (cmks, EncSetCMKStatei, gCMKR2,  mIdORKs){
     const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
     const R2 = urlEncode(gCMKR2.toArray());
-    const prismAuth = urlEncode(gPrismAuth.toArray());
   
-    const resp = await this._put(`/cmk/commit/${this.userGuid}?encryptedState=${EncSetCMKStatei.toString()}&R2=${R2}&S=${cmks.toString()}&gPRISMAuth=${prismAuth}&emaili=${emaili}&${orkIds}`)
-        .ok(res => res.status < 500);
-  
-      if (!resp.ok) return  Promise.reject(new Error(resp.text));
-      return resp.ok;
+    const resp = await this._put(`/cmk/commit/${this.userGuid}?R2=${R2}&S=${cmks.toString()}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(EncSetCMKStatei))
+      .ok(res => res.status < 500);
+    if (!resp.ok) return  Promise.reject(new Error(resp.text));
+    return resp.ok;
   }
 
     /**

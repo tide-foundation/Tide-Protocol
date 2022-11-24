@@ -122,19 +122,19 @@ export default class DAuthFlow {
     
   }
 
-  async PreCommit (gTests, gCMKR2, state, timestampg, gPrismAuth, email){
+  async PreCommit (gTests, gCMKR2, state, timestamp, gPrismAuth, email){
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
-      const pre_commitCMKResponse = await this.clienSet.all((DAuthClient) => DAuthClient.preCommit(gTests, gCMKR2, state, mIdORKs));
+      const pre_commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCMKR2, state[i],gPrismAuth, email, mIdORKs));
       
-      const CMKS = pre_commitCMKResponse.values.map(e => e[0]).reduce((sum, sig) => (sum + sig) % ed25519Point.order);
+      const CMKS = pre_commitCMKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); //need to fix
 
       const CMKM = Hash.shaBuffer(Buffer.from(gTests[0].toArray()).toString('base64') + timestamp.toString() + this.userID.guid.toString()); // TODO: Add point.to_base64 function
       
       //Any other ways to get public?
       const cln = this.clienSet.get(0); // chnage this later
       const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-      const [, pubs, ,] = await dnsCln.getInfoOrks(); 
+      const [, pubs, ,orks] = await dnsCln.getInfoOrks(); 
       
       const CMKR = pubs.map(pub => pub.y).reduce((sum, p) => p.add(sum)) + gCMKR2;
 
@@ -145,7 +145,7 @@ export default class DAuthFlow {
         return Promise.reject("Ork Signature Invalid")
       }
       
-      const commitCMKResponse = await this.clienSet.all((DAuthClient) => DAuthClient.commit(CMKS, state, gCMKR2, gPrismAuth, email, mIdORKs));
+      const commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.commit(CMKS, state[i], gCMKR2, mIdORKs));
   
     }catch(err){
       Promise.reject(err);

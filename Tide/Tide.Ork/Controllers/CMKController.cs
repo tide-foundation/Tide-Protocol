@@ -169,29 +169,49 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("precommit/{uid}")]
-        public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] string encryptedState, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCMKtest,[FromQuery] Ed25519Point gPRIMStest,[FromQuery] Ed25519Point gCMK2test, [FromQuery] ICollection<string> orkIds)
+        public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCMKtest,[FromQuery] Ed25519Point gPRISMtest,[FromQuery] Ed25519Point gCMK2test, [FromQuery] ICollection<string> orkIds,[FromQuery] Ed25519Point gPRISMAuth, [FromQuery] string emaili,[FromBody] string encryptedState)
         {
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            BigInteger S;
-            var gKtest = new Ed25519Point[]{gCMKtest, gPRIMStest,gCMK2test};
-
+            KeyGenerator.PreCommitResponse preCommitResponse;
+            var gKtest = new Ed25519Point[]{gCMKtest, gPRISMtest,gCMK2test};
             try{
-                S = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
+                preCommitResponse = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
             }catch(Exception e){
                 _logger.LogInformation($"Commit: {e}", e);
                 return BadRequest(e);
             }
+            byte[] PRISMAuth_hash = Utils.Hash((gPRISMAuth * _config.PrivateKey.X).ToByteArray());
+            AesKey PRISMAuthi = AesKey.Seed(PRISMAuth_hash);
+            
+            var account = new CmkVault
+            {
+                UserId = uid,
+                GCmk = preCommitResponse.gKn[0],
+                Cmki = preCommitResponse.Yn[0], 
+                Prismi = preCommitResponse.Yn[1],
+                PrismAuthi = PRISMAuthi,
+                Cmk2i =  preCommitResponse.Yn[2],
+                GCmk2 =  preCommitResponse.gKn[2],
+                Email = emaili,
+                CommitStatus = "P"
+                          
+            };
+            var resp = await _manager.Add(account);
+            if (!resp.Success) {
+                _logger.LogInformation($"Commit: CMK was not added for uid '{uid}'");
+                return Problem(resp.Error);
+            }
 
-            return Ok(S.ToString());
+            return Ok(preCommitResponse.S.ToString());
         }
 
         [HttpPut("commit/{uid}")]
-        public async Task<ActionResult> Commit([FromRoute] Guid uid, [FromQuery] string encryptedState, [FromQuery] string S, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gPRISMAuth, [FromQuery] string emaili, [FromQuery] ICollection<string> orkIds)
+        public async Task<ActionResult> Commit([FromRoute] Guid uid, [FromQuery] string S, [FromQuery] Ed25519Point R2, [FromQuery] ICollection<string> orkIds, [FromBody] string encryptedState)
         {
-            // Get ork Publics from simulator, searching with their usernames e.g. ork1
+             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
             BigInteger S_int = BigInteger.Parse(S);
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
@@ -203,25 +223,16 @@ namespace Tide.Ork.Controllers
                 _logger.LogInformation($"Commit: {e}");
                 return BadRequest(e);
             }
+            var account = await _manager.GetById(uid);
+            if (account == null){
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, uid, uid, $"SignEntry: Account {uid} does not exist");
+                return Unauthorized("Invalid account or signature");
+            }
 
-            byte[] PRISMAuth_hash = Utils.Hash((gPRISMAuth * _config.PrivateKey.X).ToByteArray());
-            AesKey PRISMAuthi = AesKey.Seed(PRISMAuth_hash);
-
-            var account = new CmkVault
-            {
-                UserId = uid,
-                GCmk = commitResponse.gKn[0],
-                Cmki = commitResponse.Yn[0], 
-                Prismi = commitResponse.Yn[1],
-                PrismAuthi = PRISMAuthi,
-                Cmk2i =  commitResponse.Yn[2],
-                GCmk2 =  commitResponse.gKn[2],
-                Email = emaili
-                          
-            };
-            var resp = await _manager.Add(account);
+            account.CommitStatus = "C";
+            var resp = await _manager.SetOrUpdate(account);
             if (!resp.Success) {
-                _logger.LogInformation($"Commit: CMK was not added for uid '{uid}'");
+                _logger.LogInformation($"Commit: CMK was not updated for uid '{uid}'");
                 return Problem(resp.Error);
             }
 

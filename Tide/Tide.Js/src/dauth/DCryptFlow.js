@@ -99,9 +99,9 @@ export default class DCryptFlow {
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
       
-      const pre_commitCVKResponse = await this.clienSet.all((DAuthClient) => DAuthClient.preCommit(gTests, gCVKR2, state, mIdORKs));
+      const pre_commitCVKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCVKR2, state[i], mIdORKs));
       
-      const CVKS = pre_commitCVKResponse.values.map(e => e[0]).reduce((sum, sig) => (sum + sig) % ed25519Point.order);
+      const CVKS = pre_commitCVKResponse.values.map(e => e[0]).reduce((sum, sig) => (sum + sig) % ed25519Point.order); //Need to fix this
 
       const CVKM = Hash.shaBuffer(Buffer.from(gTests[0].toArray()).toString('base64') + timestamp.toString() + vuid.guid.toString()); // TODO: Add point.to_base64 function
       
@@ -119,6 +119,8 @@ export default class DCryptFlow {
         return Promise.reject("Ork Signature Invalid")
       }
 
+      const commitCVKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.commit(CVKS, state[i], gCVKR2, mIdORKs));
+  
 
     }catch(err){
       Promise.reject(err);

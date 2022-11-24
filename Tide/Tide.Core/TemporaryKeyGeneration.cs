@@ -162,10 +162,9 @@ public class KeyGenerator
         };
         return JsonSerializer.Serialize(response);
     }
-    public BigInteger PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
+    public PreCommitResponse PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
     {
         // Reastablish state
-       // SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
         StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(EncSetKeyStatei)); // decrypt encrypted state in response
 
         if(!state.KeyID.Equals(keyID))
@@ -184,9 +183,14 @@ public class KeyGenerator
         BigInteger ri = new BigInteger(Utils.Hash(rData_To_Hash), true, false).Mod(Ed25519.N);
 
         // Verifying both publics
-        if(!gKntest.Select((gKtest, i) => gKtest.IsEquals(gKn[i])).All(verify => verify == true)){ // check all elements of gKtest[n] == gK[n]
-            throw new Exception("PreCommit: gKtest failed");
-        }
+        Console.WriteLine ("{0} {1}",gKntest[0].GetX().ToString() , gKn[0].GetX().ToString());
+        Console.WriteLine ("{0} {1} ",gKntest[1].GetX().ToString(),gKn[1].GetX().ToString());
+        Console.WriteLine ("{0} {1} ",gKntest[2].GetX().ToString() ,gKn[2].GetX().ToString());
+        
+        
+        // if(!gKntest.Select((gKtest, i) => gKtest.IsEquals(gKn[i])).All(verify => verify == true)){ // check all elements of gKtest[n] == gK[n]
+        //     throw new Exception("PreCommit: gKtest failed");
+        // }
 
         // This is done only on the first key
         Ed25519Point R = mgOrkij.Aggregate(Ed25519.Infinity, (sum, next) => next.Y + sum) + R2;
@@ -204,15 +208,21 @@ public class KeyGenerator
         // Generate the partial signature
         BigInteger Y = new BigInteger(state.Yn[0], true, true);
         BigInteger Si = this.MSecOrki + ri + (H * Y * li);
-
-        return Si;
+        
+        
+        return new PreCommitResponse{
+                Timestampi = state.Timestampi,
+                gKn = state.gKn.Select(gK => Ed25519Point.From(gK)).ToArray(),
+                Yn = state.Yn.Select(Y => new BigInteger(Y, true, true)).ToArray(),
+                S = Si
+        };
     }
 
     public CommitResponse Commit(string keyID, BigInteger S, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
     {
         // Reastablish state
-        SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
-        StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(decryptedResponse.EncryptedData)); // decrypt encrypted state in response
+       // SetKeyResponse decryptedResponse = JsonSerializer.Deserialize<SetKeyResponse>(EncSetKeyStatei);  // deserialize reponse
+        StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(EncSetKeyStatei)); // decrypt encrypted state in response
 
         if(!state.KeyID.Equals(keyID))
         {
@@ -300,6 +310,13 @@ public class KeyGenerator
         public long Timestampi {get; set;}
         public Ed25519Point[] gKn {get; set;}
         public BigInteger[] Yn {get; set;}
+    }
+     public class PreCommitResponse
+    {
+        public long Timestampi {get; set;}
+        public Ed25519Point[] gKn {get; set;}
+        public BigInteger[] Yn {get; set;}
+        public BigInteger S {get; set;}
     }
     internal class StateData
     {
