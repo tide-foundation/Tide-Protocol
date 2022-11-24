@@ -45,8 +45,10 @@ export default class Cipher {
     
     const bufferAsymmetric = key.encrypt(toAsymmetricEncrypt).toArray();
     const tagBuffer = tag.toArray();
-    const signature = Buffer.from(Utils.padLeft(key.sign(Buffer.concat([bufferAsymmetric, tagBuffer]), "edDSA"), 32 * 3));  /////////////// may present issues
-    
+    //const signature = Buffer.from(Utils.padLeft(key.sign(Buffer.concat([bufferAsymmetric, tagBuffer]), "edDSA"), 32 * 3));  /////////////// may present issues
+    const signature = Buffer.alloc(32 * 3) // removing signature because 1. no one checks 2. we are now creating cipher with only pub, so cannot sign
+
+
     const size =
       bufferAsymmetric.length +
       tagBuffer.length +

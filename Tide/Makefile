@@ -7,7 +7,7 @@ build-ork:
 	docker build -t tideorg/ork -f Tide.Ork\Dockerfile .
 
 run:
-	docker-compose -f docker-compose.yml -f docker-compose.storage.yml -f docker-compose.proxy.yml up ork1 ork2 ork3 ork4 ork5
+	docker-compose -f docker-compose.yml -f docker-compose.storage.yml -f docker-compose.proxy.yml up ork1 ork2 ork3 ork4 ork5 vendor
 
 simulator:
 	docker-compose -f docker-compose.yml -f docker-compose.storage.yml -f docker-compose.proxy.yml up -d simulator
