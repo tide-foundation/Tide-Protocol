@@ -133,7 +133,7 @@ namespace Tide.Ork.Controllers
 
 
         [HttpGet("precommit/{vuid}")]
-        public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCVKtest, [FromQuery] Ed25519Point gCVK2test, [FromQuery] ICollection<string> orkIds, [FromBody] string encryptedState)
+        public async Task<ActionResult> PreCommit([FromRoute] Guid vuid, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCVKtest, [FromQuery] Ed25519Point gCVK2test, [FromQuery] Ed25519Point gCMKAuth, [FromQuery] ICollection<string> orkIds, [FromBody] string encryptedState)
         {
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
@@ -143,42 +143,66 @@ namespace Tide.Ork.Controllers
             var gKtest = new Ed25519Point[]{gCVKtest, gCVK2test};
 
             try{
-                preCommitResponse = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
+                preCommitResponse = _keyGenerator.PreCommit(vuid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
             }catch(Exception e){
                 _logger.LogInformation($"Commit: {e}", e);
                 return BadRequest(e);
             }
 
-            return Ok(preCommitResponse.ToString());
+            byte[] CMKAuth_hash = Utils.Hash((gCMKAuth * _config.PrivateKey.X).ToByteArray());
+            AesKey CMKuthi = AesKey.Seed(CMKAuth_hash);
+           
+            var account = new CvkVault
+            {
+                VuId = vuid,
+                GCVK = preCommitResponse.gKn[0],
+                CVKi = preCommitResponse.Yn[0], 
+                GCvkAuth = CMKuthi,
+                CVK2i = preCommitResponse.Yn[1],
+                GCVK2 =  preCommitResponse.gKn[1],
+                CommitStatus = "P"
+                          
+            };
+            var resp = await _managerCvk.Add(account);
+            if (!resp.Success) {
+                _logger.LogInformation($"Commit: CVK was not added for uid '{vuid}'");
+                return Problem(resp.Error);
+            }
+            _logger.LogInformation($"Commit: New CVK was added for uid '{vuid}'");
+          
+            return Ok(preCommitResponse.S.ToString());
         }
 
-        // [HttpPut("[commit]/{vuid}")]
-        // public async Task<ActionResult<string>> Commit([FromRoute] Guid vuid, [FromBody] string data)
-        // {
+        [HttpPut("commit/{vuid}")]
+        public async Task<ActionResult> Commit([FromRoute] Guid vuid, [FromQuery] string S, [FromQuery] Ed25519Point R2, [FromQuery] ICollection<string> orkIds, [FromBody] string encryptedState)
+        {
+             // Get ork Publics from simulator, searching with their usernames e.g. ork1
+            var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
+            BigInteger S_int = BigInteger.Parse(S);
+            Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
             
-
-            
-            
-            
-            
-        //     var account = new CvkVault
-        //     {
-        //         VuId = vuid,
-        //         GCVK =    ,
-        //         CVKi = , 
-        //         GCvkAuth = ,
-        //         CVK2i = ,
-        //         GCVK2 =  
-                          
-        //     };
-        //     var resp = await _managerCvk.SetOrUpdate(account);
-        //     if (!resp.Success) {
-        //         _logger.LogInformation($"Commit: CMK was not added for uid '{vuid}'");
-        //         return Problem(resp.Error);
-        //     }
-
-        //     return Ok();
-        // }
+            KeyGenerator.CommitResponse commitResponse;
+            try{
+                commitResponse = _keyGenerator.Commit(vuid.ToString(), S_int, mgOrkj_Keys, R2, encryptedState);
+            }catch(Exception e){
+                _logger.LogInformation($"Commit: {e}");
+                return BadRequest(e);
+            }
+            var account = await _managerCvk.GetById(vuid);
+            if (account == null){
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, vuid, vuid, $"SignEntry: Account {vuid} does not exist");
+                return Unauthorized("Invalid account or signature");
+            }
+          
+            account.CommitStatus = "C";
+            var resp = await _managerCvk.SetOrUpdate(account);
+            if (!resp.Success) {
+                _logger.LogInformation($"Commit: CVK was not updated for uid '{vuid}'");
+                return Problem(resp.Error);
+            }
+           
+            return Ok();
+        }
 
 
         // [HttpPut("random/{vuid}/{partialCvkPub}/{partialCvk2Pub}")]

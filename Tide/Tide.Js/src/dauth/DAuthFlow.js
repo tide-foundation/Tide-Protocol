@@ -126,7 +126,7 @@ export default class DAuthFlow {
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
       const pre_commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCMKR2, state[i],gPrismAuth, email, mIdORKs));
       
-      const CMKS = pre_commitCMKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); //need to fix
+      const CMKS = pre_commitCMKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); 
 
       const CMKM = Hash.shaBuffer(Buffer.from(gTests[0].toArray()).toString('base64') + timestamp.toString() + this.userID.guid.toString()); // TODO: Add point.to_base64 function
       

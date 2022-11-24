@@ -204,7 +204,7 @@ namespace Tide.Ork.Controllers
                 _logger.LogInformation($"Commit: CMK was not added for uid '{uid}'");
                 return Problem(resp.Error);
             }
-
+            _logger.LogInformation($"Commit: New CMK was added for uid '{uid}'");
             return Ok(preCommitResponse.S.ToString());
         }
 

@@ -83,8 +83,8 @@ export default class DCryptFlow {
 
       const setCVKResponse = await pre_setCVKResponse;
 
-      const gCVKtest = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[0]).times(lis.get(i)), ed25519Point.infinity); // Does Sum ( gCVKtesti ) * li . Li here works because of ordered indexes
-      const gCVK2test = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[1]).times(lis.get(i)), ed25519Point.infinity);
+      const gCVKtest = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[0].times(lis.get(i))), ed25519Point.infinity); // Does Sum ( gCVKtesti ) * li . Li here works because of ordered indexes
+      const gCVK2test = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[1].times(lis.get(i))), ed25519Point.infinity);
       const gCVKR2 = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[2]), ed25519Point.infinity); // Does Sum (gCMKR2)
       const encryptedStatei = setCVKResponse.values.map(resp => resp[3]);
 
@@ -95,14 +95,14 @@ export default class DCryptFlow {
     
   }
 
-  async PreCommit (gTests, gCVKR2, state, vuid, timestamp){
+  async PreCommit (gTests, gCVKR2, state, vuid, timestamp, gCMKAuth){
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
       
-      const pre_commitCVKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCVKR2, state[i], mIdORKs));
+      const pre_commitCVKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCVKR2, state[i], mIdORKs, gCMKAuth));
       
-      const CVKS = pre_commitCVKResponse.values.map(e => e[0]).reduce((sum, sig) => (sum + sig) % ed25519Point.order); //Need to fix this
-
+      const CVKS = pre_commitCVKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); 
+  
       const CVKM = Hash.shaBuffer(Buffer.from(gTests[0].toArray()).toString('base64') + timestamp.toString() + vuid.guid.toString()); // TODO: Add point.to_base64 function
       
       //Any other ways to get public?

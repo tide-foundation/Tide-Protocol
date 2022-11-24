@@ -149,16 +149,18 @@ export default class DCryptClient extends ClientBase {
    * @param {Dictionary<string | null>} mIdORKs 
    * @param {ed25519Point} gCVKR2
    * @param {string[]} EncSetCVKStatei
+   * @param {ed25519Point} gCMKAuth
    * @returns {Promise<BigInt>} 
    */
-    async preCommit (gTests, gCVKR2, EncSetCVKStatei,mIdORKs){
+    async preCommit (gTests, gCVKR2, EncSetCVKStatei,mIdORKs, gCMKAuth){
       try{
         const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
         const R2 = urlEncode(gCVKR2.toArray());
         const gCVKtest = urlEncode(gTests[0].toArray());
         const gCVK2test = urlEncode(gTests[1].toArray());
+        const CMKAuth = urlEncode(gCMKAuth.toArray());
     
-        const resp = await this._get(`/cvk/precommit/${this.userGuid}?R2=${R2}&gCVKtest=${gCVKtest}&gCVK2test=${gCVK2test}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(EncSetCMKStatei));
+        const resp = await this._get(`/cvk/precommit/${this.userGuid}?R2=${R2}&gCVKtest=${gCVKtest}&gCVK2test=${gCVK2test}&gCMKAuth=${CMKAuth}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(EncSetCVKStatei));
         if (!resp.ok) return  Promise.reject(new Error(resp.text));
         return BigInt(resp.text);
       }catch(err){
