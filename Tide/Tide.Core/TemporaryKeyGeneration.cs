@@ -183,14 +183,9 @@ public class KeyGenerator
         BigInteger ri = new BigInteger(Utils.Hash(rData_To_Hash), true, false).Mod(Ed25519.N);
 
         // Verifying both publics
-        Console.WriteLine ("{0} {1}",gKntest[0].GetX().ToString() , gKn[0].GetX().ToString());
-        Console.WriteLine ("{0} {1} ",gKntest[1].GetX().ToString(),gKn[1].GetX().ToString());
-        Console.WriteLine ("{0} {1} ",gKntest[2].GetX().ToString() ,gKn[2].GetX().ToString());
-        
-        
-        // if(!gKntest.Select((gKtest, i) => gKtest.IsEquals(gKn[i])).All(verify => verify == true)){ // check all elements of gKtest[n] == gK[n]
-        //     throw new Exception("PreCommit: gKtest failed");
-        // }
+        if(!gKntest.Select((gKtest, i) => gKtest.IsEquals(gKn[i])).All(verify => verify == true)){ // check all elements of gKtest[n] == gK[n]
+             throw new Exception("PreCommit: gKtest failed");
+        }
 
         // This is done only on the first key
         Ed25519Point R = mgOrkij.Aggregate(Ed25519.Infinity, (sum, next) => next.Y + sum) + R2;

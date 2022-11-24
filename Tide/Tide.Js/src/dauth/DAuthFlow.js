@@ -60,7 +60,7 @@ export default class DAuthFlow {
       
       const genShardResp = await this.clienSet.all(dAuthClient => dAuthClient.genShard(mIdORKs,  3, gBlurUser , gBlurPass));
 
-      const gCMK = genShardResp.map(a =>  a[0]).reduce((sum, point) => sum.add(point), ed25519Point.infinity);
+      const gCMK = genShardResp.values.map(a =>  a[0]).reduce((sum, point) => sum.add(point), ed25519Point.infinity);
 
       /**
        * @param {ed25519Point[]} share1 
@@ -104,15 +104,14 @@ export default class DAuthFlow {
       const idGens = await this.clienSet.all(c => c.getClientGenerator()); // implement method to only use first 14 orks that reply
       const ids = idGens.map(idGen => idGen.id);
       const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString()))); 
-      
-      const AA = lis.map(li => li.toString());
-
+    
       const setCMKResponse = await pre_setCMKResponse;
 
-      const gCMKtest = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[0]).times(lis.get(i)), ed25519Point.infinity); // Does Sum ( gCMKtesti ) * li . Li here works because of ordered indexes
-      const gPRISMtest = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[1]).times(lis.get(i)), ed25519Point.infinity);
-      const gCMK2test = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[2]).times(lis.get(i)), ed25519Point.infinity);
+      const gCMKtest = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[0].times(lis.get(i))), ed25519Point.infinity);
+      const gPRISMtest = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[1].times(lis.get(i))), ed25519Point.infinity);
+      const gCMK2test = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[2].times(lis.get(i))), ed25519Point.infinity);
       const gCMKR2 = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[3]), ed25519Point.infinity); // Does Sum (gCMKR2)
+
       const encryptedStatei = setCMKResponse.values.map(resp => resp[4]);
 
       return {gTests : [gCMKtest, gPRISMtest, gCMK2test], gCMKR2 : gCMKR2, state : encryptedStatei};
