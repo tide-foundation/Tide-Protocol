@@ -152,19 +152,7 @@ export default class DAuthFlow {
    
   }
 
-  async Commit (CMKS, state, CMKR2, gPrismAuth , emaili){
-    try{
-      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
-
-      const commitCMKResponse = await this.clienSet.all((DAuthClient) => DAuthClient.commit(CMKS, state, CMKR2, gPrismAuth, emaili, mIdORKs));
-
-    }catch(err){
-      Promise.reject(err);
-    }
-   
-  }
-
-
+  
   /**
    * @param {string} password
    * @param {string|string[]} email

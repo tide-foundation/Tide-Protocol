@@ -121,8 +121,9 @@ namespace Tide.Ork.Controllers
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
             string response;
+            string rstring ;
             try{
-                response = _keyGenerator.SetKey(vuid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
+                (response, rstring) = _keyGenerator.SetKey(vuid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
             }catch(Exception e){
                 _logger.LogInformation($"SetCVK: {e}", e);
                 return BadRequest(e);
@@ -143,9 +144,9 @@ namespace Tide.Ork.Controllers
             var gKtest = new Ed25519Point[]{gCVKtest, gCVK2test};
 
             try{
-                preCommitResponse = _keyGenerator.PreCommit(vuid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
+                preCommitResponse = _keyGenerator.PreCommit(vuid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState,string.Empty);
             }catch(Exception e){
-                _logger.LogInformation($"Commit: {e}", e);
+                _logger.LogInformation($"PreCommit: {e}", e);
                 return BadRequest(e);
             }
 
@@ -165,10 +166,10 @@ namespace Tide.Ork.Controllers
             };
             var resp = await _managerCvk.Add(account);
             if (!resp.Success) {
-                _logger.LogInformation($"Commit: CVK was not added for uid '{vuid}'");
+                _logger.LogInformation($"PreCommit: CVK was not added for uid '{vuid}'");
                 return Problem(resp.Error);
             }
-            _logger.LogInformation($"Commit: New CVK was added for uid '{vuid}'");
+            _logger.LogInformation($"PreCommit: New CVK was added for uid '{vuid}'");
           
             return Ok(preCommitResponse.S.ToString());
         }
