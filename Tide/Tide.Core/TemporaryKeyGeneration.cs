@@ -98,7 +98,7 @@ public class KeyGenerator
     /// Make sure orkShares provided are sorted in same order as mgOrkij. For example, orkshare[0].From = ork2 AND mgOrkij[0] = ork2's public.
     /// This function cannot correlate orkId to public key unless it's in the same order
     /// </summary>
-    public (string,string) SetKey(string keyID, string[] orkShares, Ed25519Key[] mgOrkij)
+    public string SetKey(string keyID, string[] orkShares, Ed25519Key[] mgOrkij)
     {
         IEnumerable<ShareEncrypted> encryptedShares = orkShares.Select(share => JsonSerializer.Deserialize<ShareEncrypted>(share)); // deserialize all ork shares back into objects
         if (!encryptedShares.All(share => share.To.Equals(My_Username)))
@@ -149,9 +149,10 @@ public class KeyGenerator
         // Generate EdDSA R from all the ORKs publics
         byte[] MData_To_Hash = gK[0].ToByteArray().Concat(BitConverter.GetBytes(timestamp).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.HashSHA512(MData_To_Hash);
-
-        RandomField rdm = new RandomField(Ed25519.N);
-        var ri =  rdm.Generate(BigInteger.One);
+        byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
+        BigInteger ri = new BigInteger(Utils.HashSHA512(rData_To_Hash), true, false).Mod(Ed25519.N);
+        // RandomField rdm = new RandomField(Ed25519.N);
+        // var ri =  rdm.Generate(BigInteger.One);
 
         //byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
         //BigInteger ri = new BigInteger(Utils.HashSHA512(rData_To_Hash), true, false).Mod(Ed25519.N);
@@ -163,9 +164,10 @@ public class KeyGenerator
             gRi = gRi.ToByteArray(),
             EncryptedData = data_to_encrypt
         };
-        return (JsonSerializer.Serialize(response), ri.ToString());
+        return  JsonSerializer.Serialize(response);
+        //return (JsonSerializer.Serialize(response), ri.ToString());
     }
-    public PreCommitResponse PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei, string r)
+    public PreCommitResponse PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
     {
         // Reastablish state
         StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(EncSetKeyStatei)); // decrypt encrypted state in response
@@ -182,8 +184,8 @@ public class KeyGenerator
         byte[] MData_To_Hash = gKn[0].ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.Hash(MData_To_Hash);
 
-       // byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
-       // BigInteger ri = new BigInteger(Utils.Hash(rData_To_Hash), true, false).Mod(Ed25519.N);
+        byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
+        BigInteger ri = new BigInteger(Utils.Hash(rData_To_Hash), true, false).Mod(Ed25519.N);
 
         // Verifying both publics
         if(!gKntest.Select((gKtest, i) => gKtest.IsEquals(gKn[i])).All(verify => verify == true)){ // check all elements of gKtest[n] == gK[n]
@@ -202,10 +204,10 @@ public class KeyGenerator
         var mgOrkj_Xs = mgOrkij.Select(pub => new BigInteger(new Guid(Utils.Hash(pub.GetPublic().ToByteArray()).Take(16).ToArray()).ToByteArray(), true, true));
         BigInteger my_X = new BigInteger(new Guid(Utils.Hash(this.mgOrki_Key.ToByteArray()).Take(16).ToArray()).ToByteArray(), true, true);
         BigInteger li = EccSecretSharing.EvalLi(my_X, mgOrkj_Xs, Ed25519.N);
-        Console.WriteLine(r);
         // Generate the partial signature
         BigInteger Y = new BigInteger(state.Yn[0], true, true);
-        BigInteger Si = this.MSecOrki + BigInteger.Parse(r) + (H * Y * li);
+        BigInteger Si = this.MSecOrki + ri + (H * Y * li);
+       // BigInteger Si = this.MSecOrki + BigInteger.Parse(r) + (H * Y * li);
         
         
         return new PreCommitResponse{

@@ -32,18 +32,12 @@ namespace Tide.Ork {
                     opt.JsonSerializerOptions.Converters.Add(new Ed25519PointConverter());
                     opt.JsonSerializerOptions.Converters.Add(new AesKeyConverter());
                 });
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => false;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
             var settings = new Settings();
             Configuration.Bind(nameof(Settings), settings);
 
             services.AddSingleton(settings);
             services.AddHttpContextAccessor();
-            services.AddMemoryCache();
+            
             services.AddTransient<IEmailClient, SendGridEmailClient>();
             services.AddTransient<OrkConfig>();
             services.AddSignalR();
@@ -65,18 +59,14 @@ namespace Tide.Ork {
 
             services.AddCors();
             services.AddAuthentication("keyAuth").AddScheme<AuthenticationSchemeOptions, VerificationKeyAuthenticationHandler>("keyAuth", null);
-            services.AddLazyCache();
+           // services.AddLazyCache();
             services.AddDistributedMemoryCache();
-            services.AddMvc(option => option.EnableEndpointRouting = false);
-            services.AddServerSideBlazor();
             services.AddSession(options => {  
                 options.IdleTimeout = TimeSpan.FromMinutes(30);   
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
 
             }); 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddControllersWithViews();
+            //services.AddMvc(option => option.EnableEndpointRouting = false);
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,10 +85,10 @@ namespace Tide.Ork {
             #endif
 
             if (env.IsProduction())
-                app.UseHttpsRedirection();
-            app.UseSession(); 
-            app.UseMvc();
+                app.UseHttpsRedirection();   
             app.UseRouting();
+            app.UseSession(); 
+            //app.UseMvc(); 
             app.UseAuthentication();
             app.UseAuthorization();
 

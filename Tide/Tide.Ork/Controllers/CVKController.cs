@@ -121,9 +121,9 @@ namespace Tide.Ork.Controllers
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
             string response;
-            string rstring ;
+            //string rstring ;
             try{
-                (response, rstring) = _keyGenerator.SetKey(vuid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
+                response = _keyGenerator.SetKey(vuid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
             }catch(Exception e){
                 _logger.LogInformation($"SetCVK: {e}", e);
                 return BadRequest(e);
@@ -144,7 +144,7 @@ namespace Tide.Ork.Controllers
             var gKtest = new Ed25519Point[]{gCVKtest, gCVK2test};
 
             try{
-                preCommitResponse = _keyGenerator.PreCommit(vuid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState,string.Empty);
+                preCommitResponse = _keyGenerator.PreCommit(vuid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
             }catch(Exception e){
                 _logger.LogInformation($"PreCommit: {e}", e);
                 return BadRequest(e);
