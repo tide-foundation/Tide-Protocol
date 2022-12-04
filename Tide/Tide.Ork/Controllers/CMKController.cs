@@ -34,6 +34,8 @@ using Tide.Ork.Repo;
 using System.Collections.Generic;
 using System.Text.Json; 
 using Microsoft.AspNetCore.Http; 
+using LazyCache;
+using LazyCache.Providers;
 
 namespace Tide.Ork.Controllers
 {
@@ -48,15 +50,11 @@ namespace Tide.Ork.Controllers
         private readonly string _orkId;
         private readonly SimulatorOrkManager _orkManager;
         private readonly KeyGenerator _keyGenerator;
-       // private readonly IMemoryCache _memoryCache ;
-        //private readonly IAppCache _cache;
-
-         //private readonly IHttpContextAccessor _httpContextAccessor;
-    //private ISession _session => _httpContextAccessor.HttpContext.Session;
+        private readonly IAppCache _cache;
 
 
 
-        public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger, OrkConfig config, Settings settings)
+        public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger, OrkConfig config, Settings settings, IAppCache cache)
         {
             _manager = factory.BuildCmkManager();
             _mail = mail;
@@ -67,9 +65,7 @@ namespace Tide.Ork.Controllers
 
             var cln = new SimulatorClient(settings.Endpoints.Simulator.Api, _orkId, settings.Instance.GetPrivateKey());
             _orkManager = new SimulatorOrkManager(_orkId, cln);
-           // _memoryCache = memoryCache;
-            //_cache = cache;
-            //_httpContextAccessor = httpContextAccessor;
+            _cache = cache;
             
         }
 
@@ -169,63 +165,48 @@ namespace Tide.Ork.Controllers
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            string response;
-            //string rstring ;
+            string response, rstring;
             try{
-               response = _keyGenerator.SetKey(uid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
+               (response, rstring) = _keyGenerator.SetKey(uid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
             }catch(Exception e){
                 _logger.LogInformation($"SetCMK: {e}", e);
                 return BadRequest(e);
             }
-            //Console.WriteLine(rstring);
+             
+            string r = AddorGetCache(uid,rstring);
+
+            //HttpContext.Session.SetString("SessionId"+_config.UserName, rstring);
             
-            // _cache.Add(uid.ToString(), rstring, DateTimeOffset.UtcNow.AddSeconds(25));
-            //string r = AddorGetCache(uid,rstring);
-            // Console.WriteLine("here {0} ",r);
-             HttpContext.Session.SetString("Name", "John");
-            // _httpContextAccessor.HttpContext.Session.SetString("Age", "John");
-            // var d= HttpContext.Session.GetString("Name")?? "";
-            // if(d==null || d=="")
-            //     Console.WriteLine("here nul null !");
-            
-           // var Name = HttpContext.Session.GetString("Name");
-           // Console.WriteLine("test {0}",Name);
             return Ok(response);
         }
 
-        // private  string AddorGetCache(Guid uid, string ri)
-        // {
-        //     return _cache.GetOrAdd(uid.ToString(), () =>
-        //     {
-        //         Console.WriteLine($"{DateTime.UtcNow}: Fetching from service");
-
-        //         var item = ri;
-        //         return item;
-        //     }, DateTimeOffset.Now.AddSeconds(5));
-        // }
+      
     
 
 
         [HttpGet("precommit/{uid}")]
         public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCMKtest,[FromQuery] Ed25519Point gPRISMtest,[FromQuery] Ed25519Point gCMK2test, [FromQuery] ICollection<string> orkIds,[FromQuery] Ed25519Point gPRISMAuth, [FromQuery] string emaili,[FromBody] string encryptedState)
         {
-            //var d= HttpContext.Session?.GetString("Name") ?? "some default value"; //HttpContext.Session.GetString("Name")?? "";
-           // if(d==null || d=="")
-            //    Console.WriteLine("nul null !");
-            var Name1 = HttpContext.Session.GetString("Name");
-            Console.WriteLine("test 1 {0}",Name1);
-            //Console.WriteLine("new {0}",_httpContextAccessor.HttpContext.Session.GetString("Age"));
+        
+            //var ri = HttpContext.Session.GetString("SessionId"+_config.UserName);
+
+            string r = AddorGetCache(uid, string.Empty);
+            if(r == null || r == ""){
+                _logger.LogInformation($"PreCommit: Random not found in cache for uid '{uid}'");
+                return BadRequest("Random not found in cache!");
+            }
+        
+            _cache.Remove(uid.ToString());
+            
+            
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
-            Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
-
-            // string r = AddorGetCache(uid,string.Empty);
-            // Console.WriteLine("here {0} ",r);
+            Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end 
 
             KeyGenerator.PreCommitResponse preCommitResponse;
             var gKtest = new Ed25519Point[]{gCMKtest, gPRISMtest,gCMK2test};
             try{
-                preCommitResponse = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
+                preCommitResponse = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState, r);
             }catch(Exception e){
                 _logger.LogInformation($"PreCommit: {e}", e);
                 return BadRequest(e);
@@ -574,6 +555,18 @@ namespace Tide.Ork.Controllers
             var orkInfoTask = await orkNode;
             return Ed25519Key.ParsePublic(orkInfoTask.PubKey);
         }
+
+        private  string AddorGetCache(Guid uid, string ri)
+        {
+            return _cache.GetOrAdd(uid.ToString(), () =>
+            {
+                Console.WriteLine($"{DateTime.UtcNow}: Fetching or store from service");
+
+                var item = ri;
+                return item;
+            }, DateTimeOffset.Now.AddSeconds(1200)); //Change the expiry time
+        }
+    
 
     }
 }

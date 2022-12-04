@@ -59,13 +59,12 @@ namespace Tide.Ork {
 
             services.AddCors();
             services.AddAuthentication("keyAuth").AddScheme<AuthenticationSchemeOptions, VerificationKeyAuthenticationHandler>("keyAuth", null);
-           // services.AddLazyCache();
-            services.AddDistributedMemoryCache();
-            services.AddSession(options => {  
-                options.IdleTimeout = TimeSpan.FromMinutes(30);   
+            services.AddLazyCache();
+            // services.AddDistributedMemoryCache();
+            // services.AddSession(options => {  
+            //     options.IdleTimeout = TimeSpan.FromMinutes(30);   
 
-            }); 
-            //services.AddMvc(option => option.EnableEndpointRouting = false);
+            // }); 
             services.AddMemoryCache();
         }
 
@@ -87,8 +86,7 @@ namespace Tide.Ork {
             if (env.IsProduction())
                 app.UseHttpsRedirection();   
             app.UseRouting();
-            app.UseSession(); 
-            //app.UseMvc(); 
+            //app.UseSession();  
             app.UseAuthentication();
             app.UseAuthorization();
 

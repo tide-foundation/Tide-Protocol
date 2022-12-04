@@ -98,7 +98,7 @@ public class KeyGenerator
     /// Make sure orkShares provided are sorted in same order as mgOrkij. For example, orkshare[0].From = ork2 AND mgOrkij[0] = ork2's public.
     /// This function cannot correlate orkId to public key unless it's in the same order
     /// </summary>
-    public string SetKey(string keyID, string[] orkShares, Ed25519Key[] mgOrkij)
+    public (string,string) SetKey(string keyID, string[] orkShares, Ed25519Key[] mgOrkij)
     {
         IEnumerable<ShareEncrypted> encryptedShares = orkShares.Select(share => JsonSerializer.Deserialize<ShareEncrypted>(share)); // deserialize all ork shares back into objects
         if (!encryptedShares.All(share => share.To.Equals(My_Username)))
@@ -164,10 +164,9 @@ public class KeyGenerator
             gRi = gRi.ToByteArray(),
             EncryptedData = data_to_encrypt
         };
-        return  JsonSerializer.Serialize(response);
-        //return (JsonSerializer.Serialize(response), ri.ToString());
+        return (JsonSerializer.Serialize(response), ri.ToString());
     }
-    public PreCommitResponse PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei)
+    public PreCommitResponse PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei, string r)
     {
         // Reastablish state
         StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(EncSetKeyStatei)); // decrypt encrypted state in response
@@ -184,8 +183,7 @@ public class KeyGenerator
         byte[] MData_To_Hash = gKn[0].ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.Hash(MData_To_Hash);
 
-        byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
-        BigInteger ri = new BigInteger(Utils.Hash(rData_To_Hash), true, false).Mod(Ed25519.N);
+        BigInteger ri = BigInteger.Parse(r);
 
         // Verifying both publics
         if(!gKntest.Select((gKtest, i) => gKtest.IsEquals(gKn[i])).All(verify => verify == true)){ // check all elements of gKtest[n] == gK[n]

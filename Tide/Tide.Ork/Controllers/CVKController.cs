@@ -34,6 +34,7 @@ using Tide.Ork.Models;
 using Tide.Ork.Repo;
 using Tide.VendorSdk.Classes;
 using System.Text.Json;
+using LazyCache;
 
 namespace Tide.Ork.Controllers
 {
@@ -50,8 +51,8 @@ namespace Tide.Ork.Controllers
         private readonly SimulatorOrkManager _orkManager; 
         private readonly string _orkId;
         private readonly KeyGenerator _keyGenerator;
-
-        public CVKController(IKeyManagerFactory factory, ILogger<CVKController> logger, OrkConfig config, Settings settings)
+        private readonly IAppCache _cache;
+        public CVKController(IKeyManagerFactory factory, ILogger<CVKController> logger, OrkConfig config, Settings settings, IAppCache cache)
         {
             _managerCvk = factory.BuildManagerCvk();
             _ruleManager = factory.BuildRuleManager();
@@ -63,6 +64,7 @@ namespace Tide.Ork.Controllers
              var cln = new Tide.Ork.Classes.SimulatorClient(settings.Endpoints.Simulator.Api, _orkId, settings.Instance.GetPrivateKey());
             _orkManager = new SimulatorOrkManager(_orkId, cln);
             _keyGenerator = new KeyGenerator(_config.PrivateKey.X, _config.PrivateKey.GetPublic().Y, _config.UserName, _config.Threshold);
+            _cache = cache;
         }
 
         [HttpGet("random/{vuid}")]
@@ -120,14 +122,14 @@ namespace Tide.Ork.Controllers
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            string response;
-            //string rstring ;
+            string response, rstring;
             try{
-                response = _keyGenerator.SetKey(vuid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
+                (response, rstring) = _keyGenerator.SetKey(vuid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
             }catch(Exception e){
                 _logger.LogInformation($"SetCVK: {e}", e);
                 return BadRequest(e);
             }
+            string r = AddorGetCache(vuid,rstring);
 
             return Ok(response);
         }
@@ -136,6 +138,13 @@ namespace Tide.Ork.Controllers
         [HttpGet("precommit/{vuid}")]
         public async Task<ActionResult> PreCommit([FromRoute] Guid vuid, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCVKtest, [FromQuery] Ed25519Point gCVK2test, [FromQuery] Ed25519Point gCMKAuth, [FromQuery] ICollection<string> orkIds, [FromBody] string encryptedState)
         {
+            string r = AddorGetCache(vuid,string.Empty);
+            if(r == null || r == ""){
+                _logger.LogInformation($"PreCommit: Random not found in cache for vuid '{vuid}'");
+                return BadRequest("Random not found in cache!");
+            }
+            _cache.Remove(vuid.ToString());
+
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
@@ -144,7 +153,7 @@ namespace Tide.Ork.Controllers
             var gKtest = new Ed25519Point[]{gCVKtest, gCVK2test};
 
             try{
-                preCommitResponse = _keyGenerator.PreCommit(vuid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState);
+                preCommitResponse = _keyGenerator.PreCommit(vuid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState, r);
             }catch(Exception e){
                 _logger.LogInformation($"PreCommit: {e}", e);
                 return BadRequest(e);
@@ -543,6 +552,17 @@ namespace Tide.Ork.Controllers
             var orkNode =_orkManager.GetById(id);
             var orkInfoTask = await orkNode;
             return Ed25519Key.ParsePublic(orkInfoTask.PubKey);
+        }
+
+         private  string AddorGetCache(Guid uid, string ri)
+        {
+            return _cache.GetOrAdd(uid.ToString(), () =>
+            {
+                Console.WriteLine($"{DateTime.UtcNow}: Fetching from service");
+
+                var item = ri;
+                return item;
+            }, DateTimeOffset.Now.AddSeconds(1200)); //Change the expiry time
         }
 
     }
