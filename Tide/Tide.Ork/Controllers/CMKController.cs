@@ -51,6 +51,7 @@ namespace Tide.Ork.Controllers
         private readonly SimulatorOrkManager _orkManager;
         private readonly KeyGenerator _keyGenerator;
         private readonly IAppCache _cache;
+        private readonly CachingManager _cachingManager;
 
 
 
@@ -66,6 +67,7 @@ namespace Tide.Ork.Controllers
             var cln = new SimulatorClient(settings.Endpoints.Simulator.Api, _orkId, settings.Instance.GetPrivateKey());
             _orkManager = new SimulatorOrkManager(_orkId, cln);
             _cache = cache;
+            _cachingManager = new CachingManager();
             
         }
 
@@ -173,7 +175,12 @@ namespace Tide.Ork.Controllers
                 return BadRequest(e);
             }
              
-            string r = AddorGetCache(uid,rstring);
+            //string r = AddorGetCache(uid,rstring);
+            string r = _cachingManager.AddorGetCache(uid.ToString(),rstring);
+            Console.WriteLine("Added {0}",r);
+            string r1 = _cachingManager.AddorGetCache(uid.ToString(),string.Empty);
+            Console.WriteLine("Added r1{0}",r1);
+
 
             //HttpContext.Session.SetString("SessionId"+_config.UserName, rstring);
             
@@ -190,13 +197,15 @@ namespace Tide.Ork.Controllers
         
             //var ri = HttpContext.Session.GetString("SessionId"+_config.UserName);
 
-            string r = AddorGetCache(uid, string.Empty);
+            //string r = AddorGetCache(uid, string.Empty);
+            string r = _cachingManager.AddorGetCache(uid.ToString(),string.Empty);
+            Console.WriteLine("Added {0}",r);
             if(r == null || r == ""){
                 _logger.LogInformation($"PreCommit: Random not found in cache for uid '{uid}'");
                 return BadRequest("Random not found in cache!");
             }
         
-            _cache.Remove(uid.ToString());
+           // _cache.Remove(uid.ToString());
             
             
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
