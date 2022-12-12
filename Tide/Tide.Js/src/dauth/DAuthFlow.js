@@ -113,18 +113,19 @@ export default class DAuthFlow {
       const gCMKR2 = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[3]), ed25519Point.infinity); // Does Sum (gCMKR2)
 
       const encryptedStatei = setCMKResponse.values.map(resp => resp[4]);
+      const randomKey = setCMKResponse.values.map(r => r[5]);
 
-      return {gTests : [gCMKtest, gPRISMtest, gCMK2test], gCMKR2 : gCMKR2, state : encryptedStatei};
+      return {gTests : [gCMKtest, gPRISMtest, gCMK2test], gCMKR2 : gCMKR2, state : encryptedStatei, randomKey : randomKey};
     }catch(err){
       Promise.reject(err);
     }
     
   }
 
-  async PreCommit (gTests, gCMKR2, state, timestamp, gPrismAuth, email){
+  async PreCommit (gTests, gCMKR2, state, randomKey, timestamp, gPrismAuth, email){
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
-      const pre_commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCMKR2, state[i],gPrismAuth, email, mIdORKs));
+      const pre_commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCMKR2, state[i], randomKey[i], gPrismAuth, email, mIdORKs));
       
       const CMKS = pre_commitCMKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); 
 

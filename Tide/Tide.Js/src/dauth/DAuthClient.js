@@ -198,7 +198,7 @@ export default class DAuthClient extends ClientBase {
    * @param {string[]} yijCipher
    * @param {number} CMKtimestamp
    * @param {Dictionary<string | null>} mIdORKij  // fix this null later
-   * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point, ed25519Point, string]>}
+   * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point, ed25519Point, string, string]>}
    */
   async setCMK(yijCipher,CMKtimestamp, mIdORKij) {
     try{
@@ -206,9 +206,10 @@ export default class DAuthClient extends ClientBase {
       const resp = await this._get(`/cmk/set/${this.userGuid}?CMKtimestamp=${CMKtimestamp.toString()}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(yijCipher));
       if (!resp.ok) return  Promise.reject(new Error(resp.text));
 
-      const obj = JSON.parse(resp.text.toString());
+      const object  = JSON.parse(resp.text.toString());
+      const obj = JSON.parse(object.Response.toString());
       const gKTesti = obj.gKTesti.map(p => ed25519Point.from(Buffer.from(p, 'base64')));
-      return [gKTesti[0],  gKTesti[1], gKTesti[2], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.EncryptedData];
+      return [gKTesti[0],  gKTesti[1], gKTesti[2], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.EncryptedData, object.RandomKey];
     }catch(err){
       return Promise.reject(err);
     }
@@ -224,7 +225,7 @@ export default class DAuthClient extends ClientBase {
    * @param {string} emaili
    * @returns {Promise<BigInt>} 
    */
-   async preCommit (gTests, gCMKR2, EncSetCMKStatei, gPrismAuth, emaili, mIdORKs){
+   async preCommit (gTests, gCMKR2, EncSetCMKStatei, randomKey, gPrismAuth, emaili, mIdORKs){
     try{
       const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
       const R2 = urlEncode(gCMKR2.toArray());

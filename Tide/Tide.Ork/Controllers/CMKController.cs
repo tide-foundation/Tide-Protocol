@@ -167,24 +167,28 @@ namespace Tide.Ork.Controllers
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            string response, rstring;
+            string setResponse, rstring;
             try{
-               (response, rstring) = _keyGenerator.SetKey(uid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
+               (setResponse, rstring) = _keyGenerator.SetKey(uid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
             }catch(Exception e){
                 _logger.LogInformation($"SetCMK: {e}", e);
                 return BadRequest(e);
             }
-             
-            //string r = AddorGetCache(uid,rstring);
-            string r = _cachingManager.AddorGetCache(uid.ToString(),rstring);
+            RandomField rdm = new RandomField(Ed25519.N);
+            var RKey = rdm.Generate(BigInteger.One);
+            string r = AddorGetCache(RKey.ToString(),rstring);
+            //string r = _cachingManager.AddorGetCache(uid.ToString(),rstring);
             Console.WriteLine("Added {0}",r);
-            string r1 = _cachingManager.AddorGetCache(uid.ToString(),string.Empty);
-            Console.WriteLine("Added r1{0}",r1);
-
-
+            //string r1 = _cachingManager.AddorGetCache(uid.ToString(),string.Empty);
+            //Console.WriteLine("Added r1{0}",r1);
             //HttpContext.Session.SetString("SessionId"+_config.UserName, rstring);
             
-            return Ok(response);
+             var response = new {
+                Response  =  setResponse ,
+                RandomKey  = RKey.ToString()    
+            };
+
+            return Ok(JsonSerializer.Serialize(response));
         }
 
       
@@ -198,7 +202,7 @@ namespace Tide.Ork.Controllers
             //var ri = HttpContext.Session.GetString("SessionId"+_config.UserName);
 
             //string r = AddorGetCache(uid, string.Empty);
-            string r = _cachingManager.AddorGetCache(uid.ToString(),string.Empty);
+            string r = AddorGetCache(uid.ToString(),string.Empty);
             Console.WriteLine("Added {0}",r);
             if(r == null || r == ""){
                 _logger.LogInformation($"PreCommit: Random not found in cache for uid '{uid}'");
@@ -565,9 +569,9 @@ namespace Tide.Ork.Controllers
             return Ed25519Key.ParsePublic(orkInfoTask.PubKey);
         }
 
-        private  string AddorGetCache(Guid uid, string ri)
+        private  string AddorGetCache(string key, string ri)
         {
-            return _cache.GetOrAdd(uid.ToString(), () =>
+            return _cache.GetOrAdd(key, () =>
             {
                 Console.WriteLine($"{DateTime.UtcNow}: Fetching or store from service");
 

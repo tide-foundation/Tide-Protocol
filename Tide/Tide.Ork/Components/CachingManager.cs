@@ -7,38 +7,33 @@ namespace Tide.Ork.Classes
 {
     public class CachingManager : IDisposable
     {
-        private readonly CachingService Cache;
+        private readonly CachingService _cache;
 
-        public CachingManager(int size = 1024)
+        public CachingManager()
         {
-            Cache = new CachingService(new MemoryCacheProvider(new MemoryCache(new MemoryCacheOptions
-            {
-                SizeLimit = size
-            })));
+            _cache = new CachingService();
         }
 
-        public string AddorGetCache(string id, string ri)
+        public string AddorGetCache(string id, string entry)
         {
-            return Cache.GetOrAdd(id, () =>{
+            return _cache.GetOrAdd(id, () =>{
                 Console.WriteLine($"{DateTime.UtcNow}: Fetching or store from service");
 
-                var item = ri;
+                var item = entry;
                 return item;
             }, BuildPolicy());           
         }
 
 
         private MemoryCacheEntryOptions BuildPolicy() => (new MemoryCacheEntryOptions())
-            .SetSize(1)
             .SetPriority(CacheItemPriority.NeverRemove)
             //.SetSlidingExpiration(DateTimeOffset.Now.AddSeconds(1200))
             .SetAbsoluteExpiration(DateTimeOffset.Now.AddSeconds(1200));
 
-        public void Dispose() => Cache.CacheProvider.Dispose();
+        public void Dispose() => _cache.CacheProvider.Dispose();
 
-        public void Remove(string id) => Cache.Remove(id);
+        public void Remove(string id) => _cache.Remove(id);
 
     
-
     }
 }
