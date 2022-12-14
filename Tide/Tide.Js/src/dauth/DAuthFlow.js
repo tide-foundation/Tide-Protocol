@@ -130,14 +130,8 @@ export default class DAuthFlow {
       const CMKS = pre_commitCMKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); 
 
       const CMKM = Hash.shaBuffer(Buffer.from(gTests[0].toArray()).toString('base64') + timestamp.toString() + this.userID.guid.toString()); // TODO: Add point.to_base64 function
-      
-      //Any other ways to get public?
-      const cln = this.clienSet.get(0); // chnage this later
-      const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-      const [, pubs, ,orks] = await dnsCln.getInfoOrks(); 
-      
+      const pubs = await this.clienSet.all(c => c.getPublic()); //works   
       const CMKR = pubs.map(pub => pub.y).reduce((sum, p) => p.add(sum)) + gCMKR2;
-
       const CMKH = Hash.shaBuffer( Buffer.concat([Buffer.from(CMKR.toArray()),Buffer.from(gTests[0].toArray()), CMKM]));
       const CMKH_int = bigInt_fromBuffer(CMKH);
       
