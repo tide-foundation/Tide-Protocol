@@ -92,7 +92,7 @@ public class KeyGenerator
             GK = gK[0].ToByteArray(),
             EncryptedOrkShares = YCiphers,
             GMultipliers =  gMultiplier == null ? null : gMultiplied.Select(multiplier => multiplier.ToByteArray()).ToArray(),
-            Timestampi = timestampi
+            Timestampi = timestampi.ToString()
         };
 
         return JsonSerializer.Serialize(response);
@@ -118,8 +118,8 @@ public class KeyGenerator
         }
 
         // Verify the time difference is not material (30min)
-        long timestamp = Median(decryptedShares.Select(share => share.Timestampi).ToArray()); // get median of timestamps
-        if (!decryptedShares.All(share => VerifyDelay(share.Timestampi, timestamp)))
+        long timestamp = Median(decryptedShares.Select(share => long.Parse(share.Timestampi)).ToArray()); // get median of timestamps
+        if (!decryptedShares.All(share => VerifyDelay(long.Parse(share.Timestampi), timestamp)))
         {
             throw new Exception("SetKey: One or more of the shares has expired");
         }
@@ -280,7 +280,7 @@ public class KeyGenerator
         var data_to_encrypt = new DataToEncrypt
         {
             KeyID = keyID,
-            Timestampi = timestampi,
+            Timestampi = timestampi.ToString(),
             Shares = shares.Select(pointShares => pointShares[index].Y.ToByteArray(true, true)).ToArray(),
             PartialPubs = gK.Select(partialPub => partialPub.ToByteArray()).ToArray()
         };
@@ -343,7 +343,7 @@ public class KeyGenerator
     internal class DataToEncrypt
     {
         public string KeyID { get; set; } // Guid of key to string()
-        public long Timestampi { get; set; }
+        public string Timestampi { get; set; }
         public byte[][] Shares { get; set; }
         public byte[][] PartialPubs { get; set; }
     }
@@ -358,7 +358,7 @@ public class KeyGenerator
         public byte[] GK { get; set; } // represents G * k[i]  ToByteArray()
         public ShareEncrypted[] EncryptedOrkShares { get; set; }
         public byte[][] GMultipliers { get; set; }
-        public long Timestampi { get; set; }
+        public string Timestampi { get; set; }
     }
 }
 
