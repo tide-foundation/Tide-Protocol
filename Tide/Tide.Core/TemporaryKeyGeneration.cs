@@ -9,6 +9,7 @@ using Tide.Encryption.Ed;
 using Tide.Encryption.Tools;
 using Tide.Encryption.AesMAC;
 using System.Text.Json.Serialization;
+using Tide.Core;
 
 public class KeyGenerator
 {
@@ -18,6 +19,7 @@ public class KeyGenerator
     internal Ed25519Key mgOrki_Key => new Ed25519Key(0, MgOrki);
     private string My_Username { get; } // this ork's username
     public int Threshold { get; } // change me
+    private readonly Caching _cachingManager;
 
     public KeyGenerator(BigInteger mSecOrki, Ed25519Point mgOrki, string my_Username, int threshold)
     {
@@ -25,6 +27,7 @@ public class KeyGenerator
         MgOrki = mgOrki;
         My_Username = my_Username;
         Threshold = threshold;
+        _cachingManager = new Caching();
     }
 
     public string GenShard(string keyID, Ed25519Key[] mgOrkij, int numKeys, Ed25519Point[] gMultiplier, string[] to_userNames)
@@ -149,13 +152,13 @@ public class KeyGenerator
         // Generate EdDSA R from all the ORKs publics
         byte[] MData_To_Hash = gK[0].ToByteArray().Concat(BitConverter.GetBytes(timestamp).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.HashSHA512(MData_To_Hash);
-        byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
-        BigInteger ri = new BigInteger(Utils.HashSHA512(rData_To_Hash), true, false).Mod(Ed25519.N);
-        // RandomField rdm = new RandomField(Ed25519.N);
-        // var ri =  rdm.Generate(BigInteger.One);
-
         //byte[] rData_To_Hash = MSecOrki.ToByteArray(true, true).Concat(M).ToArray();
         //BigInteger ri = new BigInteger(Utils.HashSHA512(rData_To_Hash), true, false).Mod(Ed25519.N);
+        RandomField rdm = new RandomField(Ed25519.N);
+        var ri =  rdm.Generate(BigInteger.One);
+        var RKey = rdm.Generate(BigInteger.One);
+        _cachingManager.AddOrGetCache(RKey.ToString(),ri.ToString()).GetAwaiter().GetResult();
+        
         Ed25519Point gRi = Ed25519.G * ri;
 
         var response = new SetKeyResponse
@@ -164,10 +167,17 @@ public class KeyGenerator
             gRi = gRi.ToByteArray(),
             EncryptedData = data_to_encrypt
         };
-        return (JsonSerializer.Serialize(response), ri.ToString());
+        return (JsonSerializer.Serialize(response), MSecOrki_Key.EncryptStr(RKey.ToString()));
     }
-    public PreCommitResponse PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei, string r)
+    public PreCommitResponse PreCommit(string keyID, Ed25519Point[] gKntest, Ed25519Key[] mgOrkij, Ed25519Point R2, string EncSetKeyStatei, string randomKey)
     {
+        var key =  MSecOrki_Key.DecryptStr(randomKey);
+        string r =  _cachingManager.AddOrGetCache(key, string.Empty).GetAwaiter().GetResult();
+        if(r == null || r == ""){
+            throw new Exception("PreCommit: Random not found in cache");          
+        }
+        _cachingManager.Remove(randomKey);
+        
         // Reastablish state
         StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(EncSetKeyStatei)); // decrypt encrypted state in response
 
@@ -182,7 +192,7 @@ public class KeyGenerator
         Ed25519Point[] gKn = state.gKn.Select(bytes => Ed25519Point.From(bytes)).ToArray();
         byte[] MData_To_Hash = gKn[0].ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.Hash(MData_To_Hash);
-
+      
         BigInteger ri = BigInteger.Parse(r);
 
         // Verifying both publics

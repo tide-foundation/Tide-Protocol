@@ -34,8 +34,6 @@ using Tide.Ork.Repo;
 using System.Collections.Generic;
 using System.Text.Json; 
 using Microsoft.AspNetCore.Http; 
-using LazyCache;
-using LazyCache.Providers;
 
 namespace Tide.Ork.Controllers
 {
@@ -50,12 +48,8 @@ namespace Tide.Ork.Controllers
         private readonly string _orkId;
         private readonly SimulatorOrkManager _orkManager;
         private readonly KeyGenerator _keyGenerator;
-        private readonly IAppCache _cache;
-        private readonly CachingManager _cachingManager;
-
-
-
-        public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger, OrkConfig config, Settings settings, IAppCache cache)
+    
+        public CMKController(IKeyManagerFactory factory, IEmailClient mail, ILogger<CMKController> logger, OrkConfig config, Settings settings)
         {
             _manager = factory.BuildCmkManager();
             _mail = mail;
@@ -66,8 +60,6 @@ namespace Tide.Ork.Controllers
 
             var cln = new SimulatorClient(settings.Endpoints.Simulator.Api, _orkId, settings.Instance.GetPrivateKey());
             _orkManager = new SimulatorOrkManager(_orkId, cln);
-            _cache = cache;
-            _cachingManager = new CachingManager();
             
         }
 
@@ -167,25 +159,16 @@ namespace Tide.Ork.Controllers
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            string setResponse, rstring;
+            string setResponse, randomKey;
             try{
-               (setResponse, rstring) = _keyGenerator.SetKey(uid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
+               (setResponse, randomKey) = _keyGenerator.SetKey(uid.ToString(), yijCipher.ToArray(), mgOrkj_Keys);
             }catch(Exception e){
                 _logger.LogInformation($"SetCMK: {e}", e);
                 return BadRequest(e);
             }
-            RandomField rdm = new RandomField(Ed25519.N);
-            var RKey = rdm.Generate(BigInteger.One);
-            string r = AddorGetCache(RKey.ToString(),rstring);
-            //string r = _cachingManager.AddorGetCache(uid.ToString(),rstring);
-            Console.WriteLine("Added {0}",r);
-            //string r1 = _cachingManager.AddorGetCache(uid.ToString(),string.Empty);
-            //Console.WriteLine("Added r1{0}",r1);
-            //HttpContext.Session.SetString("SessionId"+_config.UserName, rstring);
-            
-             var response = new {
+            var response = new {
                 Response  =  setResponse ,
-                RandomKey  = RKey.ToString()    
+                RandomKey  = randomKey  
             };
 
             return Ok(JsonSerializer.Serialize(response));
@@ -196,22 +179,9 @@ namespace Tide.Ork.Controllers
 
 
         [HttpGet("precommit/{uid}")]
-        public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCMKtest,[FromQuery] Ed25519Point gPRISMtest,[FromQuery] Ed25519Point gCMK2test, [FromQuery] ICollection<string> orkIds,[FromQuery] Ed25519Point gPRISMAuth, [FromQuery] string emaili,[FromBody] string encryptedState)
+        public async Task<ActionResult> PreCommit([FromRoute] Guid uid, [FromQuery] Ed25519Point R2, [FromQuery] Ed25519Point gCMKtest,[FromQuery] Ed25519Point gPRISMtest,[FromQuery] Ed25519Point gCMK2test, [FromQuery] ICollection<string> orkIds,
+        [FromQuery] Ed25519Point gPRISMAuth, [FromQuery] string emaili, [FromBody] string[] data)
         {
-        
-            //var ri = HttpContext.Session.GetString("SessionId"+_config.UserName);
-
-            //string r = AddorGetCache(uid, string.Empty);
-            string r = AddorGetCache(uid.ToString(),string.Empty);
-            Console.WriteLine("Added {0}",r);
-            if(r == null || r == ""){
-                _logger.LogInformation($"PreCommit: Random not found in cache for uid '{uid}'");
-                return BadRequest("Random not found in cache!");
-            }
-        
-           // _cache.Remove(uid.ToString());
-            
-            
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
             var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end 
@@ -219,7 +189,7 @@ namespace Tide.Ork.Controllers
             KeyGenerator.PreCommitResponse preCommitResponse;
             var gKtest = new Ed25519Point[]{gCMKtest, gPRISMtest,gCMK2test};
             try{
-                preCommitResponse = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, encryptedState, r);
+                preCommitResponse = _keyGenerator.PreCommit(uid.ToString(), gKtest, mgOrkj_Keys, R2, data[0], data[1]);
             }catch(Exception e){
                 _logger.LogInformation($"PreCommit: {e}", e);
                 return BadRequest(e);
@@ -568,18 +538,6 @@ namespace Tide.Ork.Controllers
             var orkInfoTask = await orkNode;
             return Ed25519Key.ParsePublic(orkInfoTask.PubKey);
         }
-
-        private  string AddorGetCache(string key, string ri)
-        {
-            return _cache.GetOrAdd(key, () =>
-            {
-                Console.WriteLine($"{DateTime.UtcNow}: Fetching or store from service");
-
-                var item = ri;
-                return item;
-            }, DateTimeOffset.Now.AddSeconds(1200)); //Change the expiry time
-        }
-    
 
     }
 }

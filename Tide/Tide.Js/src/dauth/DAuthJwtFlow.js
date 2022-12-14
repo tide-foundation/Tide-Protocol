@@ -173,7 +173,7 @@ export default class DAuthJwtFlow {
 
       const pre_CommitCMK = await flowCmk.PreCommit(pre_SetCMK.gTests, pre_SetCMK.gCMKR2, pre_SetCMK.state , pre_SetCMK.randomKey, timestampCMK, gPRISMAuth, email);
 
-      const pre_CommitCVK = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state, vuid, timestampCVK, gCMKAuth);
+      const pre_CommitCVK = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state,  pre_SetCVK.randomKey, vuid, timestampCVK, gCMKAuth);
      
     
 

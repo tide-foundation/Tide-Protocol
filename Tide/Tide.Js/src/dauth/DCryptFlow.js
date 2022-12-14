@@ -87,19 +87,20 @@ export default class DCryptFlow {
       const gCVK2test = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[1].times(lis.get(i))), ed25519Point.infinity);
       const gCVKR2 = setCVKResponse.values.reduce((sum, next, i) => sum.add(next[2]), ed25519Point.infinity); // Does Sum (gCMKR2)
       const encryptedStatei = setCVKResponse.values.map(resp => resp[3]);
+      const randomKey = setCVKResponse.values.map(r => r[4]);
 
-      return {gTests : [gCVKtest, gCVK2test], gCVKR2 : gCVKR2, state : encryptedStatei};
+      return {gTests : [gCVKtest, gCVK2test], gCVKR2 : gCVKR2, state : encryptedStatei, randomKey : randomKey};
     }catch(err){
       Promise.reject(err);
     }
     
   }
 
-  async PreCommit (gTests, gCVKR2, state, vuid, timestamp, gCMKAuth){
+  async PreCommit (gTests, gCVKR2, state, randomKey, vuid, timestamp, gCMKAuth){
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
       
-      const pre_commitCVKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCVKR2, state[i], mIdORKs, gCMKAuth));
+      const pre_commitCVKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCVKR2, state[i], mIdORKs, gCMKAuth, randomKey[i]));
       
       const CVKS = pre_commitCVKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); 
   

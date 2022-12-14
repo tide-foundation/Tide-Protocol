@@ -227,6 +227,7 @@ export default class DAuthClient extends ClientBase {
    */
    async preCommit (gTests, gCMKR2, EncSetCMKStatei, randomKey, gPrismAuth, emaili, mIdORKs){
     try{
+      var body = [EncSetCMKStatei, randomKey];
       const orkIds = mIdORKs.values.map(id => `orkIds=${id}`).join('&');
       const R2 = urlEncode(gCMKR2.toArray());
       const gCMKtest = urlEncode(gTests[0].toArray());
@@ -234,7 +235,7 @@ export default class DAuthClient extends ClientBase {
       const gCMK2test = urlEncode(gTests[2].toArray());
       const prismAuth = urlEncode(gPrismAuth.toArray());
   
-      const resp = await this._get(`/cmk/precommit/${this.userGuid}?R2=${R2}&gCMKtest=${gCMKtest}&gPRISMtest=${gPRISMtest}&gCMK2test=${gCMK2test}&gPRISMAuth=${prismAuth}&emaili=${emaili}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(EncSetCMKStatei));
+      const resp = await this._get(`/cmk/precommit/${this.userGuid}?R2=${R2}&gCMKtest=${gCMKtest}&gPRISMtest=${gPRISMtest}&gCMK2test=${gCMK2test}&gPRISMAuth=${prismAuth}&emaili=${emaili}&${orkIds}`).set("Content-Type", "application/json").send(body);
       if (!resp.ok) return  Promise.reject(new Error(resp.text));
       return BigInt(resp.text);
     }catch(err){
