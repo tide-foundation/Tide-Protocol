@@ -144,7 +144,7 @@ public class KeyGenerator
         string data_to_encrypt = MSecOrki_Key.EncryptStr(JsonSerializer.Serialize(new StateData
         {
             KeyID = decryptedShares.First().KeyID,
-            Timestampi = timestamp,
+            Timestampi = timestamp.ToString(),
             gKn = gK.Select(point => point.ToByteArray()).ToArray(),
             Yn = Y.Select(num => num.ToByteArray(true, true)).ToArray()
         }));
@@ -185,12 +185,12 @@ public class KeyGenerator
         {
             throw new Exception("PreCommit: KeyID of instanciated object does not equal that of previous state");
         }
-        if(!VerifyDelay(state.Timestampi, DateTime.UtcNow.Ticks))
+        if(!VerifyDelay(long.Parse(state.Timestampi), DateTime.UtcNow.Ticks))
         {
             throw new Exception("PreCommit: State has expired");
         }
         Ed25519Point[] gKn = state.gKn.Select(bytes => Ed25519Point.From(bytes)).ToArray();
-        byte[] MData_To_Hash = gKn[0].ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
+        byte[] MData_To_Hash = gKn[0].ToByteArray().Concat(Encoding.ASCII.GetBytes(state.Timestampi)).Concat(Encoding.ASCII.GetBytes(keyID)).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.Hash(MData_To_Hash);
       
         BigInteger ri = BigInteger.Parse(r);
@@ -236,13 +236,13 @@ public class KeyGenerator
         {
             throw new Exception("Commit: KeyID of instanciated object does not equal that of previous state");
         }
-        if(!VerifyDelay(state.Timestampi, DateTime.UtcNow.Ticks))
+        if(!VerifyDelay(long.Parse(state.Timestampi), DateTime.UtcNow.Ticks))
         {
             throw new Exception("Commit: State has expired");
         }
 
         Ed25519Point gK = Ed25519Point.From(state.gKn[0]);
-        byte[] MData_To_Hash = gK.ToByteArray().Concat(BitConverter.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
+        byte[] MData_To_Hash = gK.ToByteArray().Concat(Encoding.ASCII.GetBytes(state.Timestampi).Concat(Encoding.ASCII.GetBytes(keyID))).ToArray(); // M = hash( gK[1] | timestamp | keyID )
         byte[] M = Utils.Hash(MData_To_Hash);
 
         Ed25519Point R = mgOrkij.Aggregate(Ed25519.Infinity, (sum, next) => next.Y + sum) + R2;
@@ -259,7 +259,7 @@ public class KeyGenerator
         }
 
         return new CommitResponse{
-            Timestampi = state.Timestampi,
+            Timestampi = long.Parse(state.Timestampi),
             gKn = state.gKn.Select(gK => Ed25519Point.From(gK)).ToArray(),
             Yn = state.Yn.Select(Y => new BigInteger(Y, true, true)).ToArray()
         };
@@ -321,7 +321,7 @@ public class KeyGenerator
     }
      public class PreCommitResponse
     {
-        public long Timestampi {get; set;}
+        public string Timestampi {get; set;}
         public Ed25519Point[] gKn {get; set;}
         public BigInteger[] Yn {get; set;}
         public BigInteger S {get; set;}
@@ -329,7 +329,7 @@ public class KeyGenerator
     internal class StateData
     {
         public string KeyID { get; set; } // Guid of key to string()
-        public long Timestampi { get; set; }
+        public string Timestampi { get; set; }
         public byte[][] gKn { get; set; }
         public byte[][] Yn { get; set; }
     }

@@ -104,16 +104,13 @@ export default class DCryptFlow {
       
       const CVKS = pre_commitCVKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); 
   
-      const CVKM = Hash.shaBuffer(Buffer.from(gTests[0].toArray()).toString('base64') + timestamp.toString() + vuid.guid.toString()); // TODO: Add point.to_base64 function
+      const CVKM = Hash.shaBuffer(Buffer.concat([Buffer.from(gTests[0].toArray()) , Buffer.from(timestamp.toString()), Buffer.from(vuid.guid.toString())])); // TODO: Add point.to_base64 function
       
-      //Any other ways to get public?
-      const cln = this.clienSet.get(0); // chnage this later
-      const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-      const [, pubs, ,] = await dnsCln.getInfoOrks(); 
+      const pubs = await this.clienSet.all(c => c.getPublic()); 
       
-      const CVKR = pubs.map(pub => pub.y).reduce((sum, p) => p.add(sum)) + gCVKR2;
+      const CVKR = pubs.map(pub => pub.y).reduce((sum, p) => sum.add(p), ed25519Point.infinity).add(gCVKR2);
 
-      const CVKH = Hash.shaBuffer( Buffer.concat([Buffer.from(CVKR.toArray()),Buffer.from(gTests[0].toArray()), CVKM]));
+      const CVKH = Hash.sha512Buffer( Buffer.concat([Buffer.from(CVKR.toArray()),Buffer.from(gTests[0].toArray()), CVKM]));
       const CVKH_int = bigInt_fromBuffer(CVKH);
       
       if(!ed25519Point.g.times(CVKS).isEqual(CVKR.add(gTests[0].times(CVKH_int)))) {
@@ -324,7 +321,7 @@ export default class DCryptFlow {
   
 }
 function median(numbers) {
-  const sorted = Array.from(numbers).sort((a, b) => a - b);
+  const sorted = numbers.sort();
   const middle = Math.floor(sorted.length / 2);
 
   if (sorted.length % 2 === 0) {

@@ -108,7 +108,7 @@ export default class DCryptClient extends ClientBase {
    * @param {number} numKeys
    * @param {ed25519Point} sign
    * @param {ed25519Point} gVoucherPoint
-   * @returns {Promise<[ed25519Point, string,string]>}
+   * @returns {Promise<[ed25519Point, string, BigInt]>}
    */
   async genShard(vIdORKij , numKeys, sign, gVoucherPoint) {
     const gVoucher = urlEncode(gVoucherPoint.toArray());
@@ -120,7 +120,7 @@ export default class DCryptClient extends ClientBase {
         
     if (!resp.ok) return Promise.reject(new Error(resp.text));
     const parsedObj = JSON.parse(resp.text);
-    return [ed25519Point.from(Buffer.from(parsedObj.GK, 'base64')), parsedObj.EncryptedOrkShares, parseInt(parsedObj.Timestampi)]
+    return [ed25519Point.from(Buffer.from(parsedObj.GK, 'base64')), parsedObj.EncryptedOrkShares, BigInt(parsedObj.Timestampi)]
   }
 
   /** 

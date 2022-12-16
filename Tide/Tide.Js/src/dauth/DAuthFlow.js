@@ -129,10 +129,11 @@ export default class DAuthFlow {
       
       const CMKS = pre_commitCMKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); 
 
-      const CMKM = Hash.shaBuffer(Buffer.from(gTests[0].toArray()).toString('base64') + timestamp.toString() + this.userID.guid.toString()); // TODO: Add point.to_base64 function
+      const CMKM = Hash.shaBuffer(Buffer.concat([Buffer.from(gTests[0].toArray()),Buffer.from(timestamp.toString()),Buffer.from(this.userID.guid.toString())])); // TODO: Add point.to_base64 function
       const pubs = await this.clienSet.all(c => c.getPublic()); //works   
-      const CMKR = pubs.map(pub => pub.y).reduce((sum, p) => p.add(sum)) + gCMKR2;
-      const CMKH = Hash.shaBuffer( Buffer.concat([Buffer.from(CMKR.toArray()),Buffer.from(gTests[0].toArray()), CMKM]));
+      const CMKR = pubs.map(pub => pub.y).reduce((sum, p) => sum.add(p), ed25519Point.infinity).add(gCMKR2);
+      const CMKH = Hash.sha512Buffer( Buffer.concat([Buffer.from(CMKR.toArray()),Buffer.from(gTests[0].toArray()), CMKM]));
+      
       const CMKH_int = bigInt_fromBuffer(CMKH);
       
       if(!ed25519Point.g.times(CMKS).isEqual(CMKR.add(gTests[0].times(CMKH_int)))) {
@@ -595,7 +596,7 @@ function random() {
 }
 
 function median(numbers) {
-  const sorted = Array.from(numbers).sort((a, b) => a - b);
+  const sorted = numbers.sort();//Array.from(numbers).sort((a, b) => a - b);
   const middle = Math.floor(sorted.length / 2);
 
   if (sorted.length % 2 === 0) {
