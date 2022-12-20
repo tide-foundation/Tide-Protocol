@@ -357,19 +357,17 @@ export default class DAuthFlow {
       const n = bigInt(ed25519Point.order.toString());
 
       const [gPassPrism, encryptedResponses, r2Inv, lis] = await this.doConvert(password, point);  //getting r2Inv here is a little messy, but saves a headache
-      
+    
       const cln = this.clienSet.get(0); // chnage this later
       const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
 
-      const [urls, pubs, cmkpub] = await dnsCln.getInfoOrks(); // pubs is the list of mgOrki
+      const [urls, , cmkpub] = await dnsCln.getInfoOrks(); // pubs is the list of mgOrki
       
       //decryption
-      const idGens = await this.clienSet.all(c => c.getClientGenerator()); //find way to only do this once
-      const prismAuths = idGens.map(idGen => gPassPrism.derive(idGen.buffer));
-      console.log(prismAuths.set(0,AESKey.from("AhBHieFvKLrhBht9DDXAKG+WID9aejrBlFdAm18u0tk4v8foaNV0oUg97fZIi7O0WJDq")));
-      console.log(prismAuths.set(1,AESKey.from("AhD+VKUK3pSBjMHNVIhuMAU0IASE7ehWaQFifCVBAWtlQlBWuO5CRo5BXxcIdMHvXuzf")));
-      console.log(prismAuths.set(2,AESKey.from("AhD0598tXUsFZjryxiPkp6SzIHkHXIaMx5b0Dr2GvCxrggnwNSF0tZg037eW+M7eCVK9")));
-
+      const gPRISMAuth = bigInt_fromBuffer(Hash.shaBuffer(gPassPrism.toArray())); 
+      const pubs = await this.clienSet.all(c => c.getPublic()); //works
+      const prismAuths = pubs.map(pub =>  AESKey.seed(Hash.shaBuffer(pub.y.times(gPRISMAuth).toArray())));
+    
       const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher))); // invalid sig
       const gUserCMK = decryptedResponses.map((b, i) => b.gBlurUserCMKi.times(lis.get(i))).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi), ed25519Point.infinity).times(r2Inv); // check li worked here
       const gCMK2 = decryptedResponses.map((b, i) => b.gCMK2.times(lis.get(i))).reduce((sum, gCMK2) => sum.add(gCMK2), ed25519Point.infinity); //Correct??
@@ -463,12 +461,10 @@ export default class DAuthFlow {
     /**
      *  @param {string} pass
      *  @param {ed25519Point} gVVK
-     *  @returns {Promise<[AESKey, Dictionary<string>, bigInt.BigInteger, Dictionary<bigInt.BigInteger>]>} // Returns gPassprism + encrypted CMK values + r2Inv (to un-blur gBlurPassPrism)
+     *  @returns {Promise<[ed25519Point, Dictionary<string>, bigInt.BigInteger, Dictionary<bigInt.BigInteger>]>} // Returns gPassprism + encrypted CMK values + r2Inv (to un-blur gBlurPassPrism)
     */
      async doConvert(pass, gVVK) {
       try {
-        const pre_ids = this.clienSet.all(c => c.getClientId());
-   
         const n = bigInt(ed25519Point.order.toString());
         const gPass = ed25519Point.fromString(pass);
         const gUser = ed25519Point.fromString(this.userID.guid.toString() + gVVK.toArray().toString()) // replace this with proper hmac + point to hash function
@@ -478,20 +474,19 @@ export default class DAuthFlow {
 
         const gBlurUser = gUser.times(r2);
         const gBlurPass = gPass.times(r1);
-  
-        const ids = await pre_ids;
-        const lis = ids.map((id) => SecretShare.getLi(id, ids.values, n)); // implement method to only use first 14 orks that reply
-        const pre_Prismis = this.clienSet.map(lis, (dAuthClient, li) => dAuthClient.Convert(gBlurUser, gBlurPass, li)); // li is not being sent to ORKs. Instead, when gBlurPassPRISM is returned, it is multiplied by li locally
+       
+        const idGens = await this.clienSet.all(c => c.getClientGenerator()); // implement method to only use first 14 orks that reply
+        const ids = idGens.map(idGen => idGen.id);
+        const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
+        const pre_Prismis =  this.clienSet.map(lis, (dAuthClient, li) => dAuthClient.Convert(gBlurUser, gBlurPass, li)); // li is not being sent to ORKs. Instead, when gBlurPassPRISM is returned, it is multiplied by li locally
         // would've been neater to do this mutliplication of point * li at gPassRPrism line
                                                                                                                
         const r1Inv = r1.modInv(n);
         const r2Inv = r2.modInv(n);
-  
-        const gPassRPrism = await pre_Prismis.map(a =>  a[0]) // li has already been multiplied above, so no need to do it here
-          .reduce((sum, point) => sum.add(point),ed25519Point.infinity);
-      
-        const gPassPrism = AESKey.seed(gPassRPrism.times(r1Inv).toArray()); 
-        const encryptedResponses = await pre_Prismis.map(a => a[1]);
+        const prismResponse = await pre_Prismis;
+        const gPassPrism = prismResponse.values.map(a =>  a[0]).reduce((sum, point) => sum.add(point),ed25519Point.infinity).times(r1Inv);// li has already been multiplied above, so no need to do it here
+        //const gPassPrism = gPassRPrism; 
+        const encryptedResponses = prismResponse.map(a => a[1]);
         
         return [gPassPrism, encryptedResponses, r2Inv, lis];
       } catch (err) {

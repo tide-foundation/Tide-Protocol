@@ -38,7 +38,7 @@ export default class DAuthClient extends ClientBase {
    * @param {ed25519Point} gBlurPass
    * @param {ed25519Point} gBlurUser
    *  @returns {Promise<[ed25519Point, string]>} */
-   async Convert(gBlurPass, gBlurUser, li) {
+   async Convert(gBlurUser, gBlurPass, li) {
     let url = `/cmk/prism/${this.userGuid}/${urlEncode(gBlurUser.toArray())}/${urlEncode(gBlurPass.toArray())}`;
 
     const res = await this._get(url);
