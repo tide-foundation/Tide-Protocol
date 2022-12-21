@@ -156,7 +156,7 @@ export default class DAuthJwtFlow {
       const flowCmk = await pre_flowCmk;
 
       // create cmk shards
-      const {vuid, gCMKAuth, gPRISMAuth, timestampCMK, ciphersCMK} = await flowCmk.GenShardCMK(password, venPnt);
+      const {vuid, gCMKAuth, gPRISMAuth, timestampCMK, ciphersCMK, gCMK} = await flowCmk.GenShardCMK(password, venPnt);
 
       // getCVK Ork details
       this.vuid = vuid.guid;
@@ -166,35 +166,35 @@ export default class DAuthJwtFlow {
       const pre_SetCMK = await flowCmk.SetCMK(ciphersCMK, timestampCMK);
 
       // create cvk shards
-      const {timestampCVK , ciphersCVK} = await flowCvk.GenShardCVK(venPnt,venPnt);
+      const {timestampCVK , ciphersCVK, gCVK} = await flowCvk.GenShardCVK(venPnt,venPnt);
 
       //Aggredate shards
       const pre_SetCVK = await flowCvk.SetCVK(ciphersCVK, timestampCVK, gCMKAuth);
 
-      const pre_CommitCMK = await flowCmk.PreCommit(pre_SetCMK.gTests, pre_SetCMK.gCMKR2, pre_SetCMK.state , pre_SetCMK.randomKey, timestampCMK, gPRISMAuth, email);
+      const pre_CommitCMK = await flowCmk.PreCommit(pre_SetCMK.gTests, pre_SetCMK.gCMKR2, pre_SetCMK.state , pre_SetCMK.randomKey, timestampCMK, gPRISMAuth, email, gCMK);
 
-      const pre_CommitCVK = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state,  pre_SetCVK.randomKey, vuid, timestampCVK, gCMKAuth);
+      const pre_CommitCVK = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state,  pre_SetCVK.randomKey, vuid, timestampCVK, gCMKAuth, gCVK);
      
     
 
-      var b = 0;
-      return b;
-      // configure cvk ORKs
-      this._genVuid();
-      //const flowCvk = await this._getCvkFlow(true);
-      const signatures = flowCvk.clients.map((_) => new Uint8Array());
+      // var b = 0;
+      // return b;
+      // // configure cvk ORKs
+      // this._genVuid();
+      // //const flowCvk = await this._getCvkFlow(true);
+      // const signatures = flowCvk.clients.map((_) => new Uint8Array());
 
-      // register cvk
-      await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);
+      // // register cvk
+      // await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);
 
-      //test dauth and dcrypt
-      const { auth: authTag } = await this.logIn2(password);
+      // //test dauth and dcrypt
+      // const { auth: authTag } = await this.logIn2(password);
 
-      if (this.cvkAuth.toString() !== authTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
+      // if (this.cvkAuth.toString() !== authTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 
-      await Promise.all([flowCmk.confirm(), flowCvk.confirm()]);
+      // await Promise.all([flowCmk.confirm(), flowCvk.confirm()]);
 
-      return { vuid: this.vuid, cvk: cvk, auth: authTag };
+      // return { vuid: this.vuid, cvk: cvk, auth: authTag };
     } catch (err) {
       return Promise.reject(err);
     }
@@ -236,7 +236,7 @@ export default class DAuthJwtFlow {
 
       // TODO: Use _getCvkFlow()
 
-      const [tideJWT, cvkPubPem] = await flowCmk.logIn2( password, venPnt);  
+      const {tideJWT, cvkPubPem} = await flowCmk.logIn2( password, venPnt);  
       
       return {jwt: tideJWT, cvkPub: cvkPubPem}; // return vuid + jwt signature
     } catch (err) {

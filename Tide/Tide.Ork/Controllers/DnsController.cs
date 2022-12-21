@@ -67,16 +67,16 @@ namespace Tide.Ork.Controllers
             var orksInfoTask = await reqTask;
             var entries = await entriesTask;
 
-            foreach (var entry in entries)
-            {
-                var infOrks = (from orkId in entry.Orks
-                               join info in (orksInfoTask) on orkId equals info.Id into inf
-                               from defInf in inf.DefaultIfEmpty()
-                               select defInf).ToArray();
+            // foreach (var entry in entries)
+            // {
+            //     var infOrks = (from orkId in entry.Orks
+            //                    join info in (orksInfoTask) on orkId equals info.Id into inf
+            //                    from defInf in inf.DefaultIfEmpty()
+            //                    select defInf).ToArray();
 
-                entry.Urls = infOrks.Select(inf => inf?.Url ?? string.Empty).ToArray();
-                entry.Publics = infOrks.Select(inf => inf?.PubKey ?? string.Empty).ToArray();
-            }
+            //     entry.Urls = infOrks.Select(inf => inf?.Url ?? string.Empty).ToArray();
+            //     entry.Publics = infOrks.Select(inf => inf?.PubKey ?? string.Empty).ToArray();
+            // }
 
             return entries;
         }

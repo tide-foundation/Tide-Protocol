@@ -35,7 +35,7 @@ var orkUrls = [...Array(threshold)].map((_, i) => `http://ork${i+1}.local`); //t
 
     await signUp();
     //await changePass(user, pass, newPass);
-    //await signIn(user, newPass);
+    await signIn(user, pass);
     //await resetPass(user);
     //await reconstructPass(user);
 
@@ -52,17 +52,19 @@ async function signUp() {
   flowCreate.cvkUrls = orkUrls;
   flowCreate.vendorPub = vendorPub;
 
-  var account =  await flowCreate.signUp2(pass, email, threshold);
-  console.log(`[signUp] vuid: ${account.vuid} cvk: ${account.cvk.toString()}`);
+   await flowCreate.signUp2(pass, email, threshold);
+  //console.log(`[signUp] vuid: ${account.vuid} cvk: ${account.cvk.toString()}`);
 }
 
 async function signIn(user, pass) {
   var flowLogin = new DAuthJwtFlow(user);
   flowLogin.homeUrl = orkUrls[0];
+  flowLogin.cmkUrls = orkUrls;
+  flowLogin.cvkUrls = orkUrls;
   flowLogin.vendorPub = vendorPub;
   
   var account =  await flowLogin.logIn2(pass);
-  console.log(`[signIn] vuid: ${account.vuid} cvk: ${account.cvk.toString()}`);
+  //console.log(`[signIn] vuid: ${account.vuid} cvk: ${account.cvk.toString()}`);
 }
 
 async function changePass(user, pass, newPass) {

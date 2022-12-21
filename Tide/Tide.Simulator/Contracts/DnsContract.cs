@@ -29,11 +29,11 @@ namespace Tide.Simulator.Contracts
         {
             try
             {
-                var dns = DnsEntry.Parse(transaction.Data);
-                if (!dns.VerifyForUId()) {
-                    _logger.LogInformation("Invalid client's signature for {0}", transaction.Index);
-                    return new BadRequestObjectResult("Client's signature is invalid");
-                }
+                // var dns = DnsEntry.Parse(transaction.Data);
+                // if (!dns.VerifyForUId()) {
+                //     _logger.LogInformation("Invalid client's signature for {0}", transaction.Index);
+                //     return new BadRequestObjectResult("Client's signature is invalid");
+                // }
 
                 //TODO: Add ork signature verification
                 if (false) {

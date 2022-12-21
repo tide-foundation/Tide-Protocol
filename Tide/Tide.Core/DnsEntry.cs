@@ -18,6 +18,10 @@ namespace Tide.Core
         public string[] Signatures { get; set; }
         public string[] Urls { get; set; }
         public string[] Publics { get; set; }
+        public string Timestamp {get; set;}
+        public string S {get; set;}
+        public string GR {get; set;}
+        public string[] VIdORK {get; set;}
 
         public bool VerifyForUId() {
 
@@ -69,6 +73,11 @@ namespace Tide.Core
             Modified = basic.Modified;
             Signature = basic.Signature;
             Signatures = basic.Signatures;
+            S = basic.S;
+            VIdORK = basic.VIdORK;
+            Timestamp = basic.Timestamp;
+            GR = basic.GR;
+        
         }
     }
 }

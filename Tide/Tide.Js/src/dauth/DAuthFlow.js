@@ -88,7 +88,7 @@ export default class DAuthFlow {
       const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
       const sortedShareArray = sorting(shareEncrypted);
 
-      return {vuid : VUID, gCMKAuth : gCMKAuth, gPRISMAuth : gPRISMAuth, timestampCMK : timestamp, ciphersCMK : sortedShareArray}
+      return {vuid : VUID, gCMKAuth : gCMKAuth, gPRISMAuth : gPRISMAuth, timestampCMK : timestamp, ciphersCMK : sortedShareArray, gCMK : gCMK}
 
     }catch(err){
       Promise.reject(err);
@@ -122,7 +122,7 @@ export default class DAuthFlow {
     
   }
 
-  async PreCommit (gTests, gCMKR2, state, randomKey, timestamp, gPrismAuth, email){
+  async PreCommit (gTests, gCMKR2, state, randomKey, timestamp, gPrismAuth, email, gCMK){
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
       const pre_commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCMKR2, state[i], randomKey[i], gPrismAuth, email, mIdORKs));
@@ -141,6 +141,9 @@ export default class DAuthFlow {
       }
       
       const commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.commit(CMKS, state[i], gCMKR2, mIdORKs));
+      
+      // @ts-ignore
+      const entry = await this.prepareDnsEntry(CMKS.toString(), gCMKR2, timestamp, gCMK, mIdORKs)
   
     }catch(err){
       Promise.reject(err);
@@ -219,23 +222,29 @@ export default class DAuthFlow {
     }
   }
 
-  /**
+ /**
    * 
-   * @param {ed25519Point} cmkPub 
-   * @param {Dictionary<string>} orkIds 
-   * @returns {DnsEntry}
+   * @param {ed25519Point} gR 
+   * @param {import("../Tools").Dictionary<string>} mIdORKs 
+   * @param {string} s
+   * @param {string} timestamp
+   * @param {ed25519Point} pub
+   * //@returns {DnsEntry}
    */
-  prepareDnsEntry(cmkPub, orkIds){
-    const cln = this.clienSet.get(0); // chnage this later
-    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid); // you have to choose the same ork as the cln later
+ async prepareDnsEntry(s, gR, timestamp, pub, mIdORKs){
+  const cln = this.clienSet.get(0); // chnage this later
 
-    const entry = new DnsEntry();
-    entry.id = cln.userGuid;
-    entry.Public = new ed25519Key(0, cmkPub);
-    entry.orks = orkIds.values;
+  const entry = new DnsEntry();
+  entry.id = cln.userGuid;
+  entry.Public = new ed25519Key(0, pub);
+  entry.s = s;
+  entry.gR = gR;
+  entry.timestamp = timestamp; 
+  //entry.vIdORK =Object.values(mIdORKs);
+  const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
 
-    return entry;
-  }
+  return  dnsCln.addDns(entry);
+}
 
   /**
    * @private 
@@ -361,22 +370,21 @@ export default class DAuthFlow {
       const cln = this.clienSet.get(0); // chnage this later
       const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
 
-      const [urls, , cmkpub] = await dnsCln.getInfoOrks(); // pubs is the list of mgOrki
+      const [, cmkpub] = await dnsCln.getInfoOrks(); // pubs is the list of mgOrki
       
       //decryption
       const gPRISMAuth = bigInt_fromBuffer(Hash.shaBuffer(gPassPrism.toArray())); 
       const pubs = await this.clienSet.all(c => c.getPublic()); //works
       const prismAuths = pubs.map(pub =>  AESKey.seed(Hash.shaBuffer(pub.y.times(gPRISMAuth).toArray())));
     
-      const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher))); // invalid sig
+      const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher))); 
       const gUserCMK = decryptedResponses.map((b, i) => b.gBlurUserCMKi.times(lis.get(i))).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi), ed25519Point.infinity).times(r2Inv); // check li worked here
       const gCMK2 = decryptedResponses.map((b, i) => b.gCMK2.times(lis.get(i))).reduce((sum, gCMK2) => sum.add(gCMK2), ed25519Point.infinity); //Correct??
       
       const hash_gUserCMK = Hash.sha512Buffer(gUserCMK.toArray());
       const CMKmul = bigInt_fromBuffer(hash_gUserCMK.subarray(0, 32)); // first 32 bytes
-      //const VUID = IdGenerator.seed(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes
-      const VUID = new IdGenerator(Guid.from('3672483e-059d-a322-f907-5a4653315d27')); // hardcoded
-
+      const VUID = IdGenerator.seed(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes
+      
       const Sesskey = random();
       const gSesskeyPub = ed25519Point.g.times(Sesskey);
 
@@ -428,18 +436,18 @@ export default class DAuthFlow {
       }
 
       const cvkDnsCln = new DnsClient(cln.baseUrl, VUID.guid);
-      const [, vIdOrki, cvkPub ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki   TODO: Try to get a Dictinairy here
-
-      const vIds = vIdOrki.map(key => IdGenerator.seed(key.toArray()).id);
-      const vLis = vIds.map(id => SecretShare.getLi(id, vIds, n)); // this works
-
-      const ECDHi = vIdOrki.map(pub => AESKey.seed(Hash.shaBuffer(pub.y.times(Sesskey).toArray())));
+      const [gR, cvkPub ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki   TODO: Try to get a Dictinairy here
+     
+    // const vIds = vIdOrki.map(key => IdGenerator.seed(key.toArray()).id);
+     // const vLis = vIds.map(id => SecretShare.getLi(id, vIds, n)); // this works
+      const orksPubs = await this.clienSet.all(c => c.getPublic()); //works 
+      const ECDHi = orksPubs.map(pub => AESKey.seed(Hash.shaBuffer(pub.y.times(Sesskey).toArray())));
 
       const enc_gCVKR = await pre_gCVKR;
-      const gCVKR = enc_gCVKR.values.map((enc_gCVKRi, i) => ed25519Point.from(Buffer.from(ECDHi[i].decrypt(enc_gCVKRi), 'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p), ed25519Point.infinity);  //array used. change later
+      const gCVKR = enc_gCVKR.map((enc_gCVKRi, i) => ed25519Point.from(Buffer.from(ECDHi.get(i).decrypt(enc_gCVKRi), 'base64')).times(lis.get(i))).reduce((sum, p) => sum.add(p), ed25519Point.infinity);  //array used. change later
       
       const encrypted_CVKS = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.SignInCVK(VUID.guid, gRmul, S, timestamp2, gSesskeyPub, jwt, gCMKAuth, gCVKR, cvkPub.y));
-      const CVKS = await encrypted_CVKS.values.map((encCVKsigni, i) =>  bigInt_fromBuffer(Buffer.from(ECDHi[i].decrypt(encCVKsigni),'base64')).times(vLis[i])).reduce((sum, p) => sum.add(p)).mod(n);  //array used. change later
+      const CVKS = await encrypted_CVKS.values.map((encCVKsigni, i) =>  bigInt_fromBuffer(Buffer.from(ECDHi.get(i).decrypt(encCVKsigni),'base64')).times(lis.get(i))).reduce((sum, p) => sum.add(p)).mod(n);  //array used. change later
 
       const H_cvk = bigInt_fromBuffer(Hash.sha512Buffer(Buffer.concat([Buffer.from(gCVKR.compress()), Buffer.from(cvkPub.y.compress()), Buffer.from(jwt)])));
       
@@ -452,7 +460,7 @@ export default class DAuthFlow {
 
       /// IT WORKS! finalJWT can be verified by finalPem with ANY library out there that supports EdDSA!!!!
 
-      return;
+      return  {tideJWT : finalJWT, cvkPubPem : finalPem};
     } catch (err) {
       return Promise.reject(err);
     }

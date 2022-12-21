@@ -62,7 +62,7 @@ export default class DCryptFlow {
       const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
       const sortedShareArray = sorting(shareEncrypted);
 
-      return {timestampCVK : timestamp, ciphersCVK : sortedShareArray}
+      return {timestampCVK : timestamp, ciphersCVK : sortedShareArray, gCVK : gCVK}
 
     }catch(err){
       Promise.reject(err);
@@ -96,7 +96,7 @@ export default class DCryptFlow {
     
   }
 
-  async PreCommit (gTests, gCVKR2, state, randomKey, vuid, timestamp, gCMKAuth){
+  async PreCommit (gTests, gCVKR2, state, randomKey, vuid, timestamp, gCMKAuth, gCVK){
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
       
@@ -118,7 +118,8 @@ export default class DCryptFlow {
       }
 
       const commitCVKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.commit(CVKS, state[i], gCVKR2, mIdORKs));
-  
+      
+      const entry = await this.prepareDnsEntry(CVKS.toString(), gCVKR2, timestamp, gCVK, mIdORKs)
 
     }catch(err){
       Promise.reject(err);
@@ -181,22 +182,27 @@ export default class DCryptFlow {
 
   /**
    * 
-   * @param {ed25519Point} cvkPub 
-   * @param {Dictionary<string>} orkIds 
-   * @returns {DnsEntry}
+   * @param {ed25519Point} gR 
+   * @param {import("../Tools").Dictionary<string>} mIdORKs 
+   * @param {string} s
+   * @param {string} timestamp
+   * @param {ed25519Point} pub
+   * //@returns {DnsEntry}
    */
-   prepareDnsEntry(cvkPub, orkIds){
-    const cln = this.clienSet.get(0); // chnage this later
-    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid); // you have to choose the same ork as the cln later
+ async prepareDnsEntry(s, gR, timestamp, pub, mIdORKs){
+  const cln = this.clienSet.get(0); // chnage this later
 
-    const entry = new DnsEntry();
-    entry.id = cln.userGuid;
-    entry.Public = new ed25519Key(0, cvkPub);
-    entry.orks = orkIds.values;
+  const entry = new DnsEntry();
+  entry.id = cln.userGuid;
+  entry.Public = new ed25519Key(0, pub);
+  entry.s = s;
+  entry.gR = gR;
+  entry.timestamp = timestamp; 
+  //entry.vIdORK =Object.values(mIdORKs);
+  const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
 
-    return entry;
-  }
-
+  return  dnsCln.addDns(entry);
+}
 
   /**
    * @private 
