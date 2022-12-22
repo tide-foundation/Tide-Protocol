@@ -143,7 +143,7 @@ export default class DAuthFlow {
       const commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.commit(CMKS, state[i], gCMKR2, mIdORKs));
       
       // @ts-ignore
-      const entry = await this.prepareDnsEntry(CMKS.toString(), gCMKR2, timestamp, gCMK, mIdORKs)
+      const entry = await this.addDnsEntry(CMKS.toString(), gCMKR2, timestamp, gCMK, mIdORKs)
   
     }catch(err){
       Promise.reject(err);
@@ -151,76 +151,6 @@ export default class DAuthFlow {
    
   }
 
-  
-  /**
-   * @param {string} password
-   * @param {string|string[]} email
-   * @param {number} threshold
-   * @returns {Promise<AESKey|Error>}
-   */
-  async signUp(password, email, threshold,  cmk=null, vendor) {
-    try {
-      if (!email) throw new Error("email must have at least one item");
-      const emails = typeof email === "string" ? [email] : email;
-      const emailIndex = Math.floor(Math.random() * emails.length);
-
-      const r = random();
-      const g = ed25519Point.fromString(password);
-      const gR = g.times(r);
-
-      const ids = await this.clienSet.all(cli => cli.getClientId()); 
-      const idBuffers = await this.clienSet.map(ids, cli => cli.getClientBuffer());
-      const guids = idBuffers.map(buff => new Guid(buff));
-
-      const randoms = await this.clienSet.map(guids, cli => cli.random(gR, vendor, guids.values)); 
-
-      const cmkPub = randoms.values.map(rdm => rdm.cmkPub).reduce((sum, cmki) => cmki.add(sum));
-
-      const cmk2Pub = randoms.values.map(rdm => rdm.cmk2Pub).reduce((sum, cmki) => cmki.add(sum));
-      const gRPrism = randoms.values.map(rdm => rdm.password).reduce((sum, gPrismi)=> gPrismi.add(sum));
-      const vendorCMK = randoms.values.map(rdm => rdm.vendorCMK).reduce((sum, gPrismi)=> gPrismi.add(sum));
-      const cmkis = randoms.map(p => p.cmki_noThreshold); // add ork ID to dictionairies later
-      const cmk2is = randoms.map(p => p.cmk2i_noThreshold); // add ork ID to dictionairies later
-      const orkIDs = randoms.map(p => p.ork_userName);
-      
-      const cvkAuth = AESKey.seed(vendorCMK.toArray());
-
-      const rInv = r.modInv(bigInt(ed25519Point.order.toString()));
-      const gPrism = gRPrism.times(rInv);
-      const prismAuth = AESKey.seed(gPrism.toArray());
-
-
-      const prismAuths = idBuffers.map(buff => prismAuth.derive(buff)); 
-
-      const entry = this.prepareDnsEntry(cmkPub, orkIDs); ///////////// here is the partial entry
-      
-      const mails = randoms.map((_, __, i) => emails[(emailIndex + i) % emails.length]);
-      const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
-      const randReq = randoms.map((_, key) => new RandRegistrationReq(prismAuths.get(key), mails.get(key), cmkis.get(key),cmk2is.get(key), shares.get(key), entry)) // I pass partial entry here
-
-      //// Get lis for randomSignup <- consider finding a way to reuse lis
-      const idGens = await this.clienSet.all(c => c.getClientGenerator())
-      const idss = idGens.map(idGen => idGen.id);
-      const lis = idss.map(id => SecretShare.getLi(id, idss.values, bigInt(ed25519Point.order.toString())));
-      ///
-      const partialPubs = randoms.map(p => randoms.values.map(p => p.cmkPub).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(p.cmkPub) ? sum : cmkPubi.add(sum)}, ed25519Point.infinity));
-      const partialPubs2 = randoms.map(p => randoms.values.map(p => p.cmk2Pub).reduce((sum, cmkPubi) => { return cmkPubi.isEqual(p.cmk2Pub) ? sum : cmkPubi.add(sum)}, ed25519Point.infinity));
-
-
-      const randSignUpResponses = await this.clienSet.map(randoms, (cli, _, key) => cli.randomSignUp(randReq.get(key), partialPubs.get(key), partialPubs2.get(key), lis.get(key)));
-      ///
-      const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(prismAuths.get(i).decrypt(cipher))); // works
-      const s = randSignUpResponses.values.map(e => e[4]).reduce((sum, sig) => (sum + sig) % ed25519Point.order);
-      const signatures = randSignUpResponses.map(e => e[0]);
-
-
-    await this.addDns(signatures, cmk2Pub,s,entry);
-
-      return cvkAuth;
-    } catch (err) {
-      return Promise.reject(err);
-    }
-  }
 
  /**
    * 
@@ -231,7 +161,7 @@ export default class DAuthFlow {
    * @param {ed25519Point} pub
    * //@returns {DnsEntry}
    */
- async prepareDnsEntry(s, gR, timestamp, pub, mIdORKs){
+ async addDnsEntry(s, gR, timestamp, pub, mIdORKs){
   const cln = this.clienSet.get(0); // chnage this later
 
   const entry = new DnsEntry();
@@ -246,31 +176,7 @@ export default class DAuthFlow {
   return  dnsCln.addDns(entry);
 }
 
-  /**
-   * @private 
-   * @typedef {import("./DAuthClient").OrkSign} OrkSign
-   * @param {OrkSign[] | import("../Tools").Dictionary<OrkSign>} signatures 
-   * @param {ed25519Point} cmk2Pub
-   * @param {bigint} s
-   * @param {DnsEntry} entry*/
-  async addDns(signatures, cmk2Pub,s,entry) {
-    const keys = Array.isArray(signatures) ? Array.from(signatures.keys()).map(String) : signatures.keys;
-    const index = keys[Math.floor(Math.random() * keys.length)];
-    const cln = this.clienSet.get(index);
-    const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-
-    if (Array.isArray(signatures)) {
-      entry.signatures = signatures.map(sig => sig.sign);
-      entry.orks = signatures.map(sig => sig.orkid);
-    }
-    else {
-      entry.signatures = signatures.values.map(val => val.sign);
-      entry.orks = signatures.values.map(val => val.orkid);
-    }
-    const signature = ed25519Key.createSig(cmk2Pub, s);
-    entry.signature = Buffer.from(signature).toString('base64');
-    return dnsCln.addDns(entry);
-  }
+ 
 /**
  * 
  * @param {DnsEntry} entry 
@@ -458,7 +364,7 @@ export default class DAuthFlow {
 
       /// IT WORKS! finalJWT can be verified by finalPem with ANY library out there that supports EdDSA!!!!
 
-      return  {tideJWT : finalJWT, cvkPubPem : finalPem};
+      return  {tideJWT : finalJWT, cvkPubPem : finalPem };
     } catch (err) {
       return Promise.reject(err);
     }

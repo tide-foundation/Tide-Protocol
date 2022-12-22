@@ -80,16 +80,16 @@ export default class DAuthJwtFlow {
       const signatures = flowCvk.clients.map((_) => new Uint8Array());
 
       // register cvk
-      await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);
+      await flowCvk.signUp2(this.cvkAuth, threshold, keyId, signatures, cvk);
 
       //test dauth and dcrypt
-      const { auth: authTag } = await this.logIn(password);
+      const {jwt, cvkPub}= await this.logIn(password);
 
       if (this.cvkAuth.toString() !== authTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
 
       await flowCvk.confirm();
 
-      return { vuid: this.vuid, cvk: cvk, auth: authTag };
+      return { vuid: this.vuid, cvk: cvk, auth: cvkPub };
     } catch (err) {
       return Promise.reject(err);
     }
@@ -173,28 +173,11 @@ export default class DAuthJwtFlow {
 
       const pre_CommitCMK = await flowCmk.PreCommit(pre_SetCMK.gTests, pre_SetCMK.gCMKR2, pre_SetCMK.state , pre_SetCMK.randomKey, timestampCMK, gPRISMAuth, email, gCMK);
 
-      const pre_CommitCVK = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state,  pre_SetCVK.randomKey, vuid, timestampCVK, gCMKAuth, gCVK);
+      const {cvkPubPem} = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state,  pre_SetCVK.randomKey, vuid, timestampCVK, gCMKAuth, gCVK);
      
-    
+  
+      return { vuid: this.vuid, cvkPub: cvkPubPem };
 
-      // var b = 0;
-      // return b;
-      // // configure cvk ORKs
-      // this._genVuid();
-      // //const flowCvk = await this._getCvkFlow(true);
-      // const signatures = flowCvk.clients.map((_) => new Uint8Array());
-
-      // // register cvk
-      // await flowCvk.signUp(this.cvkAuth, threshold, keyId, signatures, cvk);
-
-      // //test dauth and dcrypt
-      // const { auth: authTag } = await this.logIn2(password);
-
-      // if (this.cvkAuth.toString() !== authTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
-
-      // await Promise.all([flowCmk.confirm(), flowCvk.confirm()]);
-
-      // return { vuid: this.vuid, cvk: cvk, auth: authTag };
     } catch (err) {
       return Promise.reject(err);
     }
