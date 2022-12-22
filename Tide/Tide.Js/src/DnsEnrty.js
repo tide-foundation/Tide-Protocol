@@ -34,19 +34,12 @@ import { C25519Key, Hash , ed25519Key, ed25519Point} from "cryptide";
   constructor() {
     this.id = new Guid();
     this.modified = this.utcUnixSeconds();
-    //this.signature = "";
     /** @type {ed25519Key} */
     this.Public = null;
-    ///** @type { string[] } */
-    //this.signatures = [];
     /** @type { string[] } */
     this.vIdORK =[];
-    ///** @type { string[] } */
-    //this.urls = [];
-    ///** @type { string[] } */
-   // this.Publics = [];
     this.timestamp = "";
-    this.s ="";
+    this.s = "";
     /** @type {ed25519Point} */
     this.gR = null
 }
@@ -68,7 +61,7 @@ import { C25519Key, Hash , ed25519Key, ed25519Point} from "cryptide";
       s: this.s,
       timestamp: this.timestamp.toString(),
       gR : Buffer.from(this.gR.toArray()).toString('base64'),
-      //vIdORK : this.vIdORK.toString()
+      vIdORK : this.vIdORK
     });
   }
 
@@ -83,14 +76,9 @@ import { C25519Key, Hash , ed25519Key, ed25519Point} from "cryptide";
 
     entry.id = Guid.from(json.id);
     entry.modified = json.modified;
-    entry.signature = json.signature;
     entry.Public = json.Public==null ? ed25519Key.from(json.public) : ed25519Key.from(json.Public);
-   // entry.signatures = json.signatures;
-   // entry.orks = json.orks;
-    //entry.urls = json.urls || entry.urls;
-    //entry.publics = json.publics || entry.publics;
     entry.s = json.s;
-   // entry.vIdORK =json.vIdORK;
+    entry.vIdORK =json.vIdORK;
     entry.timestamp =json.timestamp;
     entry.gR = ed25519Point.from(Buffer.from(json.gr, 'base64'));
 

@@ -55,14 +55,15 @@ export default class DnsClient {
     await req.send(entry.toString());
   }
 
-  /** @returns { Promise<[ed25519Point,ed25519Key]> } */
+  /** @returns { Promise<[string[],ed25519Key]> } */
   async getInfoOrks() {
     const entry = await this.getDns();
     if (!entry) return [[], []];
     
     const cmkpub = entry.Public;
-    const gR = entry.gR ;
-    return [ gR,cmkpub];
+    const vIdORK = entry.vIdORK;
+    
+    return [vIdORK , cmkpub];
   }
 
   async exist() {

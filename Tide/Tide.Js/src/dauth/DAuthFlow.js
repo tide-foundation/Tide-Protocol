@@ -240,7 +240,7 @@ export default class DAuthFlow {
   entry.s = s;
   entry.gR = gR;
   entry.timestamp = timestamp; 
-  //entry.vIdORK =Object.values(mIdORKs);
+  entry.vIdORK = mIdORKs.values.map(id => id.toString());
   const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
 
   return  dnsCln.addDns(entry);
@@ -436,11 +436,9 @@ export default class DAuthFlow {
       }
 
       const cvkDnsCln = new DnsClient(cln.baseUrl, VUID.guid);
-      const [gR, cvkPub ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki   TODO: Try to get a Dictinairy here
-     
-    // const vIds = vIdOrki.map(key => IdGenerator.seed(key.toArray()).id);
-     // const vLis = vIds.map(id => SecretShare.getLi(id, vIds, n)); // this works
-      const orksPubs = await this.clienSet.all(c => c.getPublic()); //works 
+      const [vIdORK , cvkPub ] = await cvkDnsCln.getInfoOrks(); // pubs is the list of mgOrki   TODO: Try to get a Dictinairy here
+      const orksPubs = await this.clienSet.all(c => c.getPublic()); 
+
       const ECDHi = orksPubs.map(pub => AESKey.seed(Hash.shaBuffer(pub.y.times(Sesskey).toArray())));
 
       const enc_gCVKR = await pre_gCVKR;
