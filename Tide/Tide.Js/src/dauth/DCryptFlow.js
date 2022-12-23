@@ -157,7 +157,57 @@ export default class DCryptFlow {
     return entry;
 }
 
+ /**
+   * @param {AESKey} cmkAuth
+   * @param {number} threshold
+   * @param {Guid} signedKeyId
+   * @param {Uint8Array[]} signatures
+   */
+  async signUp(cmkAuth, threshold, signedKeyId, signatures, cvk = ed25519Key.generate()) {
+    try {
+      if (!signatures && signatures.length != this.clienSet.length)
+        throw new Error("Signatures are required");
 
+      const idGens = await this.clienSet.all(c => c.getClientGenerator());
+      const ids = idGens.map(idGen => idGen.id);
+      const idBuffers = await this.clienSet.map(ids, c => c.getClientBuffer());
+      const guids = idBuffers.map(buff => new Guid(buff));
+
+      const randoms = await this.clienSet.map(guids, cli => cli.random( guids.values)); 
+
+      const cvkPub = randoms.values.map(rdm => rdm.cvkPub).reduce((sum, cvki) => cvki.add(sum),ed25519Point.infinity);
+      const cvk2Pub = randoms.values.map(rdm => rdm.cvk2Pub).reduce((sum, cvk2i) => cvk2i.add(sum),ed25519Point.infinity);
+      const cvkis = randoms.map(rdm => rdm.cvki_noThreshold);
+      const cvk2is = randoms.map(rdm => rdm.cvk2i_noThreshold);
+      const orkIDs =randoms.map(rdm => rdm.ork_UserName);
+
+      const partialPubs = randoms.map(p => randoms.values.map(p => p.cvkPub).reduce((sum, cvkPubi) => { return cvkPubi.isEqual(p.cvkPub) ? sum : cvkPubi.add(sum)}, ed25519Point.infinity));
+      const partialPub2s = randoms.map(p => randoms.values.map(p => p.cvk2Pub).reduce((sum, cvkPubi) => { return cvkPubi.isEqual(p.cvk2Pub) ? sum : cvkPubi.add(sum)}, ed25519Point.infinity));
+
+      const shares = randoms.map((_, key) => randoms.map(rdm => rdm.shares[Number(key)]).values);
+      const cvkAuths = idBuffers.map(buff => cmkAuth.derive(concat(buff, this.user.buffer)));
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+      const entry = this. addDnsEntry("s", cvkPub, "timestamp", cvkPub, mIdORKs);
+
+      const randReq = randoms.map((_, key) => new CVKRandRegistrationReq(cvkAuths.get(key), shares.get(key),entry,cvkis.get(key),cvk2is.get(key)));
+     // const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, partialPubs.get(i),partialCvk2Pub.get(i), li));
+
+      const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
+      const randSignUpResponses = await this.clienSet.map(lis, (cli, _, key,i) => cli.randomSignUp(randReq.get(key), partialPubs.get(key),partialPub2s.get(key),lis.get(key)));
+
+      // const partialPubs = randSignUpResponses.map(e => e[2]).map(p => randSignUpResponses.values.map(e => e[2]).reduce((sum, cvkPubi) => { return cvkPubi.isEqual(p) ? sum : cvkPubi.add(sum)} ,ed25519Point.infinity)); 
+      // const partialPub2s = randSignUpResponses.map(e => e[3]).map(p => randSignUpResponses.values.map(e => e[3]).reduce((sum, cvk2Pubi) => { return cvk2Pubi.isEqual(p) ? sum : cvk2Pubi.add(sum)} ,ed25519Point.infinity)); 
+      const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(cvkAuths.get(i).decrypt(cipher))); // works
+      const orkSigns = randSignUpResponses.map(e => e[0]);
+      const s = randSignUpResponses.values.map(e => e[4]).reduce((sum, sig) => (sum + sig) % ed25519Point.order); // todo: add proper mod function here without it being messy
+     
+      await Promise.all([entry,this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), orkSigns.keys)]);
+
+      return cvk;
+    } catch (err) {
+      throw err;
+    }
+  }
 /**
  * 
  * @param {DnsEntry} entry 

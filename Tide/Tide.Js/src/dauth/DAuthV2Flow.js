@@ -50,6 +50,9 @@ export default class DAuthV2Flow {
     /** @type {Guid} */
     this.vuid = null;
 
+    /** @type {CP256Key} */
+    this.vendorPub = null;
+
     this.userid = typeof user === "string" ? Guid.seed(user) : user;
   }
 
@@ -66,47 +69,54 @@ export default class DAuthV2Flow {
    * @returns {Promise<{ vuid: Guid; cvk: ed25519Key; auth: AESKey; }>}
    */
   async signUp(password, email, threshold) {
+    if (!this.vendorPub) throw new Error("vendorPub must not be empty");
+
     try {
-      const vendorCln = this._getVendorClient();
-      const { pubKey } = await vendorCln.configuration();
 
-      if (!this.cmk) this.cmk = Utils.random(1, bigInt((ed25519Point.order - BigInt(1)).toString()));
-      this.cvkAuth = AESKey.seed(pubKey.y.times(this.cmk).toArray());
-      this._genVuid();
+      // const vendorCln = this._getVendorClient();
+      // const { pubKey } = await vendorCln.configuration();
+      // if (!this.cmk) this.cmk = Utils.random(1, bigInt((ed25519Point.order - BigInt(1)).toString()));
+      // this.cvkAuth = AESKey.seed(pubKey.y.times(this.cmk).toArray());
+      // this._genVuid();
 
-      const cvk = ed25519Key.generate();
-      const flowCmk = await this._getCmkFlow();
-      const flowCvk = await this._getCvkFlow();
-      const keyCln = new KeyClientSet(this.cmkUrls);
+      // const cvk = ed25519Key.generate();
+      // const keyCln = new KeyClientSet(this.cmkUrls);
 
-      const vendorPubStore = new KeyStore(pubKey);
-      await keyCln.setOrUpdate(vendorPubStore);
+      // const vendorPubStore = new KeyStore(pubKey);
+      // await keyCln.setOrUpdate(vendorPubStore);
 
-      //register vendor account
-      const bufferVid = IdGenerator.seed(pubKey.toArray()).buffer;
-      const vuidAuth = AESKey.seed(cvk.toArray()).derive(bufferVid);
-      const [vendorToken, signatures] = await vendorCln.signup(this.vuid, vuidAuth, this.cvkUrls);
+      // //register vendor account
+      // const bufferVid = IdGenerator.seed(pubKey.toArray()).buffer;
+      // const vuidAuth = AESKey.seed(cvk.toArray()).derive(bufferVid);
+      // const [vendorToken, signatures] = await vendorCln.signup(this.vuid, vuidAuth, this.cvkUrls);
+      
+      // get CMK Orks details
+      const pre_flowCmk = this._getCmkFlow(true);
+      const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
+      const flowCmk = await pre_flowCmk;
 
-      // register cmk
-      await flowCmk.signUp(password, email, threshold, this.cmk);
+      // create cmk shards
+      const {vuid, gCMKAuth, gPRISMAuth, timestampCMK, ciphersCMK, gCMK} = await flowCmk.GenShardCMK(password, venPnt);
 
-      // register cvk
-      await flowCvk.signUp(this.cvkAuth, threshold, vendorPubStore.keyId, signatures, cvk);
+      // getCVK Ork details
+      this.vuid = vuid.guid;
+      const flowCvk = await this._getCvkFlow(true);
+      
+      // Aggregate shards
+      const pre_SetCMK = await flowCmk.SetCMK(ciphersCMK, timestampCMK);
 
-      //user encrypt vendor token
-      const hashToken = Hash.shaBuffer(vendorToken.toArray());
-      const cipher = Cipher.encrypt(hashToken, Tags.vendor, cvk);
+      // create cvk shards
+      const {timestampCVK , ciphersCVK, gCVK} = await flowCvk.GenShardCVK(venPnt,venPnt);
 
-      //test dauth and dcrypt
-      const { auth: vuidAuthTag } = await this.logIn(password);
-      await vendorCln.signin(this.vuid, vuidAuthTag);
+      //Aggredate shards
+      const pre_SetCVK = await flowCvk.SetCVK(ciphersCVK, timestampCVK, gCMKAuth);
 
-      const dcryptOk = await vendorCln.testCipher(this.vuid, vendorToken, cipher);
-      if (!dcryptOk || vuidAuth.toString() !== vuidAuthTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
+      const pre_CommitCMK = await flowCmk.PreCommit(pre_SetCMK.gTests, pre_SetCMK.gCMKR2, pre_SetCMK.state , pre_SetCMK.randomKey, timestampCMK, gPRISMAuth, email, gCMK);
 
-      await Promise.all([flowCmk.confirm(), flowCvk.confirm()]);
-
-      return { vuid: this.vuid, cvk, auth: vuidAuth };
+      const {cvkPubPem} = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state,  pre_SetCVK.randomKey, vuid, timestampCVK, gCMKAuth, gCVK);
+     
+      return { vuid: this.vuid, cvkPub: cvkPubPem };
+       
     } catch (err) {
       return Promise.reject(err);
     }
@@ -115,21 +125,14 @@ export default class DAuthV2Flow {
   /** @param {string} password */
   async logIn(password) {
     try {
-      const vendorCln = this._getVendorClient();
-      const { pubKey } = await vendorCln.configuration();
+      
+      const pre_flowCmk = this._getCmkFlow();
+      const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
+      const flowCmk = await pre_flowCmk;
 
-      const flowCmk = await this._getCmkFlow();
-      this.cvkAuth = await flowCmk.logIn(password, pubKey.y); 
-      this._genVuid();
+      const {tideJWT, cvkPubPem}  = await flowCmk.logIn2(password, venPnt); 
 
-      await this._setCvkUrlFromDns();
-      const flowCvk = await this._getCvkFlow();
-      const cvk = await flowCvk.getKey(this.cvkAuth);
-
-      const bufferVid = Guid.seed(pubKey.toArray()).toArray();
-      const vuidAuth = AESKey.seed(cvk.toArray()).derive(bufferVid);
-
-      return { vuid: this.vuid, cvk, auth: vuidAuth };
+      return {jwt: tideJWT, cvkPub: cvkPubPem}; // return vuid + jwt signature
     } catch (err) {
       return Promise.reject(err);
     }

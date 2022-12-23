@@ -169,10 +169,10 @@ namespace Tide.Ork.Controllers
             };
             var resp = await _managerCvk.Add(account);
             if (!resp.Success) {
-                _logger.LogInformation($"PreCommit: CVK was not added for uid '{vuid}'");
+                _logger.LogInformation($"PreCommit: CVK was not added for vuid '{vuid}'");
                 return Problem(resp.Error);
             }
-            _logger.LogInformation($"PreCommit: New CVK was added for uid '{vuid}'");
+            _logger.LogInformation($"PreCommit: New CVK was added for vuid '{vuid}'");
           
             return Ok(preCommitResponse.S.ToString());
         }
@@ -201,7 +201,7 @@ namespace Tide.Ork.Controllers
             account.CommitStatus = "C";
             var resp = await _managerCvk.SetOrUpdate(account);
             if (!resp.Success) {
-                _logger.LogInformation($"Commit: CVK was not updated for uid '{vuid}'");
+                _logger.LogInformation($"Commit: CVK was not updated for vuid '{vuid}'");
                 return Problem(resp.Error);
             }
            
@@ -290,43 +290,43 @@ namespace Tide.Ork.Controllers
         //         S = s.ToString()
         //     };
         // }
+   
+        //TODO: there is not verification if the account already exists
+        [HttpPut("{vuid}/{keyId}")]
+        public async Task<ActionResult<TideResponse>> Add([FromRoute] Guid vuid, [FromRoute] Guid keyId, [FromBody] string[] data)
+        {
+            var signature = FromBase64(data[3]);
+            var account = new CvkVault
+            {
+                VuId = vuid,
+                GCVK = Ed25519Key.ParsePublic(FromBase64(data[0])).Y,
+                CVKi = GetBigInteger(data[1]),
+                GCvkAuth = AesKey.Parse(FromBase64(data[2]))
+            };
 
-        // //TODO: there is not verification if the account already exists
-        // [HttpPut("{vuid}/{keyId}")]
-        // public async Task<ActionResult<TideResponse>> Add([FromRoute] Guid vuid, [FromRoute] Guid keyId, [FromBody] string[] data)
-        // {
-        //     var signature = FromBase64(data[3]);
-        //     var account = new CvkVault
-        //     {
-        //         VuId = vuid,
-        //         CvkPub = Ed25519Key.ParsePublic(FromBase64(data[0])),
-        //         CVKi = GetBigInteger(data[1]),
-        //         CvkiAuth = AesKey.Parse(FromBase64(data[2]))
-        //     };
+            if (_features.Voucher) 
+            {
+                var signer = await _keyIdManager.GetById(keyId);
+                if (signer == null)
+                    return BadRequest("Signer's key must be defined");
 
-        //     if (_features.Voucher) 
-        //     {
-        //         var signer = await _keyIdManager.GetById(keyId);
-        //         if (signer == null)
-        //             return BadRequest("Signer's key must be defined");
+                if (!signer.Key.EdDSAVerify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
+                    return BadRequest("Signature is not valid");
+            }
 
-        //         if (!signer.Key.EdDSAVerify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), signature))
-        //             return BadRequest("Signature is not valid");
-        //     }
+            _logger.LogInformation("New cvk for {0} with pub {1}", vuid, data[0]);
 
-        //     _logger.LogInformation("New cvk for {0} with pub {1}", vuid, data[0]);
-
-        //     var resp = await _managerCvk.SetOrUpdate(account);
-        //     if (!resp.Success)
-        //         return resp;
+            var resp = await _managerCvk.SetOrUpdate(account);
+            if (!resp.Success)
+                return resp;
             
-        //     var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
-        //     //TODO: The ork should not send the orkid because the client should already know
-        //     var signOrk = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m));
-        //     resp.Content = new { orkid = _config.UserName, sign = signOrk };
+            var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
+            //TODO: The ork should not send the orkid because the client should already know
+            var signOrk = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m));
+            resp.Content = new { orkid = _config.UserName, sign = signOrk };
             
-        //     return resp;
-        // }
+            return resp;
+        }
 
         [MetricAttribute("cvk", recordSuccess:true)]
         [HttpGet("signin/{vuid}/{gRmul}/{s}/{timestamp2}/{gSessKeyPub}/{challenge}/{gCMKAuth}/{gCVKR}/{gCVK}")]
@@ -519,15 +519,15 @@ namespace Tide.Ork.Controllers
         //     return Ok();
         // }
  
-        // private byte[] FromBase64(string input)
-        // {
-        //     return Convert.FromBase64String(input.DecodeBase64Url());
-        // }
+        private byte[] FromBase64(string input)
+        {
+            return Convert.FromBase64String(input.DecodeBase64Url());
+        }
 
-        // private BigInteger GetBigInteger(string number)
-        // {
-        //     return new BigInteger(FromBase64(number), true, true);
-        // }
+        private BigInteger GetBigInteger(string number)
+        {
+            return new BigInteger(FromBase64(number), true, true);
+        }
         
         // static List<byte[]> GetBytes(string data) {
         //     var line = string.Empty;

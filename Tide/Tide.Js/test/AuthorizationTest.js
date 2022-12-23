@@ -1,4 +1,4 @@
-import { C25519Key, AESKey , ed25519Key} from "cryptide";
+import { C25519Key, AESKey , ed25519Key, ed25519Point} from "cryptide";
 import KeyClient from "../src/dauth/keyClient";
 import DnsClient from "../src/dauth/DnsClient";
 import RuleClient from "../src/dauth/RuleClient";
@@ -77,12 +77,13 @@ describe('DnsClient', function () {
         //setting up a new dns entry
         const prvKey = ed25519Key.generate();
         const pubKey = prvKey.public(); 
+        const gRpoint = ed25519Key.generate().y;
 
         const entry = new DnsEntry();
         entry.id = user;
         entry.Public = pubKey
-        entry.signatures = []
-        entry.orks = [];
+        entry.vIdORK = []
+        entry.gR = gRpoint;
         entry.sign(prvKey);
 
         await client.addDns(entry);
@@ -105,18 +106,19 @@ describe('DnsClient', function () {
         //setting up a new dns entry
         const prvKey = ed25519Key.generate();
         const pubKey = prvKey.public(); 
+        const gRpoint = ed25519Key.generate().y;
 
         const entry = new DnsEntry();
         entry.id = user;
         entry.Public = pubKey
-        entry.signatures = []
-        entry.orks = [];
+        entry.vIdORK = []
+        entry.gR = gRpoint;
         entry.sign(prvKey);
 
         await client.addDns(entry);
 
         //
-        entry.orks = ['http://ork1.local']
+        //entry.orks = ['http://ork1.local']
 
         await assert.rejects(async () => { await client.addDns(entry) }, Error);
 
@@ -150,7 +152,7 @@ describe('RuleClient', function () {
         const cvkAuth = new AESKey();
         const signature = new Uint8Array();
 
-        await cmkCln.register(cvkPub, cvkPrv.x, cvkAuth, cvkStored.keyId, signature);
+       await cmkCln.register(cvkPub, cvkPrv.x, cvkAuth, cvkStored.keyId, signature);
 
         //setting up a new rule
         const rule = Rule.allow(user, Tags.vendor, cvkStored.keyId);

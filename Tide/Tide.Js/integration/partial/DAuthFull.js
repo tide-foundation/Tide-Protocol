@@ -52,8 +52,8 @@ async function signUp() {
   flowCreate.cvkUrls = orkUrls;
   flowCreate.vendorPub = vendorPub;
 
-   await flowCreate.signUp2(pass, email, threshold);
-  //console.log(`[signUp] vuid: ${account.vuid} cvk: ${account.cvk.toString()}`);
+  const account = await flowCreate.signUp2(pass, email, threshold);
+  console.log(`[signUp] vuid: ${account.vuid} cvkPub: ${account.cvkPub.toString()}`);
 }
 
 async function signIn(user, pass) {

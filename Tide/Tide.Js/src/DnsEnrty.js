@@ -41,7 +41,8 @@ import { C25519Key, Hash , ed25519Key, ed25519Point} from "cryptide";
     this.timestamp = "";
     this.s = "";
     /** @type {ed25519Point} */
-    this.gR = null
+    this.gR = null;
+    this.signature = "";
 }
 
   /** @param {ed25519Key} key */
