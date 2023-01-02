@@ -430,94 +430,94 @@ namespace Tide.Ork.Controllers
             return Ok(ECDHi.EncryptStr(gCVKRi.ToByteArray()));
         }
 
-        // [HttpGet("challenge/{vuid}/{keyId}")]
-        // public async Task<ActionResult> Challenge([FromRoute] Guid vuid, [FromRoute] Guid keyId)
-        // {
-        //     var account = await _managerCvk.GetById(vuid);
-        //     if (account == null)
-        //     {
-        //         _logger.LogInformation("Decryption challenge denied for vuid {0} with keyId {1}: account not found.", vuid, keyId);
-        //         return BadRequest($"Denied Challenge for {keyId}");
-        //     }
+        [HttpGet("challenge/{vuid}/{keyId}")]
+        public async Task<ActionResult> Challenge([FromRoute] Guid vuid, [FromRoute] Guid keyId)
+        {
+            var account = await _managerCvk.GetById(vuid);
+            if (account == null)
+            {
+                _logger.LogInformation("Decryption challenge denied for vuid {0} with keyId {1}: account not found.", vuid, keyId);
+                return BadRequest($"Denied Challenge for {keyId}");
+            }
 
-        //     var token = TranToken.Generate(account.CvkiAuth);
+            var token = TranToken.Generate(account.GCvkAuth);
 
-        //     var keyPub = await _keyIdManager.GetById(keyId);
-        //     if (keyPub == null) {
-        //         _logger.LogInformation("Decryption challenge denied for vuid {0} with keyId {1}: keyId not found.", vuid, keyId);
-        //         return BadRequest($"Denied Challenge for {keyId}");
-        //     }
+            var keyPub = await _keyIdManager.GetById(keyId);
+            if (keyPub == null) {
+                _logger.LogInformation("Decryption challenge denied for vuid {0} with keyId {1}: keyId not found.", vuid, keyId);
+                return BadRequest($"Denied Challenge for {keyId}");
+            }
 
-        //     _logger.LogInformation("Decryption challenge granted for vuid {0} with keyId {1}", vuid, keyId);
-        //     var cipher = keyPub.Key.Encrypt(token.GenKey(account.CvkiAuth));
-        //     return Ok(new { Token = token.ToString(), Challenge = cipher.ToString() });
-        // }
+            _logger.LogInformation("Decryption challenge granted for vuid {0} with keyId {1}", vuid, keyId);
+            var cipher = keyPub.Key.Encrypt(token.GenKey(account.GCvkAuth));
+            return Ok(new { Token = token.ToString(), Challenge = cipher.ToString() });
+        }
 
-        // [HttpPost("plaintext/{vuid}/{keyId}/{token}/{sign}")]
-        // public async Task<ActionResult> Decrypt([FromRoute] Guid vuid, [FromRoute] Guid keyId, [FromBody] string data, string token, string sign)
-        // {
-        //     var msgErr = $"Denied data decryption belonging to {vuid}";
-        //     var account = await _managerCvk.GetById(vuid);
+        [HttpPost("plaintext/{vuid}/{keyId}/{token}/{sign}")]
+        public async Task<ActionResult> Decrypt([FromRoute] Guid vuid, [FromRoute] Guid keyId, [FromBody] string data, string token, string sign)
+        {
+            var msgErr = $"Denied data decryption belonging to {vuid}";
+            var account = await _managerCvk.GetById(vuid);
 
-        //     var tran = TranToken.Parse(Convert.FromBase64String(token.DecodeBase64Url()));
-        //     if (!tran.Check(account.CvkiAuth)) {
-        //         _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid token.", vuid, keyId);
-        //         return BadRequest(msgErr);
-        //     }
+            var tran = TranToken.Parse(Convert.FromBase64String(token.DecodeBase64Url()));
+            if (!tran.Check(account.GCvkAuth)) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid token.", vuid, keyId);
+                return BadRequest(msgErr);
+            }
 
-        //     var keyPub = await _keyIdManager.GetById(keyId);
-        //     if (keyPub == null) {
-        //         _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: keyId not found.", vuid, keyId);
-        //         return BadRequest(msgErr);
-        //     }
+            var keyPub = await _keyIdManager.GetById(keyId);
+            if (keyPub == null) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: keyId not found.", vuid, keyId);
+                return BadRequest(msgErr);
+            }
 
-        //     var buffers = GetBytes(data);
-        //     if (buffers.Any(bff => !Cipher.CheckAsymmetric(bff, account.CvkPub))) {
-        //         _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid asymmetric data.", vuid, keyId);
-        //         return BadRequest(msgErr);
-        //     }
+            var buffers = GetBytes(data);
+            if (buffers.Any(bff => !Cipher.CheckAsymmetric(bff, new Ed25519Key(account.GCVK)))) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid asymmetric data.", vuid, keyId);
+                return BadRequest(msgErr);
+            }
 
-        //     var tags = buffers.Select(bff => Cipher.GetTag(bff)).Distinct().ToList();
-        //     var rules = (await _ruleManager.GetSetBy(account.VuId, tags, keyPub.Id)).Where(rl => rl.Eval()).ToList();
-        //     if (!tags.All(tag => rules.Where(rule => tag == rule.Tag).Any(rule => rule.IsAllowed))) {
-        //         _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: No rule to allow decryption. Tags: " + string.Join(' ', tags), vuid, keyId);
-        //         return BadRequest(msgErr);
-        //     }
+            var tags = buffers.Select(bff => Cipher.GetTag(bff)).Distinct().ToList();
+            var rules = (await _ruleManager.GetSetBy(account.VuId, tags, keyPub.Id)).Where(rl => rl.Eval()).ToList();
+            if (!tags.All(tag => rules.Where(rule => tag == rule.Tag).Any(rule => rule.IsAllowed))) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: No rule to allow decryption. Tags: " + string.Join(' ', tags), vuid, keyId);
+                return BadRequest(msgErr);
+            }
 
-        //     if (tags.Any(tag => rules.Where(rule => tag == rule.Tag).Any(rule => rule.IsDenied)))
-        //     {
-        //         _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Denied by rule", vuid, keyId);
-        //         return BadRequest(msgErr);
-        //     }
+            if (tags.Any(tag => rules.Where(rule => tag == rule.Tag).Any(rule => rule.IsDenied)))
+            {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Denied by rule", vuid, keyId);
+                return BadRequest(msgErr);
+            }
 
-        //     var bufferSign = Convert.FromBase64String(sign.DecodeBase64Url());
-        //     var sessionKey = tran.GenKey(account.CvkiAuth);
-        //     if (!Utils.Equals(sessionKey.Hash(buffers.SelectMany(bff => bff).ToArray()), bufferSign)) {
-        //         _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid symmetric data signature.", vuid, keyId);
-        //         return BadRequest(msgErr);
-        //     }
+            var bufferSign = Convert.FromBase64String(sign.DecodeBase64Url());
+            var sessionKey = tran.GenKey(account.GCvkAuth);
+            if (!Utils.Equals(sessionKey.Hash(buffers.SelectMany(bff => bff).ToArray()), bufferSign)) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid symmetric data signature.", vuid, keyId);
+                return BadRequest(msgErr);
+            }
 
-        //     var c1s =  buffers.Select(bff => Cipher.GetCipherC1(bff)).ToList();
-        //     if (c1s.Any(c1 => !c1.IsValid)) {
-        //         _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid data point.", vuid, keyId);
-        //         return BadRequest(msgErr);
-        //     }
+            var c1s =  buffers.Select(bff => Cipher.GetCipherC1(bff)).ToList();
+            if (c1s.Any(c1 => !c1.IsValid)) {
+                _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid data point.", vuid, keyId);
+                return BadRequest(msgErr);
+            }
 
-        //     _logger.LogInformation("Decryption granted for vuid {0} with keyId {1}", vuid, keyId);
-        //     var partials = c1s.Select(c1 => (c1 * account.CVKi).ToByteArray())
-        //         .Select(bff => Convert.ToBase64String(sessionKey.Encrypt(bff)));
+            _logger.LogInformation("Decryption granted for vuid {0} with keyId {1}", vuid, keyId);
+            var partials = c1s.Select(c1 => (c1 * account.CVKi).ToByteArray())
+                .Select(bff => Convert.ToBase64String(sessionKey.Encrypt(bff)));
 
-        //     return Ok(string.Join(Environment.NewLine, partials));
-        // }
+            return Ok(string.Join(Environment.NewLine, partials));
+        }
 
-        // [HttpPost("{vuid}")]
-        // public async Task<ActionResult> Confirm([FromRoute] Guid vuid)
-        // {
-        //     await _managerCvk.Confirm(vuid);
-        //     await _ruleManager.ConfirmAll(vuid);
-        //     _logger.LogInformation($"Confimed vuid {vuid}", vuid);
-        //     return Ok();
-        // }
+        [HttpPost("{vuid}")]
+        public async Task<ActionResult> Confirm([FromRoute] Guid vuid)
+        {
+            await _managerCvk.Confirm(vuid);
+            await _ruleManager.ConfirmAll(vuid);
+            _logger.LogInformation($"Confimed vuid {vuid}", vuid);
+            return Ok();
+        }
  
         private byte[] FromBase64(string input)
         {
@@ -529,17 +529,17 @@ namespace Tide.Ork.Controllers
             return new BigInteger(FromBase64(number), true, true);
         }
         
-        // static List<byte[]> GetBytes(string data) {
-        //     var line = string.Empty;
-        //     var lst = new List<byte[]>();
-        //     var rdr = new StringReader(data);
+        static List<byte[]> GetBytes(string data) {
+            var line = string.Empty;
+            var lst = new List<byte[]>();
+            var rdr = new StringReader(data);
             
-        //     while((line = rdr.ReadLine()) != null) {
-        //         lst.Add(Convert.FromBase64String(line.Trim()));
-        //     }
+            while((line = rdr.ReadLine()) != null) {
+                lst.Add(Convert.FromBase64String(line.Trim()));
+            }
 
-        //     return lst;
-        // }
+            return lst;
+        }
         
         private async Task<Ed25519Key> GetPubByOrkId(string id)
         {

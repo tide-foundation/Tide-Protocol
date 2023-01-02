@@ -1,4 +1,4 @@
-import { C25519Key, AESKey , ed25519Key} from "cryptide";
+import { C25519Key, AESKey , ed25519Key, CP256Key} from "cryptide";
 import DCryptFlow from "../src/dauth/DCryptFlow";
 import KeyClientSet from "../src/dauth/keyClientSet";
 import RuleClientSet from "../src/dauth/RuleClientSet";
@@ -9,19 +9,33 @@ import Cipher from "../src/Cipher";
 import IdGenerator from "../src/IdGenerator";
 import EnvTest from "./EnvTest";
 import assert from 'assert';
+import DAuthJwtFlow from "../src/dauth/DAuthJwtFlow";
 
 const threshold = 3;
 const cmkAuth = AESKey.from("AhATyXYow4qdCw7nFGVFu87JICzd7w9PbzAyp7M4r6PiHS7h0RTUNSP5XmcOVUmsvPKe");
 const urls = EnvTest.orkUrls;
+var pass = "123456";
+var newPass = "1234567";
+var email = "tmp@tide.org";
+const vendorPub = CP256Key.generate();
 
 describe('DCryptFlow', function () {
     it('should decrypt a cipher', async function () {
         const user = Math.random().toString();
         const userId = IdGenerator.seed(user, cmkAuth).guid;
-        const flow = new DCryptFlow(urls, userId);
-        const ruleCln = new RuleClientSet(urls, userId);
+        var flowCreate = new DAuthJwtFlow(userId);
+        flowCreate.cmkUrls = urls;
+        flowCreate.cvkUrls = urls;
+        flowCreate.vendorPub = vendorPub;
+
+        const account = await flowCreate.signUp2(pass, email, threshold);
+        console.log(`[signUp] vuid: ${account.vuid} `);
+
+        const ruleCln = new RuleClientSet(urls, account.vuid);
         const keyCln = new KeyClientSet(urls);
         const vendorKey = ed25519Key.generate();
+        const cvk = ed25519Key.generate();
+       
         
         const msgs = ["😃The magical realist style and thematic substance of One Hundred Years of Solitude😄",
             "established it as"];
@@ -29,19 +43,21 @@ describe('DCryptFlow', function () {
         const secrets = [ Buffer.from(msgs[0]), Buffer.from(msgs[1]) ];
         const keyStore = new KeyStore(vendorKey.public());
         const tag = Num64.seed("default");
-        const rule = Rule.allow(userId, tag, keyStore.keyId);
+        const rule = Rule.allow(account.vuid, tag, keyStore.keyId);
 
         await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule)]);
-
-        const ids = await Promise.all(flow.clients.map(cln => cln.getClientBuffer()));
-        const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
-
-        const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
+        console.log("1");
+       // const ids = await Promise.all(flow.clients.map(cln => cln.getClientBuffer()));
+        //const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
+        console.log("2");
+        
+        //const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
+        const flow = new DCryptFlow(urls, account.vuid);
         const cipher1 = Cipher.encrypt(secrets[0], tag, cvk);
         const cipher2 = Cipher.encrypt(secrets[1], tag, cvk);
-
+        console.log("3");
         let plains = await Promise.all([flow.decrypt(cipher1, vendorKey), flow.decrypt(cipher2, vendorKey)]);
-        
+        console.log("4");
         assert.equal(msgs.map(text => text.toString()).join('\n'), plains.map(text => text.toString()).join('\n'));
     });
 
