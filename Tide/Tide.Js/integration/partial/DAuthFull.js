@@ -34,7 +34,7 @@ var orkUrls = [...Array(threshold)].map((_, i) => `http://ork${i+1}.local`); //t
     console.log(`Trying a dAuth flow for... \nuserid: ${user} \nvvk: ${vendorPub.toString()}`);
 
     await signUp();
-    //await changePass(user, pass, newPass);
+    await changePass(user, pass, newPass);
     await signIn(user, pass);
     //await resetPass(user);
     //await reconstructPass(user);
@@ -64,15 +64,17 @@ async function signIn(user, pass) {
   flowLogin.vendorPub = vendorPub;
   
   var account =  await flowLogin.logIn2(pass);
-  //console.log(`[signIn] vuid: ${account.vuid} cvk: ${account.cvk.toString()}`);
+  console.log(`[signIn] jwt: ${account.jwt} cvkPub: ${account.cvkPub.toString()}`);
 }
 
 async function changePass(user, pass, newPass) {
   var flowLogin = new DAuthJwtFlow(user);
   flowLogin.homeUrl = orkUrls[0];
+  flowLogin.cmkUrls = orkUrls;
+  flowLogin.cvkUrls = orkUrls;
   flowLogin.vendorPub = vendorPub;
 
-  await flowLogin.changePass(pass, newPass, threshold);
+  await flowLogin.changePass2(pass, newPass, threshold);
 }
 
 async function resetPass(user) {

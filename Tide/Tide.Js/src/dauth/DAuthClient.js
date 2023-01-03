@@ -176,19 +176,16 @@ export default class DAuthClient extends ClientBase {
   /** 
    * @param {Dictionary<string | null>} mIdORKij  // fix this null later
    * @param {number} numKeys
-   * @param {ed25519Point} gMultiplier1
-   * @param {ed25519Point} gMultiplier2
+   * @param {string[]} multipliers
    * @returns {Promise<[ed25519Point, string, ed25519Point[], BigInt]>}
    */
-  async genShard( mIdORKij , numKeys, gMultiplier1 , gMultiplier2) {
-    const gMul1 = urlEncode(gMultiplier1.toArray());
-    const gMul2 = urlEncode(gMultiplier2.toArray());
+  async genShard( mIdORKij , numKeys, multipliers ) {
+    
     const orkIds = mIdORKij.values.map(id => `orkIds=${id}`).join('&');
       
-    const resp = await this._get(`/cmk/genshard/${this.userGuid}?numKeys=${numKeys.toString()}&gMultiplier1=${gMul1}&gMultiplier2=${gMul2}&${orkIds}`)
-      .ok(res => res.status < 500);
+    const resp = await this._get(`/cmk/genshard/${this.userGuid}?numKeys=${numKeys.toString()}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(multipliers));
+    if (!resp.ok) return  Promise.reject(new Error(resp.text)); 
       
-    if (!resp.ok) return Promise.reject(new Error(resp.text));
     const parsedObj = JSON.parse(resp.text);
     const gMultiplied = parsedObj.GMultipliers.map(p => ed25519Point.from(Buffer.from(p, 'base64'))); // check this works
     return [ed25519Point.from(Buffer.from(parsedObj.GK, 'base64')), parsedObj.EncryptedOrkShares, gMultiplied, BigInt(parsedObj.Timestampi)];
@@ -204,7 +201,7 @@ export default class DAuthClient extends ClientBase {
     try{
       const orkIds = mIdORKij.values.map(id => `orkIds=${id}`).join('&');
       const resp = await this._get(`/cmk/set/${this.userGuid}?CMKtimestamp=${CMKtimestamp.toString()}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(yijCipher));
-      if (!resp.ok) return  Promise.reject(new Error(resp.text));
+     
 
       const object  = JSON.parse(resp.text.toString());
       const obj = JSON.parse(object.Response.toString());

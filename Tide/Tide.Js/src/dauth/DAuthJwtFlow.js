@@ -249,6 +249,28 @@ export default class DAuthJwtFlow {
     await (await this._getCmkFlow()).changePass(pass, newPass, threshold);
   }
 
+   /**
+   * @param {string} pass
+   * @param {string} newPass
+   * @param {number} threshold
+   */
+   async changePass2(pass, newPass, threshold) {
+    try {
+      // get CMK Orks details
+      const pre_flowCmk = this._getCmkFlow(true);
+      const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
+      const flowCmk = await pre_flowCmk;
+
+      //const {tideJWT, cvkPubPem} = await flowCmk.logIn2( pass, venPnt);  
+      // create shards
+      const {gPRISMAuth, ciphersCMK} = await flowCmk.GenShard(newPass);
+
+      await (await this._getCmkFlow()).changePass(pass, newPass, threshold);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   /** @private */
   async _getCmkFlow(memory = false) {
     if (this._cmkFlow) return this._cmkFlow;

@@ -57,8 +57,11 @@ export default class DAuthFlow {
       const gBlurPass = gPass.times(r2);
       const r1Inv = r1.modInv(n);
       const r2Inv = r2.modInv(n);
-      
-      const genShardResp = await this.clienSet.all(dAuthClient => dAuthClient.genShard(mIdORKs,  3, gBlurUser , gBlurPass));
+      const gMul1 = Buffer.from(gBlurUser.toArray()).toString('base64');
+      const gMul2 = Buffer.from(gBlurPass.toArray()).toString('base64');
+      const multipliers = [gMul1, gMul2];
+
+      const genShardResp = await this.clienSet.all(dAuthClient => dAuthClient.genShard(mIdORKs,  3, multipliers));
 
       const gCMK = genShardResp.values.map(a =>  a[0]).reduce((sum, point) => sum.add(point), ed25519Point.infinity);
 
@@ -177,29 +180,6 @@ export default class DAuthFlow {
 }
 
  
-/**
- * 
- * @param {DnsEntry} entry 
- * @param {import("../Tools").Dictionary<TranToken>} tokens
- * * @param {import("../Tools").Dictionary<ed25519Point>} partialPubs
- * @param {ed25519Point} cmk2Pub
- * @param {import("../Tools").Dictionary<ed25519Point>} partialCmk2Pubs
- * @returns {Promise<Uint8Array>}
- */
-  async signEntry(entry, tokens, partialPubs, partialCmk2Pubs, cmk2Pub){
-    const idGens = await this.clienSet.all(c => c.getClientGenerator())
-    const ids = idGens.map(idGen => idGen.id);
-    const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString())));
-
-    const tranid = new Guid();
-    const signatures = await this.clienSet.map(lis, (cli, li, i) => cli.signEntry(tokens.get(i), tranid, entry, partialPubs.get(i), partialCmk2Pubs.get(i), li));
-
-    // @ts-ignore // says there is error because it doesn't know initial type of sum
-    const s = signatures.values.reduce((sum, sig) => (sum + sig) % ed25519Point.order); // todo: add proper mod function here without it being messy
-
-    const signature = ed25519Key.createSig(cmk2Pub, s);
-    return signature;
-  }
 
   /**
    * @param {string} password 
@@ -445,6 +425,47 @@ export default class DAuthFlow {
       await this._changePass(prismAuth, newPass, threshold);
     } catch (err) {
       return Promise.reject(err);
+    }
+  }
+  async GenShard(pass){
+    try{
+      const n = bigInt(ed25519Point.order.toString());
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+
+      const r = random();
+      const gPass = ed25519Point.fromString(pass);
+      const gBlurPass = gPass.times(r);
+      const rInv = r.modInv(n);
+      
+      const gMul1 = Buffer.from(gBlurPass.toArray()).toString('base64');
+      const multipliers = [gMul1];
+      
+      const genShardResp = await this.clienSet.all(dAuthClient => dAuthClient.genShard(mIdORKs,  3, multipliers));
+   
+      /**
+       * @param {ed25519Point[]} share1 
+       * @param {ed25519Point[]} share2 
+       */
+      const addShare = (share1, share2) => {
+        return share1.map((s, i) => s.add(share2[i]))
+      }
+      const gMultiplied = genShardResp.values.map(p => p[2]).reduce((sum, next) => addShare(sum, next)); // adds all of the respective gMultipliers together
+
+      const gPassPrism = gMultiplied[0].times(rInv);
+
+      const gPRISMAuth = ed25519Point.g.times(bigInt_fromBuffer(Hash.shaBuffer(gPassPrism.toArray()))); 
+      //const timestamp = median(genShardResp.values.map(resp => resp[3])); 
+      
+      const mergeShare=(share) =>{
+        return share.map(p => GenShardShareResponse.from(p));
+      }
+      const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
+      const sortedShareArray = sorting(shareEncrypted);
+
+      return { gPRISMAuth : gPRISMAuth, ciphersCMK : sortedShareArray}
+
+    }catch(err){
+      Promise.reject(err);
     }
   }
 

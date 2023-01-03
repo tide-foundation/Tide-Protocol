@@ -142,14 +142,18 @@ namespace Tide.Ork.Controllers
         }
 
         [HttpGet("genshard/{uid}")]
-        public async Task<ActionResult> GenShard([FromRoute] Guid uid, [FromQuery] string numKeys, [FromQuery] Ed25519Point gMultiplier1, [FromQuery] Ed25519Point gMultiplier2, [FromQuery] ICollection<string> orkIds)
+        public async Task<ActionResult> GenShard([FromRoute] Guid uid, [FromQuery] string numKeys,  [FromQuery] ICollection<string> orkIds, [FromBody] ICollection<string> multipliers)
         {
             // Get ork Publics from simulator, searching with their usernames e.g. ork1
-            var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj)); 
-            var multipliers = new Ed25519Point[]{gMultiplier1, gMultiplier2};
+            var orkPubTasks = orkIds.Select(mIdORKj => GetPubByOrkId(mIdORKj));
+            var mulArray = multipliers.ToArray(); 
+            var Multipliers = new Ed25519Point[mulArray.Count()];
+            for(int i = 0 ; i< mulArray.Count(); i++)
+                Multipliers[i] = Ed25519Point.From(Convert.FromBase64String(mulArray[i]));
+            
             Ed25519Key[] mgOrkj_Keys = await Task.WhenAll(orkPubTasks); // wait for tasks to end
 
-            return Ok(_keyGenerator.GenShard(uid.ToString(), mgOrkj_Keys, Int32.Parse(numKeys), multipliers, orkIds.ToArray()));
+            return Ok(_keyGenerator.GenShard(uid.ToString(), mgOrkj_Keys, Int32.Parse(numKeys), Multipliers, orkIds.ToArray()));
         }
 
         [HttpGet("set/{uid}")]
