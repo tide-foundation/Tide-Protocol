@@ -209,87 +209,87 @@ namespace Tide.Ork.Controllers
         }
 
 
-        // [HttpPut("random/{vuid}/{partialCvkPub}/{partialCvk2Pub}")]
-        // public async Task<ActionResult<CvkRandomResponseAdd>> AddRandom([FromRoute] Guid vuid, [FromRoute] Ed25519Point partialCvkPub, [FromRoute] Ed25519Point partialCvk2Pub, [FromBody] CVKRandRegistrationReq rand,[FromQuery] string li = null)
-        // {
-        //     if (vuid == Guid.Empty)
-        //     {
-        //         _logger.LogDebug("Random: The vuid must not be empty");
-        //         return BadRequest($"The vuid must not be empty");
-        //     }
+        [HttpPut("random/{vuid}/{partialCvkPub}/{partialCvk2Pub}")]
+        public async Task<ActionResult<CvkRandomResponseAdd>> AddRandom([FromRoute] Guid vuid, [FromRoute] Ed25519Point partialCvkPub, [FromRoute] Ed25519Point partialCvk2Pub, [FromBody] CVKRandRegistrationReq rand,[FromQuery] string li = null)
+        {
+            if (vuid == Guid.Empty)
+            {
+                _logger.LogDebug("Random: The vuid must not be empty");
+                return BadRequest($"The vuid must not be empty");
+            }
 
-        //     if (rand is null || rand.Shares is null || rand.Shares.Length < _config.Threshold)
-        //     {
-        //         var args = new object[] { rand?.Shares?.Length, _config.Threshold };
-        //         _logger.LogInformation("Random: The length of the shares [length] must be greater than or equal to {threshold}", args);
-        //         return BadRequest($"The length of the ids must be greater than {_config.Threshold - 1}");
-        //     }
+            if (rand is null || rand.Shares is null || rand.Shares.Length < _config.Threshold)
+            {
+                var args = new object[] { rand?.Shares?.Length, _config.Threshold };
+                _logger.LogInformation("Random: The length of the shares [length] must be greater than or equal to {threshold}", args);
+                return BadRequest($"The length of the ids must be greater than {_config.Threshold - 1}");
+            }
 
-        //     if (rand.Shares.Any(shr => shr.Id != _config.Guid))
-        //     {
-        //         var ids = string.Join(',', rand.Shares.Select(shr => shr.Id).Where(id => id != _config.Guid));
-        //         _logger.LogCritical("Random: Shares were sent to the wrong ORK: {ids}", ids);
-        //         return BadRequest($"Shares were sent to the wrong ORK: '{ids}'");
-        //     }
+            if (rand.Shares.Any(shr => shr.Id != _config.Guid))
+            {
+                var ids = string.Join(',', rand.Shares.Select(shr => shr.Id).Where(id => id != _config.Guid));
+                _logger.LogCritical("Random: Shares were sent to the wrong ORK: {ids}", ids);
+                return BadRequest($"Shares were sent to the wrong ORK: '{ids}'");
+            }
 
-        //     var lagrangian = BigInteger.Zero;
-        //     if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
-        //     {
-        //         _logger.LogInformation("AddRandom: Invalid li for {uid}: '{li}' ", vuid, li);
-        //         return BadRequest("Invalid parameter li");
-        //     }
-        //     var isNew = !await _managerCvk.Exist(vuid);
-        //     if (!isNew)
-        //     {
-        //         _logger.LogInformation("Random: CMK already exists for {uid}", vuid);
-        //         return BadRequest("CMK already exists");
-        //     }
+            var lagrangian = BigInteger.Zero;
+            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
+            {
+                _logger.LogInformation("AddRandom: Invalid li for {uid}: '{li}' ", vuid, li);
+                return BadRequest("Invalid parameter li");
+            }
+            var isNew = !await _managerCvk.Exist(vuid);
+            if (!isNew)
+            {
+                _logger.LogInformation("Random: CMK already exists for {uid}", vuid);
+                return BadRequest("CMK already exists");
+            }
 
-        //     if (_features.Voucher)
-        //     {
-        //         var signer = await _keyIdManager.GetById(rand.KeyId);
-        //         if (signer == null)
-        //             return BadRequest("Signer's key must be defined");
+            if (_features.Voucher)
+            {
+                var signer = await _keyIdManager.GetById(rand.KeyId);
+                if (signer == null)
+                    return BadRequest("Signer's key must be defined");
 
-        //         if (!signer.Key.EdDSAVerify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), rand.Signature))
-        //             return BadRequest("Signature is not valid");
-        //     }
+                if (!signer.Key.EdDSAVerify(_config.Guid.ToByteArray().Concat(vuid.ToByteArray()).ToArray(), rand.Signature))
+                    return BadRequest("Signature is not valid");
+            }
 
-        //     var account = new CvkVault
-        //     {
-        //         VuId = vuid,
-        //         CVKi = rand.ComputeCvk(),
-        //         CVK2i = rand.ComputeCvk2(),
-        //         CvkPub = new Ed25519Key(Ed25519.G *(rand.ComputeCvk() * lagrangian)),
-        //         CvkiAuth = rand.CvkiAuth
-        //     };
-        //     var resp = await _managerCvk.SetOrUpdate(account);
-        //     if (!resp.Success)
-        //     {
-        //         _logger.LogError($"Random: CVK was not added for uid '{vuid}'");
-        //         return Problem(resp.Error);
-        //     }
+            var account = new CvkVault
+            {
+                VuId = vuid,
+                CVKi = rand.ComputeCvk(),
+                CVK2i = rand.ComputeCvk2(),
+                GCVK = Ed25519.G *(rand.ComputeCvk() * lagrangian),
+                GCvkAuth = rand.CvkiAuth
+            };
+            var resp = await _managerCvk.SetOrUpdate(account);
+            if (!resp.Success)
+            {
+                _logger.LogError($"Random: CVK was not added for uid '{vuid}'");
+                return Problem(resp.Error);
+            }
 
-        //     _logger.LogInformation("Random: New CVK for {0} with pub {1}", vuid, account.CvkPub);
+            _logger.LogInformation("Random: New CVK for {0} with pub {1}", vuid, account.GCVK);
         
-        //     var cvkPub = partialCvkPub + (Ed25519.G * rand.GetCvki());
-        //     var cvk2Pub = partialCvk2Pub + (Ed25519.G * rand.GetCvk2i());
+            var cvkPub = partialCvkPub + (Ed25519.G * rand.GetCvki());
+            var cvk2Pub = partialCvk2Pub + (Ed25519.G * rand.GetCvk2i());
 
-        //     var s = Ed25519Dsa.Sign(rand.GetCvk2i() , rand.GetCvki() , cvkPub, cvk2Pub, rand.GetEntry().MessageSignedBytes());
+            //var s = Ed25519Dsa.Sign(rand.GetCvk2i() , rand.GetCvki() , cvkPub, cvk2Pub, rand.GetEntry().MessageSignedBytes());
 
 
-        //     var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
-        //     var token = new TranToken();
-        //     token.Sign(_config.SecretKey); // token client will use to authetnicate on SignEntry endpoint
-        //     return new CvkRandomResponseAdd
-        //     {
-        //         CvkPub = Ed25519.G * (rand.ComputeCvk() * lagrangian ),
-        //         Cvk2Pub = Ed25519.G * (rand.ComputeCvk2() * lagrangian),
-        //         Signature = new { orkid = _config.UserName, sign = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m))}, // OrkSign type
-        //         EncryptedToken = account.CvkiAuth.Encrypt(token.ToByteArray()),
-        //         S = s.ToString()
-        //     };
-        // }
+            var m = Encoding.UTF8.GetBytes(_config.UserName + vuid.ToString());
+            var token = new TranToken();
+            token.Sign(_config.SecretKey); // token client will use to authetnicate on SignEntry endpoint
+            return new CvkRandomResponseAdd
+            {
+                CvkPub = Ed25519.G * (rand.ComputeCvk() * lagrangian ),
+                Cvk2Pub = Ed25519.G * (rand.ComputeCvk2() * lagrangian),
+                Signature = new { orkid = _config.UserName, sign = Convert.ToBase64String(_config.PrivateKey.EdDSASign(m))}, // OrkSign type
+                EncryptedToken = account.GCvkAuth.Encrypt(token.ToByteArray()),
+                //S = s.ToString()
+            };
+        }
    
         //TODO: there is not verification if the account already exists
         [HttpPut("{vuid}/{keyId}")]
@@ -502,7 +502,7 @@ namespace Tide.Ork.Controllers
                 _logger.LogInformation("Decryption denied for vuid {0} with keyId {1}: Invalid data point.", vuid, keyId);
                 return BadRequest(msgErr);
             }
-
+            
             _logger.LogInformation("Decryption granted for vuid {0} with keyId {1}", vuid, keyId);
             var partials = c1s.Select(c1 => (c1 * account.CVKi).ToByteArray())
                 .Select(bff => Convert.ToBase64String(sessionKey.Encrypt(bff)));

@@ -199,9 +199,9 @@ export default class DCryptFlow {
       // const partialPub2s = randSignUpResponses.map(e => e[3]).map(p => randSignUpResponses.values.map(e => e[3]).reduce((sum, cvk2Pubi) => { return cvk2Pubi.isEqual(p) ? sum : cvk2Pubi.add(sum)} ,ed25519Point.infinity)); 
       const tokens = randSignUpResponses.map(e => e[1]).map((cipher, i) => TranToken.from(cvkAuths.get(i).decrypt(cipher))); // works
       const orkSigns = randSignUpResponses.map(e => e[0]);
-      const s = randSignUpResponses.values.map(e => e[4]).reduce((sum, sig) => (sum + sig) % ed25519Point.order); // todo: add proper mod function here without it being messy
+      //const s = randSignUpResponses.values.map(e => e[4]).reduce((sum, sig) => (sum + sig) % ed25519Point.order); // todo: add proper mod function here without it being messy
      
-      await Promise.all([entry,this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), orkSigns.keys)]);
+      //await Promise.all([entry,this.ruleCln.setOrUpdate(Rule.allow(this.user, Tags.vendor, signedKeyId), orkSigns.keys)]);
 
       return cvk;
     } catch (err) {

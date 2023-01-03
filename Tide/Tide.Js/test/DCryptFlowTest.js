@@ -46,18 +46,13 @@ describe('DCryptFlow', function () {
         const rule = Rule.allow(account.vuid, tag, keyStore.keyId);
 
         await Promise.all([keyCln.setOrUpdate(keyStore), ruleCln.setOrUpdate(rule)]);
-        console.log("1");
-       // const ids = await Promise.all(flow.clients.map(cln => cln.getClientBuffer()));
-        //const signatures = ids.map((id) => vendorKey.sign(Buffer.concat([id, userId.toArray()])));
-        console.log("2");
         
-        //const cvk = await flow.signUp(cmkAuth, threshold, keyStore.keyId, signatures);
         const flow = new DCryptFlow(urls, account.vuid);
         const cipher1 = Cipher.encrypt(secrets[0], tag, cvk);
         const cipher2 = Cipher.encrypt(secrets[1], tag, cvk);
-        console.log("3");
+      
         let plains = await Promise.all([flow.decrypt(cipher1, vendorKey), flow.decrypt(cipher2, vendorKey)]);
-        console.log("4");
+       
         assert.equal(msgs.map(text => text.toString()).join('\n'), plains.map(text => text.toString()).join('\n'));
     });
 
@@ -91,7 +86,7 @@ describe('DCryptFlow', function () {
         const cipher1 = Cipher.encrypt(secrets[0], tag1, cvk);
         const cipher2 = Cipher.encrypt(secrets[1], tag2, cvk);
         const cipher3 = Cipher.encrypt(secrets[2], tag1, cvk);
-        
+
         const plains = await flow.decryptBulk([cipher1, cipher2, cipher3], vendorKey);
             
         assert.equal(msgs.map(text => text.toString()).join('\n'), plains.map(text => text.toString()).join('\n'));
