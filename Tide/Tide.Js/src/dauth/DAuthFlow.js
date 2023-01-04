@@ -251,19 +251,12 @@ export default class DAuthFlow {
 
       const n = bigInt(ed25519Point.order.toString());
 
-      const [gPassPrism, encryptedResponses, r2Inv, lis] = await this.doConvert(password, point);  //getting r2Inv here is a little messy, but saves a headache
+      const [prismAuths, decryptedResponses,VERIFYi, r2Inv, lis] = await this.doConvert(password, point);  //getting r2Inv here is a little messy, but saves a headache
     
       const cln = this.clienSet.get(0); // chnage this later
       const dnsCln = new DnsClient(cln.baseUrl, cln.userGuid);
-
       const [, cmkpub] = await dnsCln.getInfoOrks(); // pubs is the list of mgOrki
       
-      //decryption
-      const gPRISMAuth = bigInt_fromBuffer(Hash.shaBuffer(gPassPrism.toArray())); 
-      const pubs = await this.clienSet.all(c => c.getPublic()); //works
-      const prismAuths = pubs.map(pub =>  AESKey.seed(Hash.shaBuffer(pub.y.times(gPRISMAuth).toArray())));
-    
-      const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher))); 
       const gUserCMK = decryptedResponses.map((b, i) => b.gBlurUserCMKi.times(lis.get(i))).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi), ed25519Point.infinity).times(r2Inv); // check li worked here
       const gCMK2 = decryptedResponses.map((b, i) => b.gCMK2.times(lis.get(i))).reduce((sum, gCMK2) => sum.add(gCMK2), ed25519Point.infinity); //Correct??
       
@@ -286,17 +279,7 @@ export default class DAuthFlow {
 
       const r4 = random();
       const r4Inv = r4.modInv(n);
-      
-      // functional function to append userID bytes to certTime bytes FAST
-      const create_payload = (certTime_bytes) => {
-        const newArray = new Uint8Array(this.userID.buffer.length + certTime_bytes.length);
-        newArray.set(this.userID.buffer);
-        newArray.set(certTime_bytes, this.userID.buffer.length);
-        return newArray // returns userID + certTime
-      }
-     
-      const VERIFYi = decryptedResponses.map((response, i) => new TranToken().sign(prismAuths.get(i), create_payload(response.certTime.toArray())));
-     
+       
       const M = Hash.shaBuffer(timestamp2.toString() + Buffer.from(gSesskeyPub.toArray()).toString('base64')); // TODO: Add point.to_base64 function
 
       const H = Hash.shaBuffer( Buffer.concat([Buffer.from(gCMKAuth.toArray()), M]));
@@ -353,7 +336,7 @@ export default class DAuthFlow {
     /**
      *  @param {string} pass
      *  @param {ed25519Point} gVVK
-     *  @returns {Promise<[ed25519Point, Dictionary<string>, bigInt.BigInteger, Dictionary<bigInt.BigInteger>]>} // Returns gPassprism + encrypted CMK values + r2Inv (to un-blur gBlurPassPrism)
+     *  @returns {Promise<[Dictionary<AESKey>, Dictionary<ApplyResponseDecrypted>, Dictionary<TranToken>, bigInt.BigInteger, Dictionary<bigInt.BigInteger>]>} // Returns gPassprism + encrypted CMK values + r2Inv (to un-blur gBlurPassPrism)
     */
      async doConvert(pass, gVVK) {
       try {
@@ -379,8 +362,23 @@ export default class DAuthFlow {
         const gPassPrism = prismResponse.values.map(a =>  a[0]).reduce((sum, point) => sum.add(point),ed25519Point.infinity).times(r1Inv);// li has already been multiplied above, so no need to do it here
         //const gPassPrism = gPassRPrism; 
         const encryptedResponses = prismResponse.map(a => a[1]);
+         //decryption
+        const gPRISMAuth = bigInt_fromBuffer(Hash.shaBuffer(gPassPrism.toArray())); 
+        const pubs = await this.clienSet.all(c => c.getPublic()); //works
+        const prismAuths = pubs.map(pub =>  AESKey.seed(Hash.shaBuffer(pub.y.times(gPRISMAuth).toArray())));
+    
+        const decryptedResponses = encryptedResponses.map((cipher, i) => ApplyResponseDecrypted.from(prismAuths.get(i).decrypt(cipher))); 
+         // functional function to append userID bytes to certTime bytes FAST
+        const create_payload = (certTime_bytes) => {
+          const newArray = new Uint8Array(this.userID.buffer.length + certTime_bytes.length);
+          newArray.set(this.userID.buffer);
+          newArray.set(certTime_bytes, this.userID.buffer.length);
+          return newArray // returns userID + certTime
+        }
+     
+        const VERIFYi = decryptedResponses.map((response, i) => new TranToken().sign(prismAuths.get(i), create_payload(response.certTime.toArray())));
         
-        return [gPassPrism, encryptedResponses, r2Inv, lis];
+        return [prismAuths, decryptedResponses, VERIFYi, r2Inv, lis];
       } catch (err) {
         return Promise.reject(err);
       }
@@ -440,7 +438,7 @@ export default class DAuthFlow {
       const gMul1 = Buffer.from(gBlurPass.toArray()).toString('base64');
       const multipliers = [gMul1];
       
-      const genShardResp = await this.clienSet.all(dAuthClient => dAuthClient.genShard(mIdORKs,  3, multipliers));
+      const genShardResp = await this.clienSet.all(dAuthClient => dAuthClient.genShard(mIdORKs,  1, multipliers));
    
       /**
        * @param {ed25519Point[]} share1 

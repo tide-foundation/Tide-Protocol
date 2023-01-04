@@ -261,9 +261,9 @@ export default class DAuthJwtFlow {
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
       const flowCmk = await pre_flowCmk;
 
-      //const {tideJWT, cvkPubPem} = await flowCmk.logIn2( pass, venPnt);  
+      const {prismAuths, decryptedResponses, VERIFYi, r2Inv, lis} = await flowCmk.doConvert( pass, venPnt);  
       // create shards
-      const {gPRISMAuth, ciphersCMK} = await flowCmk.GenShard(newPass);
+      const {gPRISMAuth, ciphers} = await flowCmk.GenShard(newPass);
 
       await (await this._getCmkFlow()).changePass(pass, newPass, threshold);
     } catch (err) {
