@@ -51,12 +51,26 @@ export default class DAuthClient extends ClientBase {
    * @param { TranToken } VERIFYi
    * @param { ed25519Point } gCMK2
    *  @returns {Promise<string>} */
-   async Authenticate(encAuthRequest, certTimei, VERIFYi,gCMK2) {
+   async Authenticate(encAuthRequest, certTimei, VERIFYi, gCMK2) {
     const resp = await this._get(`/cmk/auth/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}/${urlEncode(encAuthRequest)}/${urlEncode(gCMK2.toArray())}`) // Remove gCmk2 once confirm with the flow
         .ok(res => res.status < 500);
 
     return resp.text;
   }
+
+   /** 
+   * @param { string } EncSetCMKStatei
+   * @param { TranToken } certTimei
+   * @param { TranToken } VERIFYi
+   * @param { ed25519Point } gPRISMtest
+   * @param {ed25519Point} gPrismAuth
+   *  @returns {Promise<string>} */
+    async CommitPrism(EncSetCMKStatei, certTimei, VERIFYi, gPRISMtest, gPrismAuth) {
+      const resp = await this._put(`/prism/commit/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}/${urlEncode(gPRISMtest.toArray())}/${urlEncode(gPrismAuth.toArray())}`).set("Content-Type", "application/json").send(EncSetCMKStatei);
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
+  
+      return resp.text;
+    }
 
   /** 
    * @param { Guid } vuid
@@ -195,18 +209,18 @@ export default class DAuthClient extends ClientBase {
    * @param {string[]} yijCipher
    * @param {number} CMKtimestamp
    * @param {Dictionary<string | null>} mIdORKij  // fix this null later
-   * @returns {Promise<[ed25519Point, ed25519Point, ed25519Point, ed25519Point, string, string]>}
+   * @returns {Promise<[ed25519Point[], ed25519Point, string, string]>}
    */
   async setCMK(yijCipher,CMKtimestamp, mIdORKij) {
     try{
       const orkIds = mIdORKij.values.map(id => `orkIds=${id}`).join('&');
       const resp = await this._get(`/cmk/set/${this.userGuid}?CMKtimestamp=${CMKtimestamp.toString()}&${orkIds}`).set("Content-Type", "application/json").send(JSON.stringify(yijCipher));
-     
+      if (!resp.ok) return  Promise.reject(new Error(resp.text));
 
       const object  = JSON.parse(resp.text.toString());
       const obj = JSON.parse(object.Response.toString());
       const gKTesti = obj.gKTesti.map(p => ed25519Point.from(Buffer.from(p, 'base64')));
-      return [gKTesti[0],  gKTesti[1], gKTesti[2], ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.EncryptedData, object.RandomKey];
+      return [gKTesti, ed25519Point.from(Buffer.from(obj.gRi, 'base64')), obj.EncryptedData, object.RandomKey];
     }catch(err){
       return Promise.reject(err);
     }

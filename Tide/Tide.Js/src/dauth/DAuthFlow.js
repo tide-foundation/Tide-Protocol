@@ -110,13 +110,13 @@ export default class DAuthFlow {
     
       const setCMKResponse = await pre_setCMKResponse;
 
-      const gCMKtest = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[0].times(lis.get(i))), ed25519Point.infinity);
-      const gPRISMtest = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[1].times(lis.get(i))), ed25519Point.infinity);
-      const gCMK2test = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[2].times(lis.get(i))), ed25519Point.infinity);
-      const gCMKR2 = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[3]), ed25519Point.infinity); // Does Sum (gCMKR2)
+      const gCMKtest = setCMKResponse.values.map(resp => resp[0]).reduce((sum, next, i) => sum.add(next[0].times(lis.get(i))), ed25519Point.infinity);
+      const gPRISMtest = setCMKResponse.values.map(resp => resp[0]).reduce((sum, next, i) => sum.add(next[1].times(lis.get(i))), ed25519Point.infinity);
+      const gCMK2test = setCMKResponse.values.map(resp => resp[0]).reduce((sum, next, i) => sum.add(next[2].times(lis.get(i))), ed25519Point.infinity);
+      const gCMKR2 = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[1]), ed25519Point.infinity); // Does Sum (gCMKR2)
 
-      const encryptedStatei = setCMKResponse.values.map(resp => resp[4]);
-      const randomKey = setCMKResponse.values.map(r => r[5]);
+      const encryptedStatei = setCMKResponse.values.map(resp => resp[2]);
+      const randomKey = setCMKResponse.values.map(r => r[3]);
 
       return {gTests : [gCMKtest, gPRISMtest, gCMK2test], gCMKR2 : gCMKR2, state : encryptedStatei, randomKey : randomKey};
     }catch(err){
@@ -270,6 +270,7 @@ export default class DAuthFlow {
       const deltaTime = median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - startTimer;
       const timestamp2 = getCSharpTime(Date.now()) + deltaTime;
       const AAA =  median(decryptedResponses.values.map(a => Number(a.certTime.ticks.toString()))) - timestamp2;
+      const certTimei = median(decryptedResponses.values.map(a => a.certTime));
       
       // Begin PreSignInCVK here to save time
       const jwt = createJWT_toSign(VUID.guid, gSesskeyPub, timestamp2); // Tide JWT here 
@@ -452,7 +453,7 @@ export default class DAuthFlow {
       const gPassPrism = gMultiplied[0].times(rInv);
 
       const gPRISMAuth = ed25519Point.g.times(bigInt_fromBuffer(Hash.shaBuffer(gPassPrism.toArray()))); 
-      //const timestamp = median(genShardResp.values.map(resp => resp[3])); 
+      const timestamp = median(genShardResp.values.map(resp => resp[3])); 
       
       const mergeShare=(share) =>{
         return share.map(p => GenShardShareResponse.from(p));
@@ -460,11 +461,65 @@ export default class DAuthFlow {
       const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
       const sortedShareArray = sorting(shareEncrypted);
 
-      return { gPRISMAuth : gPRISMAuth, ciphersCMK : sortedShareArray}
+      return { gPRISMAuth : gPRISMAuth, ciphers : sortedShareArray , timestamp : timestamp}
 
     }catch(err){
       Promise.reject(err);
     }
+  }
+
+  async SetPRISM(ciphers, timestamp){
+    try{
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+
+      const pre_setCMKResponse = this.clienSet.all((DAuthClient, i) => DAuthClient.setCMK(filtering(ciphers.filter(element => element.orkId === mIdORKs.get(i))), timestamp, mIdORKs));
+
+      const idGens = await this.clienSet.all(c => c.getClientGenerator()); // implement method to only use first 14 orks that reply
+      const ids = idGens.map(idGen => idGen.id);
+      const lis = ids.map(id => SecretShare.getLi(id, ids.values, bigInt(ed25519Point.order.toString()))); 
+    
+      const setCMKResponse = await pre_setCMKResponse;
+
+      const gPRISMtest = setCMKResponse.values.map(resp => resp[0]).reduce((sum, next, i) => sum.add(next[0].times(lis.get(i))), ed25519Point.infinity);
+      const gCMKR2 = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[1]), ed25519Point.infinity); // Does Sum (gCMKR2)
+
+      const encryptedStatei = setCMKResponse.values.map(resp => resp[2]);
+      const randomKey = setCMKResponse.values.map(r => r[3]);
+
+      return {gPRISMtest : gPRISMtest, gCMKR2 : gCMKR2, state : encryptedStatei, randomKey : randomKey};
+    }catch(err){
+      Promise.reject(err);
+    }
+    
+  }
+  async CommitPRISM (gPRISMtest, state, randomKey, decryptedResponses, gPrismAuth, VERIFYi){
+    try{
+      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
+      //const pre_commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCMKR2, state[i], randomKey[i], gPrismAuth, email, mIdORKs));
+      const Encrypted_Auth_Resp = await this.clienSet.all((DAuthClient,i) => DAuthClient.CommitPrism(state[i], decryptedResponses.get(i).certTime, VERIFYi.get(i),gPRISMtest, gPrismAuth));
+      
+      // const CMKS = pre_commitCMKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); 
+
+      // const CMKM = Hash.shaBuffer(Buffer.concat([Buffer.from(gTests[0].toArray()),Buffer.from(timestamp.toString()),Buffer.from(this.userID.guid.toString())])); // TODO: Add point.to_base64 function
+      // const pubs = await this.clienSet.all(c => c.getPublic()); //works   
+      // const CMKR = pubs.map(pub => pub.y).reduce((sum, p) => sum.add(p), ed25519Point.infinity).add(gCMKR2);
+      // const CMKH = Hash.sha512Buffer( Buffer.concat([Buffer.from(CMKR.toArray()),Buffer.from(gTests[0].toArray()), CMKM]));
+      
+      // const CMKH_int = bigInt_fromBuffer(CMKH);
+      
+      // if(!ed25519Point.g.times(CMKS).isEqual(CMKR.add(gTests[0].times(CMKH_int)))) {
+      //   return Promise.reject("Ork Signature Invalid")
+      // }
+      
+      // const commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.commit(CMKS, state[i], gCMKR2, mIdORKs));
+      
+      // // @ts-ignore
+      // const entry = await this.addDnsEntry(CMKS.toString(), gCMKR2, timestamp, gCMK, mIdORKs)
+  
+    }catch(err){
+      Promise.reject(err);
+    }
+   
   }
 
   /**

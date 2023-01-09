@@ -478,6 +478,33 @@ namespace Tide.Ork.Controllers
             return Ok(account.PrismAuthi.EncryptStr(JsonSerializer.Serialize(response)));
         }
 
+        
+        [HttpPut("prism/commit/{uid}/{certTimei}/{token}/{gPRISMtest}/{gPRISMAuth}")]
+        public async Task<ActionResult> CommitPrism([FromRoute] Guid uid, [FromQuery] Ed25519Point gPRISMtest,[FromQuery] Ed25519Point gPRISMAuth, [FromRoute] string certTimei ,[FromRoute] string token , [FromBody] string data)
+        {
+            var tran = TranToken.Parse(FromBase64(token));
+            //var toCheck = uid.ToByteArray().Concat(FromBase64(prism)).Concat(FromBase64(prismAuth)).ToArray();
+
+            var account = await _manager.GetById(uid);
+            if (account == null)
+                return _logger.Log(Unauthorized($"Unsuccessful change password for {uid}"),
+                    $"Unsuccessful change password for {uid}. Account was not found");
+
+            // var authKey = withCmk ? account.C : account.PrismiAuth;
+            // if (!tran.Check(authKey, toCheck))
+            //     return _logger.Log(Unauthorized($"Unsuccessful change password for {uid}"),
+            //         $"Unsuccessful change password for {uid} with {token}");
+
+            _logger.LogInformation($"Change password for {uid}", uid);
+
+            //account.Prismi = GetBigInteger(prism);
+            //account.PrismiAuth = AesKey.Parse(FromBase64(prismAuth));
+
+            await _manager.SetOrUpdate(account);
+            return Ok();
+        }
+
+
 /*
         [HttpPost("prism/{uid}/{prism}/{prismAuth}/{token}")]
         public async Task<ActionResult> ChangePrism([FromRoute] Guid uid, [FromRoute] string prism, [FromRoute] string prismAuth, [FromRoute] string token, [FromQuery] bool withCmk = false)
