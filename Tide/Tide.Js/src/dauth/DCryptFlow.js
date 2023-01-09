@@ -69,7 +69,7 @@ export default class DCryptFlow {
     }
     
   }
-  async SetCVK(ciphers, timestamp, gCMKAuth){
+  async SetCVK(ciphers, timestamp){
     try{
       const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
 

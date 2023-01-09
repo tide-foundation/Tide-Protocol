@@ -49,24 +49,24 @@ export default class DAuthClient extends ClientBase {
    * @param { string } encAuthRequest
    * @param { TranToken } certTimei
    * @param { TranToken } VERIFYi
-   * @param { ed25519Point } gCMK2
    *  @returns {Promise<string>} */
-   async Authenticate(encAuthRequest, certTimei, VERIFYi, gCMK2) {
-    const resp = await this._get(`/cmk/auth/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}/${urlEncode(encAuthRequest)}/${urlEncode(gCMK2.toArray())}`) // Remove gCmk2 once confirm with the flow
+   async Authenticate(encAuthRequest, certTimei, VERIFYi) {
+    const resp = await this._get(`/cmk/auth/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}/${urlEncode(encAuthRequest)}`) 
         .ok(res => res.status < 500);
 
     return resp.text;
   }
 
    /** 
-   * @param { string } EncSetCMKStatei
+   * @param { string } state
    * @param { TranToken } certTimei
    * @param { TranToken } VERIFYi
    * @param { ed25519Point } gPRISMtest
    * @param {ed25519Point} gPrismAuth
    *  @returns {Promise<string>} */
-    async CommitPrism(EncSetCMKStatei, certTimei, VERIFYi, gPRISMtest, gPrismAuth) {
-      const resp = await this._put(`/prism/commit/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}/${urlEncode(gPRISMtest.toArray())}/${urlEncode(gPrismAuth.toArray())}`).set("Content-Type", "application/json").send(EncSetCMKStatei);
+    async CommitPrism(state, certTimei, VERIFYi, gPRISMtest, gPrismAuth) {
+      const resp = await this._put(`/cmk/prism/commit/${this.userGuid}/${urlEncode(certTimei.toArray())}/${urlEncode(VERIFYi.toArray())}/${urlEncode(gPRISMtest.toArray())}/${urlEncode(gPrismAuth.toArray())}`)
+      .set("Content-Type", "application/json").send(JSON.stringify(state));
       if (!resp.ok) return  Promise.reject(new Error(resp.text));
   
       return resp.text;
@@ -103,24 +103,6 @@ export default class DAuthClient extends ClientBase {
     const res = await this._get(url);
     return res.text
   }
-
-    /**
-   * @param {import("../guid").default } tranid
-   * @param {TranToken} token
-   * @param {DnsEntry} entry
-   * @param {ed25519Point} cmk2Pub
-   * @param {bigInt.BigInteger} li
-   * @returns {Promise<BigInt>}
-   **/
-    async signEntry(token, tranid, entry, partialPub, cmk2Pub, li) {
-      const tkn = urlEncode(token.toArray());
-
-      const resp = await this._get(`/cmk/sign/${this.userGuid}/${tkn}/${urlEncode(partialPub.toArray())}/${urlEncode(cmk2Pub.toArray())}?tranid=${tranid.toString()}&li=${li.toString(10)}`).set("Content-Type", "application/json").send(entry.toString())
-        .ok(res => res.status < 500);
-  
-      if (!resp.ok) return  Promise.reject(new Error(resp.text));
-      return BigInt(resp.text);
-    }
 
   /**
    * @param { import("../guid").default } tranid

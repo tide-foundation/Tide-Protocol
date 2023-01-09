@@ -25,7 +25,6 @@ import DnsEntry from "../DnsEnrty";
 import DnsClient from "./DnsClient";
 import Guid from "../guid";
 import SetClient from "./SetClient";
-import RandRegistrationReq from "./RandRegistrationReq";
 import { Dictionary } from "../Tools";
 import ApplyResponseDecrypted from "./ApplyResponseDecrypted";
 import IdGenerator from "../IdGenerator";
@@ -274,7 +273,7 @@ export default class DAuthFlow {
       
       // Begin PreSignInCVK here to save time
       const jwt = createJWT_toSign(VUID.guid, gSesskeyPub, timestamp2); // Tide JWT here 
-      const pre_gCVKR = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.PreSignInCVK(VUID.guid, timestamp2, gSesskeyPub, jwt)); // Remove gCmk2 once confirm with the flow
+      const pre_gCVKR = this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.PreSignInCVK(VUID.guid, timestamp2, gSesskeyPub, jwt)); 
 
       const gCMKAuth = cmkpub.y.times(CMKmul); // get gCMK from DNS call at beginning
 
@@ -291,7 +290,7 @@ export default class DAuthFlow {
       const jsonObject = (userID, certTimei, blurHCMKmul) =>  JSON.stringify( { UserId: userID.toString(), CertTime: certTimei.toString(), BlurHCmkMul: blurHCMKmul.toString() } );
       const encAuthRequest = decryptedResponses.map((res, i) => prismAuths.get(i).encrypt(jsonObject(this.userID.guid, res.certTime, blurHCMKmul)).toString('base64'));
 
-      const Encrypted_Auth_Resp = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.Authenticate(encAuthRequest.get(i), decryptedResponses.get(i).certTime, VERIFYi.get(i),gCMK2)); // Remove gCmk2 once confirm with the flow
+      const Encrypted_Auth_Resp = await this.clienSet.map(lis, (dAuthClient, li, i) => dAuthClient.Authenticate(encAuthRequest.get(i), decryptedResponses.get(i).certTime, VERIFYi.get(i))); 
       const Decrypted_json = Encrypted_Auth_Resp.values.map((encryptedSi, i) => JSON.parse(prismAuths.get(i).decrypt(encryptedSi).toString())); // decrypt encrypted json from authenticate req
       
       const S = Decrypted_json.map((s, i) => bigInt_fromBuffer(Buffer.from(s.si, 'base64')).times(lis.get(i))).reduce((sum, s) => sum.add(s)).times(r4Inv).mod(n);  // Sum (Si) * r4Inv % n
@@ -328,7 +327,7 @@ export default class DAuthFlow {
 
       /// IT WORKS! finalJWT can be verified by finalPem with ANY library out there that supports EdDSA!!!!
 
-      return  {tideJWT : finalJWT, cvkPubPem : finalPem };
+      return  {tideJWT : finalJWT, cvkPubPem : finalPem, gCMKAuth : gCMKAuth , vuid : VUID};
     } catch (err) {
       return Promise.reject(err);
     }
@@ -448,7 +447,7 @@ export default class DAuthFlow {
       const addShare = (share1, share2) => {
         return share1.map((s, i) => s.add(share2[i]))
       }
-      const gMultiplied = genShardResp.values.map(p => p[2]).reduce((sum, next) => addShare(sum, next)); // adds all of the respective gMultipliers together
+      const gMultiplied = genShardResp.values.map(p => p[2]).reduce((sum, next) => addShare(sum, next)); 
 
       const gPassPrism = gMultiplied[0].times(rInv);
 
@@ -461,7 +460,7 @@ export default class DAuthFlow {
       const shareEncrypted = genShardResp.values.map(a =>  a[1]).map(s => mergeShare(s));
       const sortedShareArray = sorting(shareEncrypted);
 
-      return { gPRISMAuth : gPRISMAuth, ciphers : sortedShareArray , timestamp : timestamp}
+      return { gPRISMAuth : gPRISMAuth, ciphers : sortedShareArray, timestamp : timestamp}
 
     }catch(err){
       Promise.reject(err);
@@ -481,41 +480,25 @@ export default class DAuthFlow {
       const setCMKResponse = await pre_setCMKResponse;
 
       const gPRISMtest = setCMKResponse.values.map(resp => resp[0]).reduce((sum, next, i) => sum.add(next[0].times(lis.get(i))), ed25519Point.infinity);
-      const gCMKR2 = setCMKResponse.values.reduce((sum, next, i) => sum.add(next[1]), ed25519Point.infinity); // Does Sum (gCMKR2)
-
+    
       const encryptedStatei = setCMKResponse.values.map(resp => resp[2]);
-      const randomKey = setCMKResponse.values.map(r => r[3]);
 
-      return {gPRISMtest : gPRISMtest, gCMKR2 : gCMKR2, state : encryptedStatei, randomKey : randomKey};
+      return {gPRISMtest : gPRISMtest, state : encryptedStatei};
     }catch(err){
       Promise.reject(err);
     }
     
   }
-  async CommitPRISM (gPRISMtest, state, randomKey, decryptedResponses, gPrismAuth, VERIFYi){
-    try{
-      const mIdORKs = await this.clienSet.all(c => c.getClientUsername());
-      //const pre_commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.preCommit(gTests, gCMKR2, state[i], randomKey[i], gPrismAuth, email, mIdORKs));
-      const Encrypted_Auth_Resp = await this.clienSet.all((DAuthClient,i) => DAuthClient.CommitPrism(state[i], decryptedResponses.get(i).certTime, VERIFYi.get(i),gPRISMtest, gPrismAuth));
-      
-      // const CMKS = pre_commitCMKResponse.values.reduce((sum, s) => (sum + s) % ed25519Point.order); 
-
-      // const CMKM = Hash.shaBuffer(Buffer.concat([Buffer.from(gTests[0].toArray()),Buffer.from(timestamp.toString()),Buffer.from(this.userID.guid.toString())])); // TODO: Add point.to_base64 function
-      // const pubs = await this.clienSet.all(c => c.getPublic()); //works   
-      // const CMKR = pubs.map(pub => pub.y).reduce((sum, p) => sum.add(p), ed25519Point.infinity).add(gCMKR2);
-      // const CMKH = Hash.sha512Buffer( Buffer.concat([Buffer.from(CMKR.toArray()),Buffer.from(gTests[0].toArray()), CMKM]));
-      
-      // const CMKH_int = bigInt_fromBuffer(CMKH);
-      
-      // if(!ed25519Point.g.times(CMKS).isEqual(CMKR.add(gTests[0].times(CMKH_int)))) {
-      //   return Promise.reject("Ork Signature Invalid")
-      // }
-      
-      // const commitCMKResponse = await this.clienSet.all((DAuthClient,i) => DAuthClient.commit(CMKS, state[i], gCMKR2, mIdORKs));
-      
-      // // @ts-ignore
-      // const entry = await this.addDnsEntry(CMKS.toString(), gCMKR2, timestamp, gCMK, mIdORKs)
-  
+  /**
+   * @param {ed25519Point} gPRISMtest
+   * @param {string[]} state
+   * @param {Dictionary<ApplyResponseDecrypted>} decryptedResponses
+   * @param {ed25519Point} gPrismAuth
+   * @param {Dictionary<TranToken>} VERIFYi
+   */
+  async CommitPRISM (gPRISMtest, state, decryptedResponses, gPrismAuth, VERIFYi){
+    try{ 
+      await this.clienSet.all((DAuthClient,i) => DAuthClient.CommitPrism(state[i], decryptedResponses.get(i).certTime, VERIFYi.get(i), gPRISMtest, gPrismAuth));  
     }catch(err){
       Promise.reject(err);
     }

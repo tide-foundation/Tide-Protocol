@@ -264,6 +264,26 @@ public class KeyGenerator
             Yn = state.Yn.Select(Y => new BigInteger(Y, true, true)).ToArray()
         };
     }
+
+    public CommitPrismResponse CommitPrism (string keyID, Ed25519Point gPRISMtest, string EncSetKeyStatei){
+        
+        StateData state = JsonSerializer.Deserialize<StateData>(MSecOrki_Key.DecryptStr(EncSetKeyStatei)); // decrypt encrypted state in response
+         
+        if(!state.KeyID.Equals(keyID))
+        {
+            throw new Exception("CommitPrism: KeyID of instanciated object does not equal that of previous state");
+        }
+        
+        Ed25519Point gPRISM  =  Ed25519Point.From(state.gKn[0]);
+        // Verifying 
+        if(!gPRISMtest.IsEquals(gPRISM )){ 
+             throw new Exception("CommitPrism: gPRISMtest failed");
+        }
+        return new CommitPrismResponse {
+            Prismi = new BigInteger(state.Yn[0], true, true),
+            gPrism = gPRISM 
+        };
+    }
     private AesKey createKey(Ed25519Point point)
     {
         if (MgOrki.IsEquals(point))
@@ -325,6 +345,11 @@ public class KeyGenerator
         public Ed25519Point[] gKn {get; set;}
         public BigInteger[] Yn {get; set;}
         public BigInteger S {get; set;}
+    }
+    public class CommitPrismResponse
+    {
+        public BigInteger Prismi {get; set;}
+        public Ed25519Point gPrism { get; set;}
     }
     internal class StateData
     {

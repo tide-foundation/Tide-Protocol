@@ -35,7 +35,7 @@ var orkUrls = [...Array(threshold)].map((_, i) => `http://ork${i+1}.local`); //t
 
     await signUp();
     await changePass(user, pass, newPass);
-    await signIn(user, pass);
+    await signIn(user, newPass);
     //await resetPass(user);
     //await reconstructPass(user);
 
@@ -53,7 +53,7 @@ async function signUp() {
   flowCreate.vendorPub = vendorPub;
 
   const account = await flowCreate.signUp2(pass, email, threshold);
-  console.log(`[signUp] vuid: ${account.vuid} cvkPub: ${account.cvkPub.toString()}`);
+  console.log(`[signUp] vuid: ${account.vuid} cvkPub: ${account.cvkPub.toString()}`); 
 }
 
 async function signIn(user, pass) {
@@ -64,7 +64,7 @@ async function signIn(user, pass) {
   flowLogin.vendorPub = vendorPub;
   
   var account =  await flowLogin.logIn2(pass);
-  console.log(`[signIn] jwt: ${account.jwt} cvkPub: ${account.cvkPub.toString()}`);
+  console.log(`[signIn] vuid : ${account.vuid} jwt: ${account.jwt} cvkPub: ${account.cvkPub.toString()}`);
 }
 
 async function changePass(user, pass, newPass) {

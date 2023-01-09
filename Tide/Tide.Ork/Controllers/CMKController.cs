@@ -334,47 +334,6 @@ namespace Tide.Ork.Controllers
             };
         }
 
-        //TODO: Add throttling by ip and account separate
-        [HttpGet("sign/{uid}/{token}/{partialCmkPub}/{partialCmk2Pub}")]
-        public async Task<ActionResult<String>> SignEntry([FromRoute] Guid uid, [FromRoute] string token, [FromRoute] Ed25519Point partialCmkPub, [FromRoute] Ed25519Point partialCmk2Pub, [FromBody] DnsEntry entry, [FromQuery] Guid tranid, [FromQuery] string li = null)
-        {
-            if (!token.FromBase64UrlString(out byte[] bytesToken))
-            {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Invalid token format for {uid}");
-                return Unauthorized();
-            }
-
-            var lagrangian = BigInteger.Zero;
-            if (!string.IsNullOrWhiteSpace(li) && !BigInteger.TryParse(li, out lagrangian))
-            {
-                _logger.LogInformation("SignEntry: Invalid li for {uid}: '{li}' ", uid, li);
-                return BadRequest("Invalid parameter li");
-            }
-
-            var tran = TranToken.Parse(bytesToken);
-            var account = await _manager.GetById(uid);
-            if (account == null || tran == null || !tran.Check(_config.SecretKey)) { // checking that this ork was the one who signed this token (timestamp pretty much)
-                if (account == null)
-                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Account {uid} does not exist");
-                else
-                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Invalid token for {uid}");
-
-                return Unauthorized("Invalid account or signature");
-            }
-            
-            if (!tran.OnTime) {
-                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tranid, uid, $"SignEntry: Expired token for {uid}");
-                return StatusCode(418, new TranToken().ToString());
-            }
-         
-            var cmkPub = partialCmkPub + (Ed25519.G * (account.Cmki * lagrangian));
-            var cmk2Pub = partialCmk2Pub + (Ed25519.G * (account.Cmk2i * lagrangian));
-
-            var s = Ed25519Dsa.Sign(account.Cmk2i * lagrangian, account.Cmki * lagrangian, cmkPub, cmk2Pub, entry.MessageSignedBytes());
-
-            return s.ToString(); // signature
-        }
-
         [MetricAttribute("prism")]
         [ThrottleAttribute("uid")]
         [HttpGet("prism/{uid}/{gBlurUser}/{gBlurPass}")]
@@ -417,8 +376,8 @@ namespace Tide.Ork.Controllers
 
         //TODO: Add throttling by ip and account separate
         [MetricAttribute("cmk", recordSuccess:true)]
-        [HttpGet("auth/{uid}/{certTimei}/{token}/{req}/{gCMK2}")]
-        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromRoute] string req, [FromRoute] Ed25519Point gCMK2) // Remove gCmk2 once confirm with the flow
+        [HttpGet("auth/{uid}/{certTimei}/{token}/{req}")]
+        public async Task<ActionResult> Authenticate([FromRoute] Guid uid, [FromRoute] string certTimei, [FromRoute] string token, [FromRoute] string req) 
         {
             if (!token.FromBase64UrlString(out byte[] bytesToken) || !certTimei.FromBase64UrlString(out byte[] bytesCertTimei) || !req.FromBase64UrlString(out byte[] bytesRequest))
             {
@@ -480,27 +439,68 @@ namespace Tide.Ork.Controllers
 
         
         [HttpPut("prism/commit/{uid}/{certTimei}/{token}/{gPRISMtest}/{gPRISMAuth}")]
-        public async Task<ActionResult> CommitPrism([FromRoute] Guid uid, [FromQuery] Ed25519Point gPRISMtest,[FromQuery] Ed25519Point gPRISMAuth, [FromRoute] string certTimei ,[FromRoute] string token , [FromBody] string data)
+        public async Task<ActionResult> CommitPrism([FromRoute] Guid uid,  [FromRoute] string certTimei ,[FromRoute] string token , [FromRoute] Ed25519Point gPRISMtest,[FromRoute] Ed25519Point gPRISMAuth,[FromBody] string data)
         {
-            var tran = TranToken.Parse(FromBase64(token));
-            //var toCheck = uid.ToByteArray().Concat(FromBase64(prism)).Concat(FromBase64(prismAuth)).ToArray();
+            if (!token.FromBase64UrlString(out byte[] bytesToken) || !certTimei.FromBase64UrlString(out byte[] bytesCertTimei))
+            {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, null, uid, $"CommitPrism: Invalid token format for {uid}");
+                return Unauthorized();
+            }  
+            var tran = TranToken.Parse(bytesToken);
+            var CertTimei = TranToken.Parse(bytesCertTimei);
 
             var account = await _manager.GetById(uid);
             if (account == null)
                 return _logger.Log(Unauthorized($"Unsuccessful change password for {uid}"),
                     $"Unsuccessful change password for {uid}. Account was not found");
+            
+            var buffer = new byte[uid.ToByteArray().Length + bytesCertTimei.Length];
+            uid.ToByteArray().CopyTo(buffer,0);
+            bytesCertTimei.CopyTo(buffer, uid.ToByteArray().Length);
+            
+            if (account == null || tran == null || !tran.Check(account.PrismAuthi, buffer)) {
+                if (account == null)
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"CommitPrism: Account {uid} does not exist");
+                else
+                    _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"CommitPrism: Invalid token for {uid}");
 
-            // var authKey = withCmk ? account.C : account.PrismiAuth;
-            // if (!tran.Check(authKey, toCheck))
-            //     return _logger.Log(Unauthorized($"Unsuccessful change password for {uid}"),
-            //         $"Unsuccessful change password for {uid} with {token}");
-
-            _logger.LogInformation($"Change password for {uid}", uid);
-
-            //account.Prismi = GetBigInteger(prism);
-            //account.PrismiAuth = AesKey.Parse(FromBase64(prismAuth));
-
-            await _manager.SetOrUpdate(account);
+                return Unauthorized("Invalid account or signature");
+            }
+          
+            if (!CertTimei.OnTime) {
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"CommitPrism: Expired token for {uid}");
+                return StatusCode(418, new TranToken().ToString());
+            }
+            
+            var purpose = "auth";
+            var data_to_sign = Encoding.UTF8.GetBytes(uid.ToString() + purpose);
+            
+            // Verify hmac(timestami ||userId || purpose , mSecOrki)== certTimei
+            if(!CertTimei.Check(_config.SecretKey, data_to_sign)){ // CertTime != Encoding.ASCII.GetBytes(certTimei) 
+                _logger.LoginUnsuccessful(ControllerContext.ActionDescriptor.ControllerName, tran.Id, uid, $"CommitPrism: Invalid certime  for {uid}");
+                return Unauthorized();
+            } 
+        
+            KeyGenerator.CommitPrismResponse commitPrismResponse;
+            try{
+                commitPrismResponse = _keyGenerator.CommitPrism(uid.ToString(), gPRISMtest, data);
+            } catch(Exception e){
+                _logger.LogInformation($"CommitPrism: {e}", e);
+                return BadRequest(e);
+            }
+            
+            byte[] PRISMAuth_hash = Utils.Hash((gPRISMAuth * _config.PrivateKey.X).ToByteArray());
+            AesKey PRISMAuthi = AesKey.Seed(PRISMAuth_hash);
+            
+            account.Prismi = commitPrismResponse.Prismi;
+            account.PrismAuthi = PRISMAuthi;
+        
+            var resp = await _manager.SetOrUpdate(account);
+            if (!resp.Success) {
+                return Problem(resp.Error);
+            }
+            _logger.LogInformation($"CommitPrism : Changed password for {uid}", uid);
+            
             return Ok();
         }
 

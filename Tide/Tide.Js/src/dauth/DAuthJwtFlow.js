@@ -13,7 +13,7 @@
 // Source License along with this program.
 // If not, see https://tide.org/licenses_tcosl-1-0-en
 
-import { AESKey, Utils, C25519Point, C25519Key, CP256Key, ed25519Point, ed25519Key } from "cryptide";
+import { AESKey, Utils, C25519Point, C25519Key, CP256Key, ed25519Point, ed25519Key, Hash } from "cryptide";
 import DAuthFlow from "./DAuthFlow";
 import IdGenerator from "../IdGenerator";
 import DCryptFlow from "./DCryptFlow";
@@ -58,38 +58,36 @@ export default class DAuthJwtFlow {
   /**
    * @param {string} password
    * @param {number} threshold
+   * @param {ed25519Point} gCMKAuth
    * @returns {Promise<{ vuid: Guid; cvk: ed25519Key; auth: AESKey; }>}
    */
-  async signUpCVK(password, threshold) {
+  async signUpCVK(password, threshold, gCMKAuth) {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
     try {
-      const pre_flowCmk = this._getCmkFlow();
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
+
+      const pre_flowCmk = this._getCmkFlow(true);
       const flowCmk = await pre_flowCmk;
 
-      this.cvkAuth = await flowCmk.logIn(password, venPnt); 
-      this._genVuid();
+      const [, decryptedResponses, , r2Inv, lis ] = await flowCmk.doConvert( password, venPnt);  
+  
+      const gUserCMK = decryptedResponses.map((b, i) => b.gBlurUserCMKi.times(lis.get(i))).reduce((sum, gBlurUserCMKi) => sum.add(gBlurUserCMKi), ed25519Point.infinity).times(r2Inv); 
+      
+      const hash_gUserCMK = Hash.sha512Buffer(gUserCMK.toArray());
+      const VUID = IdGenerator.seed(hash_gUserCMK.subarray(32, 64)); /// last 32 bytes
+      this.vuid = VUID.guid;
+       
+      const flowCvk = await this._getCvkFlow(true); 
+      // create cvk shards
+      const {timestampCVK , ciphersCVK, gCVK} = await flowCvk.GenShardCVK(venPnt,venPnt);
+      //Aggredate shards
+      const pre_SetCVK = await flowCvk.SetCVK(ciphersCVK, timestampCVK);
 
-      const cvk = ed25519Key.generate();
-      const flowCvk = await this._getCvkFlow(true);
+      const {cvkPubPem} = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state,  pre_SetCVK.randomKey, VUID, timestampCVK, gCMKAuth, gCVK);
+     
+      return { cvkPub: cvkPubPem };
 
-      //vendor
-      const keyId = Guid.seed(this.vendorPub.toArray());
-      const vuidAuth = AESKey.seed(cvk.toArray()).derive(keyId.buffer);
-      const signatures = flowCvk.clients.map((_) => new Uint8Array());
-
-      // register cvk
-      await flowCvk.signUp2(this.cvkAuth, threshold, keyId, signatures, cvk);
-
-      //test dauth and dcrypt
-      const {jwt, cvkPub}= await this.logIn(password);
-
-      if (this.cvkAuth.toString() !== authTag.toString()) return Promise.reject(new Error("Error in the verification workflow"));
-
-      await flowCvk.confirm();
-
-      return { vuid: this.vuid, cvk: cvk, auth: cvkPub };
     } catch (err) {
       return Promise.reject(err);
     }
@@ -169,14 +167,14 @@ export default class DAuthJwtFlow {
       const {timestampCVK , ciphersCVK, gCVK} = await flowCvk.GenShardCVK(venPnt,venPnt);
 
       //Aggredate shards
-      const pre_SetCVK = await flowCvk.SetCVK(ciphersCVK, timestampCVK, gCMKAuth);
+      const pre_SetCVK = await flowCvk.SetCVK(ciphersCVK, timestampCVK);
 
       const pre_CommitCMK = await flowCmk.PreCommit(pre_SetCMK.gTests, pre_SetCMK.gCMKR2, pre_SetCMK.state , pre_SetCMK.randomKey, timestampCMK, gPRISMAuth, email, gCMK);
 
       const {cvkPubPem} = await flowCvk.PreCommit(pre_SetCVK.gTests, pre_SetCVK.gCVKR2, pre_SetCVK.state,  pre_SetCVK.randomKey, vuid, timestampCVK, gCMKAuth, gCVK);
      
   
-      return { vuid: this.vuid, cvkPub: cvkPubPem };
+      return { vuid: this.vuid, cvkPub: cvkPubPem , gCMKAuth : gCMKAuth};
 
     } catch (err) {
       return Promise.reject(err);
@@ -218,10 +216,9 @@ export default class DAuthJwtFlow {
       const flowCmk = await pre_flowCmk;
 
       // TODO: Use _getCvkFlow()
+      const {tideJWT, cvkPubPem, gCMKAuth, vuid} = await flowCmk.logIn2( password, venPnt);    
 
-      const {tideJWT, cvkPubPem} = await flowCmk.logIn2( password, venPnt);  
-      
-      return {jwt: tideJWT, cvkPub: cvkPubPem}; // return vuid + jwt signature
+      return {jwt: tideJWT, cvkPub: cvkPubPem, gCMKAuth : gCMKAuth, vuid : vuid.guid}; // return vuid + jwt signature
     } catch (err) {
       return Promise.reject(err);
     }
@@ -261,17 +258,15 @@ export default class DAuthJwtFlow {
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
       const flowCmk = await pre_flowCmk;
 
-      const [prismAuths, decryptedResponses, VERIFYi, r2Inv, lis] = await flowCmk.doConvert( pass, venPnt);  
+      const [, decryptedResponses, VERIFYi, , ] = await flowCmk.doConvert( pass, venPnt);  
 
       // create shards
       const {gPRISMAuth, ciphers, timestamp} = await flowCmk.GenShard(newPass);
 
       const set_PRISM = await flowCmk.SetPRISM(ciphers, timestamp);
 
-      const commit = await flowCmk.CommitPRISM(set_PRISM.gPRISMtest, set_PRISM.state , set_PRISM.randomKey, decryptedResponses, gPRISMAuth, VERIFYi);
-
-
-      //await (await this._getCmkFlow()).changePass(pass, newPass, threshold);
+      await flowCmk.CommitPRISM(set_PRISM.gPRISMtest, set_PRISM.state, decryptedResponses, gPRISMAuth, VERIFYi);
+     
     } catch (err) {
       return Promise.reject(err);
     }
