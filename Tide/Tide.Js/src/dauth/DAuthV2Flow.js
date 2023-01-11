@@ -71,25 +71,7 @@ export default class DAuthV2Flow {
   async signUp(password, email, threshold) {
     if (!this.vendorPub) throw new Error("vendorPub must not be empty");
 
-    try {
-
-      // const vendorCln = this._getVendorClient();
-      // const { pubKey } = await vendorCln.configuration();
-      // if (!this.cmk) this.cmk = Utils.random(1, bigInt((ed25519Point.order - BigInt(1)).toString()));
-      // this.cvkAuth = AESKey.seed(pubKey.y.times(this.cmk).toArray());
-      // this._genVuid();
-
-      // const cvk = ed25519Key.generate();
-      // const keyCln = new KeyClientSet(this.cmkUrls);
-
-      // const vendorPubStore = new KeyStore(pubKey);
-      // await keyCln.setOrUpdate(vendorPubStore);
-
-      // //register vendor account
-      // const bufferVid = IdGenerator.seed(pubKey.toArray()).buffer;
-      // const vuidAuth = AESKey.seed(cvk.toArray()).derive(bufferVid);
-      // const [vendorToken, signatures] = await vendorCln.signup(this.vuid, vuidAuth, this.cvkUrls);
-      
+    try {   
       // get CMK Orks details
       const pre_flowCmk = this._getCmkFlow(true);
       const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
@@ -157,7 +139,25 @@ export default class DAuthV2Flow {
    * @param {number} threshold
    */
   async changePass(pass, newPass, threshold) {
-    await (await this._getCmkFlow()).changePass(pass, newPass, threshold);
+    //await (await this._getCmkFlow()).changePass(pass, newPass, threshold);
+    try {
+      // get CMK Orks details
+      const pre_flowCmk = this._getCmkFlow(true);
+      const venPnt = ed25519Point.fromString(this.vendorPub.y.toArray());
+      const flowCmk = await pre_flowCmk;
+
+      const [, decryptedResponses, VERIFYi, , ] = await flowCmk.doConvert( pass, venPnt);  
+
+      // create shards
+      const {gPRISMAuth, ciphers, timestamp} = await flowCmk.GenShard(newPass);
+
+      const set_PRISM = await flowCmk.SetPRISM(ciphers, timestamp);
+
+      await flowCmk.CommitPRISM(set_PRISM.gPRISMtest, set_PRISM.state, decryptedResponses, gPRISMAuth, VERIFYi);
+     
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
   
   /** @private */

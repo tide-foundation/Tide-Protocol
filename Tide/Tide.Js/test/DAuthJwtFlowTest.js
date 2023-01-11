@@ -12,7 +12,7 @@ var email = "tmp@tide.org";
 var orkUrls = EnvTest.orkUrls;
 
 describe('DAuthJwtFlow', function () {
-    it('should register and change password', async function () { //fix this after implementing change password new logic
+    it('should register and change password', async function () { 
         var user = new Guid();
         var vendorPub = CP256Key.generate();
         
@@ -29,9 +29,9 @@ describe('DAuthJwtFlow', function () {
         flowLogin.cvkUrls = orkUrls;
         flowLogin.vendorPub = vendorPub;
     
-       // await flowCreate.changePass(pass, newPass, threshold);
+        await flowCreate.changePass2(pass, newPass, threshold);
         
-        var { cvkPub: auth2 } = await flowLogin.logIn2(pass); //change to newwPass
+        var { cvkPub: auth2 } = await flowLogin.logIn2(newPass); 
         assert.equal(auth0.toString(), auth2.toString());
     });
 
@@ -56,7 +56,7 @@ describe('DAuthJwtFlow', function () {
         assert.equal(auth0.toString(), auth2.toString());
     });
 
-    it('should register a new CVK to an existing CMK', async function () {
+    it('should register a new CVK to an existing CMK', async function () { 
         var user = new Guid();
         var vendorPub1 = CP256Key.generate();
         var vendorPub2 = CP256Key.generate();
@@ -67,25 +67,29 @@ describe('DAuthJwtFlow', function () {
         flowCreate.vendorPub = vendorPub1;
         var { cvkPub: CVK1 } = await flowCreate.signUp2(pass, email, threshold);
 
-        // const flowLink = new DAuthJwtFlow(user);
-        // flowLink.cmkUrls = orkUrls;
-        // flowLink.cvkUrls = orkUrls;
-        // flowLink.vendorPub = vendorPub2;
-        // var { cvkPub: CVK2 } = await flowLink.signUpCVK(pass, threshold);
-
         var flowLogin1 = new DAuthJwtFlow(user);
         flowLogin1.homeUrl = orkUrls[0];
         flowLogin1.cmkUrls = orkUrls;
         flowLogin1.cvkUrls = orkUrls;
         flowLogin1.vendorPub = vendorPub1;
-        var { cvkPub: CVK1v2 } = await flowLogin1.logIn2(pass);
-        
-        // var flowLogin2 = new DAuthJwtFlow(user);
-        // flowLogin2.homeUrl = orkUrls[0];
-        // flowLogin2.vendorPub = vendorPub2;
-        // var { cvkPub: CVK2v2 } = await flowLogin2.logIn2(pass);
+        var { cvkPub: CVK1v2 , gCMKAuth  : gCMKAuth} = await flowLogin1.logIn2(pass);
+  
+
+        const flowLink = new DAuthJwtFlow(user);
+        flowLink.cmkUrls = orkUrls;
+        flowLink.cvkUrls = orkUrls;
+        flowLink.vendorPub = vendorPub2;
+        var { cvkPub: CVK2 } = await flowLink.signUpCVK(pass, threshold,gCMKAuth);
+       
+       
+        var flowLogin2 = new DAuthJwtFlow(user);
+        flowLogin2.homeUrl = orkUrls[0];
+        flowLogin2.cmkUrls = orkUrls;
+        flowLogin2.cvkUrls = orkUrls;
+        flowLogin2.vendorPub = vendorPub2;
+        var { cvkPub: CVK2v2 } = await flowLogin2.logIn2(pass);
 
         assert.equal(CVK1.toString(), CVK1v2.toString());
-        //assert.equal(CVK2.toString(), CVK2v2.toString());
+        assert.equal(CVK2.toString(), CVK2v2.toString());
     });
 });
